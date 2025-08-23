@@ -2,18 +2,22 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import ClientSlider from "./ClientSlider";
 
 const techStack = [
-  "Next.js",
-  "React",
-  "TypeScript",
-  "Go",
-  "Tailwind",
-  "TanStack",
+  "Tanstack",
   "Bun",
-  "Three.js",
-  "Plotly",
+  "TypeScript",
+  "CachyOS",
+  "Tailwind",
+  "T3.chat",
+  "Shell",
+  "Next.js",
+  "React Three Fiber",
+  "Drizzle ORM",
 ];
+
+const techStackFuture = ["Zig", "Golang", "Nixos", "Convex", "SvelteKit"];
 
 const projects = [
   { name: "Go Web Crawler", href: "#" },
@@ -140,7 +144,7 @@ export default function BentoGrid() {
 
         {/* MUSIC PLAYER CARD */}
         <motion.article
-          className="md:col-span-3 md:row-span-2 card rounded-3xl bg-panel overflow-hidden flex flex-col"
+          className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel overflow-hidden flex flex-col"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -158,7 +162,7 @@ export default function BentoGrid() {
           </div>
           <div className="p-4 bg-base/70">
             <h3 className="font-semibold">Now Playing</h3>
-            <p className="text-sm text-muted">Exploring Trails — Lo‑Fi Beats</p>
+            <p className="text-sm text-muted">Alvvays — After The Earthquake</p>
             <div className="flex items-center gap-3 mt-3">
               <button className="h-10 w-10 rounded-full bg-ink text-base flex items-center justify-center hover:ring-2 hover:ring-accent">
                 ⮜
@@ -175,19 +179,32 @@ export default function BentoGrid() {
 
         {/* TECH STACK */}
         <motion.article
-          className="md:col-span-3 md:row-span-1 card rounded-3xl bg-panel p-6 overflow-hidden"
+          className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-6 overflow-hidden"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold">Tech I love</h2>
-            <span className="text-xs text-muted">
-              TypeScript • React • Go • Tailwind • TanStack • Bun • Three.js
-            </span>
+            <h2 className="font-semibold flex items-center gap-2">
+              Tech I love
+              <span className="text-red-500">❤️</span>
+            </h2>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {techStack.map((tech) => (
+              <span key={tech} className="px-3 py-1 rounded-lg bg-base/60">
+                {tech}
+              </span>
+            ))}
+          </div>
+          <div className="flex items-center justify-between pt-5">
+            <h2 className="font-semibold flex items-center gap-2">
+              Irons in the Fire
+              <span>🔥</span>
+            </h2>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {techStackFuture.map((tech) => (
               <span key={tech} className="px-3 py-1 rounded-lg bg-base/60">
                 {tech}
               </span>
@@ -197,7 +214,7 @@ export default function BentoGrid() {
 
         {/* HIKING CARD */}
         <motion.article
-          className="relative md:col-span-3 md:row-span-1 card rounded-3xl overflow-hidden bg-panel"
+          className="relative md:col-span-2 md:row-span-2 card rounded-3xl overflow-hidden bg-panel"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
@@ -297,15 +314,8 @@ export default function BentoGrid() {
           </p>
         </motion.article>
 
-        {/* CALL OUT / QUOTE */}
-        <motion.article
-          className="md:col-span-6 md:row-span-1 card rounded-3xl glass p-6 flex items-center justify-between"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <p className="text-lg md:text-xl font-semibold">"Good software is like a good trail — clear, reliable, and a joy to follow."</p>
-        </motion.article>
+        {/* CLIENT SLIDER */}
+        <ClientSlider />
       </section>
     </main>
   );
