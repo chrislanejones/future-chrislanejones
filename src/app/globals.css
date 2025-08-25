@@ -5,12 +5,49 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap");
 
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
+
+  /* Light theme (default) — bright trail day */
+  --color-base: #f5f8f4; /* sunlit scrub */
+  --color-panel: #e9efe7; /* weathered board */
+  --color-ink: #0e1a12; /* evergreen text (≈16.7:1 on base) */
+  --color-muted: #526157; /* lichen gray (≈6.1:1 on base) */
+  --color-accent: #2f7d32; /* forest singletrack (≈4.78:1 on base) */
+
+  /* Support tokens */
+  --color-accent-alt: #0f6abf; /* sky blue (links/hover) */
+  --color-on-accent: #ffffff; /* passes on dark accent in light theme (≈5.12:1) */
+  --color-border: #cfd9cf;
+  --radius: 12px;
+  --focus-ring: 2px solid var(--color-accent-alt);
+}
+
+/* Auto-switch for users who prefer dark */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark theme — dusk in the pines */
+    --color-base: #0b0d10; /* night trail */
+    --color-panel: #111418; /* slate rock */
+    --color-ink: #e7edf2; /* moonlight text (≈16.5:1 on base) */
+    --color-muted: #99a3ad; /* mist (≈7.6:1 on base) */
+    --color-accent: #8de36b; /* hi-viz frame (≈12.35:1 on base) */
+
+    --color-accent-alt: #64b5f6; /* alpine sky */
+    --color-on-accent: #0b0d10; /* use dark text on light accent (≈12.35:1) */
+    --color-border: #1f242b;
+  }
+}
+
+/* Manual override: add .dark to <html> or a wrapper to force dark */
+.dark {
   --color-base: #0b0d10;
   --color-panel: #111418;
   --color-ink: #e7edf2;
   --color-muted: #99a3ad;
   --color-accent: #8de36b;
+  --color-accent-alt: #64b5f6;
+  --color-on-accent: #0b0d10;
+  --color-border: #1f242b;
 }
 
 html,
@@ -43,4 +80,46 @@ body {
 
 .ring-acc {
   box-shadow: 0 0 0 2px rgba(141, 227, 107, 0.35) inset;
+}
+
+/* --- Utilities / Components --- */
+@layer utilities {
+  /* Your exact hover glow, generalized to the accent var */
+  .hover\:shadow-glow:hover {
+    --tw-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.25),
+      0 12px 40px rgba(var(--accent-rgb), 0.15);
+    --tw-shadow-colored: 0 0 0 2px var(--tw-shadow-color),
+      0 12px 40px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  /* Focus ring that uses the same accent glow (applies when element has :focus-visible) */
+  .focus-ring:focus-visible {
+    outline: none; /* rely on shadow for focus */
+    --tw-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.5),
+      0 12px 40px rgba(var(--accent-rgb), 0.15);
+    --tw-shadow-colored: 0 0 0 2px var(--tw-shadow-color),
+      0 12px 40px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  /* Smooth transitions (your spec) */
+  .transition {
+    transition-property: color, background-color, border-color,
+      text-decoration-color, fill, stroke, opacity, box-shadow, transform,
+      filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+}
+
+@layer components {
+  /* Card border (your spec) */
+  .card {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    background: var(--color-panel);
+  }
 }

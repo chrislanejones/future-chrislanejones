@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default function Header() {
   return (
@@ -63,6 +64,7 @@ export default function Header() {
             </svg>
             <span>GitHub</span>
           </a>
+          <Button>Rad</Button>
         </div>
       </nav>
     </motion.header>

@@ -3,21 +3,44 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import ClientSlider from "./ClientSlider";
+import {
+  siReactquery,
+  siBun,
+  siTypescript,
+  siFramer,
+  siTailwindcss,
+  siNextdotjs,
+  siReact,
+  siThreedotjs,
+  siDrizzle,
+  siGnubash,
+  siZig,
+  siGo,
+  siNixos,
+  siPostgresql,
+  siSvelte,
+} from "simple-icons";
 
 const techStack = [
-  "Tanstack",
-  "Bun",
-  "TypeScript",
-  "CachyOS",
-  "Tailwind",
-  "T3.chat",
-  "Shell",
-  "Next.js",
-  "React Three Fiber",
-  "Drizzle ORM",
+  { name: "TanStack", icon: siReactquery },
+  { name: "Bun", icon: siBun },
+  { name: "TypeScript", icon: siTypescript },
+  { name: "Tailwind", icon: siTailwindcss },
+  { name: "Next.js", icon: siNextdotjs },
+  { name: "React", icon: siReact },
+  { name: "Three.js", icon: siThreedotjs },
+  { name: "Drizzle ORM", icon: siDrizzle },
+  { name: "Shell", icon: siGnubash },
+  { name: "Framer Motion", icon: siFramer },
 ];
 
-const techStackFuture = ["Zig", "Golang", "Nixos", "Convex", "SvelteKit"];
+const techStackFuture = [
+  { name: "Zig", icon: siZig },
+  { name: "Go", icon: siGo },
+  { name: "NixOS", icon: siNixos },
+  { name: "Convex", icon: siPostgresql },
+  { name: "Svelte", icon: siSvelte },
+];
 
 const projects = [
   { name: "Go Web Crawler", href: "#" },
@@ -110,7 +133,7 @@ export default function BentoGrid() {
                 href="https://chrislanejones.com"
                 target="_blank"
               >
-                Website ↗
+                Nope ↗
               </a>
             </li>
             <li>
@@ -192,8 +215,21 @@ export default function BentoGrid() {
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {techStack.map((tech) => (
-              <span key={tech} className="px-3 py-1 rounded-lg bg-base/60">
-                {tech}
+              <span
+                key={tech.name}
+                className="px-3 py-1 rounded-lg bg-base/60 flex items-center gap-2"
+              >
+                {tech.icon && (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="rgb(141 227 107)"
+                  >
+                    <path d={tech.icon.path} />
+                  </svg>
+                )}
+                {tech.name}
               </span>
             ))}
           </div>
@@ -205,8 +241,21 @@ export default function BentoGrid() {
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             {techStackFuture.map((tech) => (
-              <span key={tech} className="px-3 py-1 rounded-lg bg-base/60">
-                {tech}
+              <span
+                key={tech.name}
+                className="px-3 py-1 rounded-lg bg-base/60 flex items-center gap-2"
+              >
+                {tech.icon && (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="rgb(141 227 107)"
+                  >
+                    <path d={tech.icon.path} />
+                  </svg>
+                )}
+                {tech.name}
               </span>
             ))}
           </div>
