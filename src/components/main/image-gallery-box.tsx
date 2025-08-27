@@ -106,8 +106,8 @@ const PhotoGallery = ({
   // Handle photo click to bring to front
   const handlePhotoClick = (photoId: number) => {
     setClickedPhotoId(photoId);
-    // Reset after animation
-    setTimeout(() => setClickedPhotoId(null), 300);
+    // Keep it at front longer - 2 seconds instead of 300ms
+    setTimeout(() => setClickedPhotoId(null), 2000);
   };
 
   const containerVariants = {

@@ -40,7 +40,7 @@ export default function Header() {
           <div className="flex items-center text-sm">
             <div className="flex items-center gap-3">
               {/* GitHub (left button) */}
-              <a href="#projects" className="nav-link flex-1 text-center">
+              <a href="/projects" className="nav-link flex-1 text-center">
                 Projects
               </a>
               <a href="#contact" className="nav-link flex-1 text-center">

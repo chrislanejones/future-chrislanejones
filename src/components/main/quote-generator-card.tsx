@@ -94,7 +94,7 @@ export default function QuoteGeneratorCard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="text-center text-sm leading-relaxed text-ink/90"
+            className="text-center text-2xl leading-relaxed text-ink/90"
           >
             "{QUOTES[index]}"
           </motion.blockquote>

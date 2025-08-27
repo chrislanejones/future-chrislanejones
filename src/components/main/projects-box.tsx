@@ -16,15 +16,15 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "Image Editor & Optimizer",
+    title: "MPC Vim filter Beat Machine",
     description:
-      "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data viz.",
+      "A sleek, MPC-inspired interface for browsing and filtering Vim and NeoVim keyboard shortcuts.",
     features: [
-      "Offline-friendly and keyboard‑navigable",
-      "Undo/redo, rotation/flip, pagination",
-      "Bulk crop mirroring across selected images",
+      "MPC-Inspired UI with 20 drum pad-style filters",
+      "TR-505 Drum Samples for audio feedback on filter toggle",
+      "Smart Filtering: Toggleable shortcut categories",
     ],
-    image: "/FCC-2017-Bold-Bean.webp",
+    image: "/projects/Vim.webp",
     githubUrl: "https://github.com/chrislanejones",
     vercelUrl: "https://vercel.com/chrislanejones",
   },
@@ -91,6 +91,10 @@ export default function ProjectsBox() {
 
         {/* Navigation and Action Buttons - Bottom Left */}
         <div className="flex items-center gap-3 mt-6">
+          {/* See Projects Button */}
+          <Button asChild variant="neutral">
+            <a href="/projects">See projects</a>
+          </Button>
           {/* Left Arrow */}
           <motion.button
             onClick={previousProject}
@@ -101,59 +105,45 @@ export default function ProjectsBox() {
             <ArrowLeft />
           </motion.button>
 
-          {/* GitHub Button */}
-          <Button
-            asChild
-            variant="neutral"
-            className="shadow-passive hover:shadow-glow focus-ring"
+          {/* GitHub Icon Button */}
+          <motion.button
+            onClick={() => window.open(currentProject.githubUrl, "_blank")}
+            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
+            whileTap={{ scale: 0.9 }}
+            aria-label="View on GitHub"
           >
-            <a
-              href={currentProject.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
             >
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
-                />
-              </svg>
-              <span>GitHub</span>
-            </a>
-          </Button>
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
+              />
+            </svg>
+          </motion.button>
 
-          {/* Vercel Button */}
-          <Button
-            asChild
-            variant="neutral"
-            className="shadow-passive hover:shadow-glow focus-ring"
+          {/* Vercel Icon Button */}
+          <motion.button
+            onClick={() => window.open(currentProject.vercelUrl, "_blank")}
+            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
+            whileTap={{ scale: 0.9 }}
+            aria-label="View live demo"
           >
-            <a
-              href={currentProject.vercelUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="currentColor"
             >
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="currentColor"
-              >
-                <path d="m12 0 12 21H0z" />
-              </svg>
-              <span>Live Demo</span>
-            </a>
-          </Button>
+              <path d="m12 0 12 21H0z" />
+            </svg>
+          </motion.button>
 
           {/* Right Arrow */}
           <motion.button

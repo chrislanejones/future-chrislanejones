@@ -1,114 +1,234 @@
-# Chris Lane Jones - Portfolio
+# Chris Lane Jones - Developer Portfolio
 
-A modern, interactive portfolio website built with Next.js, Tailwind CSS, and Framer Motion, featuring a dynamic bento grid layout and client showcase.
+A modern, interactive portfolio website built with Next.js 14, featuring a bento grid layout, working music player, photo gallery, and project showcase.
 
 ## Features
 
-- 🎨 **Bento Grid Layout** - Modern card-based design with responsive grid
-- ✨ **Smooth Animations** - Framer Motion powered interactions and transitions
-- 🏢 **Client Slider** - Interactive showcase of past and present clients with smooth navigation
-- 🎵 **Music Player Card** - Showcasing personal interests with album art
-- ⛰️ **Personal Touch** - Hiking photography and outdoor passion integration
-- 💻 **Tech Stack Display** - Current technologies and future learning goals
-- 📱 **Fully Responsive** - Optimized for all device sizes
-- 🚀 **Next.js 14** - Built with TypeScript for type safety
+### Interactive Bento Grid Layout
+
+- **Hero Section**: Introduction with animated background elements
+- **Quote Generator**: Rotating inspirational quotes with refresh functionality
+- **Music Player**: Fully functional audio player with volume controls and track navigation
+- **Tech Stack Display**: Current technologies and future learning goals
+- **Photo Gallery**: Polaroid-style hiking photos with click-to-front interactions
+- **Project Showcase**: Navigable project cards with live demo links
+- **Client Slider**: Animated carousel of past and present clients
+
+### Key Functionality
+
+- **Working Audio Player**: Play/pause, volume control, track switching
+- **Interactive Photo Gallery**: Drawer-based gallery with polaroid effects
+- **Project Navigation**: Arrow navigation through featured projects
+- **Responsive Design**: Mobile-first approach with breakpoint optimization
+- **Dark/Light Theme**: Automatic theme switching based on user preference
 
 ## Tech Stack
 
-### Current Stack ❤️
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- TanStack
-- Bun
-- Drizzle ORM
-- React Three Fiber
+### Core Technologies
 
-### Irons in the Fire 🔥
-- Zig
-- Golang
-- NixOS
-- Convex
-- SvelteKit
+- **Next.js 14** - App Router with TypeScript
+- **Tailwind CSS** - Utility-first styling with custom design tokens
+- **Framer Motion** - Animation library for smooth interactions
+- **Lucide React** - Icon system
 
-## Getting Started
+### Additional Libraries
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   bun install
-   ```
-3. Run the development server:
-   ```bash
-   bun dev
-   ```
-4. Open [http://localhost:3000](http://localhost:3000)
+- **vaul** - Drawer component for mobile-friendly interactions
+- **simple-icons** - Technology icons for skill display
+- **class-variance-authority** - Type-safe component variants
 
 ## Project Structure
 
 ```
 src/
-├── app/                 # Next.js app router
-│   ├── globals.css     # Global styles
-│   ├── layout.tsx      # Root layout
-│   └── page.tsx        # Home page
-├── components/          # React components
-│   ├── BentoGrid.tsx   # Main grid layout
-│   ├── ClientSlider.tsx # Client showcase slider
-│   └── Header.tsx      # Site header
-└── lib/                 # Utilities
+├── app/
+│   ├── globals.css           # Global styles and CSS variables
+│   ├── layout.tsx            # Root layout with metadata
+│   ├── page.tsx              # Homepage
+│   └── projects/
+│       └── page.tsx          # Projects page
+├── components/
+│   ├── BentoGrid.tsx         # Main grid layout
+│   ├── Header.tsx            # Navigation header
+│   ├── Footer.tsx            # Site footer
+│   ├── ProjectGrid.tsx       # Projects page layout
+│   ├── main/
+│   │   ├── client-slider-box.tsx      # Client carousel
+│   │   ├── image-gallery-box.tsx      # Photo gallery
+│   │   ├── music-player-box.tsx       # Audio player
+│   │   ├── projects-box.tsx           # Project showcase
+│   │   ├── quote-generator-card.tsx   # Quote rotator
+│   │   └── tech-stack-box.tsx         # Skills display
+│   └── ui/
+│       ├── button.tsx        # Reusable button component
+│       └── drawer.tsx        # Modal drawer component
+└── lib/
+    └── utils.ts              # Utility functions
 ```
 
-## Components
+## Design System
 
-### BentoGrid
-The main layout component featuring:
-- Hero section with call-to-action
-- Professional profile with quick links
-- Music player with album art
-- Tech stack showcase
-- Hiking photography card
-- Featured project display
-- Mini projects list
+### Color Palette
 
-### ClientSlider
-Interactive client showcase featuring:
-- 18 client logos from notable companies
-- 4 logos displayed at once
-- Smooth navigation with arrow controls
-- Hover animations and color reveals
-- Responsive design
+- **Light Theme**: Sunlit scrub with evergreen accents
+- **Dark Theme**: Night trail with hi-viz green highlights
+- **Accent Color**: Forest green (#2f7d32 light, #8de36b dark)
 
-## Client Portfolio
+### Typography
 
-Showcasing work with notable organizations including:
-- Allianz Travel
-- American Airlines
-- Virginia IT Agency (VITA)
-- US Department of Transportation
-- Amtrak
-- StubHub
-- And many more...
+- **Primary Font**: Inter (Google Fonts)
+- **Handwriting**: Comic Sans MS for polaroid descriptions
+
+### Components
+
+- **Cards**: Rounded corners with subtle borders and glass effects
+- **Buttons**: Multiple variants with focus states and animations
+- **Interactive Elements**: Hover states and tap feedback
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ or Bun
+- Git
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/chrislanejones/portfolio.git
+cd portfolio
+```
+
+2. Install dependencies:
+
+```bash
+bun install
+```
+
+3. Set up media files:
+
+```bash
+# Create directories for media
+mkdir -p public/music/audio public/music/art public/gallery public/client-icons
+
+# Add your audio files to public/music/audio/
+# Add album art to public/music/art/
+# Add hiking photos to public/gallery/
+# Add client logos to public/client-icons/
+```
+
+4. Start the development server:
+
+```bash
+bun dev
+```
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Media Setup
+
+### Audio Files
+
+Place audio files in `public/music/audio/`:
+
+- `after-the-earthquake.mp3`
+- Additional tracks as needed
+
+### Album Art
+
+Place album artwork in `public/music/art/`:
+
+- `Alvvays-Blue-Rev-Album-Art.webp`
+
+### Photo Gallery
+
+Place hiking photos in `public/gallery/`:
+
+- `Hiking-1.webp`, `Hiking-2.webp`, etc.
+
+### Client Logos
+
+Place client logos in `public/client-icons/`:
+
+- Various client logo files in WebP format
+
+## Customization
+
+### Adding Projects
+
+Update the projects array in `src/components/main/projects-box.tsx`:
+
+```typescript
+const projects: Project[] = [
+  {
+    title: "Your Project",
+    description: "Project description",
+    features: ["Feature 1", "Feature 2"],
+    image: "/project-image.webp",
+    githubUrl: "https://github.com/username/repo",
+    vercelUrl: "https://project.vercel.app",
+  },
+];
+```
+
+### Adding Music Tracks
+
+Update the playlist in `src/components/main/music-player-box.tsx`:
+
+```typescript
+const playlist = [
+  {
+    title: "Song Title",
+    artist: "Artist Name",
+    album: "Album Name",
+    albumArt: "/music/art/album.webp",
+    audioSrc: "/music/audio/song.mp3",
+  },
+];
+```
+
+### Updating Quotes
+
+Modify the quotes array in `src/components/main/quote-generator-card.tsx`.
 
 ## Deployment
 
-Deploy to Vercel:
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Deploy automatically on push
+
+### Manual Build
 
 ```bash
-bunx vercel --prod
+bun run build
+bun start
 ```
 
-Or deploy to any Next.js compatible platform.
+## Performance Features
+
+- **Static Site Generation** for optimal loading
+- **Image Optimization** with Next.js Image component
+- **Code Splitting** with dynamic imports
+- **Lazy Loading** for media content
+- **Responsive Images** with appropriate sizing
+
+## Browser Support
+
+- Chrome/Edge 88+
+- Firefox 78+
+- Safari 14+
+- Mobile browsers with modern JavaScript support
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
 
 ## Contact
 
-- Website: [chrislanejones.com](https://chrislanejones.com)
-- Email: hello@chrislanejones.com
-- LinkedIn: [chrislanejones](https://www.linkedin.com/in/chrislanejones/)
-- GitHub: [chrislanejones](https://github.com/chrislanejones)
+Chris Lane Jones - [hello@chrislanejones.com](mailto:hello@chrislanejones.com)
 
----
-
-*Building clean web apps — then disappearing into the mountains. 🏔️*
+Project Link: [https://github.com/chrislanejones/portfolio](https://github.com/chrislanejones/portfolio)
