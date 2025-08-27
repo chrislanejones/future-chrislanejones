@@ -1,0 +1,249 @@
+"use client";
+
+import { useState, SVGProps } from "react";
+import { motion, AnimatePresence, wrap } from "framer-motion";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+
+type Project = {
+  title: string;
+  description: string;
+  features: string[];
+  image: string;
+  githubUrl: string;
+  vercelUrl: string;
+};
+
+const projects: Project[] = [
+  {
+    title: "Image Editor & Optimizer",
+    description:
+      "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data viz.",
+    features: [
+      "Offline-friendly and keyboard‑navigable",
+      "Undo/redo, rotation/flip, pagination",
+      "Bulk crop mirroring across selected images",
+    ],
+    image: "/FCC-2017-Bold-Bean.webp",
+    githubUrl: "https://github.com/chrislanejones",
+    vercelUrl: "https://vercel.com/chrislanejones",
+  },
+  {
+    title: "Go Web Crawler",
+    description:
+      "High-performance web crawler built with Go. Features concurrent processing, rate limiting, and comprehensive data extraction capabilities.",
+    features: [
+      "Concurrent crawling with goroutines",
+      "Rate limiting and politeness policies",
+      "Structured data extraction",
+    ],
+    image: "/FCC-2017-Bold-Bean.webp", // Replace with actual project image
+    githubUrl: "https://github.com/chrislanejones/go-crawler",
+    vercelUrl: "https://go-crawler.vercel.app",
+  },
+];
+
+export default function ProjectsBox() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+
+  const currentProject = projects[currentIndex];
+
+  const setProject = (newDirection: 1 | -1) => {
+    const nextIndex = wrap(0, projects.length, currentIndex + newDirection);
+    setCurrentIndex(nextIndex);
+    setDirection(newDirection);
+  };
+
+  const previousProject = () => setProject(-1);
+  const nextProject = () => setProject(1);
+
+  return (
+    <motion.article
+      id="projects"
+      className="md:col-span-4 md:row-span-2 card rounded-3xl bg-panel p-6 grid md:grid-cols-2 gap-6 relative"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.6 }}
+    >
+      <div className="order-2 md:order-1 flex flex-col">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            initial={{ opacity: 0, x: direction * 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: direction * -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="flex flex-col h-full"
+          >
+            <h2 className="font-semibold text-xl">
+              Featured: {currentProject.title}
+            </h2>
+            <p className="text-muted mt-2">{currentProject.description}</p>
+            <ul className="mt-4 space-y-2 text-sm flex-1">
+              {currentProject.features.map((feature, index) => (
+                <li key={index}>• {feature}</li>
+              ))}
+            </ul>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation and Action Buttons - Bottom Left */}
+        <div className="flex items-center gap-3 mt-6">
+          {/* Left Arrow */}
+          <motion.button
+            onClick={previousProject}
+            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
+            whileTap={{ scale: 0.9 }}
+            aria-label="Previous project"
+          >
+            <ArrowLeft />
+          </motion.button>
+
+          {/* GitHub Button */}
+          <Button
+            asChild
+            variant="neutral"
+            className="shadow-passive hover:shadow-glow focus-ring"
+          >
+            <a
+              href={currentProject.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
+                />
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </Button>
+
+          {/* Vercel Button */}
+          <Button
+            asChild
+            variant="neutral"
+            className="shadow-passive hover:shadow-glow focus-ring"
+          >
+            <a
+              href={currentProject.vercelUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="currentColor"
+              >
+                <path d="m12 0 12 21H0z" />
+              </svg>
+              <span>Live Demo</span>
+            </a>
+          </Button>
+
+          {/* Right Arrow */}
+          <motion.button
+            onClick={nextProject}
+            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
+            whileTap={{ scale: 0.9 }}
+            aria-label="Next project"
+          >
+            <ArrowRight />
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Project Image */}
+      <div className="order-1 md:order-2 relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[200px]">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={`${currentIndex}-image`}
+            custom={direction}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={currentProject.image}
+              alt={`${currentProject.title} preview`}
+              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 40vw"
+            />
+          </motion.div>
+        </AnimatePresence>
+        <div className="absolute bottom-3 right-3 text-[11px] px-2 py-1 rounded-md bg-base/80">
+          {currentIndex + 1} of {projects.length}
+        </div>
+      </div>
+
+      {/* Project Indicators */}
+      {projects.length > 1 && (
+        <div className="absolute top-6 right-6 flex gap-1">
+          {projects.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setCurrentIndex(index);
+                setDirection(index > currentIndex ? 1 : -1);
+              }}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === currentIndex
+                  ? "bg-accent"
+                  : "bg-ink/30 hover:bg-ink/50"
+              }`}
+              aria-label={`View project ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </motion.article>
+  );
+}
+
+// Icons (same as ClientSliderBox)
+const iconsProps: SVGProps<SVGSVGElement> = {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: "24",
+  height: "24",
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: "2",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+};
+
+function ArrowLeft() {
+  return (
+    <svg {...iconsProps}>
+      <path d="m12 19-7-7 7-7" />
+      <path d="M19 12H5" />
+    </svg>
+  );
+}
+
+function ArrowRight() {
+  return (
+    <svg {...iconsProps}>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
