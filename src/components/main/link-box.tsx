@@ -1,87 +1,152 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Bot, Zap, Brain } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  siReactquery,
+  siBun,
+  siTypescript,
+  siFramer,
+  siTailwindcss,
+  siNextdotjs,
+  siReact,
+  siThreedotjs,
+  siDrizzle,
+  siGnubash,
+  siZig,
+  siGo,
+  siNixos,
+  siPostgresql,
+  siSvelte,
+} from "simple-icons";
+import { Badge } from "@/components/ui/badge";
 
-export default function LinkCard() {
+type TechItem = {
+  name: string;
+  icon: { path: string };
+};
+
+const techStack: TechItem[] = [
+  { name: "React", icon: siReact },
+  { name: "Next.js", icon: siNextdotjs },
+  { name: "TypeScript", icon: siTypescript },
+  { name: "Tailwind", icon: siTailwindcss },
+  { name: "Framer Motion", icon: siFramer },
+  { name: "TanStack", icon: siReactquery },
+  { name: "Three.js", icon: siThreedotjs },
+  { name: "Drizzle ORM", icon: siDrizzle },
+  { name: "Bun", icon: siBun },
+  { name: "Shell", icon: siGnubash },
+];
+
+const techStackFuture: TechItem[] = [
+  { name: "Zig", icon: siZig },
+  { name: "Go", icon: siGo },
+  { name: "NixOS", icon: siNixos },
+  { name: "Convex", icon: siPostgresql },
+  { name: "Svelte", icon: siSvelte },
+];
+
+export default function TechAndLinksCard() {
   return (
     <motion.article
-      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-6 flex flex-col gap-4"
+      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-2 flex flex-col gap-2"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.7 }}
     >
-      <h3 className="font-bold">Github Gist</h3>
-      <div className="grid grid-cols-1 gap-3 text-sm">
-        <Button
-          variant="base"
-          className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors"
-          asChild
-        >
-          <a
-            href="https://gist.github.com/chrislanejones/125a1d94b66a5ae734e6e5d804e80b2e"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between w-full"
+      {/* GitHub Gist Section */}
+      <div className="border border-base/30 rounded-2xl p-3">
+        <h3 className="text-lg font-bold text-foreground tracking-tight mb-3">
+          Github Gist
+        </h3>
+        <div className="grid grid-cols-1 gap-3 text-sm">
+          <Button
+            variant="base"
+            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors"
+            asChild
           >
-            <span>Large AI File Rebuild Script</span>
-            <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
-          </a>
-        </Button>
-      </div>
-
-      <h3 className="font-bold">Favorite Current AI Tools</h3>
-      <div className="grid grid-cols-3 gap-3 text-sm">
-        <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-pointer">
-          <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
-            <svg
-              className="h-5 w-5 text-ink"
-              viewBox="0 0 46 32"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
+            <a
+              href="https://gist.github.com/chrislanejones/125a1d94b66a5ae734e6e5d804e80b2e"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between w-full"
             >
-              <path d="M32.73 0h-6.945L38.45 32h6.945L32.73 0ZM12.665 0 0 32h7.082l2.59-6.72h13.25l2.59 6.72h7.082L19.929 0h-7.264Zm-.702 19.337 4.334-11.246 4.334 11.246h-8.668Z"></path>
-            </svg>
-          </div>
-          <span className="text-center font-medium">Claude</span>
-        </div>
-
-        <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-pointer">
-          <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
-            <svg
-              className="h-5 w-5 text-ink"
-              fill="currentColor"
-              fill-rule="evenodd"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+              <span>Large AI File Rebuild Script</span>
+              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+            </a>
+          </Button>
+          <Button
+            variant="base"
+            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors"
+            asChild
+          >
+            <a
+              href="https://gist.github.com/chrislanejones/61f01ecd60af2f7d35220f480f3361d3"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between w-full"
             >
-              <path d="M1.052 16.916l9.539 2.552a21.007 21.007 0 00.06 2.033l5.956 1.593a11.997 11.997 0 01-5.586.865l-.18-.016-.044-.004-.084-.009-.094-.01a11.605 11.605 0 01-.157-.02l-.107-.014-.11-.016a11.962 11.962 0 01-.32-.051l-.042-.008-.075-.013-.107-.02-.07-.015-.093-.019-.075-.016-.095-.02-.097-.023-.094-.022-.068-.017-.088-.022-.09-.024-.095-.025-.082-.023-.109-.03-.062-.02-.084-.025-.093-.028-.105-.034-.058-.019-.08-.026-.09-.031-.066-.024a6.293 6.293 0 01-.044-.015l-.068-.025-.101-.037-.057-.022-.08-.03-.087-.035-.088-.035-.079-.032-.095-.04-.063-.028-.063-.027a5.655 5.655 0 01-.041-.018l-.066-.03-.103-.047-.052-.024-.096-.046-.062-.03-.084-.04-.086-.044-.093-.047-.052-.027-.103-.055-.057-.03-.058-.032a6.49 6.49 0 01-.046-.026l-.094-.053-.06-.034-.051-.03-.072-.041-.082-.05-.093-.056-.052-.032-.084-.053-.061-.039-.079-.05-.07-.047-.053-.035a7.785 7.785 0 01-.054-.036l-.044-.03-.044-.03a6.066 6.066 0 01-.04-.028l-.057-.04-.076-.054-.069-.05-.074-.054-.056-.042-.076-.057-.076-.059-.086-.067-.045-.035-.064-.052-.074-.06-.089-.073-.046-.039-.046-.039a7.516 7.516 0 01-.043-.037l-.045-.04-.061-.053-.07-.062-.068-.06-.062-.058-.067-.062-.053-.05-.088-.084a13.28 13.28 0 01-.099-.097l-.029-.028-.041-.042-.069-.07-.05-.051-.05-.053a6.457 6.457 0 01-.168-.179l-.08-.088-.062-.07-.071-.08-.042-.049-.053-.062-.058-.068-.046-.056a7.175 7.175 0 01-.027-.033l-.045-.055-.066-.082-.041-.052-.05-.064-.02-.025a11.99 11.99 0 01-1.44-2.402zm-1.02-5.794l11.353 3.037a20.468 20.468 0 00-.469 2.011l10.817 2.894a12.076 12.076 0 01-1.845 2.005L.657 15.923l-.016-.046-.035-.104a11.965 11.965 0 01-.05-.153l-.007-.023a11.896 11.896 0 01-.207-.741l-.03-.126-.018-.08-.021-.097-.018-.081-.018-.09-.017-.084-.018-.094c-.026-.141-.05-.283-.071-.426l-.017-.118-.011-.083-.013-.102a12.01 12.01 0 01-.019-.161l-.005-.047a12.12 12.12 0 01-.034-2.145zm1.593-5.15l11.948 3.196c-.368.605-.705 1.231-1.01 1.875l11.295 3.022c-.142.82-.368 1.612-.668 2.365l-11.55-3.09L.124 10.26l.015-.1.008-.049.01-.067.015-.087.018-.098c.026-.148.056-.295.088-.442l.028-.124.02-.085.024-.097c.022-.09.045-.18.07-.268l.028-.102.023-.083.03-.1.025-.082.03-.096.026-.082.031-.095a11.896 11.896 0 011.01-2.232zm4.442-4.4L17.352 4.59a20.77 20.77 0 00-1.688 1.721l7.823 2.093c.267.852.442 1.744.513 2.665L2.106 5.213l.045-.065.027-.04.04-.055.046-.065.055-.076.054-.072.064-.086.05-.065.057-.073.055-.07.06-.074.055-.069.065-.077.054-.066.066-.077.053-.06.072-.082.053-.06.067-.074.054-.058.073-.078.058-.06.063-.067.168-.17.1-.098.059-.056.076-.071a12.084 12.084 0 012.272-1.677zM12.017 0h.097l.082.001.069.001.054.002.068.002.046.001.076.003.047.002.06.003.054.002.087.005.105.007.144.011.088.007.044.004.077.008.082.008.047.005.102.012.05.006.108.014.081.01.042.006.065.01.207.032.07.012.065.011.14.026.092.018.11.022.046.01.075.016.041.01L14.7.3l.042.01.065.015.049.012.071.017.096.024.112.03.113.03.113.032.05.015.07.02.078.024.073.023.05.016.05.016.076.025.099.033.102.036.048.017.064.023.093.034.11.041.116.045.1.04.047.02.06.024.041.018.063.026.04.018.057.025.11.048.1.046.074.035.075.036.06.028.092.046.091.045.102.052.053.028.049.026.046.024.06.033.041.022.052.029.088.05.106.06.087.051.057.034.053.032.096.059.088.055.098.062.036.024.064.041.084.056.04.027.062.042.062.043.023.017c.054.037.108.075.161.114l.083.06.065.048.056.043.086.065.082.064.04.03.05.041.086.069.079.065.085.071c.712.6 1.353 1.283 1.909 2.031L7.222.994l.062-.027.065-.028.081-.034.086-.035c.113-.045.227-.09.341-.131l.096-.035.093-.033.084-.03.096-.031c.087-.03.176-.058.264-.085l.091-.027.086-.025.102-.03.085-.023.1-.026L9.04.37l.09-.023.091-.022.095-.022.09-.02.098-.021.091-.02.095-.018.092-.018.1-.018.091-.016.098-.017.092-.014.097-.015.092-.013.102-.013.091-.012.105-.012.09-.01.105-.01c.093-.01.186-.018.28-.024l.106-.008.09-.005.11-.006.093-.004.1-.004.097-.002.099-.002.197-.002z"></path>
-            </svg>
-          </div>
-          <span className="text-center font-medium">Kimi K2</span>
-        </div>
-
-        <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-pointer">
-          <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
-            <svg
-              className="h-5 w-5 text-ink"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 2000 1700"
-              fill="currentColor"
-            >
-              <polygon points="1008.73 0 827.29 251.03 54.43 251.03 235.74 0 1008.73 0"></polygon>
-              <polygon points="1937.79 1449.1 1756.47 1700 986.3 1700 1167.48 1449.1 1937.79 1449.1"></polygon>
-              <polygon points="2000 0 771.98 1700 0 1700 1228.02 0 2000 0"></polygon>
-            </svg>
-          </div>
-          <span className="text-center font-medium">GLM 4.5</span>
+              <span>Laracon US 2025 – Tech Overview</span>
+              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-foreground" />
+            </a>
+          </Button>
         </div>
       </div>
 
-      <p className="text-muted text-xs mt-auto">
-        Let&apos;s build something amazing together.
-      </p>
+      {/* AI Tools Section */}
+      <div className="border border-base/30 rounded-2xl p-4">
+        <h3 className="text-lg font-bold text-foreground tracking-tight mb-4">
+          Current AI Tools
+        </h3>
+        <div className="grid grid-cols-3 gap-3 text-sm">
+          <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-pointer">
+            <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
+              <svg
+                className="h-5 w-5 text-ink"
+                viewBox="0 0 46 32"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+              >
+                <path d="M32.73 0h-6.945L38.45 32h6.945L32.73 0ZM12.665 0 0 32h7.082l2.59-6.72h13.25l2.59 6.72h7.082L19.929 0h-7.264Zm-.702 19.337 4.334-11.246 4.334 11.246h-8.668Z"></path>
+              </svg>
+            </div>
+            <span className="text-center font-medium">Claude</span>
+          </div>
+
+          <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-pointer">
+            <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
+              <svg
+                className="h-5 w-5 text-ink"
+                fill="currentColor"
+                fillRule="evenodd"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M1.052 16.916l9.539 2.552a21.007 21.007 0 00.06 2.033l5.956 1.593a11.997 11.997 0 01-5.586.865l-.18-.016-.044-.004-.084-.009-.094-.01a11.605 11.605 0 01-.157-.02l-.107-.014-.11-.016a11.962 11.962 0 01-.32-.051l-.042-.008-.075-.013-.107-.02-.07-.015-.093-.019-.075-.016-.095-.02-.097-.023-.094-.022-.068-.017-.088-.022-.09-.024-.095-.025-.082-.023-.109-.03-.062-.02-.084-.025-.093-.028-.105-.034-.058-.019-.08-.026-.09-.031-.066-.024a6.293 6.293 0 01-.044-.015l-.068-.025-.101-.037-.057-.022-.08-.03-.087-.035-.088-.035-.079-.032-.095-.04-.063-.028-.063-.027a5.655 5.655 0 01-.041-.018l-.066-.03-.103-.047-.052-.024-.096-.046-.062-.03-.084-.04-.086-.044-.093-.047-.052-.027-.103-.055-.057-.03-.058-.032a6.49 6.49 0 01-.046-.026l-.094-.053-.06-.034-.051-.03-.072-.041-.082-.05-.093-.056-.052-.032-.084-.053-.061-.039-.079-.05-.07-.047-.053-.035a7.785 7.785 0 01-.054-.036l-.044-.03-.044-.03a6.066 6.066 0 01-.04-.028l-.057-.04-.076-.054-.069-.05-.074-.054-.056-.042-.076-.057-.076-.059-.086-.067-.045-.035-.064-.052-.074-.06-.089-.073-.046-.039-.046-.039a7.516 7.516 0 01-.043-.037l-.045-.04-.061-.053-.07-.062-.068-.06-.062-.058-.067-.062-.053-.05-.088-.084a13.28 13.28 0 01-.099-.097l-.029-.028-.041-.042-.069-.07-.05-.051-.05-.053a6.457 6.457 0 01-.168-.179l-.08-.088-.062-.07-.071-.08-.042-.049-.053-.062-.058-.068-.046-.056a7.175 7.175 0 01-.027-.033l-.045-.055-.066-.082-.041-.052-.05-.064-.02-.025a11.99 11.99 0 01-1.44-2.402zm-1.02-5.794l11.353 3.037a20.468 20.468 0 00-.469 2.011l10.817 2.894a12.076 12.076 0 01-1.845 2.005L.657 15.923l-.016-.046-.035-.104a11.965 11.965 0 01-.05-.153l-.007-.023a11.896 11.896 0 01-.207-.741l-.03-.126-.018-.08-.021-.097-.018-.081-.018-.09-.017-.084-.018-.094c-.026-.141-.05-.283-.071-.426l-.017-.118-.011-.083-.013-.102a12.01 12.01 0 01-.019-.161l-.005-.047a12.12 12.12 0 01-.034-2.145zm1.593-5.15l11.948 3.196c-.368.605-.705 1.231-1.01 1.875l11.295 3.022c-.142.82-.368 1.612-.668 2.365l-11.55-3.09L.124 10.26l.015-.1.008-.049.01-.067.015-.087.018-.098c.026-.148.056-.295.088-.442l.028-.124.02-.085.024-.097c.022-.09.045-.18.07-.268l.028-.102.023-.083.03-.1.025-.082.03-.096.026-.082.031-.095a11.896 11.896 0 011.01-2.232zm4.442-4.4L17.352 4.59a20.77 20.77 0 00-1.688 1.721l7.823 2.093c.267.852.442 1.744.513 2.665L2.106 5.213l.045-.065.027-.04.04-.055.046-.065.055-.076.054-.072.064-.086.05-.065.057-.073.055-.07.06-.074.055-.069.065-.077.054-.066.066-.077.053-.06.072-.082.053-.06.067-.074.054-.058.073-.078.058-.06.063-.067.168-.17.1-.098.059-.056.076-.071a12.084 12.084 0 012.272-1.677zM12.017 0h.097l.082.001.069.001.054.002.068.002.046.001.076.003.047.002.06.003.054.002.087.005.105.007.144.011.088.007.044.004.077.008.082.008.047.005.102.012.05.006.108.014.081.01.042.006.065.01.207.032.07.012.065.011.14.026.092.018.11.022.046.01.075.016.041.01L14.7.3l.042.01.065.015.049.012.071.017.096.024.112.03.113.03.113.032.05.015.07.02.078.024.073.023.05.016.05.016.076.025.099.033.102.036.048.017.064.023.093.034.11.041.116.045.1.04.047.02.06.024.041.018.063.026.04.018.057.025.11.048.1.046.074.035.075.036.06.028.092.046.091.045.102.052.053.028.049.026.046.024.06.033.041.022.052.029.088.05.106.06.087.051.057.034.053.032.096.059.088.055.098.062.036.024.064.041.084.056.04.027.062.042.062.043.023.017c.054.037.108.075.161.114l.083.06.065.048.056.043.086.065.082.064.04.03.05.041.086.069.079.065.085.071c.712.6 1.353 1.283 1.909 2.031L7.222.994l.062-.027.065-.028.081-.034.086-.035c.113-.045.227-.09.341-.131l.096-.035.093-.033.084-.03.096-.031c.087-.03.176-.058.264-.085l.091-.027.086-.025.102-.03.085-.023.1-.026L9.04.37l.09-.023.091-.022.095-.022.09-.02.098-.021.091-.02.095-.018.092-.018.1-.018.091-.016.098-.017.092-.014.097-.015.092-.013.102-.013.091-.012.105-.012.09-.01.105-.01c.093-.01.186-.018.28-.024l.106-.008.09-.005.11-.006.093-.004.1-.004.097-.002.099-.002.197-.002z"></path>
+              </svg>
+            </div>
+            <span className="text-center font-medium">Kimi K2</span>
+          </div>
+
+          <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-pointer">
+            <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
+              <svg
+                className="h-5 w-5 text-ink"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 2000 1700"
+                fill="currentColor"
+              >
+                <polygon points="1008.73 0 827.29 251.03 54.43 251.03 235.74 0 1008.73 0"></polygon>
+                <polygon points="1937.79 1449.1 1756.47 1700 986.3 1700 1167.48 1449.1 1937.79 1449.1"></polygon>
+                <polygon points="2000 0 771.98 1700 0 1700 1228.02 0 2000 0"></polygon>
+              </svg>
+            </div>
+            <span className="text-center font-medium">GLM 4.5</span>
+          </div>
+        </div>
+      </div>
     </motion.article>
   );
 }

@@ -68,17 +68,19 @@ export default function QuoteGeneratorCard() {
       transition={{ duration: 0.6, delay: 0.2 }}
     >
       {/* Top: Avatar + Name */}
-      <div className="flex items-center gap-4">
+      <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
         <Image
           alt="avatar"
-          className="h-14 w-14 rounded-2xl ring-2 ring-white/10 object-cover"
+          className="h-20 w-20 rounded-2xl ring-2 ring-white/5 object-cover"
           src="/Professional-Photo-of-Chris-Lane-Jones.webp"
-          width={56}
-          height={56}
+          width={80}
+          height={80}
         />
-        <div>
-          <div className="font-semibold">Chris Lane Jones</div>
-          <div className="text-muted text-sm">Full-stack • Hiking enjoyer</div>
+        <div className="flex flex-col justify-center">
+          <div className="font-bold text-xl">Chris Lane Jones</div>
+          <div className="text-muted text-md">
+            UX/UI Web Design and Development
+          </div>
         </div>
       </div>
 

@@ -15,26 +15,13 @@ export default function BentoGrid() {
     <>
       <main className="max-w-6xl mx-auto px-5 pb-24">
         <section className="grid grid-cols-1 md:grid-cols-6 gap-5 auto-rows-[180px] md:auto-rows-[210px]">
-          {/* HERO */}
           <HeroCard />
-
-          {/* QUOTE GENERATOR CARD */}
           <QuoteGeneratorCard />
-
-          {/* MUSIC PLAYER CARD */}
           <MusicPlayerBox />
-
-          {/* IMAGE GALLERY (HIKING) CARD */}
-          <ImageGalleryBox />
-          {/* TECH STACK */}
-          <TechStackBox />
-
-          {/* FEATURED PROJECTS */}
           <ProjectsBox />
-
-          {/* GITHUB GIST CARD */}
+          <TechStackBox />
+          <ImageGalleryBox />
           <LinkCard />
-          {/* CLIENT SLIDER */}
           <ClientSliderBox />
         </section>
       </main>

@@ -24,7 +24,7 @@ const projects: Project[] = [
       "TR-505 Drum Samples for audio feedback on filter toggle",
       "Smart Filtering: Toggleable shortcut categories",
     ],
-    image: "/projects/Vim.webp",
+    image: "/projects/mpc-vim-filter-tool.webp",
     githubUrl: "https://github.com/chrislanejones",
     vercelUrl: "https://vercel.com/chrislanejones",
   },
@@ -77,11 +77,11 @@ export default function ProjectsBox() {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex flex-col h-full"
           >
-            <h2 className="font-semibold text-xl">
+            <h2 className="text-lg font-bold text-foreground tracking-tight">
               Featured: {currentProject.title}
             </h2>
-            <p className="text-muted mt-2">{currentProject.description}</p>
-            <ul className="mt-4 space-y-2 text-sm flex-1">
+            <p className="text-muted mt-6">{currentProject.description}</p>
+            <ul className="mt-6 space-y-2 text-sm flex-1">
               {currentProject.features.map((feature, index) => (
                 <li key={index}>• {feature}</li>
               ))}

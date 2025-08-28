@@ -3,6 +3,14 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 type Project = {
   title: string;
@@ -66,17 +74,34 @@ export default function ProjectGrid() {
     <main className="max-w-6xl mx-auto px-5 py-12">
       {/* Page Header */}
       <motion.div
-        className="text-center mb-16"
+        className="mb-16"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
       >
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Projects</h1>
-        <p className="text-muted max-w-2xl mx-auto text-lg">
-          A collection of full-stack applications, tools, and experiments built
-          with modern technologies and a focus on performance and user
-          experience.
-        </p>
+        <div className="flex items-start justify-between">
+          <div className="text-left">
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+              Projects
+            </h1>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Projects</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          <p className="text-muted text-lg max-w-md text-right">
+            A collection of full-stack applications, tools, and experiments
+            built with modern technologies and a focus on performance and user
+            experience.
+          </p>
+        </div>
       </motion.div>
 
       {/* Projects Grid */}
@@ -87,7 +112,7 @@ export default function ProjectGrid() {
             className="col-span-1 card rounded-3xl bg-panel p-8 grid md:grid-cols-2 gap-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: index * 0.1 }}
+            transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
           >
             {/* Project Content */}
             <div
@@ -110,57 +135,47 @@ export default function ProjectGrid() {
 
               {/* Action Buttons */}
               <div className="flex gap-4">
-                <Button
-                  asChild
-                  variant="neutral"
-                  className="shadow-passive hover:shadow-glow focus-ring flex-1"
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition shadow-passive focus-ring hover:shadow-glow disabled:opacity-50 disabled:pointer-events-none select-none bg-panel card text-[color:var(--color-ink)] h-9 text-sm flex-1 justify-center"
                 >
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    fill="currentColor"
                   >
-                    <svg
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
-                      />
-                    </svg>
-                    <span>View Code</span>
-                  </a>
-                </Button>
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
+                    />
+                  </svg>
+                  <span>View Code</span>
+                </a>
 
-                <Button
-                  asChild
-                  variant="neutral"
-                  className="shadow-passive hover:shadow-glow focus-ring flex-1"
+                <a
+                  href={project.vercelUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition shadow-passive focus-ring hover:shadow-glow disabled:opacity-50 disabled:pointer-events-none select-none bg-panel card text-[color:var(--color-ink)] h-9 text-sm flex-1 justify-center"
                 >
-                  <a
-                    href={project.vercelUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    height="18"
+                    fill="currentColor"
                   >
-                    <svg
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                    >
-                      <path d="m12 0 12 21H0z" />
-                    </svg>
-                    <span>Live Demo</span>
-                  </a>
-                </Button>
+                    <path d="m12 0 12 21H0z" />
+                  </svg>
+                  <span>Live Demo</span>
+                </a>
               </div>
             </div>
 

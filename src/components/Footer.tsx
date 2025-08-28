@@ -38,10 +38,13 @@ export default function Footer() {
           <a href="/" className="nav-link">
             Home
           </a>
-          <a href="/projects" className="nav-link">
+          <a href="/projects" className="nav-link flex-1 text-center">
             Projects
           </a>
-          <a href="mailto:hello@chrislanejones.com" className="nav-link">
+          <a href="/about" className="nav-link flex-1 text-center">
+            About
+          </a>
+          <a href="#contact" className="nav-link flex-1 text-center">
             Contact
           </a>
         </div>

@@ -34,7 +34,7 @@ export default function Header() {
               />
             </svg>
           </div>
-          <span className="font-bold tracking-tight">Chris Lane Jones</span>
+          <span className="font-bold text-xl">Chris Lane Jones</span>
         </Link>
         <div className="flex items-center gap-3 text-sm text-muted">
           <div className="flex items-center text-sm">
@@ -42,6 +42,9 @@ export default function Header() {
               {/* GitHub (left button) */}
               <a href="/projects" className="nav-link flex-1 text-center">
                 Projects
+              </a>
+              <a href="/about" className="nav-link flex-1 text-center">
+                About
               </a>
               <a href="#contact" className="nav-link flex-1 text-center">
                 Contact
