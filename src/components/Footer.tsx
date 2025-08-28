@@ -1,6 +1,15 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function Footer() {
   return (
-    <footer className="max-w-6xl mx-auto px-5 py-12 border-t border-ink/10">
+    <motion.footer
+      className="max-w-6xl mx-auto py-5"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+    >
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-lg bg-panel card grid place-content-center shadow-soft">
@@ -38,9 +47,9 @@ export default function Footer() {
         </div>
 
         <p className="text-sm text-muted text-center md:text-right">
-          © 2025 Chris Lane Jones. Building web apps and exploring trails.
+          © 2025 Chris Lane Jones. All rights reserved.
         </p>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

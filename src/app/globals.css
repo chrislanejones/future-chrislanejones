@@ -2,38 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Remove this line:
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap");
+*/
 
 :root {
   color-scheme: light dark;
 
   /* Light theme (default) — bright trail day */
-  --color-base: #f5f8f4; /* sunlit scrub */
-  --color-panel: #e9efe7; /* weathered board */
-  --color-ink: #0e1a12; /* evergreen text (≈16.7:1 on base) */
-  --color-muted: #526157; /* lichen gray (≈6.1:1 on base) */
-  --color-accent: #2f7d32; /* forest singletrack (≈4.78:1 on base) */
+  --color-base: #f5f8f4;
+  --color-panel: #e9efe7;
+  --color-ink: #0e1a12;
+  --color-muted: #526157;
+  --color-accent: #2f7d32;
 
-  /* Support tokens */
-  --color-accent-alt: #0f6abf; /* sky blue (links/hover) */
-  --color-on-accent: #ffffff; /* passes on dark accent in light theme (≈5.12:1) */
+  --color-accent-alt: #0f6abf;
+  --color-on-accent: #ffffff;
   --color-border: #cfd9cf;
   --radius: 12px;
   --focus-ring: 2px solid var(--color-accent-alt);
 }
 
-/* Auto-switch for users who prefer dark */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark theme — dusk in the pines */
-    --color-base: #0b0d10; /* night trail */
-    --color-panel: #111418; /* slate rock */
-    --color-ink: #e7edf2; /* moonlight text (≈16.5:1 on base) */
-    --color-muted: #99a3ad; /* mist (≈7.6:1 on base) */
-    --color-accent: #8de36b; /* hi-viz frame (≈12.35:1 on base) */
+    --color-base: #0b0d10;
+    --color-panel: #111418;
+    --color-ink: #e7edf2;
+    --color-muted: #99a3ad;
+    --color-accent: #8de36b;
 
-    --color-accent-alt: #64b5f6; /* alpine sky */
-    --color-on-accent: #0b0d10; /* use dark text on light accent (≈12.35:1) */
+    --color-accent-alt: #64b5f6;
+    --color-on-accent: #0b0d10;
     --color-border: #1f242b;
   }
 }
@@ -41,7 +40,7 @@
 html,
 body {
   height: 100%;
-  font-family: "Inter", ui-sans-serif, system-ui;
+  font-family: var(--font-interphases), ui-sans-serif, system-ui;
 }
 
 .glass {

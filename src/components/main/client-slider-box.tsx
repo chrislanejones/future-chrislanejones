@@ -103,10 +103,10 @@ const clients: Client[] = [
   },
 ];
 
-// Group clients into pages of 4
+// Group clients into pages of 6
 const clientGroups: Client[][] = [];
-for (let i = 0; i < clients.length; i += 4) {
-  clientGroups.push(clients.slice(i, i + 4));
+for (let i = 0; i < clients.length; i += 6) {
+  clientGroups.push(clients.slice(i, i + 6));
 }
 
 export default function ClientSliderBox() {
@@ -125,7 +125,7 @@ export default function ClientSliderBox() {
 
   return (
     <motion.article
-      className="md:col-span-6 md:row-span-1 card rounded-3xl glass p-6"
+      className="md:col-span-6 md:row-span-2 card rounded-3xl glass p-6"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.8 }}
@@ -137,14 +137,14 @@ export default function ClientSliderBox() {
         <motion.button
           initial={false}
           aria-label="Previous"
-          className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
+          className="w-12 h-12 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
           onClick={() => setSlide(-1)}
           whileTap={{ scale: 0.9 }}
         >
           <ArrowLeft />
         </motion.button>
 
-        <div className="flex-1 relative h-20 overflow-hidden">
+        <div className="flex-1 relative h-80 overflow-hidden">
           <AnimatePresence custom={direction} initial={false} mode="popLayout">
             <ClientGroup
               key={selectedGroup}
@@ -157,7 +157,7 @@ export default function ClientSliderBox() {
         <motion.button
           initial={false}
           aria-label="Next"
-          className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
+          className="w-12 h-12 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
           onClick={() => setSlide(1)}
           whileTap={{ scale: 0.9 }}
         >
@@ -176,7 +176,7 @@ type ClientGroupProps = {
 function ClientGroup({ clients, direction }: ClientGroupProps) {
   return (
     <motion.div
-      className="absolute inset-0 flex items-center justify-around gap-4"
+      className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-8 p-6"
       initial={{ opacity: 0, x: direction * 50 }}
       animate={{
         opacity: 1,
@@ -196,15 +196,16 @@ function ClientGroup({ clients, direction }: ClientGroupProps) {
           href={client.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-shrink-0 w-[200px] h-[80px] relative brightness-0 invert hover:brightness-100 hover:invert-0 transition-all duration-300 opacity-80 hover:opacity-100"
+          className="flex items-center justify-center relative brightness-0 invert hover:brightness-100 hover:invert-0 transition-all duration-300 opacity-80 hover:opacity-100 bg-white/5 rounded-lg p-4"
           whileHover={{ scale: 1.05 }}
         >
           <Image
             src={client.logo}
             alt={`${client.name} logo`}
-            fill
-            className="object-contain"
-            sizes="200px"
+            width={220}
+            height={80}
+            className="object-contain w-full h-full"
+            sizes="220px"
           />
         </motion.a>
       ))}
@@ -215,8 +216,8 @@ function ClientGroup({ clients, direction }: ClientGroupProps) {
 // Icons
 const iconsProps: SVGProps<SVGSVGElement> = {
   xmlns: "http://www.w3.org/2000/svg",
-  width: "24",
-  height: "24",
+  width: "28",
+  height: "28",
   viewBox: "0 0 24 24",
   fill: "none",
   stroke: "currentColor",

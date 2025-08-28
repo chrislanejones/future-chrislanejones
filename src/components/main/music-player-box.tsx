@@ -3,24 +3,23 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { SkipBack, Play, Pause, SkipForward, Volume2 } from "lucide-react";
+import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
 
 // Music playlist - add your audio files to the public folder
 const playlist = [
+  {
+    title: "Afterlife",
+    artist: "Sharon Van Etten",
+    album: "Sharon Van Etten & The Attachment Theory",
+    albumArt: "/music/art/Attachment-Theory.webp",
+    audioSrc: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
+  },
   {
     title: "After The Earthquake",
     artist: "Alvvays",
     album: "Blue Rev",
     albumArt: "/music/art/Alvvays-Blue-Rev-Album-Art.webp",
     audioSrc: "/music/audio/alvvays-after-the-earthquake.mp3",
-  },
-  // Add more tracks as needed
-  {
-    title: "Sample Track 2",
-    artist: "Artist Name",
-    album: "Album Name",
-    albumArt: "/music/art/Alvvays-Blue-Rev-Album-Art.webp", // Placeholder
-    audioSrc: "/music/audio/track2.mp3",
   },
 ];
 
@@ -100,14 +99,6 @@ export default function MusicPlayerBox() {
     setIsLoaded(false);
   };
 
-  const previousTrack = () => {
-    setCurrentTrackIndex(
-      (prev) => (prev - 1 + playlist.length) % playlist.length
-    );
-    setIsPlaying(false);
-    setIsLoaded(false);
-  };
-
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -142,8 +133,8 @@ export default function MusicPlayerBox() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
 
-        {/* Volume Control */}
-        <div className="absolute top-3 right-3 flex items-center gap-2 bg-base/80 rounded-lg px-3 py-2">
+        {/* Volume Control - Top Left */}
+        <div className="absolute top-4 left-4 flex items-center gap-2 bg-base/80 hover:bg-base/90 backdrop-blur-sm rounded-lg px-3 py-2 transition-colors">
           <Volume2 size={16} className="text-ink/70" />
           <input
             type="range"
@@ -155,31 +146,12 @@ export default function MusicPlayerBox() {
             className="w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer slider"
           />
         </div>
-      </div>
 
-      <div className="p-4 bg-base/70">
-        <h3 className="font-semibold">
-          {isPlaying
-            ? "Now Playing"
-            : isLoaded
-            ? "Ready to Play"
-            : "Loading..."}
-        </h3>
-        <p className="text-sm text-muted">
-          {currentTrack.artist} — {currentTrack.title}
-        </p>
-        <div className="flex items-center justify-center gap-3 mt-3">
-          <button
-            onClick={previousTrack}
-            className="h-10 w-10 rounded-full bg-ink/20 hover:bg-ink/30 flex items-center justify-center transition-colors disabled:opacity-50"
-            disabled={!isLoaded}
-            aria-label="Previous track"
-          >
-            <SkipBack size={18} className="text-ink" />
-          </button>
+        {/* Play Controls - Top Right Corner */}
+        <div className="absolute top-4 right-4 flex items-center gap-2">
           <button
             onClick={togglePlayPause}
-            className="h-12 w-12 rounded-full bg-ink/20 hover:bg-ink/30 flex items-center justify-center transition-colors disabled:opacity-50"
+            className="h-12 w-12 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors disabled:opacity-50 shadow-lg"
             disabled={!isLoaded}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
@@ -191,35 +163,26 @@ export default function MusicPlayerBox() {
           </button>
           <button
             onClick={nextTrack}
-            className="h-10 w-10 rounded-full bg-ink/20 hover:bg-ink/30 flex items-center justify-center transition-colors disabled:opacity-50"
+            className="h-10 w-10 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors disabled:opacity-50 shadow-lg"
             disabled={!isLoaded}
             aria-label="Next track"
           >
             <SkipForward size={18} className="text-ink" />
           </button>
         </div>
+      </div>
 
-        {/* Track indicator */}
-        {playlist.length > 1 && (
-          <div className="flex justify-center gap-1 mt-2">
-            {playlist.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentTrackIndex(index);
-                  setIsPlaying(false);
-                  setIsLoaded(false);
-                }}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentTrackIndex
-                    ? "bg-accent"
-                    : "bg-ink/30 hover:bg-ink/50"
-                }`}
-                aria-label={`Play track ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
+      <div className="p-6 bg-base/70">
+        <h3 className="font-bold text-lg">
+          {isPlaying
+            ? "Now Playing"
+            : isLoaded
+            ? "Ready to Play"
+            : "Loading..."}
+        </h3>
+        <p className="text-sm text-muted">
+          {currentTrack.artist} — {currentTrack.title}
+        </p>
       </div>
     </motion.article>
   );

@@ -15,6 +15,11 @@ const buttonVariants = cva(
         /* Default: panel background, NO green at rest */
         neutral: ["bg-panel card", "text-[color:var(--color-ink)]"].join(" "),
         /* Optional: filled accent (only if you want a green button variant) */
+        base: [
+          "bg-[color:var(--color-base)]",
+          "text-[color:var(--color-accent-ink)]",
+          "border border-transparent",
+        ].join(" "),
         accent: [
           "bg-[color:var(--color-accent)]",
           "text-[color:var(--color-on-accent, #0b0d10)]",

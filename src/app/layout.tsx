@@ -1,8 +1,27 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const interphases = localFont({
+  src: [
+    {
+      path: "../../public/fonts/TT-Interphases-Pro-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/TT-Interphases-Pro-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/TT-Interphases-Pro-Black.ttf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-interphases",
+});
 
 export const metadata: Metadata = {
   title: "Chris Lane Jones — Dev & Hiker",
@@ -18,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.className} bg-base text-ink`}
+        className={`${interphases.className} bg-base text-ink`}
         suppressHydrationWarning={true}
       >
         {children}

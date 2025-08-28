@@ -281,46 +281,48 @@ export default function ImageGalleryBox() {
         sizes="(max-width: 768px) 100vw, 33vw"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
-      <div className="relative p-6 flex items-end h-full">
-        <div className="flex items-center justify-between w-full">
-          <div>
-            <h3 className="font-semibold text-lg">Photo Gallery</h3>
-            <p className="text-sm text-ink/80">
-              Sunrise summits, gadgets and oldies.
-            </p>
-          </div>
 
-          <Drawer>
-            <DrawerTrigger asChild>
-              <motion.button
-                className="h-12 w-12 rounded-full bg-ink/20 hover:bg-ink/30 flex items-center justify-center transition-colors ml-4 shadow-lg p-0"
-                whileTap={{ scale: 0.95 }}
-                aria-label="Open photo gallery"
-              >
-                <Images size={20} className="text-ink" />
-              </motion.button>
-            </DrawerTrigger>
-            <DrawerContent className="h-[50vh]">
-              <div className="mx-auto w-full max-w-7xl">
-                <DrawerHeader>
-                  <DrawerTitle className="text-center text-2xl font-bold">
-                    Trail Gallery
-                  </DrawerTitle>
-                  <DrawerDescription className="text-center">
-                    Adventures in the mountains, capturing sunrise summits and
-                    weekend loops.
-                  </DrawerDescription>
-                  <p className="text-center text-sm text-muted mt-2">
-                    Click any photo to bring it to the front. Use Tab to
-                    navigate between photos.
-                  </p>
-                </DrawerHeader>
-                <div className="px-4 pb-4 flex-1 overflow-hidden">
-                  <PhotoGallery animationDelay={0.2} />
-                </div>
+      {/* Gallery Button - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <motion.button
+              className="h-12 w-12 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors shadow-lg"
+              whileTap={{ scale: 0.95 }}
+              aria-label="Open photo gallery"
+            >
+              <Images size={20} className="text-ink" />
+            </motion.button>
+          </DrawerTrigger>
+          <DrawerContent className="h-[50vh]">
+            <div className="mx-auto w-full max-w-7xl">
+              <DrawerHeader>
+                <DrawerTitle className="text-center text-2xl font-bold">
+                  Trail Gallery
+                </DrawerTitle>
+                <DrawerDescription className="text-center">
+                  Adventures in the mountains, capturing sunrise summits and
+                  weekend loops.
+                </DrawerDescription>
+                <p className="text-center text-sm text-muted mt-2">
+                  Click any photo to bring it to the front. Use Tab to navigate
+                  between photos.
+                </p>
+              </DrawerHeader>
+              <div className="px-4 pb-4 flex-1 overflow-hidden">
+                <PhotoGallery animationDelay={0.2} />
               </div>
-            </DrawerContent>
-          </Drawer>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      <div className="relative p-6 flex items-end h-full">
+        <div>
+          <h3 className="font-bold text-lg">Photo Gallery</h3>
+          <p className="text-sm text-ink/80">
+            Sunrise summits, gadgets and oldies.
+          </p>
         </div>
       </div>
     </motion.article>

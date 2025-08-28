@@ -1,6 +1,6 @@
 // app/projects/page.tsx
 import Header from "@/components/Header";
-import ProjectGrid from "@/components/ProjectGrid";
+import ProjectGrid from "@/app/projects/ProjectGrid";
 import Footer from "@/components/Footer";
 
 export const metadata = {

@@ -18,25 +18,24 @@ import {
   siPostgresql,
   siSvelte,
 } from "simple-icons";
+import { Badge } from "@/components/ui/badge";
 
 type TechItem = {
   name: string;
-  icon: {
-    path: string;
-  };
+  icon: { path: string };
 };
 
 const techStack: TechItem[] = [
-  { name: "TanStack", icon: siReactquery },
-  { name: "Bun", icon: siBun },
+  { name: "React", icon: siReact },
+  { name: "Next.js", icon: siNextdotjs },
   { name: "TypeScript", icon: siTypescript },
   { name: "Tailwind", icon: siTailwindcss },
-  { name: "Next.js", icon: siNextdotjs },
-  { name: "React", icon: siReact },
+  { name: "Framer Motion", icon: siFramer },
+  { name: "TanStack", icon: siReactquery },
   { name: "Three.js", icon: siThreedotjs },
   { name: "Drizzle ORM", icon: siDrizzle },
+  { name: "Bun", icon: siBun },
   { name: "Shell", icon: siGnubash },
-  { name: "Framer Motion", icon: siFramer },
 ];
 
 const techStackFuture: TechItem[] = [
@@ -50,66 +49,68 @@ const techStackFuture: TechItem[] = [
 export default function TechStackBox() {
   return (
     <motion.article
-      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-6 overflow-hidden"
+      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-5 overflow-hidden"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4 }}
     >
       {/* Current Tech Section */}
-      <div className="flex items-center justify-between">
-        <h2 className="font-semibold flex items-center gap-2">
-          Tech I love
-          <span className="text-red-500">❤️</span>
-        </h2>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {techStack.map((tech) => (
-          <span
-            key={tech.name}
-            className="px-3 py-1 rounded-lg bg-base/60 flex items-center gap-2 text-sm"
-          >
-            {tech.icon && (
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="rgb(141 227 107)"
-              >
-                <path d={tech.icon.path} />
-              </svg>
-            )}
-            {tech.name}
-          </span>
-        ))}
-      </div>
+      <Section title="💻 Tech I Love" items={techStack} />
+
+      <div className="my-5 border-t border-base/30"></div>
 
       {/* Future Tech Section */}
-      <div className="flex items-center justify-between pt-5">
-        <h2 className="font-semibold flex items-center gap-2">
-          Irons in the Fire
-          <span>🔥</span>
-        </h2>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {techStackFuture.map((tech) => (
-          <span
+      <Section title="🚀 Learning & Exploring" items={techStackFuture} />
+    </motion.article>
+  );
+}
+
+function Section({ title, items }: { title: string; items: TechItem[] }) {
+  return (
+    <div className="space-y-3">
+      <h2 className="text-lg font-bold text-foreground tracking-tight">
+        {title}
+      </h2>
+
+      <div className="flex flex-wrap gap-2">
+        {items.map((tech, i) => (
+          <motion.div
             key={tech.name}
-            className="px-3 py-1 rounded-lg bg-base/60 flex items-center gap-2 text-sm"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04, duration: 0.25 }}
           >
-            {tech.icon && (
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="rgb(141 227 107)"
-              >
-                <path d={tech.icon.path} />
-              </svg>
-            )}
-            {tech.name}
-          </span>
+            <Badge
+              variant="secondary"
+              className="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium 
+                        bg-base/40 hover:bg-base/70 border border-base/60 hover:border-base/80
+                        transition-all duration-200 cursor-default shadow-sm hover:shadow-md
+                        overflow-hidden"
+            >
+              {/* Shine effect */}
+              <div
+                className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent 
+                             group-hover:translate-x-full transition-transform duration-700 ease-out"
+              />
+
+              {tech.icon && (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="rgb(141 227 107)"
+                  className="relative z-10 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
+                >
+                  <path d={tech.icon.path} />
+                </svg>
+              )}
+              <span className="relative z-10 truncate group-hover:text-foreground/90 transition-colors duration-200">
+                {tech.name}
+              </span>
+            </Badge>
+          </motion.div>
         ))}
       </div>
-    </motion.article>
+    </div>
   );
 }
