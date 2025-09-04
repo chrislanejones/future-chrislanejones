@@ -79,7 +79,7 @@ export default function HeroCard() {
           <Button asChild variant="base">
             <a href="#contact">See My Calendar</a>
           </Button>
-          <Button variant="neutral" onClick={replayAnimation}>
+          <Button variant="base" onClick={replayAnimation}>
             <MountainSnow className="h-5 w-5" aria-hidden="true" />
           </Button>
         </div>
