@@ -28,7 +28,8 @@
     --color-base: #0b0d10;
     --color-panel: #111418;
     --color-ink: #e7edf2;
-    --color-muted: #99a3ad;
+    --color-muted: rgba(231 237 242 / 0.1);
+    --color-muted-accent: rgba(231 237 242 / 0.05);
     --color-accent: #8de36b;
 
     --color-accent-alt: #64b5f6;
@@ -114,7 +115,7 @@ body {
 
   /* Nav links: muted → ink on hover, dotted green underline, subtle glow */
   .nav-link {
-    color: var(--color-muted);
+    color: var(--color-ink);
     text-decoration: none;
     padding: 0.25rem 0.375rem; /* small hit area for focus outline */
     border-radius: 6px;

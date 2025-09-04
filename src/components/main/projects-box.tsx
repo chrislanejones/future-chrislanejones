@@ -25,8 +25,8 @@ const projects: Project[] = [
       "Smart Filtering: Toggleable shortcut categories",
     ],
     image: "/projects/mpc-vim-filter-tool.webp",
-    githubUrl: "https://github.com/chrislanejones",
-    vercelUrl: "https://vercel.com/chrislanejones",
+    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
+    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
   },
   {
     title: "Go Web Crawler",
@@ -37,9 +37,9 @@ const projects: Project[] = [
       "Rate limiting and politeness policies",
       "Structured data extraction",
     ],
-    image: "/FCC-2017-Bold-Bean.webp", // Replace with actual project image
+    image: "/projects/Go-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/go-crawler",
-    vercelUrl: "https://go-crawler.vercel.app",
+    vercelUrl: "",
   },
 ];
 
@@ -57,6 +57,16 @@ export default function ProjectsBox() {
 
   const previousProject = () => setProject(-1);
   const nextProject = () => setProject(1);
+
+  // Check if URLs are valid (not empty, not "#")
+  const hasGithubUrl =
+    currentProject.githubUrl &&
+    currentProject.githubUrl !== "#" &&
+    currentProject.githubUrl !== "";
+  const hasVercelUrl =
+    currentProject.vercelUrl &&
+    currentProject.vercelUrl !== "#" &&
+    currentProject.vercelUrl !== "";
 
   return (
     <motion.article
@@ -77,11 +87,13 @@ export default function ProjectsBox() {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex flex-col h-full"
           >
-            <h2 className="text-lg font-bold text-foreground tracking-tight">
+            <h3 className="text-lg font-bold text-foreground tracking-tight">
               Featured: {currentProject.title}
-            </h2>
-            <p className="text-muted mt-6">{currentProject.description}</p>
-            <ul className="mt-6 space-y-2 text-sm flex-1">
+            </h3>
+            <p className="text-muted font-normal mt-6">
+              {currentProject.description}
+            </p>
+            <ul className="text-sm text-muted font-normal mt-6 space-y-2 flex-1">
               {currentProject.features.map((feature, index) => (
                 <li key={index}>• {feature}</li>
               ))}
@@ -107,10 +119,19 @@ export default function ProjectsBox() {
 
           {/* GitHub Icon Button */}
           <motion.button
-            onClick={() => window.open(currentProject.githubUrl, "_blank")}
-            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
-            whileTap={{ scale: 0.9 }}
-            aria-label="View on GitHub"
+            onClick={() =>
+              hasGithubUrl && window.open(currentProject.githubUrl, "_blank")
+            }
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+              hasGithubUrl
+                ? "bg-ink/10 hover:bg-ink/20 cursor-pointer"
+                : "bg-ink/5 text-ink/30 cursor-not-allowed"
+            }`}
+            whileTap={hasGithubUrl ? { scale: 0.9 } : {}}
+            aria-label={
+              hasGithubUrl ? "View on GitHub" : "GitHub link not available"
+            }
+            disabled={!hasGithubUrl}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -129,10 +150,19 @@ export default function ProjectsBox() {
 
           {/* Vercel Icon Button */}
           <motion.button
-            onClick={() => window.open(currentProject.vercelUrl, "_blank")}
-            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
-            whileTap={{ scale: 0.9 }}
-            aria-label="View live demo"
+            onClick={() =>
+              hasVercelUrl && window.open(currentProject.vercelUrl, "_blank")
+            }
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+              hasVercelUrl
+                ? "bg-ink/10 hover:bg-ink/20 cursor-pointer"
+                : "bg-ink/5 text-ink/30 cursor-not-allowed"
+            }`}
+            whileTap={hasVercelUrl ? { scale: 0.9 } : {}}
+            aria-label={
+              hasVercelUrl ? "View live demo" : "Live demo not available"
+            }
+            disabled={!hasVercelUrl}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -182,27 +212,6 @@ export default function ProjectsBox() {
           {currentIndex + 1} of {projects.length}
         </div>
       </div>
-
-      {/* Project Indicators */}
-      {projects.length > 1 && (
-        <div className="absolute top-6 right-6 flex gap-1">
-          {projects.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setCurrentIndex(index);
-                setDirection(index > currentIndex ? 1 : -1);
-              }}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex
-                  ? "bg-accent"
-                  : "bg-ink/30 hover:bg-ink/50"
-              }`}
-              aria-label={`View project ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
     </motion.article>
   );
 }

@@ -19,6 +19,7 @@ import {
   siNixos,
   siPostgresql,
   siSvelte,
+  siShadcnui,
 } from "simple-icons";
 import { Badge } from "@/components/ui/badge";
 
@@ -38,6 +39,7 @@ const techStack: TechItem[] = [
   { name: "Drizzle ORM", icon: siDrizzle },
   { name: "Bun", icon: siBun },
   { name: "Shell", icon: siGnubash },
+  { name: "ShadUI", icon: siShadcnui },
 ];
 
 const techStackFuture: TechItem[] = [

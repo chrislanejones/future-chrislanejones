@@ -143,29 +143,29 @@ const PhotoGallery = ({
     }),
   };
 
-  // Trail/hiking photos with descriptions
+  // Trail/hiking photos with descriptions - adjusted positions for larger photos
   const photos = [
     {
       id: 1,
       order: 0,
-      x: "-320px",
+      x: "-400px",
       y: "15px",
       rotate: -8,
       zIndex: 50,
       direction: "left" as Direction,
-      src: "/gallery/Hiking-1.webp",
-      description: "Morning summit views",
+      src: "/gallery/Theo-and-I.webp",
+      description: "Theo Browne and I at Render 2024",
     },
     {
       id: 2,
       order: 1,
-      x: "-160px",
+      x: "-200px",
       y: "32px",
       rotate: 5,
       zIndex: 40,
       direction: "left" as Direction,
-      src: "/gallery/Hiking-1.webp",
-      description: "Trail marker at mile 3",
+      src: "/gallery/FCC-2017-Bold-Bean.webp",
+      description: "Coding with Friends in Bold Bean Jax 2017",
     },
     {
       id: 3,
@@ -175,24 +175,24 @@ const PhotoGallery = ({
       rotate: -3,
       zIndex: 30,
       direction: "right" as Direction,
-      src: "/gallery/Hiking-1.webp",
-      description: "Ridge line adventure",
+      src: "/gallery/Kent-C-Dodds-Friends-and-I-at-Epic-Web.webp",
+      description: "Kent C. Dodds, Friends, and I at the last THAT Conference",
     },
     {
       id: 4,
       order: 3,
-      x: "160px",
+      x: "200px",
       y: "22px",
       rotate: 7,
       zIndex: 20,
       direction: "right" as Direction,
-      src: "/gallery/Hiking-1.webp",
-      description: "Sunset from the peak",
+      src: "/gallery/Pandemic-Office-Setup-2021.webp",
+      description: "Pandemic Office Setup 2021",
     },
     {
       id: 5,
       order: 4,
-      x: "320px",
+      x: "400px",
       y: "44px",
       rotate: -5,
       zIndex: 10,
@@ -203,9 +203,9 @@ const PhotoGallery = ({
   ];
 
   return (
-    <div className="relative flex h-[400px] w-full items-center justify-center">
+    <div className="relative flex h-[500px] w-full items-center justify-center">
       <motion.div
-        className="relative mx-auto flex w-full max-w-6xl justify-center"
+        className="relative mx-auto flex w-full max-w-7xl justify-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: isVisible ? 1 : 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -216,7 +216,7 @@ const PhotoGallery = ({
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
         >
-          <div className="relative h-[280px] w-[240px]">
+          <div className="relative h-[360px] w-[320px]">
             {[...photos].reverse().map((photo) => (
               <motion.div
                 key={photo.id}
@@ -248,8 +248,8 @@ const PhotoGallery = ({
                 }
               >
                 <Photo
-                  width={220}
-                  height={220}
+                  width={300}
+                  height={300}
                   src={photo.src}
                   alt="Hiking trail photo"
                   direction={photo.direction}
@@ -294,20 +294,15 @@ export default function ImageGalleryBox() {
               <Images size={20} className="text-ink" />
             </motion.button>
           </DrawerTrigger>
-          <DrawerContent className="h-[50vh]">
+          <DrawerContent className="h-[60vh]">
             <div className="mx-auto w-full max-w-7xl">
               <DrawerHeader>
                 <DrawerTitle className="text-center text-2xl font-bold">
-                  Trail Gallery
+                  Gallery Drawer
                 </DrawerTitle>
                 <DrawerDescription className="text-center">
-                  Adventures in the mountains, capturing sunrise summits and
-                  weekend loops.
+                  Pictures I found in random folders on my computer.
                 </DrawerDescription>
-                <p className="text-center text-sm text-muted mt-2">
-                  Click any photo to bring it to the front. Use Tab to navigate
-                  between photos.
-                </p>
               </DrawerHeader>
               <div className="px-4 pb-4 flex-1 overflow-hidden">
                 <PhotoGallery animationDelay={0.2} />
