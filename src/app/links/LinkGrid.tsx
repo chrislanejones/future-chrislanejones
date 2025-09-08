@@ -258,7 +258,7 @@ export default function LinkGrid() {
               className="flex items-center justify-between w-full"
             >
               <span className="text-white">Effect - TypeScript Library</span>
-              <span className="text-white/50 text-sm">effect.website</span>
+              <span className="text-white">effect.website</span>
             </a>
           </Button>
 

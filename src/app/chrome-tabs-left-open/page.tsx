@@ -1,10 +1,10 @@
 // app/projects/page.tsx
 import Header from "@/components/Header";
-import ProjectGrid from "@/app/projects/ProjectGrid";
+import BrowserGrid from "./BrowserGrid";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Chrome Tabs Left Open | Chris Lane Jones — Dev & Hiker",
+  title: "Projects | Chris Lane Jones — Dev & Hiker",
   description:
     "Explore my full-stack development projects featuring Next.js, TypeScript, and modern web technologies.",
 };
@@ -13,7 +13,7 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-base">
       <Header />
-      <ProjectGrid />
+      <BrowserGrid />
       <Footer />
     </div>
   );

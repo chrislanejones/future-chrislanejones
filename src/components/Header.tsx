@@ -46,6 +46,12 @@ export default function Header() {
               <a href="/about" className="nav-link flex-1 text-center">
                 About
               </a>
+              <a
+                href="/chrome-tabs-left-open"
+                className="nav-link flex-1 text-center"
+              >
+                Browser Tabs
+              </a>
               <a href="#contact" className="nav-link flex-1 text-center">
                 Contact
               </a>

@@ -2,48 +2,16 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import Banner from "@/components/page/banner";
 
 export default function AboutPage() {
   return (
     <main className="max-w-6xl mx-auto px-5 py-12">
-      {/* Page Header */}
-      <motion.div
-        className="mb-16"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-      >
-        <div className="flex items-start justify-between">
-          <div className="text-left">
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-              About Me
-            </h1>
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>About</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <p className="text-muted text-lg max-w-md text-right">
-            Life on the trails and the web, building modern React applications
-            and leading the local WordPress community.
-          </p>
-        </div>
-      </motion.div>
+      <Banner
+        title="About Me"
+        breadcrumbPage="About"
+        description="Life on the trails and the web, building modern React applications and leading the local WordPress community."
+      />
 
       {/* Content Grid */}
       <div className="grid md:grid-cols-6 gap-8">

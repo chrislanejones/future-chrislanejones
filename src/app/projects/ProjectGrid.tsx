@@ -3,14 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import Banner from "@/components/page/banner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /* ---------------------------------- Types --------------------------------- */
@@ -305,44 +298,18 @@ export default function ProjectGrid() {
   return (
     <main className="max-w-6xl mx-auto px-5 py-12">
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabsKey)}>
-        {/* Header */}
-        <motion.div
-          className="mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+        <Banner
+          title="Projects"
+          breadcrumbPage="Projects"
+          description={activeTab === "apps"
+            ? "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience."
+            : "Professional websites and web applications built for clients across various industries, featuring custom design and functionality."}
         >
-          <div className="flex items-start justify-between mb-16 gap-6">
-            <div className="text-left flex-1">
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-                Projects
-              </h1>
-
-              <Breadcrumb className="mb-6">
-                <BreadcrumbList>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Projects</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-
-              <TabsList>
-                <TabsTrigger value="apps">App Projects</TabsTrigger>
-                <TabsTrigger value="clients">Client Websites</TabsTrigger>
-              </TabsList>
-            </div>
-
-            <p className="text-[color:var(--color-muted)] text-lg max-w-md text-right">
-              {activeTab === "apps"
-                ? "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience."
-                : "Professional websites and web applications built for clients across various industries, featuring custom design and functionality."}
-            </p>
-          </div>
-        </motion.div>
+          <TabsList>
+            <TabsTrigger value="apps">App Projects</TabsTrigger>
+            <TabsTrigger value="clients">Client Websites</TabsTrigger>
+          </TabsList>
+        </Banner>
 
         {/* Content */}
         <TabsContent value="apps">
