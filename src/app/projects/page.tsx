@@ -1,7 +1,7 @@
 // app/projects/page.tsx
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import ProjectGrid from "@/app/projects/ProjectGrid";
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/Footer";
 
 export const metadata = {
   title: "Chrome Tabs Left Open | Chris Lane Jones — Dev & Hiker",

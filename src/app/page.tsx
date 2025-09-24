@@ -1,6 +1,6 @@
 // src/app/page.tsx
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 // Import all the card components directly
 import ClientSliderBox from "@/components/main/client-slider-box";
@@ -24,10 +24,10 @@ export default function Home() {
           <QuoteGeneratorCard size="large" delay={0.2} />
           <MusicPlayerBox size="large" delay={0.3} />
           <ProjectsBox size="hero" delay={0.4} />
-          <TechStackBox size="large" delay={0.5} />
-          <ImageGalleryBox size="large" delay={0.6} />
+          <ImageGalleryBox size="hero" delay={0.6} />
           <LinkCard size="large" delay={0.7} />
           <ClientSliderBox size="full" delay={0.8} />
+          <TechStackBox size="full" delay={0.5} />
         </section>
       </main>
 

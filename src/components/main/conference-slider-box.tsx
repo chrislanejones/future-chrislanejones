@@ -20,12 +20,6 @@ const conferences: Conference[] = [
     location: "Raleigh, NC",
   },
   {
-    name: "Echo Hub Media Conference",
-    logo: "/conferences/Echohub-Media-Conference-Dallas-2013.webp",
-    year: "2013",
-    location: "Dallas, TX",
-  },
-  {
     name: "Jacksonville WordCamp",
     logo: "/conferences/Jacksonville-WordCamp-2018.webp",
     year: "2018",
@@ -84,6 +78,12 @@ const conferences: Conference[] = [
     logo: "/conferences/WordCamp-US-2023.webp",
     year: "2023",
     location: "National Harbor, MD",
+  },
+  {
+    name: "Echo Hub Media Conference",
+    logo: "/conferences/Echohub-Media-Conference-Dallas-2013.webp",
+    year: "2013",
+    location: "Dallas, TX",
   },
 ];
 

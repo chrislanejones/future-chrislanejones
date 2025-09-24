@@ -14,8 +14,8 @@ const QUOTES: ReactNode[] = [
   "My rambling 3",
   "My rambling 4",
   "My rambling 5",
-  'In 2017, three people called me asking me "How can I learn to code?"',
-  "<!--[if !(IE 6)]> I didn't code as a child because scared me.",
+  'In 2017, three people called on the same day asking me "How can I learn to code?"',
+  'I didn\'t code as a child because this "<!--[if !(IE 6)]>" scared me.',
   "I lock my computer at night to prevent my cats from online shopping",
   <>
     If there was no code, I would become a{" "}

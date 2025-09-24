@@ -120,7 +120,7 @@ export default function Projectsbox({
             className="flex flex-col h-full"
           >
             <h3 className="text-lg font-bold text-foreground tracking-tight">
-              Featured: {currentProject.title}
+              Project: {currentProject.title}
             </h3>
             <p className="text-muted font-normal mt-6">
               {currentProject.description}
@@ -136,8 +136,8 @@ export default function Projectsbox({
         {/* Navigation and Action Buttons - Bottom Left */}
         <div className="flex items-center gap-3 mt-6">
           {/* See Projects Button */}
-          <Button asChild variant="neutral">
-            <a href="/projects">See projects</a>
+          <Button asChild variant="base">
+            <a href="/projects">More Projects</a>
           </Button>
           {/* Left Arrow */}
           <motion.button

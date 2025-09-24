@@ -2,9 +2,6 @@
 
 import { motion } from "framer-motion";
 import Card from "../page/card";
-import { ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 // Component props interface
 interface TechstackboxProps {
@@ -42,6 +39,12 @@ import {
 
 type TechItem = { name: string; icon: { path: string } };
 
+type AiTool = {
+  name: string;
+  // inline SVG (width/height driven by className)
+  svg: JSX.Element;
+};
+
 const techStack: TechItem[] = [
   { name: "React", icon: siReact },
   { name: "Next.js", icon: siNextdotjs },
@@ -64,6 +67,70 @@ const techStackFuture: TechItem[] = [
   { name: "Svelte", icon: siSvelte },
 ];
 
+// Small card (logo top, text below) used across sections
+function IconCard({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-default">
+      <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
+        {children}
+      </div>
+      <span className="text-center text-sm font-medium">{label}</span>
+    </div>
+  );
+}
+
+// Build inline SVG once so we can reuse in the AI Tools section
+const aiTools: AiTool[] = [
+  {
+    name: "Claude",
+    svg: (
+      <svg
+        className="h-5 w-5 text-ink"
+        viewBox="0 0 46 32"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+      >
+        <path d="M32.73 0h-6.945L38.45 32h6.945L32.73 0ZM12.665 0 0 32h7.082l2.59-6.72h13.25l2.59 6.72h7.082L19.929 0h-7.264Zm-.702 19.337 4.334-11.246 4.334 11.246h-8.668Z"></path>
+      </svg>
+    ),
+  },
+  {
+    name: "Gemini 2.5 Pro",
+    svg: (
+      <svg
+        className="h-5 w-5 text-ink"
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+      >
+        <title>Gemini</title>
+        <path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z"></path>
+      </svg>
+    ),
+  },
+  {
+    name: "GLM 4.5",
+    svg: (
+      <svg
+        className="h-5 w-5 text-ink"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 2000 1700"
+        fill="currentColor"
+      >
+        <polygon points="1008.73 0 827.29 251.03 54.43 251.03 235.74 0 1008.73 0"></polygon>
+        <polygon points="1937.79 1449.1 1756.47 1700 986.3 1700 1167.48 1449.1 1937.79 1449.1"></polygon>
+        <polygon points="2000 0 771.98 1700 0 1700 1228.02 0 2000 0"></polygon>
+      </svg>
+    ),
+  },
+];
+
 export default function Techstackbox({
   size = "large",
   delay = 0.3,
@@ -73,44 +140,25 @@ export default function Techstackbox({
       size={size}
       delay={delay}
       padding="small"
-      className="flex flex-col gap-2"
+      className="flex flex-col gap-3"
     >
       {/* Tech I Love Section */}
       <div className="border border-base/30 rounded-2xl p-3">
         <h3 className="text-lg font-bold text-foreground tracking-tight mb-3">
-          Tech I Love
+          Tech I Love 💖
         </h3>
-        <div className="flex flex-wrap gap-1">
-          {techStack.map((tech, i) => (
-            <motion.div key={tech.name}>
-              <Badge
-                variant="secondary"
-                className="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium 
-                          bg-base/40 hover:bg-base/70 border border-base/60 hover:border-base/80
-                          transition-all duration-200 cursor-default shadow-sm hover:shadow-md
-                          overflow-hidden"
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+          {techStack.map((tech) => (
+            <IconCard key={tech.name} label={tech.name}>
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="h-5 w-5 text-ink"
+                fill="currentColor"
               >
-                <div
-                  className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent 
-                               group-hover:translate-x-full transition-transform duration-700 ease-out"
-                />
-
-                {tech.icon && (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="rgb(141 227 107)"
-                    className="relative z-10 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
-                  >
-                    <path d={tech.icon.path} />
-                  </svg>
-                )}
-                <span className="relative z-10 truncate group-hover:text-foreground/90 transition-colors duration-200">
-                  {tech.name}
-                </span>
-              </Badge>
-            </motion.div>
+                <path d={tech.icon.path} />
+              </svg>
+            </IconCard>
           ))}
         </div>
       </div>
@@ -118,39 +166,34 @@ export default function Techstackbox({
       {/* Learning & Exploring Section */}
       <div className="border border-base/30 rounded-2xl p-3">
         <h3 className="text-lg font-bold text-foreground tracking-tight mb-3">
-          Learning & Exploring
+          Learning & Exploring 🧪
         </h3>
-        <div className="flex flex-wrap gap-2">
-          {techStackFuture.map((tech, i) => (
-            <motion.div key={tech.name}>
-              <Badge
-                variant="secondary"
-                className="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium 
-                          bg-base/40 hover:bg-base/70 border border-base/60 hover:border-base/80
-                          transition-all duration-200 cursor-default shadow-sm hover:shadow-md
-                          overflow-hidden"
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+          {techStackFuture.map((tech) => (
+            <IconCard key={tech.name} label={tech.name}>
+              <svg
+                aria-hidden
+                viewBox="0 0 24 24"
+                className="h-5 w-5 text-ink"
+                fill="currentColor"
               >
-                <div
-                  className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent 
-                               group-hover:translate-x-full transition-transform duration-700 ease-out"
-                />
+                <path d={tech.icon.path} />
+              </svg>
+            </IconCard>
+          ))}
+        </div>
+      </div>
 
-                {tech.icon && (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="rgb(141 227 107)"
-                    className="relative z-10 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
-                  >
-                    <path d={tech.icon.path} />
-                  </svg>
-                )}
-                <span className="relative z-10 truncate group-hover:text-foreground/90 transition-colors duration-200">
-                  {tech.name}
-                </span>
-              </Badge>
-            </motion.div>
+      {/* AI Tools Section */}
+      <div className="border border-base/30 rounded-2xl p-4">
+        <h3 className="text-lg font-bold text-foreground tracking-tight mb-4">
+          Current AI Tools
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-sm">
+          {aiTools.map((tool) => (
+            <IconCard key={tool.name} label={tool.name}>
+              {tool.svg}
+            </IconCard>
           ))}
         </div>
       </div>

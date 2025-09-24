@@ -234,21 +234,22 @@ const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
       <motion.div
         ref={ref}
         className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-6 p-4"
-        initial={{ opacity: 0, x: direction * 50 }}
+        initial={{
+          opacity: 0,
+        }}
         animate={{
           opacity: 1,
-          x: 0,
           transition: {
-            delay: 0.1,
-            type: "spring",
-            stiffness: 300,
-            damping: 30,
+            duration: 0.3,
+            ease: "easeOut",
           },
         }}
         exit={{
           opacity: 0,
-          x: direction * -50,
-          transition: { duration: 0.3 },
+          transition: {
+            duration: 0.2,
+            ease: "easeIn",
+          },
         }}
       >
         {clients.map((client: Client, index: number) => {
@@ -270,13 +271,11 @@ const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
               rel="noopener noreferrer"
               className="flex items-center justify-center relative brightness-0 invert hover:brightness-100 hover:invert-0 transition-all duration-300 opacity-80 hover:opacity-100 bg-white/5 rounded-lg p-3"
               whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 1, scale: 0.9 }}
               animate={{
-                opacity: 0.8,
                 scale: 1,
                 transition: {
-                  delay: index * 0.1,
-                  duration: 0.4,
+                  duration: 0.5,
                   ease: "easeOut",
                 },
               }}

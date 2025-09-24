@@ -1,6 +1,6 @@
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import AboutPage from "@/app/about/AboutPage";
-import Footer from "@/components/Footer";
+import Footer from "@/components/layout/Footer";
 
 export const metadata = {
   title: "About | Chris Lane Jones — Dev & Hiker",

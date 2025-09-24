@@ -1,3 +1,5 @@
+"use client";
+
 import {
   FaGithub,
   FaTwitter,
@@ -9,30 +11,28 @@ import {
   FaWordpress,
   FaHome,
   FaTools,
-  FaHeart,
   FaChrome,
 } from "react-icons/fa";
 import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
+import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Card from "@/components/page/card";
+import Image from "next/image";
 
 export default function LinkGrid() {
   return (
     <div className="space-y-6">
       {/* Card 1: Main Avatar and Info */}
-      <div className="card glass shadow-passive p-8">
+      <Card padding="large" glass={true} delay={0.1} className="text-center">
         <div className="grid grid-cols-[80px_1fr] gap-4 items-center mb-6">
-          <img
+          <Image
             alt="Chris Lane Jones"
-            loading="lazy"
-            width="80"
-            height="80"
-            decoding="async"
+            width={80}
+            height={80}
             className="h-20 w-20 rounded-2xl ring-2 ring-white/5 object-cover"
-            style={{ color: "transparent" }}
-            srcSet="/_next/image?url=%2FProfessional-Photo-of-Chris-Lane-Jones.webp&w=96&q=75 1x, /_next/image?url=%2FProfessional-Photo-of-Chris-Lane-Jones.webp&w=256&q=75 2x"
-            src="/_next/image?url=%2FProfessional-Photo-of-Chris-Lane-Jones.webp&w=256&q=75"
+            src="/Professional-Photo-of-Chris-Lane-Jones.webp"
           />
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center text-left">
             <div className="font-bold text-xl text-white">Chris Lane Jones</div>
             <div className="text-md text-white/70">
               UX/UI Web Design and Development
@@ -40,7 +40,7 @@ export default function LinkGrid() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 text-center">
+        <div className="flex flex-col gap-4">
           <h2 className="text-xl md:text-xl font-bold leading-tight text-white">
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
@@ -49,16 +49,17 @@ export default function LinkGrid() {
             I Build with React and WordPress — then escape to the Mountains. 🏔️
           </p>
         </div>
-      </div>
+      </Card>
 
       {/* Card 2: Social Links */}
-      <div className="card glass shadow-passive p-6">
+      <Card padding="medium" glass={true} delay={0.2}>
         <h3 className="text-xl font-bold mb-6 text-center text-white">
           Connect With Me
         </h3>
         <div className="grid grid-cols-2 gap-3">
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -74,6 +75,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -89,6 +91,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -104,6 +107,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -119,6 +123,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -134,6 +139,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -149,6 +155,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -164,6 +171,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -179,6 +187,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -194,6 +203,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -209,6 +219,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -224,6 +235,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
             asChild
           >
@@ -237,10 +249,10 @@ export default function LinkGrid() {
             </a>
           </Button>
         </div>
-      </div>
+      </Card>
 
       {/* Card 3: Current Chrome Tabs */}
-      <div className="card glass shadow-passive p-6">
+      <Card padding="medium" glass={true} delay={0.3}>
         <h3 className="text-xl font-bold mb-6 text-center flex items-center justify-center space-x-2 text-white">
           <FaChrome className="w-6 h-6" />
           <span>Chrome Tabs I Left Open...</span>
@@ -248,6 +260,7 @@ export default function LinkGrid() {
         <div className="space-y-3">
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
             asChild
           >
@@ -264,6 +277,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
             asChild
           >
@@ -282,6 +296,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
             asChild
           >
@@ -302,6 +317,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
             asChild
           >
@@ -318,6 +334,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
             asChild
           >
@@ -334,6 +351,7 @@ export default function LinkGrid() {
 
           <Button
             variant="base"
+            showExternalIcon={true}
             className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
             asChild
           >
@@ -350,7 +368,7 @@ export default function LinkGrid() {
             </a>
           </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

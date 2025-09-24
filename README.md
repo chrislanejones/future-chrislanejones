@@ -1,35 +1,42 @@
 # Chris Lane Jones - Developer Portfolio
 
-A modern, interactive portfolio website built with Next.js 14, featuring a bento grid layout, working music player, photo gallery, and project showcase.
+![Portfolio Cover](Github-Cover.jpg)
+
+🔗 **Live Demo: [https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)**
+
+A modern, interactive portfolio website built with Next.js 15, featuring a bento grid layout, working music player, photo gallery, browser tabs showcase, and project highlights.
 
 ## Features
 
 ### Interactive Bento Grid Layout
 
 - **Hero Section**: Introduction with animated background elements
-- **Quote Generator**: Rotating inspirational quotes with refresh functionality
+- **Quote Generator**: Rotating inspirational quotes with refresh functionality  
 - **Music Player**: Fully functional audio player with volume controls and track navigation
 - **Tech Stack Display**: Current technologies and future learning goals
-- **Photo Gallery**: Polaroid-style hiking photos with click-to-front interactions
+- **Conference Slider**: Featured conference talks and presentations
 - **Project Showcase**: Navigable project cards with live demo links
 - **Client Slider**: Animated carousel of past and present clients
+- **Terminal UI**: Command-line interface with custom alerts and dialogs
 
 ### Key Functionality
 
 - **Working Audio Player**: Play/pause, volume control, track switching
-- **Interactive Photo Gallery**: Drawer-based gallery with polaroid effects
+- **Browser Tabs Showcase**: Interactive display of interesting browser tabs and resources
 - **Project Navigation**: Arrow navigation through featured projects
 - **Responsive Design**: Mobile-first approach with breakpoint optimization
 - **Dark/Light Theme**: Automatic theme switching based on user preference
+- **Terminal Interface**: Command-line style interactions with custom dialog components
 
 ## Tech Stack
 
 ### Core Technologies
 
-- **Next.js 14** - App Router with TypeScript
+- **Next.js 15** - App Router with TypeScript
 - **Tailwind CSS** - Utility-first styling with custom design tokens
 - **Framer Motion** - Animation library for smooth interactions
 - **Lucide React** - Icon system
+- **Radix UI** - Accessible component primitives
 
 ### Additional Libraries
 
@@ -45,23 +52,34 @@ src/
 │   ├── globals.css           # Global styles and CSS variables
 │   ├── layout.tsx            # Root layout with metadata
 │   ├── page.tsx              # Homepage
+│   ├── about/
+│   │   └── page.tsx          # About page
+│   ├── browser-tabs/
+│   │   └── page.tsx          # Browser tabs showcase
+│   ├── career/
+│   │   └── page.tsx          # Career page
+│   ├── links/
+│   │   └── page.tsx          # Links page
 │   └── projects/
 │       └── page.tsx          # Projects page
 ├── components/
 │   ├── BentoGrid.tsx         # Main grid layout
-│   ├── Header.tsx            # Navigation header
-│   ├── Footer.tsx            # Site footer
-│   ├── ProjectGrid.tsx       # Projects page layout
+│   ├── layout/
+│   │   ├── footer.tsx        # Site footer
+│   │   └── header.tsx        # Navigation header
 │   ├── main/
 │   │   ├── client-slider-box.tsx      # Client carousel
-│   │   ├── image-gallery-box.tsx      # Photo gallery
+│   │   ├── conference-slider-box.tsx  # Conference talks
+│   │   ├── hero-box.tsx                # Hero section
 │   │   ├── music-player-box.tsx       # Audio player
 │   │   ├── projects-box.tsx           # Project showcase
 │   │   ├── quote-generator-card.tsx   # Quote rotator
 │   │   └── tech-stack-box.tsx         # Skills display
+│   ├── page/
+│   │   └── card.tsx          # Reusable card variants
 │   └── ui/
 │       ├── button.tsx        # Reusable button component
-│       └── drawer.tsx        # Modal drawer component
+│       └── terminal-alert-dialog.tsx  # Terminal-style dialogs
 └── lib/
     └── utils.ts              # Utility functions
 ```
@@ -97,8 +115,8 @@ src/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/chrislanejones/portfolio.git
-cd portfolio
+git clone https://github.com/chrislanejones/future-chrislanejones.git
+cd future-chrislanejones
 ```
 
 2. Install dependencies:
@@ -126,6 +144,15 @@ bun dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Pages
+
+- **Home** (`/`) - Main bento grid portfolio layout
+- **About** (`/about`) - Personal introduction and background
+- **Projects** (`/projects`) - Detailed project showcase with tabs
+- **Browser Tabs** (`/browser-tabs`) - Collection of interesting resources and links
+- **Links** (`/links`) - Social media and contact links
+- **Career** (`/career`) - Professional experience and work history
 
 ## Media Setup
 
@@ -225,10 +252,10 @@ bun start
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the [MIT License](LICENCE).
 
 ## Contact
 
 Chris Lane Jones - [hello@chrislanejones.com](mailto:hello@chrislanejones.com)
 
-Project Link: [https://github.com/chrislanejones/portfolio](https://github.com/chrislanejones/portfolio)
+Project Link: [https://github.com/chrislanejones/future-chrislanejones](https://github.com/chrislanejones/future-chrislanejones)

@@ -24,20 +24,14 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
   const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
-    // Trigger animation after component mounts with a small delay
-    const timer = setTimeout(() => {
-      setIsAnimated(true);
-    }, 500);
-
+    const timer = setTimeout(() => setIsAnimated(true), 500);
     return () => clearTimeout(timer);
   }, []);
 
   const replayAnimation = () => {
     setIsAnimated(false);
     setAnimationKey((prev) => prev + 1);
-    setTimeout(() => {
-      setIsAnimated(true);
-    }, 100);
+    setTimeout(() => setIsAnimated(true), 100);
   };
 
   return (
@@ -47,6 +41,7 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
       glass={true}
       delay={delay}
       className="relative overflow-hidden"
+      key={animationKey}
     >
       {/* Background Decoration */}
       <div className="absolute inset-0 pointer-events-none">
@@ -95,6 +90,7 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
           <Button asChild variant="base">
             <a href="#contact">See My Calendar</a>
           </Button>
+
           <Button variant="base" onClick={replayAnimation}>
             <MountainSnow className="h-5 w-5" aria-hidden="true" />
           </Button>

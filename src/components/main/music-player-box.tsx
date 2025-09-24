@@ -30,6 +30,13 @@ const playlist = [
     audioSrc: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
   },
   {
+    title: "Praise",
+    artist: "Panda Bear",
+    album: "Sinister Grift",
+    albumArt: "/music/art/Panda-Bear-Sinister-Grift.webp",
+    audioSrc: "/music/audio/Panda-Bear-Praise.mp3",
+  },
+  {
     title: "After The Earthquake",
     artist: "Alvvays",
     album: "Blue Rev",

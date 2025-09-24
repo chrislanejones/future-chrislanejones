@@ -198,8 +198,8 @@ const PhotoGallery = ({
       rotate: -5,
       zIndex: 10,
       direction: "left" as Direction,
-      src: "/gallery/Hiking-1.webp",
-      description: "GPX track mapping",
+      src: "/gallery/Chris-Hiking.webp",
+      description: "Hiking in the Shanahdoah Valley",
     },
   ];
 
@@ -293,7 +293,7 @@ export default function ImageGalleryBox({
     >
       <Image
         alt="hiking"
-        src="/Hiking.webp"
+        src="/gallery/Chris-Hiking.webp"
         className="absolute inset-0 w-full h-full object-cover opacity-70"
         fill
         sizes="(max-width: 768px) 100vw, 33vw"
@@ -334,7 +334,7 @@ export default function ImageGalleryBox({
         <div>
           <h3 className="font-bold text-lg">Photo Gallery</h3>
           <p className="text-sm text-ink/80">
-            Sunrise summits, gadgets and oldies.
+            summits, coding, conf friends, and more...
           </p>
         </div>
       </div>

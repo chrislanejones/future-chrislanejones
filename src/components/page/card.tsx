@@ -36,12 +36,24 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
       full: "h-full",
       fit: "h-fit",
     },
+    color: {
+      default: "bg-panel",
+      blue: "!bg-blue-500/20 border-blue-400/30 border !bg-opacity-100",
+      red: "!bg-red-500/20 border-red-400/30 border !bg-opacity-100",
+      yellow: "!bg-yellow-500/20 border-yellow-400/30 border !bg-opacity-100",
+      green: "!bg-green-500/20 border-green-400/30 border !bg-opacity-100",
+      pink: "!bg-pink-500/20 border-pink-400/30 border !bg-opacity-100",
+      purple: "!bg-purple-500/20 border-purple-400/30 border !bg-opacity-100",
+      cyan: "!bg-cyan-500/20 border-cyan-400/30 border !bg-opacity-100",
+      orange: "!bg-orange-500/20 border-orange-400/30 border !bg-opacity-100",
+    },
   },
   defaultVariants: {
     size: "medium",
     padding: "medium",
     glass: false,
     height: "full",
+    color: "default",
   },
 });
 
@@ -59,6 +71,7 @@ export function Card({
   padding,
   glass,
   height,
+  color,
   className = "",
   delay = 0,
   id,
@@ -72,36 +85,33 @@ export function Card({
         padding,
         glass,
         height,
+        color,
       })} ${className}`}
-      style={style}
+      style={{
+        ...style,
+        // Force visibility with inline styles
+        willChange: "transform, opacity",
+      }}
       initial={{
         opacity: 0,
-        y: 30,
-        scale: 0.95,
+        y: 20, // Reduced from 50 for more subtle motion
+        scale: 0.95, // Less dramatic scale change
       }}
       animate={{
         opacity: 1,
-        y: [0, -6, 0], // Floating animation
+        y: 0,
         scale: 1,
       }}
       transition={{
-        duration: 0.6,
+        duration: 0.4, // Shorter duration for subtler animation
         delay,
-        ease: [0.4, 0, 0.2, 1],
         type: "spring",
-        stiffness: 100,
-        damping: 15,
-        y: {
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: delay + 1, // Start floating after entrance
-        },
+        stiffness: 300, // Higher stiffness for less bouncy feel
+        damping: 30, // More damping for smoother animation
       }}
-      whileHover={{
-        y: -8,
-        transition: { duration: 0.2, ease: "easeOut" },
-      }}
+      // Removed whileHover animation
+      // Add viewport animation trigger
+      viewport={{ once: true }}
     >
       {children}
     </motion.article>
