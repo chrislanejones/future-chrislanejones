@@ -94,7 +94,7 @@ export default function Musicplayerbox({
       audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("error", handleError);
     };
-  }, [currentTrackIndex]); // Removed volume from dependencies
+  }, [currentTrackIndex]);
 
   const togglePlayPause = async () => {
     const audio = audioRef.current;
@@ -103,8 +103,10 @@ export default function Musicplayerbox({
     try {
       if (isPlaying) {
         audio.pause();
+        setIsPlaying(false);
       } else {
         await audio.play();
+        setIsPlaying(true);
       }
     } catch (error) {
       console.error("Playback error:", error);
@@ -166,28 +168,30 @@ export default function Musicplayerbox({
           />
         </div>
 
-        {/* Play Controls - Top Right Corner */}
+        {/* Play/Pause and Next Controls - Top Right Corner */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
-          <button
+          <motion.button
             onClick={togglePlayPause}
             className="h-12 w-12 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors disabled:opacity-50 shadow-lg"
             disabled={!isLoaded}
             aria-label={isPlaying ? "Pause" : "Play"}
+            whileTap={{ scale: 0.95 }}
           >
             {isPlaying ? (
               <Pause size={20} className="text-ink" fill="currentColor" />
             ) : (
               <Play size={20} className="text-ink ml-0.5" fill="currentColor" />
             )}
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={nextTrack}
             className="h-10 w-10 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors disabled:opacity-50 shadow-lg"
             disabled={!isLoaded}
             aria-label="Next track"
+            whileTap={{ scale: 0.95 }}
           >
             <SkipForward size={18} className="text-ink" />
-          </button>
+          </motion.button>
         </div>
       </div>
 

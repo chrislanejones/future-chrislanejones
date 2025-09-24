@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Remove this line:
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap");
-*/
-
 :root {
   color-scheme: light dark;
 
@@ -28,7 +24,7 @@
     --color-base: #0b0d10;
     --color-panel: #111418;
     --color-ink: #e7edf2;
-    --color-muted: rgba(231 237 242 / 0.1);
+    --color-muted: #9ca3af; /* Changed from rgba(231 237 242 / 0.1) to a more visible gray */
     --color-muted-accent: rgba(231 237 242 / 0.05);
     --color-accent: #8de36b;
 

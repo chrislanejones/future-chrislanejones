@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const cardVariants = cva("card rounded-3xl bg-panel", {
@@ -64,30 +64,6 @@ export function Card({
   id,
   style,
 }: CardProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // If not mounted or motion fails, show without animation
-  if (!isMounted) {
-    return (
-      <article
-        id={id}
-        className={`${cardVariants({
-          size,
-          padding,
-          glass,
-          height,
-        })} ${className}`}
-        style={style}
-      >
-        {children}
-      </article>
-    );
-  }
-
   return (
     <motion.article
       id={id}
@@ -98,23 +74,33 @@ export function Card({
         height,
       })} ${className}`}
       style={style}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{
+        opacity: 0,
+        y: 30,
+        scale: 0.95,
+      }}
+      animate={{
+        opacity: 1,
+        y: [0, -6, 0], // Floating animation
+        scale: 1,
+      }}
       transition={{
         duration: 0.6,
         delay,
-        ease: "easeOut",
+        ease: [0.4, 0, 0.2, 1],
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        y: {
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: delay + 1, // Start floating after entrance
+        },
       }}
-      // Fallback if animation fails
-      onAnimationStart={() => {
-        // Ensure visibility after a timeout
-        setTimeout(() => {
-          const element = document.getElementById(id || "");
-          if (element) {
-            element.style.opacity = "1";
-            element.style.transform = "translateY(0px)";
-          }
-        }, (delay + 0.8) * 1000);
+      whileHover={{
+        y: -8,
+        transition: { duration: 0.2, ease: "easeOut" },
       }}
     >
       {children}

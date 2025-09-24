@@ -100,7 +100,23 @@ export default function Projectsbox({
           <motion.div
             key={currentIndex}
             custom={direction}
-            exit={{ opacity: 0, x: direction * -20 }}
+            initial={{ opacity: 0, x: direction * 20 }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              transition: {
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1], // Custom cubic-bezier for smoother animation
+              },
+            }}
+            exit={{
+              opacity: 0,
+              x: direction * -20,
+              transition: {
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+              },
+            }}
             className="flex flex-col h-full"
           >
             <h3 className="text-lg font-bold text-foreground tracking-tight">
@@ -209,7 +225,29 @@ export default function Projectsbox({
           <motion.div
             key={`${currentIndex}-image`}
             custom={direction}
-            exit={{ opacity: 0, scale: 0.95 }}
+            initial={{
+              opacity: 0,
+              scale: 0.95,
+              x: direction * 30,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              x: 0,
+              transition: {
+                duration: 0.5,
+                ease: [0.4, 0, 0.2, 1],
+              },
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.95,
+              x: direction * -30,
+              transition: {
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+              },
+            }}
             className="absolute inset-0"
           >
             <Image
