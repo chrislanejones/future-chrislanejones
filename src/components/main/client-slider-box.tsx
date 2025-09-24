@@ -1,14 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion, wrap } from "framer-motion";
-import { useState, SVGProps } from "react";
+import Card from "../page/card";
+import { useState, SVGProps, forwardRef } from "react";
 import Image from "next/image";
 
-type Client = {
-  name: string;
-  logo: string;
-  url: string;
-};
+type Client = { name: string; logo: string; url: string };
 
 const clients: Client[] = [
   {
@@ -26,90 +23,38 @@ const clients: Client[] = [
     logo: "/client-icons/Virginia-IT-Agency-VITA-Logo.webp",
     url: "https://www.vita.virginia.gov/",
   },
-  {
-    name: "Adecco",
-    logo: "/client-icons/Adecco-Logo.webp",
-    url: "https://www.adeccousa.com/",
-  },
-  {
-    name: "RS&H",
-    logo: "/client-icons/RSandH-Logo.webp",
-    url: "https://www.rsandh.com/",
-  },
-  {
-    name: "American Airlines",
-    logo: "/client-icons/American-Airlines-Logo.webp",
-    url: "https://www.aa.com/",
-  },
-  {
-    name: "Asponte",
-    logo: "/client-icons/Asponte-Logo.webp",
-    url: "https://asponte.com/",
-  },
-  {
-    name: "FDOT",
-    logo: "/client-icons/FDOT-Logo.webp",
-    url: "https://www.fdot.gov/",
-  },
-  {
-    name: "AIS Network",
-    logo: "/client-icons/AIS-Network-Logo-V2.webp",
-    url: "https://aisn.net/",
-  },
-  {
-    name: "Amtrak",
-    logo: "/client-icons/Amtrak-Logo.webp",
-    url: "https://www.amtrak.com/home",
-  },
-  {
-    name: "USDOT",
-    logo: "/client-icons/USDOT-Logo.webp",
-    url: "https://transportation.gov/",
-  },
-  {
-    name: "Stubhub",
-    logo: "/client-icons/Stubhub-Logo.webp",
-    url: "https://www.stubhub.com/",
-  },
-  {
-    name: "Governor of Virginia",
-    logo: "/client-icons/Governor-of-Virginia-Logo.webp",
-    url: "https://www.governor.virginia.gov/",
-  },
-  {
-    name: "Elvacomm",
-    logo: "/client-icons/Elvacomm-Logo.webp",
-    url: "https://elvacomm.com/",
-  },
-  {
-    name: "Engage Marketing",
-    logo: "/client-icons/Engage-Marketing.webp",
-    url: "https://engagemarketing.biz/",
-  },
-  {
-    name: "Fisher Design",
-    logo: "/client-icons/Fisher-Design-Logo.webp",
-    url: "https://www.fisherdesignandadvertising.com/",
-  },
-  {
-    name: "WorldStrides",
-    logo: "/client-icons/WorldStrides-Logo-1.webp",
-    url: "https://worldstrides.com/",
-  },
-  {
-    name: "Azzly",
-    logo: "/client-icons/Azzly-Logo.webp",
-    url: "https://azzly.com/",
-  },
+  // Add more clients...
 ];
 
-// Group clients into pages of 6
 const clientGroups: Client[][] = [];
 for (let i = 0; i < clients.length; i += 6) {
   clientGroups.push(clients.slice(i, i + 6));
 }
 
-export default function ClientSliderBox() {
+// Component props interface
+interface ClientsliderboxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
+type ClientGroupProps = {
+  clients: Client[];
+  direction: number;
+};
+
+export default function Clientsliderbox({
+  size = "large",
+  delay = 0.3,
+}: ClientsliderboxProps) {
   const [selectedGroup, setSelectedGroup] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
@@ -124,12 +69,7 @@ export default function ClientSliderBox() {
   }
 
   return (
-    <motion.article
-      className="md:col-span-6 md:row-span-2 card rounded-3xl glass p-6"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.8 }}
-    >
+    <Card size={size} delay={delay} padding="medium">
       <h2 className="text-center font-semibold text-lg mb-4">
         Past and Present Clients
       </h2>
@@ -164,54 +104,58 @@ export default function ClientSliderBox() {
           <ArrowRight />
         </motion.button>
       </div>
-    </motion.article>
+    </Card>
   );
 }
 
-type ClientGroupProps = {
-  clients: Client[];
-  direction: number;
-};
+const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
+  ({ clients, direction }, ref) => {
+    return (
+      <motion.div
+        ref={ref}
+        className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-8 p-6"
+        initial={{ opacity: 0, x: direction * 50 }}
+        animate={{
+          opacity: 1,
+          x: 0,
+          transition: {
+            delay: 0.1,
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          },
+        }}
+        exit={{
+          opacity: 0,
+          x: direction * -50,
+          transition: { duration: 0.3 },
+        }}
+      >
+        {clients.map((client: Client) => (
+          <motion.a
+            key={client.name}
+            href={client.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center relative brightness-0 invert hover:brightness-100 hover:invert-0 transition-all duration-300 opacity-80 hover:opacity-100 bg-white/5 rounded-lg p-4"
+            whileHover={{ scale: 1.05 }}
+          >
+            <Image
+              src={client.logo}
+              alt={`${client.name} logo`}
+              width={220}
+              height={80}
+              className="object-contain w-full h-full"
+              sizes="220px"
+            />
+          </motion.a>
+        ))}
+      </motion.div>
+    );
+  }
+);
 
-function ClientGroup({ clients, direction }: ClientGroupProps) {
-  return (
-    <motion.div
-      className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-8 p-6"
-      initial={{ opacity: 0, x: direction * 50 }}
-      animate={{
-        opacity: 1,
-        x: 0,
-        transition: {
-          delay: 0.2,
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        },
-      }}
-      exit={{ opacity: 0, x: direction * -50 }}
-    >
-      {clients.map((client: Client) => (
-        <motion.a
-          key={client.name}
-          href={client.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center relative brightness-0 invert hover:brightness-100 hover:invert-0 transition-all duration-300 opacity-80 hover:opacity-100 bg-white/5 rounded-lg p-4"
-          whileHover={{ scale: 1.05 }}
-        >
-          <Image
-            src={client.logo}
-            alt={`${client.name} logo`}
-            width={220}
-            height={80}
-            className="object-contain w-full h-full"
-            sizes="220px"
-          />
-        </motion.a>
-      ))}
-    </motion.div>
-  );
-}
+ClientGroup.displayName = "ClientGroup";
 
 // Icons
 const iconsProps: SVGProps<SVGSVGElement> = {

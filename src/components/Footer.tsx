@@ -6,9 +6,9 @@ export default function Footer() {
   return (
     <motion.footer
       className="max-w-6xl mx-auto py-5"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+ 
+      
+      
     >
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-3">

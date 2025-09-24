@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import Banner from "@/components/page/banner";
+import Card from "@/components/page/card";
+import { ThirdWidthLayout } from "@/components/page/layout";
 
 /* ---------------------------------- Types --------------------------------- */
 
@@ -156,14 +158,14 @@ const browserTabsByTopic: TopicCategory[] = [
 
 function TabCard({ tab, index }: { tab: TabLink; index: number }) {
   return (
-    <motion.a
+    <Card
       href={tab.url}
       target="_blank"
       rel="noopener noreferrer"
       className="card glass shadow-passive p-6 hover:shadow-glow transition-all duration-300 block group"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+ 
+      
+ 
       whileHover={{ y: -4 }}
     >
       <div className="flex flex-col space-y-3">
@@ -194,7 +196,7 @@ function TabCard({ tab, index }: { tab: TabLink; index: number }) {
           </svg>
         </div>
       </div>
-    </motion.a>
+    </Card>
   );
 }
 
@@ -202,9 +204,9 @@ function TopicSection({ category, categoryIndex }: { category: TopicCategory; ca
   return (
     <motion.section
       className="mb-12"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
+ 
+ 
+ 
     >
       <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-2">
         <span className="w-2 h-2 bg-accent rounded-full" />

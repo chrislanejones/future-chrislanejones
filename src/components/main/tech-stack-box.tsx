@@ -1,8 +1,26 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Card from "../page/card";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+// Component props interface
+interface TechstackboxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
 import {
   siReactquery,
   siBun,
@@ -21,12 +39,8 @@ import {
   siSvelte,
   siShadcnui,
 } from "simple-icons";
-import { Badge } from "@/components/ui/badge";
 
-type TechItem = {
-  name: string;
-  icon: { path: string };
-};
+type TechItem = { name: string; icon: { path: string } };
 
 const techStack: TechItem[] = [
   { name: "React", icon: siReact },
@@ -50,13 +64,16 @@ const techStackFuture: TechItem[] = [
   { name: "Svelte", icon: siSvelte },
 ];
 
-export default function TechCard() {
+export default function Techstackbox({
+  size = "large",
+  delay = 0.3,
+}: TechstackboxProps) {
   return (
-    <motion.article
-      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-2 flex flex-col gap-2"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.7 }}
+    <Card
+      size={size}
+      delay={delay}
+      padding="small"
+      className="flex flex-col gap-2"
     >
       {/* Tech I Love Section */}
       <div className="border border-base/30 rounded-2xl p-3">
@@ -65,12 +82,7 @@ export default function TechCard() {
         </h3>
         <div className="flex flex-wrap gap-1">
           {techStack.map((tech, i) => (
-            <motion.div
-              key={tech.name}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04, duration: 0.25 }}
-            >
+            <motion.div key={tech.name}>
               <Badge
                 variant="secondary"
                 className="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium 
@@ -110,12 +122,7 @@ export default function TechCard() {
         </h3>
         <div className="flex flex-wrap gap-2">
           {techStackFuture.map((tech, i) => (
-            <motion.div
-              key={tech.name}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.04, duration: 0.25 }}
-            >
+            <motion.div key={tech.name}>
               <Badge
                 variant="secondary"
                 className="group relative flex items-center gap-2 px-3 py-2 text-sm font-medium 
@@ -147,6 +154,6 @@ export default function TechCard() {
           ))}
         </div>
       </div>
-    </motion.article>
+    </Card>
   );
 }

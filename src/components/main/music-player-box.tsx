@@ -1,11 +1,26 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Card from "../page/card";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
 
-// Music playlist - add your audio files to the public folder
+// Component props interface
+interface MusicplayerboxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
 const playlist = [
   {
     title: "Afterlife",
@@ -23,7 +38,10 @@ const playlist = [
   },
 ];
 
-export default function MusicPlayerBox() {
+export default function Musicplayerbox({
+  size = "large",
+  delay = 0.3,
+}: MusicplayerboxProps) {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
@@ -36,6 +54,7 @@ export default function MusicPlayerBox() {
     const audio = audioRef.current;
     if (!audio) return;
 
+    // Set initial volume
     audio.volume = volume;
 
     const handleCanPlayThrough = () => {
@@ -75,7 +94,7 @@ export default function MusicPlayerBox() {
       audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("error", handleError);
     };
-  }, [currentTrackIndex, volume]);
+  }, [currentTrackIndex]); // Removed volume from dependencies
 
   const togglePlayPause = async () => {
     const audio = audioRef.current;
@@ -108,11 +127,11 @@ export default function MusicPlayerBox() {
   };
 
   return (
-    <motion.article
-      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel overflow-hidden flex flex-col"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
+    <Card
+      size={size}
+      delay={delay}
+      padding="none"
+      className="overflow-hidden flex flex-col"
     >
       {/* Hidden audio element */}
       <audio
@@ -184,6 +203,6 @@ export default function MusicPlayerBox() {
           {currentTrack.artist} — {currentTrack.title}
         </p>
       </div>
-    </motion.article>
+    </Card>
   );
 }

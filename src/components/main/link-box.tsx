@@ -1,61 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Card from "../page/card";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  siReactquery,
-  siBun,
-  siTypescript,
-  siFramer,
-  siTailwindcss,
-  siNextdotjs,
-  siReact,
-  siThreedotjs,
-  siDrizzle,
-  siGnubash,
-  siZig,
-  siGo,
-  siNixos,
-  siPostgresql,
-  siSvelte,
-} from "simple-icons";
 import { Badge } from "@/components/ui/badge";
 
-type TechItem = {
-  name: string;
-  icon: { path: string };
-};
+// Component props interface
+interface LinkboxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
 
-const techStack: TechItem[] = [
-  { name: "React", icon: siReact },
-  { name: "Next.js", icon: siNextdotjs },
-  { name: "TypeScript", icon: siTypescript },
-  { name: "Tailwind", icon: siTailwindcss },
-  { name: "Framer Motion", icon: siFramer },
-  { name: "TanStack", icon: siReactquery },
-  { name: "Three.js", icon: siThreedotjs },
-  { name: "Drizzle ORM", icon: siDrizzle },
-  { name: "Bun", icon: siBun },
-  { name: "Shell", icon: siGnubash },
-];
-
-const techStackFuture: TechItem[] = [
-  { name: "Zig", icon: siZig },
-  { name: "Go", icon: siGo },
-  { name: "NixOS", icon: siNixos },
-  { name: "Convex", icon: siPostgresql },
-  { name: "Svelte", icon: siSvelte },
-];
-
-export default function TechAndLinksCard() {
+export default function Linkbox({ size = "large", delay = 0.3 }: LinkboxProps) {
   return (
-    <motion.article
-      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-2 flex flex-col gap-2"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.7 }}
-    >
+    <Card size="large">
       {/* GitHub Gist Section */}
       <div className="border border-base/30 rounded-2xl p-3">
         <h3 className="text-lg font-bold text-foreground tracking-tight mb-3">
@@ -147,6 +115,6 @@ export default function TechAndLinksCard() {
           </div>
         </div>
       </div>
-    </motion.article>
+    </Card>
   );
 }

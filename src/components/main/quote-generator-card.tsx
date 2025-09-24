@@ -1,21 +1,33 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Card from "../page/card";
 import { AnimatePresence, motion } from "framer-motion";
 import { RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import type { ReactNode } from "react";
 
-const QUOTES = [
+const QUOTES: ReactNode[] = [
   "My rambling 1",
   "My rambling 2",
   "My rambling 3",
   "My rambling 4",
   "My rambling 5",
-  "My rambling 6",
-  "My rambling 7",
-  "My rambling 8",
-  "My rambling 9",
+  'In 2017, three people called me asking me "How can I learn to code?"',
+  "<!--[if !(IE 6)]> I didn't code as a child because scared me.",
+  "I lock my computer at night to prevent my cats from online shopping",
+  <>
+    If there was no code, I would become a{" "}
+    <a
+      href="https://www.linkedin.com/in/aaronwitt/"
+      target="_blank"
+      rel="nofollow noopener noreferrer"
+      className="underline"
+    >
+      Dirt Nerd
+    </a>
+  </>,
   "My rambling 10",
   "My rambling 11",
   "My rambling 12",
@@ -37,9 +49,27 @@ const QUOTES = [
   "My rambling 28",
   "My rambling 29",
   "My rambling 30",
-] as const;
+];
 
-export default function QuoteGeneratorCard() {
+// Component props interface
+interface QuotegeneratorcardProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
+export default function Quotegeneratorcard({
+  size = "large",
+  delay = 0.3,
+}: QuotegeneratorcardProps) {
   const [index, setIndex] = useState(0); // Start with first quote to avoid hydration mismatch
   const [isClient, setIsClient] = useState(false);
 
@@ -61,11 +91,11 @@ export default function QuoteGeneratorCard() {
   };
 
   return (
-    <motion.article
-      className="md:col-span-2 md:row-span-2 card rounded-3xl bg-panel p-6 relative overflow-hidden flex flex-col gap-6"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
+    <Card
+      size={size}
+      delay={delay}
+      padding="medium"
+      className="relative overflow-hidden flex flex-col gap-6"
     >
       {/* Top: Avatar + Name */}
       <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
@@ -92,13 +122,12 @@ export default function QuoteGeneratorCard() {
         <AnimatePresence mode="wait">
           <motion.blockquote
             key={index}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
             className="text-center text-2xl leading-relaxed text-ink/90"
           >
-            "{QUOTES[index]}"
+            {typeof QUOTES[index] === "string"
+              ? `"${QUOTES[index]}"`
+              : QUOTES[index]}
           </motion.blockquote>
         </AnimatePresence>
       </div>
@@ -114,6 +143,6 @@ export default function QuoteGeneratorCard() {
       >
         <RefreshCcw className="h-5 w-5" aria-hidden="true" />
       </Button>
-    </motion.article>
+    </Card>
   );
 }

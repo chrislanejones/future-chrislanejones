@@ -1,11 +1,25 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { MountainSnow } from "lucide-react";
+import Card from "../page/card";
 
-export default function HeroCard() {
+interface HeroBoxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
+export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
   const [isAnimated, setIsAnimated] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
 
@@ -25,12 +39,14 @@ export default function HeroCard() {
       setIsAnimated(true);
     }, 100);
   };
+
   return (
-    <motion.article
-      className="md:col-span-4 md:row-span-2 card rounded-3xl glass p-6 relative overflow-hidden"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.1 }}
+    <Card
+      size={size}
+      padding="medium"
+      glass={true}
+      delay={delay}
+      className="relative overflow-hidden"
     >
       {/* Background Decoration */}
       <div className="absolute inset-0 pointer-events-none">
@@ -84,6 +100,6 @@ export default function HeroCard() {
           </Button>
         </div>
       </div>
-    </motion.article>
+    </Card>
   );
 }

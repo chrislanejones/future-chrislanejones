@@ -105,7 +105,7 @@ body {
     transition-duration: 150ms;
   }
 
-  /* Helpers you’re already using */
+  /* Helpers you're already using */
   .bg-panel {
     background-color: var(--color-panel);
   }
@@ -142,6 +142,20 @@ body {
     text-underline-offset: 4px;
     text-decoration-color: var(--color-accent);
   }
+
+  /* Add missing color utilities */
+  .bg-base {
+    background-color: var(--color-base);
+  }
+  .text-ink {
+    color: var(--color-ink);
+  }
+  .text-muted {
+    color: var(--color-muted);
+  }
+  .text-foreground {
+    color: var(--color-ink);
+  }
 }
 
 @layer components {
@@ -151,4 +165,23 @@ body {
     border-radius: var(--radius, 12px);
     background: var(--color-panel);
   }
+}
+
+/* FRAMER MOTION FIX - Force cards to be visible */
+article.card {
+  opacity: 1 !important;
+  transform: translateY(0px) !important;
+}
+
+/* Override any inline styles that might be hiding cards */
+[style*="opacity:0"] {
+  opacity: 1 !important;
+  transform: translateY(0px) !important;
+}
+
+/* Ensure all motion divs are visible */
+article[style*="opacity:0"],
+div[style*="opacity:0"] {
+  opacity: 1 !important;
+  transform: translateY(0px) !important;
 }

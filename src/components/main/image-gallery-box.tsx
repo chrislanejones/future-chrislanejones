@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Images } from "lucide-react";
+import Card from "../page/card";
 import {
   Drawer,
   DrawerClose,
@@ -265,13 +266,30 @@ const PhotoGallery = ({
   );
 };
 
-export default function ImageGalleryBox() {
+interface ImageGalleryBoxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
+export default function ImageGalleryBox({
+  size = "large",
+  delay = 0.6,
+}: ImageGalleryBoxProps) {
   return (
-    <motion.article
-      className="relative md:col-span-2 md:row-span-2 card rounded-3xl overflow-hidden bg-panel"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.5 }}
+    <Card
+      size={size}
+      delay={delay}
+      padding="none"
+      className="relative overflow-hidden"
     >
       <Image
         alt="hiking"
@@ -320,6 +338,6 @@ export default function ImageGalleryBox() {
           </p>
         </div>
       </div>
-    </motion.article>
+    </Card>
   );
 }

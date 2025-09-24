@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, SVGProps } from "react";
+import Card from "../page/card";
 import { motion, AnimatePresence, wrap } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ const projects: Project[] = [
       "A sleek, MPC-inspired interface for browsing and filtering Vim and NeoVim keyboard shortcuts.",
     features: [
       "MPC-Inspired UI with 20 drum pad-style filters",
-      "TR-505 Drum Samples for audio feedback on filter toggle",
+      "TR-505 Drum Samples for audio feedback",
       "Smart Filtering: Toggleable shortcut categories",
     ],
     image: "/projects/mpc-vim-filter-tool.webp",
@@ -43,7 +44,25 @@ const projects: Project[] = [
   },
 ];
 
-export default function ProjectsBox() {
+// Component props interface
+interface ProjectsboxProps {
+  size?:
+    | "small"
+    | "medium"
+    | "large"
+    | "wide"
+    | "hero"
+    | "full"
+    | "page-full"
+    | "page-half"
+    | "page-third";
+  delay?: number;
+}
+
+export default function Projectsbox({
+  size = "large",
+  delay = 0.3,
+}: ProjectsboxProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
@@ -69,22 +88,19 @@ export default function ProjectsBox() {
     currentProject.vercelUrl !== "";
 
   return (
-    <motion.article
+    <Card
       id="projects"
-      className="md:col-span-4 md:row-span-2 card rounded-3xl bg-panel p-6 grid md:grid-cols-2 gap-6 relative"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.6 }}
+      size={size}
+      delay={delay}
+      padding="medium"
+      className="grid md:grid-cols-2 gap-6 relative"
     >
       <div className="order-2 md:order-1 flex flex-col">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
             custom={direction}
-            initial={{ opacity: 0, x: direction * 20 }}
-            animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: direction * -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
             className="flex flex-col h-full"
           >
             <h3 className="text-lg font-bold text-foreground tracking-tight">
@@ -193,10 +209,7 @@ export default function ProjectsBox() {
           <motion.div
             key={`${currentIndex}-image`}
             custom={direction}
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
             className="absolute inset-0"
           >
             <Image
@@ -212,7 +225,7 @@ export default function ProjectsBox() {
           {currentIndex + 1} of {projects.length}
         </div>
       </div>
-    </motion.article>
+    </Card>
   );
 }
 

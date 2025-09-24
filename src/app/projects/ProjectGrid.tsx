@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
+import Card from "@/components/page/card";
+import { FullWidthLayout } from "@/components/page/layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /* ---------------------------------- Types --------------------------------- */
@@ -140,11 +142,11 @@ function ProjectCard({
   const hasVercelUrl = isValidUrl(project.vercelUrl);
 
   return (
-    <motion.article
-      className="card rounded-3xl bg-panel p-8 grid md:grid-cols-2 gap-8"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+    <Card
+      size="page-full" className="grid md:grid-cols-2 gap-8"
+      
+      
+      
     >
       {/* Left: Copy */}
       <div
@@ -266,7 +268,7 @@ function ProjectCard({
           Project {index + 1} of {total}
         </div>
       </div>
-    </motion.article>
+    </Card>
   );
 }
 
@@ -274,9 +276,9 @@ function ProjectGridSection({ projects }: { projects: Project[] }) {
   return (
     <motion.section
       className="grid grid-cols-1 gap-5 auto-rows-auto"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+ 
+      
+ 
     >
       {projects.map((project, index) => (
         <ProjectCard
