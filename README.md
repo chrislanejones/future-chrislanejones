@@ -1,6 +1,6 @@
 # Chris Lane Jones - Developer Portfolio
 
-![Portfolio Cover](Github-Cover.jpg)
+![Portfolio Cover](/public/Github-Cover.jpg)
 
 🔗 **Live Demo: [https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)**
 
@@ -11,7 +11,7 @@ A modern, interactive portfolio website built with Next.js 15, featuring a bento
 ### Interactive Bento Grid Layout
 
 - **Hero Section**: Introduction with animated background elements
-- **Quote Generator**: Rotating inspirational quotes with refresh functionality  
+- **Quote Generator**: Rotating inspirational quotes with refresh functionality
 - **Music Player**: Fully functional audio player with volume controls and track navigation
 - **Tech Stack Display**: Current technologies and future learning goals
 - **Conference Slider**: Featured conference talks and presentations

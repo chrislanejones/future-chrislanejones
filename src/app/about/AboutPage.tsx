@@ -15,43 +15,49 @@ type AboutSection = {
   description: string;
   image: string;
   imageAlt: string;
+  imageDescription: string;
 };
 
 const aboutSections: AboutSection[] = [
   {
     title: "From Video Production to Web Development",
     description:
-      "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry – never a dull moment in JavaScript, PHP, and their frameworks. In 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
+      "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry – never a dull moment in JavaScript, PHP, and their frameworks.\n\nIn 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
     image: "/gallery/Me-Recording-A-Video.webp",
     imageAlt: "Chris recording a video",
+    imageDescription: "Recording a video in the field in 2013",
   },
   {
     title: "My Home Office Setup",
     description:
-      "Working remotely from Louisa, Virginia with a dual-monitor standing desk setup that keeps me productive and healthy during long development sessions.",
+      "Working remotely from Louisa, Virginia with a dual-monitor standing desk setup that keeps me productive and healthy during long development sessions.\n\nThis setup has served me well through countless projects and late-night coding sessions.",
     image: "/gallery/Standing-Desk-Setup.webp",
     imageAlt: "Adjustable Standing Desk with Two Displays and Laptop",
+    imageDescription: "My now old standing desk setup",
   },
   {
-    title: "Richmond WordPress Chapter Host",
+    title: "Local Meetup Host & Community Leader",
     description:
-      "I lead Richmond's local WordPress meetup and host monthly meetups since January 2022. We discuss WordPress topics, general web knowledge, and provide support for developers in the Glen Allen area. Previously served as Digital Director for The JOMM (Jacksonville Online Marketing Meetup), where I increased monthly attendance and website engagement.",
+      "I led Richmond's local WordPress meetup and hosted monthly meetups from January 2022 till January 2025. We discussed WordPress topics, general web knowledge, and provide support for developers in the Glen Allen area.\n\nPreviously served as Digital Director for The JOMM (Jacksonville Online Marketing Meetup), where I increased monthly attendance and website engagement.",
     image: "/gallery/Richmond-WordPress-Meetup.webp",
     imageAlt: "Richmond WordPress Meetup",
+    imageDescription: "WPRVA Event Banner",
   },
   {
     title: "Living in the Shenandoah Mountains",
     description:
-      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia. My wife runs a local equine-assisted private practice counseling service – Heaven's Rays Ministries. In Louisa, I am close to several cities and the Shenandoah mountains.",
+      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service – Heaven's Rays Ministries. In Louisa, I am close to several cities and the Shenandoah mountains.",
     image: "/gallery/Me-on-a-Bike-Trail.webp",
-    imageAlt: "Bike Trails by Piney River",
+    imageAlt: "Me on my bike at the Bike Trails by Piney River",
+    imageDescription: "Exploring bike trails near the Piney River",
   },
   {
     title: "Adventure & Travel",
     description:
-      "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights. After this trip, we started looking for work in the towns adjacent to the Appalachian Mountains.",
+      "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights.\n\nAfter this trip, we started looking for work in the towns adjacent to the Appalachian Mountains.",
     image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
     imageAlt: "Glacier National Park",
+    imageDescription: "Adventures at Glacier National Park",
   },
 ];
 
@@ -64,30 +70,39 @@ function AboutCard({
   index: number;
   total: number;
 }) {
+  // Determine if this card should have image on the left (even indices) or right (odd indices)
+  const isImageLeft = index % 2 === 0;
+
   return (
     <Card
       size="page-full"
       className="grid md:grid-cols-2 gap-8"
       delay={0.1 + index * 0.1}
     >
-      {/* Text Content */}
+      {/* Text Content - Always appears first on mobile, alternates on desktop */}
       <div
         className={cn(
           "flex flex-col justify-center",
-          index % 2 === 0 ? "order-1" : "order-2 md:order-1"
+          // Mobile: always first (order-1)
+          "order-1",
+          // Desktop: alternate based on index
+          isImageLeft ? "md:order-2" : "md:order-1"
         )}
       >
         <h2 className="font-bold text-2xl mb-6">{section.title}</h2>
-        <p className="text-muted leading-relaxed text-base">
+        <p className="text-muted leading-relaxed text-base whitespace-pre-line">
           {section.description}
         </p>
       </div>
 
-      {/* Image */}
+      {/* Image - Always appears second on mobile, alternates on desktop */}
       <div
         className={cn(
           "relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]",
-          index % 2 === 0 ? "order-2" : "order-1 md:order-2"
+          // Mobile: always second (order-2)
+          "order-2",
+          // Desktop: alternate based on index
+          isImageLeft ? "md:order-1" : "md:order-2"
         )}
       >
         <Image
@@ -99,7 +114,7 @@ function AboutCard({
           priority={index === 0}
         />
         <div className="absolute bottom-4 right-4 text-xs px-3 py-1 rounded-full bg-base/80 backdrop-blur-sm">
-          {section.imageAlt}
+          {section.imageDescription}
         </div>
       </div>
     </Card>

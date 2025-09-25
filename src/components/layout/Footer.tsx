@@ -22,7 +22,7 @@ const footerSections: FooterSection[] = [
       { href: "/", label: "Home" },
       { href: "/about", label: "About" },
 
-      { href: "/links", label: "Link Page" },
+      { href: "/link-page", label: "Link Page" },
       { href: "/browser-tabs", label: "Browser Tabs" },
     ],
   },
@@ -32,11 +32,12 @@ const footerSections: FooterSection[] = [
       { href: "/projects", label: "Projects" },
       { href: "/career", label: "Career" },
       {
-        href: "https://example.com",
-        label: "Lorem Ipsum 7",
+        href: "https://codepen.io/chrislanejones",
+        label: "Codepen",
         isExternal: true,
       },
       { href: "/blog", label: "Blog" },
+      { href: "/conferences", label: "Conferences" },
     ],
   },
   {
