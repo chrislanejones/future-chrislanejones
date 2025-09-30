@@ -89,8 +89,17 @@ const PhotoGallery = ({
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [clickedPhotoId, setClickedPhotoId] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Check if mobile view
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const visibilityTimer = setTimeout(() => {
       setIsVisible(true);
     }, animationDelay * 1000);
@@ -100,6 +109,7 @@ const PhotoGallery = ({
     }, (animationDelay + 0.4) * 1000);
 
     return () => {
+      window.removeEventListener('resize', checkMobile);
       clearTimeout(visibilityTimer);
       clearTimeout(animationTimer);
     };
@@ -148,8 +158,67 @@ const PhotoGallery = ({
     }),
   };
 
-  // Trail/hiking photos with descriptions - adjusted positions for larger photos
-  const photos = [
+  // Mobile positions for 2x2 grid (showing all 5 photos) - no rotation for clean grid
+  const mobilePhotos = [
+    {
+      id: 1,
+      order: 0,
+      x: "-90px",
+      y: "-90px",
+      rotate: 0,
+      zIndex: 50,
+      direction: "left" as Direction,
+      src: "/gallery/Theo-and-I.webp",
+      description: "Theo Browne and I at Render 2024",
+    },
+    {
+      id: 2,
+      order: 1,
+      x: "90px",
+      y: "-90px",
+      rotate: 0,
+      zIndex: 40,
+      direction: "left" as Direction,
+      src: "/gallery/FCC-2017-Bold-Bean.webp",
+      description: "Coding with Friends in Bold Bean Jax 2017",
+    },
+    {
+      id: 3,
+      order: 2,
+      x: "0px",
+      y: "0px",
+      rotate: 0,
+      zIndex: 30,
+      direction: "right" as Direction,
+      src: "/gallery/Kent-C-Dodds-Friends-and-I-at-Epic-Web.webp",
+      description: "Kent C. Dodds, Friends, and I at the last THAT Conference",
+    },
+    {
+      id: 4,
+      order: 3,
+      x: "-90px",
+      y: "90px",
+      rotate: 0,
+      zIndex: 20,
+      direction: "right" as Direction,
+      src: "/gallery/Pandemic-Office-Setup-2021.webp",
+      description: "Pandemic Office Setup 2021",
+    },
+    {
+      id: 5,
+      order: 4,
+      x: "90px",
+      y: "90px",
+      rotate: 0,
+      zIndex: 10,
+      direction: "left" as Direction,
+      src: "/gallery/Chris-Hiking.webp",
+      description: "Hiking in the Shanahdoah Valley",
+    },
+  ];
+
+  // Desktop positions - original scattered layout
+  const desktopPhotos = [
     {
       id: 1,
       order: 0,
@@ -207,6 +276,8 @@ const PhotoGallery = ({
     },
   ];
 
+  const photos = isMobile ? mobilePhotos : desktopPhotos;
+
   return (
     <div className="relative flex h-[500px] w-full items-center justify-center">
       <motion.div
@@ -215,46 +286,34 @@ const PhotoGallery = ({
         animate={{ opacity: isVisible ? 1 : 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
-        <motion.div
-          className="relative flex w-full justify-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isLoaded ? "visible" : "hidden"}
-        >
-          <div className="relative h-[360px] w-[320px]">
-            {[...photos].reverse().map((photo) => (
+        {isMobile ? (
+          // Mobile: Simple 2x2 grid layout
+          <motion.div
+            className="grid grid-cols-2 gap-4 p-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isLoaded ? "visible" : "hidden"}
+          >
+            {photos.slice(0, 4).map((photo) => (
               <motion.div
                 key={photo.id}
-                className="absolute left-0 top-0"
-                style={{
-                  zIndex: clickedPhotoId === photo.id ? 100 : photo.zIndex,
+                variants={{
+                  hidden: { opacity: 0, scale: 0.8 },
+                  visible: {
+                    opacity: 1,
+                    scale: 1,
+                    transition: {
+                      delay: photo.order * 0.15,
+                      duration: 0.5,
+                      ease: "easeOut",
+                    }
+                  }
                 }}
-                variants={photoVariants}
-                custom={{
-                  x: photo.x,
-                  y: photo.y,
-                  rotate: photo.rotate,
-                  order: photo.order,
-                }}
-                animate={
-                  clickedPhotoId === photo.id
-                    ? {
-                        x: photo.x,
-                        y: photo.y,
-                        rotate: 0,
-                        scale: 1.05,
-                        transition: {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        },
-                      }
-                    : undefined
-                }
+                className={clickedPhotoId === photo.id ? "z-50" : ""}
               >
                 <Photo
-                  width={300}
-                  height={300}
+                  width={140}
+                  height={140}
                   src={photo.src}
                   alt="Hiking trail photo"
                   direction={photo.direction}
@@ -263,8 +322,60 @@ const PhotoGallery = ({
                 />
               </motion.div>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
+        ) : (
+          // Desktop: Original scattered layout
+          <motion.div
+            className="relative flex w-full justify-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isLoaded ? "visible" : "hidden"}
+          >
+            <div className="relative h-[360px] w-[320px]">
+              {[...photos].reverse().map((photo) => (
+                <motion.div
+                  key={photo.id}
+                  className="absolute left-0 top-0"
+                  style={{
+                    zIndex: clickedPhotoId === photo.id ? 100 : photo.zIndex,
+                  }}
+                  variants={photoVariants}
+                  custom={{
+                    x: photo.x,
+                    y: photo.y,
+                    rotate: photo.rotate,
+                    order: photo.order,
+                  }}
+                  animate={
+                    clickedPhotoId === photo.id
+                      ? {
+                          x: photo.x,
+                          y: photo.y,
+                          rotate: 0,
+                          scale: 1.05,
+                          transition: {
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 30,
+                          },
+                        }
+                      : undefined
+                  }
+                >
+                  <Photo
+                    width={300}
+                    height={300}
+                    src={photo.src}
+                    alt="Hiking trail photo"
+                    direction={photo.direction}
+                    description={photo.description}
+                    onClick={() => handlePhotoClick(photo.id)}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );
@@ -293,55 +404,55 @@ export default function ImageGalleryBox({
       size={size}
       delay={delay}
       padding="none"
-      className="relative overflow-hidden"
+      className="overflow-hidden flex flex-col"
     >
-      <Image
-        alt="hiking"
-        src="/gallery/Chris-Hiking.webp"
-        className="absolute inset-0 w-full h-full object-cover opacity-70"
-        fill
-        sizes="(max-width: 768px) 100vw, 33vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
+      <div className="relative flex-1 min-h-[200px]">
+        <Image
+          alt="hiking"
+          src="/gallery/Chris-Hiking.webp"
+          className="absolute inset-0 w-full h-full object-cover opacity-70"
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
 
-      {/* Gallery Button - Top Right */}
-      <div className="absolute top-4 right-4 z-10">
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button
-              variant="base"
-              size="icon"
-              round
-              aria-label="Open photo gallery"
-            >
-              <Images size={20} className="text-ink" />
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent className="h-[60vh]">
-            <div className="mx-auto w-full max-w-7xl">
-              <DrawerHeader>
-                <DrawerTitle className="text-center text-2xl font-bold">
-                  Gallery Drawer
-                </DrawerTitle>
-                <DrawerDescription className="text-center">
-                  Pictures I found in random folders on my computer.
-                </DrawerDescription>
-              </DrawerHeader>
-              <div className="px-4 pb-4 flex-1 overflow-hidden">
-                <PhotoGallery animationDelay={0.2} />
+        {/* Gallery Button - Top Right */}
+        <div className="absolute top-4 right-4 z-10">
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button
+                variant="neutral"
+                size="icon"
+                round
+                aria-label="Open photo gallery"
+              >
+                <Images size={20} className="text-ink" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent className="h-[60vh]">
+              <div className="mx-auto w-full max-w-7xl">
+                <DrawerHeader>
+                  <DrawerTitle className="text-center text-2xl font-bold">
+                    Gallery Drawer
+                  </DrawerTitle>
+                  <DrawerDescription className="text-center">
+                    Pictures I found in random folders on my computer.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <div className="px-4 pb-4 flex-1 overflow-hidden">
+                  <PhotoGallery animationDelay={0.2} />
+                </div>
               </div>
-            </div>
-          </DrawerContent>
-        </Drawer>
+            </DrawerContent>
+          </Drawer>
+        </div>
       </div>
 
-      <div className="relative p-6 flex items-end h-full">
-        <div>
-          <h3 className="font-bold text-lg">Photo Gallery</h3>
-          <p className="text-sm text-ink/80">
-            summits, coding, conf friends, and more...
-          </p>
-        </div>
+      <div className="p-6">
+        <h3 className="text-xl md:text-xl font-bold">Photo Gallery</h3>
+        <p className="text-sm text-muted">
+          summits, coding, conf friends, and more...
+        </p>
       </div>
     </Card>
   );

@@ -272,17 +272,14 @@ const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
               href={client.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center relative transition-all duration-300 
-             opacity-90 hover:opacity-100 bg-[color:var(--color-muted-accent)] 
-             rounded-lg p-3"
+              className="group flex items-center justify-center relative transition-all duration-300 
+             opacity-90 hover:opacity-100 bg-[color:var(--color-base)] 
+             hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 1, scale: 0.9 }}
               animate={{
                 scale: 1,
-                transition: {
-                  duration: 0.5,
-                  ease: "easeOut",
-                },
+                transition: { duration: 0.5, ease: "easeOut" },
               }}
             >
               <Image
@@ -290,7 +287,12 @@ const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
                 alt={`${client.name} logo`}
                 width={180}
                 height={126}
-                className="object-contain w-full h-full max-w-[180px] max-h-[126px]"
+                className="
+    object-contain w-full h-full max-w-[180px] max-h-[126px]
+    transition-all duration-300
+    brightness-0 dark:brightness-0 dark:invert
+    group-hover:filter-none
+  "
                 sizes="160px"
               />
             </motion.a>

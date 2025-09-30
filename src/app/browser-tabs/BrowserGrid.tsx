@@ -252,7 +252,6 @@ export default function LinkGrid() {
                     key={link.href}
                     variant="base"
                     showExternalIcon={true}
-                    className="w-full h-auto p-2 rounded-lg bg-base/40 hover:bg-base/60 transition-colors text-white text-sm"
                     asChild
                   >
                     <a
@@ -265,7 +264,7 @@ export default function LinkGrid() {
                         <span>{link.label}</span>
                       </div>
                       {link.domain && (
-                        <span className="text-white/50 text-xs truncate ml-2">
+                        <span className="text-xs truncate ml-2">
                           {link.domain}
                         </span>
                       )}
