@@ -15,33 +15,41 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        /* Default: panel background, NO green at rest */
-        neutral: ["bg-panel card", "text-[color:var(--color-ink)]"].join(" "),
-        /* Optional: filled accent (only if you want a green button variant) */
+        neutral: [
+          "bg-panel card",
+          "text-[color:var(--color-foreground)]",
+          "hover:bg-[color:var(--color-surface-hover)]",
+        ].join(" "),
         base: [
           "bg-[color:var(--color-muted-accent)]",
-          "hover:bg-[color:var(--color-muted-accent)]",
-          "text-[color:var(--color-accent-ink)]",
+          "hover:bg-[color:var(--color-surface-hover)]",
+          "text-[color:var(--color-foreground)]",
           "border border-transparent",
         ].join(" "),
         accent: [
           "bg-[color:var(--color-accent)]",
-          "text-[color:var(--color-on-accent, #0b0d10)]",
+          "hover:brightness-95",
+          "text-[color:var(--color-on-accent)]",
           "border border-transparent",
         ].join(" "),
         outline: [
           "bg-transparent",
-          "text-[color:var(--color-ink)]",
-          "border border-white/12",
+          "text-[color:var(--color-foreground)]",
+          "border border-[color:var(--color-border)]",
         ].join(" "),
-        ghost: "bg-transparent text-[color:var(--color-ink)]",
+        ghost: [
+          "bg-transparent",
+          "text-[color:var(--color-foreground)]",
+          "hover:bg-[color:var(--color-surface-hover)]",
+        ].join(" "),
       },
       size: {
         sm: "h-9 text-sm",
         md: "h-10 text-sm",
         lg: "h-11 text-base",
+        icon: "h-9 w-9 p-0 justify-center",
       },
-      round: { true: "rounded-full", false: "" },
+      round: { true: "rounded-full grid place-items-center", false: "" },
       asLink: { true: "no-underline", false: "" },
     },
     defaultVariants: {

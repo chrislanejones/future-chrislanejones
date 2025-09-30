@@ -119,7 +119,7 @@ export default function Projectsbox({
             }}
             className="flex flex-col h-full"
           >
-            <h3 className="text-lg font-bold text-foreground tracking-tight">
+            <h3 className="text-xl md:text-xl font-bold">
               Project: {currentProject.title}
             </h3>
             <p className="text-muted font-normal mt-6">
@@ -140,30 +140,29 @@ export default function Projectsbox({
             <a href="/projects">More Projects</a>
           </Button>
           {/* Left Arrow */}
-          <motion.button
+          <Button
             onClick={previousProject}
-            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
-            whileTap={{ scale: 0.9 }}
+            variant="base"
+            size="icon"
+            round
             aria-label="Previous project"
           >
             <ArrowLeft />
-          </motion.button>
+          </Button>
 
           {/* GitHub Icon Button */}
-          <motion.button
+          <Button
             onClick={() =>
               hasGithubUrl && window.open(currentProject.githubUrl, "_blank")
             }
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              hasGithubUrl
-                ? "bg-ink/10 hover:bg-ink/20 cursor-pointer"
-                : "bg-ink/5 text-ink/30 cursor-not-allowed"
-            }`}
-            whileTap={hasGithubUrl ? { scale: 0.9 } : {}}
+            variant="base"
+            size="icon"
+            round
             aria-label={
               hasGithubUrl ? "View on GitHub" : "GitHub link not available"
             }
             disabled={!hasGithubUrl}
+            className={!hasGithubUrl ? "opacity-30 cursor-not-allowed" : ""}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -178,23 +177,21 @@ export default function Projectsbox({
                 d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
               />
             </svg>
-          </motion.button>
+          </Button>
 
           {/* Vercel Icon Button */}
-          <motion.button
+          <Button
             onClick={() =>
               hasVercelUrl && window.open(currentProject.vercelUrl, "_blank")
             }
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              hasVercelUrl
-                ? "bg-ink/10 hover:bg-ink/20 cursor-pointer"
-                : "bg-ink/5 text-ink/30 cursor-not-allowed"
-            }`}
-            whileTap={hasVercelUrl ? { scale: 0.9 } : {}}
+            variant="base"
+            size="icon"
+            round
             aria-label={
               hasVercelUrl ? "View live demo" : "Live demo not available"
             }
             disabled={!hasVercelUrl}
+            className={!hasVercelUrl ? "opacity-30 cursor-not-allowed" : ""}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -205,17 +202,18 @@ export default function Projectsbox({
             >
               <path d="m12 0 12 21H0z" />
             </svg>
-          </motion.button>
+          </Button>
 
           {/* Right Arrow */}
-          <motion.button
+          <Button
             onClick={nextProject}
-            className="w-10 h-10 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
-            whileTap={{ scale: 0.9 }}
+            variant="base"
+            size="icon"
+            round
             aria-label="Next project"
           >
             <ArrowRight />
-          </motion.button>
+          </Button>
         </div>
       </div>
 

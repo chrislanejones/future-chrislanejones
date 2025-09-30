@@ -38,7 +38,7 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
     <Card
       size={size}
       padding="medium"
-      glass={true}
+      glass={false}
       delay={delay}
       className="relative overflow-hidden"
       key={animationKey}
@@ -46,7 +46,7 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
       {/* Background Decoration */}
       <div className="absolute inset-0 pointer-events-none">
         <svg
-          className="absolute -right-10 -top-10 opacity-20"
+          className="absolute -right-10 -top-10 opacity-70"
           viewBox="0 0 800 500"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -73,10 +73,10 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
       {/* Content */}
       <div className="flex flex-col h-full">
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl md:text-4xl font-black leading-tight">
+          <h1 className="text-2xl md:text-4xl font-black">
             UX/UI Web Design and Development
           </h1>
-          <h2 className="text-xl md:text-xl font-bold leading-tight">
+          <h2 className="text-xl md:text-xl font-bold">
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>

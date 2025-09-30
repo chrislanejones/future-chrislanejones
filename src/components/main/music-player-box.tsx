@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Card from "../page/card";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Component props interface
 interface MusicplayerboxProps {
@@ -177,33 +177,35 @@ export default function Musicplayerbox({
 
         {/* Play/Pause and Next Controls - Top Right Corner */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
-          <motion.button
+          <Button
             onClick={togglePlayPause}
-            className="h-12 w-12 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors disabled:opacity-50 shadow-lg"
+            variant="neutral"
+            size="icon"
+            round
             disabled={!isLoaded}
             aria-label={isPlaying ? "Pause" : "Play"}
-            whileTap={{ scale: 0.95 }}
           >
             {isPlaying ? (
               <Pause size={20} className="text-ink" fill="currentColor" />
             ) : (
               <Play size={20} className="text-ink ml-0.5" fill="currentColor" />
             )}
-          </motion.button>
-          <motion.button
+          </Button>
+          <Button
             onClick={nextTrack}
-            className="h-10 w-10 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors disabled:opacity-50 shadow-lg"
+            variant="neutral"
+            size="icon"
+            round
             disabled={!isLoaded}
             aria-label="Next track"
-            whileTap={{ scale: 0.95 }}
           >
             <SkipForward size={18} className="text-ink" />
-          </motion.button>
+          </Button>
         </div>
       </div>
 
-      <div className="p-6 bg-base/70">
-        <h3 className="font-bold text-lg">
+      <div className="p-6">
+        <h3 className="text-xl md:text-xl font-bold">
           {isPlaying
             ? "Now Playing"
             : isLoaded

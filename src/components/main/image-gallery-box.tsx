@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Images } from "lucide-react";
 import Card from "../page/card";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -66,7 +67,7 @@ const Photo = ({
         </div>
       </div>
 
-      {/* White description area */}
+      {/* White description area at bottom like a real Polaroid */}
       <div className="px-2.5 py-2 h-12 flex items-center justify-center">
         <p
           className="text-gray-800 text-xs text-center leading-tight"
@@ -106,9 +107,12 @@ const PhotoGallery = ({
 
   // Handle photo click to bring to front
   const handlePhotoClick = (photoId: number) => {
-    setClickedPhotoId(photoId);
-    // Keep it at front longer - 2 seconds instead of 300ms
-    setTimeout(() => setClickedPhotoId(null), 2000);
+    // Toggle selection - if already clicked, unclick; otherwise click it
+    if (clickedPhotoId === photoId) {
+      setClickedPhotoId(null);
+    } else {
+      setClickedPhotoId(photoId);
+    }
   };
 
   const containerVariants = {
@@ -304,13 +308,14 @@ export default function ImageGalleryBox({
       <div className="absolute top-4 right-4 z-10">
         <Drawer>
           <DrawerTrigger asChild>
-            <motion.button
-              className="h-12 w-12 rounded-full bg-base/80 hover:bg-base/90 backdrop-blur-sm flex items-center justify-center transition-colors shadow-lg"
-              whileTap={{ scale: 0.95 }}
+            <Button
+              variant="base"
+              size="icon"
+              round
               aria-label="Open photo gallery"
             >
               <Images size={20} className="text-ink" />
-            </motion.button>
+            </Button>
           </DrawerTrigger>
           <DrawerContent className="h-[60vh]">
             <div className="mx-auto w-full max-w-7xl">

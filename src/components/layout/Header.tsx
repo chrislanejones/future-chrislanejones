@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
+import { ModeToggle } from "../mode-toggle";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -135,11 +136,14 @@ export default function Header() {
                 <span>LinkedIn</span>
               </a>
             </Button>
+
+            <ModeToggle />
           </div>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="lg:hidden ms-auto">
+        {/* Mobile Menu Button and Theme Toggle */}
+        <div className="lg:hidden ms-auto flex items-center gap-3">
+          <ModeToggle />
           <Button
             variant="neutral"
             className="shadow-passive hover:shadow-glow focus-ring p-2"

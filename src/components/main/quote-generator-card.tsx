@@ -13,7 +13,7 @@ const QUOTES: ReactNode[] = [
   "My rambling 2",
   "My rambling 3",
   "My rambling 4",
-  "My rambling 5",
+  "Locked my fridge with a CAPTCHA to stop my midnight snacking.",
   'In 2017, three people called on the same day asking me "How can I learn to code?"',
   'I didn\'t code as a child because this "<!--[if !(IE 6)]>" scared me.',
   "I lock my computer at night to prevent my cats from online shopping",
@@ -28,7 +28,7 @@ const QUOTES: ReactNode[] = [
       Dirt Nerd
     </a>
   </>,
-  "My rambling 10",
+  "Powered by coffee and deprecated APIs since 2015",
   "My rambling 11",
   "My rambling 12",
   "My rambling 13",
@@ -97,18 +97,20 @@ export default function Quotegeneratorcard({
       padding="medium"
       className="relative overflow-hidden flex flex-col gap-6"
     >
-      {/* Top: Avatar + Name */}
-      <div className="grid grid-cols-[80px_1fr] gap-4 items-center">
+      {/* Top: Avatar + Name inside Speech Bubble using CSS Grid */}
+      <div className="speech-bubble-container">
         <Image
           alt="avatar"
-          className="h-20 w-20 rounded-2xl ring-2 ring-white/5 object-cover"
+          className="h-20 w-20 rounded-2xl ring-2 ring-white/5 object-cover justify-self-start"
           src="/Professional-Photo-of-Chris-Lane-Jones.webp"
           width={80}
           height={80}
         />
         <div className="flex flex-col justify-center">
-          <div className="font-bold text-xl">Chris Lane Jones</div>
-          <div className="text-muted text-md">
+          <div className="font-bold text-xl text-white drop-shadow-sm">
+            Chris Lane Jones
+          </div>
+          <div className="text-white/90 text-md drop-shadow-sm">
             UX/UI Web Design and Development
           </div>
         </div>
@@ -123,7 +125,7 @@ export default function Quotegeneratorcard({
           <motion.blockquote
             key={index}
             exit={{ opacity: 0, y: -8 }}
-            className="text-center text-2xl leading-relaxed text-ink/90"
+            className="text-center text-2xl leading-relaxed text-ink"
           >
             {typeof QUOTES[index] === "string"
               ? `"${QUOTES[index]}"`
@@ -136,7 +138,7 @@ export default function Quotegeneratorcard({
       <Button
         type="button"
         onClick={nextQuote}
-        variant="neutral"
+        variant="base"
         className="absolute bottom-5 right-5 h-11 w-11 p-0 rounded-full grid place-items-center shadow-passive hover:shadow-glow focus-ring"
         aria-label="Show another quote"
         title="New quote"

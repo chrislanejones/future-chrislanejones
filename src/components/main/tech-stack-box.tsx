@@ -67,31 +67,13 @@ const techStackFuture: TechItem[] = [
   { name: "Svelte", icon: siSvelte },
 ];
 
-// Small card (logo top, text below) used across sections
-function IconCard({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-base/60 hover:shadow-soft transition group cursor-default">
-      <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors">
-        {children}
-      </div>
-      <span className="text-center text-sm font-medium">{label}</span>
-    </div>
-  );
-}
-
-// Build inline SVG once so we can reuse in the AI Tools section
-const aiTools: AiTool[] = [
+// ✅ Only one aiTools definition
+export const aiTools: AiTool[] = [
   {
     name: "Claude",
     svg: (
       <svg
-        className="h-5 w-5 text-ink"
+        className="h-5 w-5 text-[color:var(--color-foreground)]"
         viewBox="0 0 46 32"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -104,7 +86,7 @@ const aiTools: AiTool[] = [
     name: "Gemini 2.5 Pro",
     svg: (
       <svg
-        className="h-5 w-5 text-ink"
+        className="h-5 w-5 text-[color:var(--color-foreground)]"
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -118,7 +100,7 @@ const aiTools: AiTool[] = [
     name: "GLM 4.5",
     svg: (
       <svg
-        className="h-5 w-5 text-ink"
+        className="h-5 w-5 text-[color:var(--color-foreground)]"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 2000 1700"
         fill="currentColor"
@@ -130,6 +112,26 @@ const aiTools: AiTool[] = [
     ),
   },
 ];
+
+// Small card (logo top, text below) used across sections
+function IconCard({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[color:var(--color-muted-accent)] hover:shadow-soft transition group cursor-default">
+      <div className="w-10 h-10 rounded-lg bg-ink/10 hover:bg-ink/10 flex items-center justify-center transition-colors text-[color:var(--color-foreground)]">
+        {children}
+      </div>
+      <span className="text-center text-sm font-medium text-[color:var(--color-foreground)]">
+        {label}
+      </span>
+    </div>
+  );
+}
 
 export default function Techstackbox({
   size = "large",
@@ -143,8 +145,8 @@ export default function Techstackbox({
       className="flex flex-col gap-3"
     >
       {/* Tech I Love Section */}
-      <div className="border border-base/30 rounded-2xl p-3">
-        <h3 className="text-lg font-bold text-foreground tracking-tight mb-3">
+      <div className="border border-[color:var(--color-border)] rounded-2xl p-3">
+        <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Tech I Love 💖
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -153,7 +155,7 @@ export default function Techstackbox({
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
-                className="h-5 w-5 text-ink"
+                className="h-5 w-5 text-[color:var(--color-foreground)]"
                 fill="currentColor"
               >
                 <path d={tech.icon.path} />
@@ -164,8 +166,8 @@ export default function Techstackbox({
       </div>
 
       {/* Learning & Exploring Section */}
-      <div className="border border-base/30 rounded-2xl p-3">
-        <h3 className="text-lg font-bold text-foreground tracking-tight mb-3">
+      <div className="border border-[color:var(--color-border)] rounded-2xl p-3">
+        <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Learning & Exploring 🧪
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -174,7 +176,7 @@ export default function Techstackbox({
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
-                className="h-5 w-5 text-ink"
+                className="h-5 w-5 text-[color:var(--color-foreground)]"
                 fill="currentColor"
               >
                 <path d={tech.icon.path} />
@@ -185,8 +187,8 @@ export default function Techstackbox({
       </div>
 
       {/* AI Tools Section */}
-      <div className="border border-base/30 rounded-2xl p-4">
-        <h3 className="text-lg font-bold text-foreground tracking-tight mb-4">
+      <div className="border border-[color:var(--color-border)] rounded-2xl p-4">
+        <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-4">
           Current AI Tools
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-sm">

@@ -4,6 +4,7 @@ import { AnimatePresence, motion, wrap } from "framer-motion";
 import Card from "../page/card";
 import { useState, SVGProps, forwardRef } from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 type Client = { name: string; logo: string; url: string };
 
@@ -165,15 +166,16 @@ export default function Clientsliderbox({
       <div className="flex items-center justify-between gap-4">
         {/* Left Arrow - only show if there are multiple groups */}
         {showNavigation ? (
-          <motion.button
-            initial={false}
+          <Button
+            variant="neutral"
+            size="icon"
+            round
+            className="h-12 w-12"
             aria-label="Previous"
-            className="w-12 h-12 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
             onClick={() => setSlide(-1)}
-            whileTap={{ scale: 0.9 }}
           >
             <ArrowLeft />
-          </motion.button>
+          </Button>
         ) : (
           <div className="w-12" /> // Spacer to maintain layout
         )}
@@ -190,15 +192,16 @@ export default function Clientsliderbox({
 
         {/* Right Arrow - only show if there are multiple groups */}
         {showNavigation ? (
-          <motion.button
-            initial={false}
+          <Button
+            variant="neutral"
+            size="icon"
+            round
+            className="h-12 w-12"
             aria-label="Next"
-            className="w-12 h-12 rounded-full bg-ink/10 hover:bg-ink/20 flex items-center justify-center transition-colors"
             onClick={() => setSlide(1)}
-            whileTap={{ scale: 0.9 }}
           >
             <ArrowRight />
-          </motion.button>
+          </Button>
         ) : (
           <div className="w-12" /> // Spacer to maintain layout
         )}
@@ -269,7 +272,9 @@ const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
               href={client.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center relative brightness-0 invert hover:brightness-100 hover:invert-0 transition-all duration-300 opacity-80 hover:opacity-100 bg-white/5 rounded-lg p-3"
+              className="flex items-center justify-center relative transition-all duration-300 
+             opacity-90 hover:opacity-100 bg-[color:var(--color-muted-accent)] 
+             rounded-lg p-3"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 1, scale: 0.9 }}
               animate={{

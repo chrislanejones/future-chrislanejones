@@ -3,35 +3,40 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light dark;
+  --color-base: #f9fafb; /* soft off-white, cleaner base */
+  --color-panel: #ffffff; /* pure white cards */
 
-  /* Light theme (default) — bright trail day */
-  --color-base: #f5f8f4;
-  --color-panel: #e9efe7;
-  --color-ink: #0e1a12;
-  --color-muted: #526157;
-  --color-accent: #2f7d32;
+  --color-ink: #111827; /* gray-900 body text */
+  --color-foreground: #374151; /* gray-700 for icons/headings/buttons */
+  --color-muted: #6b7280; /* gray-500, *only* for small footnotes */
+  --color-muted-accent: rgba(107, 114, 128, 0.08);
 
-  --color-accent-alt: #0f6abf;
+  --color-surface-hover: #f3f4f6; /* gray-100, super pale for hover */
+
+  --color-accent: #22c55e; /* green-500, brighter & fresher */
+  --color-accent-alt: #3b82f6; /* blue-500 */
   --color-on-accent: #ffffff;
-  --color-border: #cfd9cf;
+
+  --color-border: #e5e7eb; /* gray-200, subtle */
   --radius: 12px;
   --focus-ring: 2px solid var(--color-accent-alt);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-base: #0b0d10;
-    --color-panel: #111418;
-    --color-ink: #e7edf2;
-    --color-muted: #9ca3af; /* Changed from rgba(231 237 242 / 0.1) to a more visible gray */
-    --color-muted-accent: rgba(231 237 242 / 0.05);
-    --color-accent: #8de36b;
+.dark {
+  --color-base: #0b0d10;
+  --color-panel: #111418;
+  --color-ink: #f3f4f6; /* light gray for body */
+  --color-foreground: #d1d5db; /* gray-300 for icons/headings */
+  --color-muted: #9ca3af; /* gray-400 muted */
+  --color-muted-accent: rgba(255, 255, 255, 0.05);
 
-    --color-accent-alt: #64b5f6;
-    --color-on-accent: #0b0d10;
-    --color-border: #1f242b;
-  }
+  --color-surface-hover: #1a1e24;
+
+  --color-accent: #4ade80; /* Tailwind green-400, softer neon */
+  --color-accent-alt: #60a5fa; /* Tailwind blue-400 */
+  --color-on-accent: #0b0d10; /* dark text on accent */
+
+  --color-border: #1f242b;
 }
 
 html,
@@ -50,7 +55,7 @@ body {
 }
 
 .card {
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
 }
 
 .shadow-soft {
@@ -161,4 +166,50 @@ body {
     border-radius: var(--radius, 12px);
     background: var(--color-panel);
   }
+}
+
+/* Speech bubble component */
+.speech-bubble-container {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1rem 1rem 1rem;
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(47, 125, 50, 0.8) 0%,
+    rgba(47, 125, 50, 0.6) 50%,
+    rgba(47, 125, 50, 0.3) 100%
+  );
+  border: 1px solid #2f7d32;
+  border-radius: 1rem;
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+.speech-bubble-container::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 10%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid rgba(47, 125, 50, 0.8);
+}
+
+.speech-bubble-container::before {
+  content: "";
+  position: absolute;
+  bottom: -13px;
+  left: 10%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-top: 13px solid #2f7d32;
+  z-index: -1;
 }

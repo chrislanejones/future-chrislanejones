@@ -192,6 +192,32 @@ const linkCategories = [
       },
     ],
   },
+  {
+    title: "FOSS",
+    color: "red",
+    links: [
+      {
+        href: "https://github.com/immich-app/immich",
+        label: "Immich - Photo Backup",
+        domain: "github.com/immich-app/immich",
+      },
+      {
+        href: "https://omarchy.org/",
+        label: "Omarchy Linux",
+        domain: "omarchy.org",
+      },
+      {
+        href: "https://jellyfin.org/",
+        label: "Jellyfin - Media Server",
+        domain: "jellyfin.org",
+      },
+      {
+        href: "https://github.com/meichthys/foss_photo_libraries",
+        label: "FOSS Photo Software",
+        domain: "github.com/meichthys/foss_photo_libraries",
+      },
+    ],
+  },
 ] as const;
 
 export default function LinkGrid() {
