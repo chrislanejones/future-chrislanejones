@@ -23,7 +23,7 @@ export default function LinkGrid() {
   return (
     <div className="space-y-6">
       {/* Card 1: Main Avatar and Info */}
-      <Card padding="large" glass={true} delay={0.1} className="text-center">
+      <Card padding="large" glass={false} delay={0.1} className="text-center">
         <div className="grid grid-cols-[80px_1fr] gap-4 items-center mb-6">
           <Image
             alt="Chris Lane Jones"
@@ -33,34 +33,33 @@ export default function LinkGrid() {
             src="/Professional-Photo-of-Chris-Lane-Jones.webp"
           />
           <div className="flex flex-col justify-center text-left">
-            <div className="font-bold text-xl text-white">Chris Lane Jones</div>
-            <div className="text-md text-white/70">
+            <h1 className="text-2xl font-black">
               UX/UI Web Design and Development
-            </div>
+            </h1>
           </div>
         </div>
 
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl md:text-xl font-bold leading-tight text-white">
+          <h2 className="text-xl font-bold">
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>
-          <p className="text-regular max-w-prose mx-auto text-white/70">
+          <p className="text-regular max-w-prose">
             I Build with React and WordPress — then escape to the Mountains. 🏔️
           </p>
         </div>
       </Card>
 
       {/* Card 2: Social Links */}
-      <Card padding="medium" glass={true} delay={0.2}>
-        <h3 className="text-xl font-bold mb-6 text-center text-white">
+      <Card padding="medium" glass={false} delay={0.2}>
+        <h3 className="text-xl md:text-xl mb-6 text-center flex items-center justify-center space-x-2 font-bold">
           Connect With Me
         </h3>
         <div className="grid grid-cols-2 gap-3">
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -74,9 +73,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -90,9 +89,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -106,9 +105,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -122,9 +121,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -138,9 +137,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -154,9 +153,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -170,9 +169,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -186,9 +185,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -202,9 +201,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -218,9 +217,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -234,9 +233,9 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-center h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors text-white"
+            className="justify-center"
             asChild
           >
             <a
@@ -252,17 +251,16 @@ export default function LinkGrid() {
       </Card>
 
       {/* Card 3: Current Chrome Tabs */}
-      <Card padding="medium" glass={true} delay={0.3}>
-        <h3 className="text-xl font-bold mb-6 text-center flex items-center justify-center space-x-2 text-white">
+      <Card padding="medium" glass={false} delay={0.3}>
+        <h3 className="text-xl md:text-xl mb-6 text-center flex items-center justify-center space-x-2 font-bold">
           <FaChrome className="w-6 h-6" />
           <span>Chrome Tabs I Left Open...</span>
         </h3>
         <div className="space-y-3">
           <Button
-            variant="base"
+            variant="accent"
             showExternalIcon={true}
-            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
-            asChild
+            className="flex items-center justify-between w-full"
           >
             <a
               href="https://effect.website/"
@@ -270,101 +268,68 @@ export default function LinkGrid() {
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full"
             >
-              <span className="text-white">Effect - TypeScript Library</span>
-              <span className="text-white">effect.website</span>
+              <span>Effect - TypeScript Library</span>
+              <span>effect.website</span>
             </a>
           </Button>
 
-          <Button
-            variant="base"
-            showExternalIcon={true}
-            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
-            asChild
-          >
+          <Button variant="accent" showExternalIcon={true} asChild>
             <a
               href="https://github.com/aulianza/aulianza.id"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full"
             >
-              <span className="text-white">aulianza.id</span>
-              <span className="text-white/50 text-sm">
-                https://github.com/aulianza/aulianza.id
-              </span>
+              <span>aulianza.id</span>
+              <span>https://github.com/aulianza/aulianza.id</span>
             </a>
           </Button>
 
-          <Button
-            variant="base"
-            showExternalIcon={true}
-            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
-            asChild
-          >
+          <Button variant="accent" showExternalIcon={true} asChild>
             <a
               href="https://www.fffuel.co/ooorganize/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full"
             >
-              <span className="text-white">
-                ooorganize SVG grid pattern gen
-              </span>
-              <span className="text-white/50 text-sm">
-                https://www.fffuel.co/ooorganize/
-              </span>
+              <span>ooorganize pattern</span>
+              <span>https://www.fffuel.co/ooorganize/</span>
             </a>
           </Button>
 
-          <Button
-            variant="base"
-            showExternalIcon={true}
-            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
-            asChild
-          >
+          <Button variant="accent" showExternalIcon={true} asChild>
             <a
               href="https://tweakcn.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full"
             >
-              <span className="text-white">Tweakcn</span>
-              <span className="text-white/50 text-sm">https://tweakcn.com</span>
+              <span>Tweakcn</span>
+              <span>https://tweakcn.com</span>
             </a>
           </Button>
 
-          <Button
-            variant="base"
-            showExternalIcon={true}
-            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
-            asChild
-          >
+          <Button variant="accent" showExternalIcon={true} asChild>
             <a
               href="https://pro.aceternity.com/products/navbars"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full"
             >
-              <span className="text-white">Aceternity UI</span>
-              <span className="text-white/50 text-sm">aceternity.com</span>
+              <span>Aceternity UI</span>
+              <span>aceternity.com</span>
             </a>
           </Button>
 
-          <Button
-            variant="base"
-            showExternalIcon={true}
-            className="justify-between h-auto p-3 rounded-xl bg-base/60 hover:bg-base/80 transition-colors w-full"
-            asChild
-          >
+          <Button variant="accent" showExternalIcon={true} asChild>
             <a
               href="https://learnxinyminutes.com/zig/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between w-full"
             >
-              <span className="text-white">Learn X in Y minutes</span>
-              <span className="text-white/50 text-sm">
-                https://learnxinyminutes.com/zig/
-              </span>
+              <span>Learn X in Y minutes</span>
+              <span>https://learnxinyminutes.com/zig/</span>
             </a>
           </Button>
         </div>

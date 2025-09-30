@@ -38,17 +38,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${interphases.className} bg-base text-ink`}
-        suppressHydrationWarning={true}
+        className={`${interphases.className}`}
+        suppressHydrationWarning
+        style={{
+          backgroundColor: "var(--color-base)",
+          color: "var(--color-ink)",
+        }}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );

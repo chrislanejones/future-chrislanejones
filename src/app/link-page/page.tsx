@@ -7,9 +7,9 @@ export default function LinksPage() {
       style={{ backgroundColor: "var(--color-base)" }}
     >
       <div className="py-8 px-4">
-        <div className="max-w-md mx-auto">
+        <main className="max-w-md mx-auto bg-base">
           <LinkGrid />
-        </div>
+        </main>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 # Chris Lane Jones - Developer Portfolio
 
-![Portfolio Cover](/public/Github-Cover.jpg)
+![Portfolio Cover](/public/Github-Cover-V2.jpg)
 
 🔗 **Live Demo: [https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)**
 
@@ -25,7 +25,9 @@ A modern, interactive portfolio website built with Next.js 15, featuring a bento
 - **Browser Tabs Showcase**: Interactive display of interesting browser tabs and resources
 - **Project Navigation**: Arrow navigation through featured projects
 - **Responsive Design**: Mobile-first approach with breakpoint optimization
-- **Dark/Light Theme**: Automatic theme switching based on user preference
+- **Dark/Light Theme Support**: Automatic theme switching based on system preference
+- **Prefers Color Scheme**: Respects user's OS-level light/dark mode settings
+- **Theme Toggle**: Manual theme switching with persistent preference storage
 - **Terminal Interface**: Command-line style interactions with custom dialog components
 
 ## Tech Stack
@@ -94,7 +96,9 @@ src/
 
 ### Typography
 
-- **Primary Font**: Inter (Google Fonts)
+- **Primary Font**: TT Interphases Pro (Custom font family)
+  - Regular (400), Bold (700), and Black (900) weights
+  - Modern, clean typeface optimized for digital interfaces
 - **Handwriting**: Comic Sans MS for polaroid descriptions
 
 ### Components
@@ -216,6 +220,36 @@ const playlist = [
 ];
 ```
 
+### Conference Pages Structure
+
+The conference section uses a data-driven approach with dynamic routing:
+
+1. **Data Structure** - Update `src/data/conferences.ts`:
+
+```typescript
+export const conferences: Conference[] = [
+  {
+    slug: "conference-slug",
+    name: "Conference Name",
+    year: 2024,
+    dates: { start: "2024-10-27", end: "2024-10-29" },
+    city: "City, State",
+    venue: "Venue Name",
+    url: "https://conference-website.com",
+    topics: ["Open Source", "Cloud", "AI/ML"],
+    coverImage: "/conferences/conference-image.png",
+    summary: "Brief conference description...",
+    talkLinks: [{ label: "Talk Title", url: "https://link.com" }]
+  }
+];
+```
+
+2. **Routes Generated**:
+   - `/conferences` - Main listing page with all conferences
+   - `/conferences/[year]/[slug]` - Individual conference detail pages
+
+3. **Conference Images**: Place conference logos/images in `public/conferences/`
+
 ### Updating Quotes
 
 Modify the quotes array in `src/components/main/quote-generator-card.tsx`.
@@ -253,9 +287,3 @@ bun start
 ## License
 
 This project is open source and available under the [MIT License](LICENCE).
-
-## Contact
-
-Chris Lane Jones - [hello@chrislanejones.com](mailto:hello@chrislanejones.com)
-
-Project Link: [https://github.com/chrislanejones/future-chrislanejones](https://github.com/chrislanejones/future-chrislanejones)

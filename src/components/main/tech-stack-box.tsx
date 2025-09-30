@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Card from "../page/card";
+import IconBlock from "../page/icon-block";
 
 // Component props interface
 interface TechstackboxProps {
@@ -73,7 +74,7 @@ export const aiTools: AiTool[] = [
     name: "Claude",
     svg: (
       <svg
-        className="h-5 w-5 text-[color:var(--color-foreground)]"
+        className="h-8 w-8 text-[color:var(--color-foreground)]"
         viewBox="0 0 46 32"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -86,7 +87,7 @@ export const aiTools: AiTool[] = [
     name: "Gemini 2.5 Pro",
     svg: (
       <svg
-        className="h-5 w-5 text-[color:var(--color-foreground)]"
+        className="h-8 w-8 text-[color:var(--color-foreground)]"
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -100,7 +101,7 @@ export const aiTools: AiTool[] = [
     name: "GPT 5",
     svg: (
       <svg
-        className="h-5 w-5 text-[color:var(--color-foreground)]"
+        className="h-8 w-8 text-[color:var(--color-foreground)]"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="118 120 480 480"
         fill="currentColor"
@@ -110,26 +111,6 @@ export const aiTools: AiTool[] = [
     ),
   },
 ];
-
-// Small card (logo top, text below) used across sections
-function IconCard({
-  children,
-  label,
-}: {
-  children: React.ReactNode;
-  label: string;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[color:var(--color-muted-accent)] hover:shadow-soft transition group cursor-default">
-      <div className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors text-[color:var(--color-foreground)]">
-        {children}
-      </div>
-      <span className="text-center text-sm font-medium text-[color:var(--color-foreground)]">
-        {label}
-      </span>
-    </div>
-  );
-}
 
 export default function Techstackbox({
   size = "large",
@@ -149,16 +130,16 @@ export default function Techstackbox({
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStack.map((tech) => (
-            <IconCard key={tech.name} label={tech.name}>
+            <IconBlock key={tech.name} label={tech.name}>
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
-                className="h-5 w-5 text-[color:var(--color-foreground)]"
+                className="h-8 w-8"
                 fill="currentColor"
               >
                 <path d={tech.icon.path} />
               </svg>
-            </IconCard>
+            </IconBlock>
           ))}
         </div>
       </div>
@@ -170,16 +151,16 @@ export default function Techstackbox({
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStackFuture.map((tech) => (
-            <IconCard key={tech.name} label={tech.name}>
+            <IconBlock key={tech.name} label={tech.name}>
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
-                className="h-5 w-5 text-[color:var(--color-foreground)]"
+                className="h-8 w-8"
                 fill="currentColor"
               >
                 <path d={tech.icon.path} />
               </svg>
-            </IconCard>
+            </IconBlock>
           ))}
         </div>
       </div>
@@ -191,9 +172,9 @@ export default function Techstackbox({
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-sm">
           {aiTools.map((tool) => (
-            <IconCard key={tool.name} label={tool.name}>
+            <IconBlock key={tool.name} label={tool.name}>
               {tool.svg}
-            </IconCard>
+            </IconBlock>
           ))}
         </div>
       </div>

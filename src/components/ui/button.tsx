@@ -27,8 +27,8 @@ const buttonVariants = cva(
           "border border-transparent",
         ].join(" "),
         accent: [
-          "bg-[color:var(--color-accent)]",
-          "hover:brightness-95",
+          "bg-[color:var(--color-foreground)]",
+          "hover:bg-[color:var(--color-muted)]",
           "text-[color:var(--color-on-accent)]",
           "border border-transparent",
         ].join(" "),
