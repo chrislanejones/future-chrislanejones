@@ -1,14 +1,9 @@
 "use client";
 
-import { AnimatePresence, motion, wrap } from "framer-motion";
 import Card from "../page/card";
-import { useState, SVGProps, forwardRef } from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import IconSlider, { SliderItem } from "../page/icon-slider";
 
-type Client = { name: string; logo: string; url: string };
-
-const clients: Client[] = [
+const clients: SliderItem[] = [
   {
     name: "Allianz Travel",
     logo: "/client-icons/Allianz-Travel-Logo.webp",
@@ -101,23 +96,7 @@ const clients: Client[] = [
   },
 ];
 
-// Create groups of 6 clients each (3x2 grid)
-const clientGroups: Client[][] = [];
-for (let i = 0; i < clients.length; i += 6) {
-  const group = clients.slice(i, i + 6);
-  // Pad group with empty slots if needed to maintain grid structure
-  while (group.length < 6) {
-    group.push({
-      name: "",
-      logo: "",
-      url: "#",
-    });
-  }
-  clientGroups.push(group);
-}
-
-// Component props interface
-interface ClientsliderboxProps {
+interface ClientSliderBoxProps {
   size?:
     | "small"
     | "medium"
@@ -131,207 +110,22 @@ interface ClientsliderboxProps {
   delay?: number;
 }
 
-type ClientGroupProps = {
-  clients: Client[];
-  direction: number;
-};
-
-export default function Clientsliderbox({
+export default function ClientSliderBox({
   size = "large",
   delay = 0.3,
-}: ClientsliderboxProps) {
-  const [selectedGroup, setSelectedGroup] = useState(0);
-  const [direction, setDirection] = useState<1 | -1>(1);
-
-  function setSlide(newDirection: 1 | -1) {
-    const nextGroup = wrap(
-      0,
-      clientGroups.length,
-      selectedGroup + newDirection
-    );
-    setSelectedGroup(nextGroup);
-    setDirection(newDirection);
-  }
-
-  // Only show arrows if there are multiple groups
-  const showNavigation = clientGroups.length > 1;
-  const currentClients = clientGroups[selectedGroup] || clients.slice(0, 6);
-
+}: ClientSliderBoxProps) {
   return (
     <Card size={size} delay={delay} padding="medium">
-      <h2 className="text-center font-semibold text-lg mb-4">
-        Past and Present Clients
-      </h2>
-
-      <div className="flex items-center justify-between gap-4">
-        {/* Left Arrow - only show if there are multiple groups */}
-        {showNavigation ? (
-          <Button
-            variant="neutral"
-            size="icon"
-            round
-            className="h-12 w-12"
-            aria-label="Previous"
-            onClick={() => setSlide(-1)}
-          >
-            <ArrowLeft />
-          </Button>
-        ) : (
-          <div className="w-12" /> // Spacer to maintain layout
-        )}
-
-        <div className="flex-1 relative h-80 overflow-hidden">
-          <AnimatePresence custom={direction} initial={false} mode="wait">
-            <ClientGroup
-              key={selectedGroup}
-              clients={currentClients}
-              direction={direction}
-            />
-          </AnimatePresence>
-        </div>
-
-        {/* Right Arrow - only show if there are multiple groups */}
-        {showNavigation ? (
-          <Button
-            variant="neutral"
-            size="icon"
-            round
-            className="h-12 w-12"
-            aria-label="Next"
-            onClick={() => setSlide(1)}
-          >
-            <ArrowRight />
-          </Button>
-        ) : (
-          <div className="w-12" /> // Spacer to maintain layout
-        )}
-      </div>
-
-      {/* Pagination dots - only show if there are multiple groups */}
-      {showNavigation && (
-        <div className="flex justify-center gap-2 mt-4">
-          {clientGroups.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setDirection(index > selectedGroup ? 1 : -1);
-                setSelectedGroup(index);
-              }}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === selectedGroup
-                  ? "bg-accent"
-                  : "bg-ink/20 hover:bg-ink/40"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
+      <IconSlider
+        items={clients}
+        itemsPerGroup={6}
+        gridCols={3}
+        gridRows={2}
+        title="Past and Present Clients"
+        variant="large-block"
+        showNavigation={true}
+        showPagination={true}
+      />
     </Card>
-  );
-}
-
-const ClientGroup = forwardRef<HTMLDivElement, ClientGroupProps>(
-  ({ clients, direction }, ref) => {
-    return (
-      <motion.div
-        ref={ref}
-        className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-6 p-4"
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-          transition: {
-            duration: 0.3,
-            ease: "easeOut",
-          },
-        }}
-        exit={{
-          opacity: 0,
-          transition: {
-            duration: 0.2,
-            ease: "easeIn",
-          },
-        }}
-      >
-        {clients.map((client: Client, index: number) => {
-          // Skip empty slots
-          if (!client.name || !client.logo) {
-            return (
-              <div
-                key={`empty-${index}`}
-                className="flex items-center justify-center"
-              />
-            );
-          }
-
-          return (
-            <motion.a
-              key={`${client.name}-${index}`}
-              href={client.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center justify-center relative transition-all duration-300 
-             opacity-90 hover:opacity-100 bg-[color:var(--color-base)] 
-             hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3"
-              whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 1, scale: 0.9 }}
-              animate={{
-                scale: 1,
-                transition: { duration: 0.5, ease: "easeOut" },
-              }}
-            >
-              <Image
-                src={client.logo}
-                alt={`${client.name} logo`}
-                width={180}
-                height={126}
-                className="
-    object-contain w-full h-full max-w-[180px] max-h-[126px]
-    transition-all duration-300
-    brightness-0 dark:brightness-0 dark:invert
-    group-hover:filter-none
-  "
-                sizes="160px"
-              />
-            </motion.a>
-          );
-        })}
-      </motion.div>
-    );
-  }
-);
-
-ClientGroup.displayName = "ClientGroup";
-
-// Icons
-const iconsProps: SVGProps<SVGSVGElement> = {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: "28",
-  height: "28",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: "2",
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-};
-
-function ArrowLeft() {
-  return (
-    <svg {...iconsProps}>
-      <path d="m12 19-7-7 7-7" />
-      <path d="M19 12H5" />
-    </svg>
-  );
-}
-
-function ArrowRight() {
-  return (
-    <svg {...iconsProps}>
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </svg>
   );
 }

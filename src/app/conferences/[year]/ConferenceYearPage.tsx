@@ -1,0 +1,127 @@
+// app/conferences/[year]/ConferenceYearPage.tsx
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import Card from "@/components/page/card";
+import type { Conference } from "@/data/conferences";
+
+interface ConferenceYearPageProps {
+  conferences: Conference[];
+  year: string;
+}
+
+export default function ConferenceYearPage({
+  conferences,
+  year,
+}: ConferenceYearPageProps) {
+  return (
+    <main className="max-w-6xl mx-auto px-5 py-12">
+      {/* Banner */}
+      <div className="mb-16">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+          Conferences in {year}
+        </h1>
+        <div className="flex items-center gap-2 text-sm text-muted">
+          <Link href="/" className="hover:text-foreground">
+            Home
+          </Link>
+          <span>/</span>
+          <Link href="/conferences" className="hover:text-foreground">
+            Conferences
+          </Link>
+          <span>/</span>
+          <span className="text-foreground">{year}</span>
+        </div>
+      </div>
+
+      {/* Conference Grid - 3 cards per row */}
+      <section
+        className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[1fr]"
+        aria-label="Conferences grid"
+      >
+        {conferences.map((c, i) => (
+          <Card
+            key={`${c.year}-${c.slug}`}
+            size="large"
+            className="overflow-hidden"
+            delay={0.1 + i * 0.05}
+          >
+            <Link
+              href={`/conferences/${c.year}/${c.slug}`}
+              className="group flex h-full flex-col"
+            >
+              {/* Conference Logo */}
+              <div className="relative w-full aspect-[16/9] bg-white">
+                {c.coverImage && (
+                  <Image
+                    src={c.coverImage}
+                    alt={`${c.name} ${c.year}`}
+                    fill
+                    className="object-contain p-4"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    priority={i < 3}
+                  />
+                )}
+              </div>
+
+              {/* Conference Info */}
+              <div className="flex-1 p-5 flex flex-col">
+                <h2 className="text-xl font-semibold group-hover:text-accent transition-colors">
+                  {c.name}
+                </h2>
+                <p className="text-sm text-muted mt-2">
+                  {[c.dates?.start, c.city, c.venue]
+                    .filter(Boolean)
+                    .join(" • ")}
+                </p>
+
+                {c.summary && (
+                  <p className="mt-3 text-sm text-[color:var(--color-ink)] line-clamp-3">
+                    {c.summary}
+                  </p>
+                )}
+
+                {/* Topics */}
+                {c.topics && c.topics.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-4">
+                    {c.topics.slice(0, 3).map((topic) => (
+                      <span
+                        key={topic}
+                        className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5 text-xs"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                    {c.topics.length > 3 && (
+                      <span className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5 text-xs text-muted">
+                        +{c.topics.length - 3}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <span className="mt-auto pt-4 inline-flex items-center gap-2 text-sm font-medium text-accent group-hover:underline">
+                  View details →
+                </span>
+              </div>
+            </Link>
+          </Card>
+        ))}
+      </section>
+
+      {/* Empty State */}
+      {conferences.length === 0 && (
+        <Card size="page-full" className="text-center py-12">
+          <p className="text-muted">No conferences found for {year}</p>
+          <Link
+            href="/conferences"
+            className="mt-4 inline-block text-accent hover:underline"
+          >
+            View all conferences
+          </Link>
+        </Card>
+      )}
+    </main>
+  );
+}

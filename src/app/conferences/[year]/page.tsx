@@ -1,20 +1,35 @@
+// app/conferences/[year]/page.tsx
+import type { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import Banner from "@/components/page/banner";
-import Card from "@/components/page/card";
-import Link from "next/link";
+import ConferenceYearPage from "./ConferenceYearPage";
 import { conferences } from "@/data/conferences";
+
+type Params = { year: string };
 
 export function generateStaticParams() {
   const years = Array.from(new Set(conferences.map((c) => String(c.year))));
   return years.map((year) => ({ year }));
 }
 
-export default function ConferencesByYear({
+export async function generateMetadata({
   params,
 }: {
-  params: { year: string };
-}) {
+  params: Params;
+}): Promise<Metadata> {
+  const year = params.year;
+  const yearConferences = conferences.filter((c) => String(c.year) === year);
+  const count = yearConferences.length;
+
+  return {
+    title: `Conferences ${year} | Chris Lane Jones`,
+    description: `${count} conference${
+      count !== 1 ? "s" : ""
+    } attended in ${year} - ${yearConferences.map((c) => c.name).join(", ")}`,
+  };
+}
+
+export default function ConferencesByYearRoute({ params }: { params: Params }) {
   const items = conferences
     .filter((c) => String(c.year) === params.year)
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -22,32 +37,7 @@ export default function ConferencesByYear({
   return (
     <div className="min-h-screen bg-base">
       <Header />
-
-      <main className="max-w-6xl mx-auto px-5 py-12">
-        <Banner
-          title={`Conferences — ${params.year}`}
-          breadcrumbPage="Conferences"
-          description={`Events attended in ${params.year}.`}
-        />
-        <section className="grid grid-cols-1 md:grid-cols-6 gap-6">
-          {items.map((c) => (
-            <Card key={c.slug} size="large" className="overflow-hidden">
-              <Link
-                href={`/conferences/${c.year}/${c.slug}`}
-                className="group block p-5"
-              >
-                <h2 className="text-lg font-semibold">
-                  {c.name} {c.year}
-                </h2>
-                <p className="text-sm text-muted">
-                  {[c.city, c.venue].filter(Boolean).join(" • ")}
-                </p>
-              </Link>
-            </Card>
-          ))}
-        </section>
-      </main>
-
+      <ConferenceYearPage conferences={items} year={params.year} />
       <Footer />
     </div>
   );

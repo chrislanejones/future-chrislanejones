@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Card from "../page/card";
 import IconBlock from "../page/icon-block";
 
-// Component props interface
 interface TechstackboxProps {
   size?:
     | "small"
@@ -42,7 +41,6 @@ type TechItem = { name: string; icon: { path: string } };
 
 type AiTool = {
   name: string;
-  // inline SVG (width/height driven by className)
   svg: JSX.Element;
 };
 
@@ -68,7 +66,6 @@ const techStackFuture: TechItem[] = [
   { name: "Svelte", icon: siSvelte },
 ];
 
-// ✅ Only one aiTools definition
 export const aiTools: AiTool[] = [
   {
     name: "Claude",
@@ -130,7 +127,7 @@ export default function Techstackbox({
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStack.map((tech) => (
-            <IconBlock key={tech.name} label={tech.name}>
+            <IconBlock key={tech.name} label={tech.name} variant="small-block">
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
@@ -151,7 +148,7 @@ export default function Techstackbox({
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStackFuture.map((tech) => (
-            <IconBlock key={tech.name} label={tech.name}>
+            <IconBlock key={tech.name} label={tech.name} variant="small-block">
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
@@ -172,7 +169,7 @@ export default function Techstackbox({
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-sm">
           {aiTools.map((tool) => (
-            <IconBlock key={tool.name} label={tool.name}>
+            <IconBlock key={tool.name} label={tool.name} variant="small-block">
               {tool.svg}
             </IconBlock>
           ))}
