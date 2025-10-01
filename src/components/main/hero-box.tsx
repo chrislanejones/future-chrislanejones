@@ -81,7 +81,8 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
             Government Agencies.
           </h2>
           <p className="text-regular max-w-prose">
-            I Build with React and WordPress — then escape to the Mountains. 🏔️
+            Building digital experiences with React and WordPress — one summit
+            at a time. 🏔️
           </p>
         </div>
 

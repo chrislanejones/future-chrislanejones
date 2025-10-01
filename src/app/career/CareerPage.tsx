@@ -18,7 +18,7 @@ type AboutSection = {
 
 const aboutSections: AboutSection[] = [
   {
-    title: "From Video Production to Web Development",
+    title: "Resume --- From Video Production to Web Development",
     description:
       "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry – never a dull moment in JavaScript, PHP, and their frameworks. In 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
     image: "/gallery/Me-Recording-A-Video.webp",

@@ -1,17 +1,23 @@
 "use client";
 
 import { AnimatePresence, motion, wrap } from "framer-motion";
-import { useState, SVGProps, forwardRef } from "react";
-import { Button } from "@/components/ui/button";
-import IconBlock from "./icon-block";
+import { useState, SVGProps, forwardRef, useEffect } from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export type SliderItem = {
   name: string;
   logo: string;
-  url?: string;
+  url: string;
   year?: string;
   location?: string;
+};
+
+type ItemGroupProps = {
+  items: SliderItem[];
+  direction: number;
+  isMobile: boolean;
+  variant: "large-block" | "small-block" | "no-filter";
 };
 
 interface IconSliderProps {
@@ -22,151 +28,31 @@ interface IconSliderProps {
   title?: string;
   showNavigation?: boolean;
   showPagination?: boolean;
-  variant?: "large-block" | "small-block";
+  variant?: "large-block" | "small-block" | "no-filter";
   className?: string;
 }
 
-type SliderGroupProps = {
-  items: SliderItem[];
-  direction: number;
-  gridCols: number;
-  gridRows: number;
-  variant: "large-block" | "small-block";
-};
-
-export default function IconSlider({
-  items,
-  itemsPerGroup = 6,
-  gridCols = 3,
-  gridRows = 2,
-  title,
-  showNavigation = true,
-  showPagination = true,
-  variant = "large-block",
-  className = "",
-}: IconSliderProps) {
-  const [selectedGroup, setSelectedGroup] = useState(0);
-  const [direction, setDirection] = useState<1 | -1>(1);
-
-  // Create groups
-  const itemGroups: SliderItem[][] = [];
-  for (let i = 0; i < items.length; i += itemsPerGroup) {
-    const group = items.slice(i, i + itemsPerGroup);
-    // Pad group with empty slots if needed to maintain grid structure
-    while (group.length < itemsPerGroup) {
-      group.push({
-        name: "",
-        logo: "",
-        url: "#",
-      });
-    }
-    itemGroups.push(group);
-  }
-
-  function setSlide(newDirection: 1 | -1) {
-    const nextGroup = wrap(0, itemGroups.length, selectedGroup + newDirection);
-    setSelectedGroup(nextGroup);
-    setDirection(newDirection);
-  }
-
-  const shouldShowNavigation = showNavigation && itemGroups.length > 1;
-  const shouldShowPagination = showPagination && itemGroups.length > 1;
-  const currentItems =
-    itemGroups[selectedGroup] || items.slice(0, itemsPerGroup);
-
-  return (
-    <div className={className}>
-      {title && (
-        <h2 className="text-center font-semibold text-lg mb-4">{title}</h2>
-      )}
-
-      <div className="flex items-center justify-between gap-4">
-        {shouldShowNavigation ? (
-          <Button
-            variant="neutral"
-            size="icon"
-            round
-            className="h-12 w-12"
-            aria-label="Previous"
-            onClick={() => setSlide(-1)}
-          >
-            <ArrowLeft />
-          </Button>
-        ) : (
-          <div className="w-12" />
-        )}
-
-        <div className="flex-1 relative h-80 overflow-hidden">
-          <AnimatePresence custom={direction} initial={false} mode="wait">
-            <SliderGroup
-              key={selectedGroup}
-              items={currentItems}
-              direction={direction}
-              gridCols={gridCols}
-              gridRows={gridRows}
-              variant={variant}
-            />
-          </AnimatePresence>
-        </div>
-
-        {shouldShowNavigation ? (
-          <Button
-            variant="neutral"
-            size="icon"
-            round
-            className="h-12 w-12"
-            aria-label="Next"
-            onClick={() => setSlide(1)}
-          >
-            <ArrowRight />
-          </Button>
-        ) : (
-          <div className="w-12" />
-        )}
-      </div>
-
-      {shouldShowPagination && (
-        <div className="flex justify-center gap-2 mt-4">
-          {itemGroups.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setDirection(index > selectedGroup ? 1 : -1);
-                setSelectedGroup(index);
-              }}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                index === selectedGroup
-                  ? "bg-ink scale-110"
-                  : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-const SliderGroup = forwardRef<HTMLDivElement, SliderGroupProps>(
-  ({ items, direction, gridCols, gridRows, variant }, ref) => {
-    const gridColsClass = {
-      2: "grid-cols-2",
-      3: "grid-cols-3",
-      4: "grid-cols-4",
-      6: "grid-cols-6",
-    }[gridCols];
-
-    const gridRowsClass = {
-      1: "grid-rows-1",
-      2: "grid-rows-2",
-      3: "grid-rows-3",
-    }[gridRows];
+const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
+  ({ items, direction, isMobile, variant }, ref) => {
+    // Determine image filter classes based on variant
+    const getImageClasses = () => {
+      if (variant === "no-filter") {
+        return "object-contain w-full h-full max-w-[180px] max-h-[126px] transition-all duration-300";
+      }
+      return `
+        object-contain w-full h-full max-w-[180px] max-h-[126px]
+        transition-all duration-300
+        brightness-0 dark:brightness-0 dark:invert
+        group-hover:filter-none
+      `;
+    };
 
     return (
       <motion.div
         ref={ref}
-        className={`absolute inset-0 grid ${gridColsClass} ${gridRowsClass} gap-6 p-4`}
+        className={`absolute inset-0 grid ${
+          isMobile ? "grid-cols-2 grid-rows-2" : "grid-cols-3 grid-rows-2"
+        } gap-6 p-4`}
         initial={{
           opacity: 0,
         }}
@@ -197,53 +83,30 @@ const SliderGroup = forwardRef<HTMLDivElement, SliderGroupProps>(
           }
 
           return (
-            <motion.div
+            <motion.a
               key={`${item.name}-${index}`}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-center relative transition-all duration-300 
+             opacity-90 hover:opacity-100 bg-[color:var(--color-base)] 
+             hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3 border border-transparent hover:border-accent"
+              whileHover={{ scale: 1.05 }}
               initial={{ opacity: 1, scale: 0.9 }}
               animate={{
                 scale: 1,
                 transition: { duration: 0.5, ease: "easeOut" },
               }}
-              className="relative"
             >
-              <IconBlock
-                variant={variant}
-                href={item.url && item.url !== "#" ? item.url : undefined}
-                label=""
-                className="h-full"
-              >
-                {variant === "large-block" ? (
-                  <Image
-                    src={item.logo}
-                    alt={`${item.name} logo`}
-                    width={180}
-                    height={126}
-                    className="object-contain w-full h-full max-w-[180px] max-h-[126px] transition-all duration-300 brightness-0 dark:brightness-0 dark:invert group-hover:filter-none"
-                    sizes="160px"
-                  />
-                ) : (
-                  <Image
-                    src={item.logo}
-                    alt={`${item.name} logo`}
-                    width={80}
-                    height={80}
-                    className="object-contain"
-                    sizes="80px"
-                  />
-                )}
-              </IconBlock>
-
-              {/* Optional overlay info for conferences/items with extra data */}
-              {(item.year || item.location) && (
-                <div className="absolute bottom-2 left-2 right-2 text-center">
-                  <p className="text-xs text-muted opacity-75">
-                    {item.year}
-                    {item.year && item.location && " • "}
-                    {item.location}
-                  </p>
-                </div>
-              )}
-            </motion.div>
+              <Image
+                src={item.logo}
+                alt={`${item.name} logo`}
+                width={180}
+                height={126}
+                className={getImageClasses()}
+                sizes="160px"
+              />
+            </motion.a>
           );
         })}
       </motion.div>
@@ -251,7 +114,139 @@ const SliderGroup = forwardRef<HTMLDivElement, SliderGroupProps>(
   }
 );
 
-SliderGroup.displayName = "SliderGroup";
+ItemGroup.displayName = "ItemGroup";
+
+export default function IconSlider({
+  items,
+  itemsPerGroup = 6,
+  gridCols = 3,
+  gridRows = 2,
+  title,
+  showNavigation = true,
+  showPagination = true,
+  variant = "large-block",
+  className = "",
+}: IconSliderProps) {
+  const [selectedGroup, setSelectedGroup] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Adjust items per group based on mobile
+  const effectiveItemsPerGroup = isMobile ? 4 : itemsPerGroup;
+
+  // Create groups
+  const itemGroups: SliderItem[][] = [];
+  for (let i = 0; i < items.length; i += effectiveItemsPerGroup) {
+    const group = items.slice(i, i + effectiveItemsPerGroup);
+    // Pad group with empty slots if needed
+    while (group.length < effectiveItemsPerGroup) {
+      group.push({
+        name: "",
+        logo: "",
+        url: "#",
+      });
+    }
+    itemGroups.push(group);
+  }
+
+  function setSlide(newDirection: 1 | -1) {
+    const nextGroup = wrap(0, itemGroups.length, selectedGroup + newDirection);
+    setSelectedGroup(nextGroup);
+    setDirection(newDirection);
+  }
+
+  const shouldShowNavigation = showNavigation && itemGroups.length > 1;
+  const shouldShowPagination = showPagination && itemGroups.length > 1;
+  const currentItems =
+    itemGroups[selectedGroup] || items.slice(0, effectiveItemsPerGroup);
+
+  return (
+    <div className={className}>
+      {title && (
+        <h2 className="text-center font-semibold text-lg mb-4">{title}</h2>
+      )}
+
+      <div className="flex items-center justify-between gap-4">
+        {/* Left Arrow */}
+        {shouldShowNavigation ? (
+          <Button
+            variant="neutral"
+            size="icon"
+            round
+            className="h-12 w-12"
+            aria-label="Previous"
+            onClick={() => setSlide(-1)}
+          >
+            <ArrowLeft />
+          </Button>
+        ) : (
+          <div className="w-12" />
+        )}
+
+        <div className="flex-1 relative h-80 overflow-hidden">
+          <AnimatePresence custom={direction} initial={false} mode="wait">
+            <ItemGroup
+              key={selectedGroup}
+              items={currentItems}
+              direction={direction}
+              isMobile={isMobile}
+              variant={variant}
+            />
+          </AnimatePresence>
+        </div>
+
+        {/* Right Arrow */}
+        {shouldShowNavigation ? (
+          <Button
+            variant="neutral"
+            size="icon"
+            round
+            className="h-12 w-12"
+            aria-label="Next"
+            onClick={() => setSlide(1)}
+          >
+            <ArrowRight />
+          </Button>
+        ) : (
+          <div className="w-12" />
+        )}
+      </div>
+
+      {/* Pagination dots */}
+      {shouldShowPagination && (
+        <div className="flex justify-center gap-2 mt-4">
+          {itemGroups.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setDirection(index > selectedGroup ? 1 : -1);
+                setSelectedGroup(index);
+              }}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                index === selectedGroup
+                  ? "bg-ink scale-110"
+                  : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // Icons
 const iconsProps: SVGProps<SVGSVGElement> = {

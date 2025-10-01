@@ -25,9 +25,9 @@ const interphases = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Chris Lane Jones — Dev & Hiker",
+  title: "Chris Lane Jones — UX/UI Web Design and Development - Dev & Hiker",
   description:
-    "Personal portfolio using a bento grid and Motion One animations. Developer who likes hiking.",
+    "I Consult, Design, and Develop Web Interfaces for Businesses and Government Agencies.",
 };
 
 export default function RootLayout({

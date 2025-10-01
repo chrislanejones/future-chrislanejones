@@ -4,7 +4,7 @@ import BrowserGrid from "./BrowserGrid";
 import Footer from "@/components/layout/Footer";
 
 export const metadata = {
-  title: "Projects | Chris Lane Jones — Dev & Hiker",
+  title: "Chrome Tabs I Left Open | Chris Lane Jones — Dev & Hiker",
   description:
     "See My Open Browser tabs - A curated collection of useful resources, tools, and inspiration that I keep coming back to.",
 };

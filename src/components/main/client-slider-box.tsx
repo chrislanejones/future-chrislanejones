@@ -3,7 +3,9 @@
 import Card from "../page/card";
 import IconSlider, { SliderItem } from "../page/icon-slider";
 
-const clients: SliderItem[] = [
+type Client = { name: string; logo: string; url: string };
+
+const clients: Client[] = [
   {
     name: "Allianz Travel",
     logo: "/client-icons/Allianz-Travel-Logo.webp",
@@ -96,7 +98,15 @@ const clients: SliderItem[] = [
   },
 ];
 
-interface ClientSliderBoxProps {
+// Transform to SliderItem format
+const clientItems: SliderItem[] = clients.map((client) => ({
+  name: client.name,
+  logo: client.logo,
+  url: client.url,
+}));
+
+// Component props interface
+interface ClientsliderboxProps {
   size?:
     | "small"
     | "medium"
@@ -110,21 +120,21 @@ interface ClientSliderBoxProps {
   delay?: number;
 }
 
-export default function ClientSliderBox({
+export default function Clientsliderbox({
   size = "large",
   delay = 0.3,
-}: ClientSliderBoxProps) {
+}: ClientsliderboxProps) {
   return (
     <Card size={size} delay={delay} padding="medium">
       <IconSlider
-        items={clients}
+        items={clientItems}
         itemsPerGroup={6}
         gridCols={3}
         gridRows={2}
         title="Past and Present Clients"
-        variant="large-block"
         showNavigation={true}
         showPagination={true}
+        variant="large-block"
       />
     </Card>
   );
