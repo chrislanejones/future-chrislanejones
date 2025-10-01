@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Card from "../page/card";
 import IconBlock from "../page/icon-block";
 
+// Component props interface
 interface TechstackboxProps {
   size?:
     | "small"
@@ -41,6 +42,7 @@ type TechItem = { name: string; icon: { path: string } };
 
 type AiTool = {
   name: string;
+  // inline SVG (width/height driven by className)
   svg: JSX.Element;
 };
 
@@ -66,6 +68,7 @@ const techStackFuture: TechItem[] = [
   { name: "Svelte", icon: siSvelte },
 ];
 
+// ✅ Only one aiTools definition
 export const aiTools: AiTool[] = [
   {
     name: "Claude",
@@ -121,13 +124,13 @@ export default function Techstackbox({
       className="flex flex-col gap-3"
     >
       {/* Tech I Love Section */}
-      <div className="border border-[color:var(--color-border)] rounded-2xl p-3">
+      <div className="p-3">
         <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Tech I Love 💖
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStack.map((tech) => (
-            <IconBlock key={tech.name} label={tech.name} variant="small-block">
+            <IconBlock key={tech.name} label={tech.name}>
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
@@ -142,13 +145,13 @@ export default function Techstackbox({
       </div>
 
       {/* Learning & Exploring Section */}
-      <div className="border border-[color:var(--color-border)] rounded-2xl p-3">
+      <div className="p-3">
         <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Learning & Exploring 🧪
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStackFuture.map((tech) => (
-            <IconBlock key={tech.name} label={tech.name} variant="small-block">
+            <IconBlock key={tech.name} label={tech.name}>
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
@@ -163,13 +166,13 @@ export default function Techstackbox({
       </div>
 
       {/* AI Tools Section */}
-      <div className="border border-[color:var(--color-border)] rounded-2xl p-4">
+      <div className="p-4">
         <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-4">
           Current AI Tools
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-sm">
           {aiTools.map((tool) => (
-            <IconBlock key={tool.name} label={tool.name} variant="small-block">
+            <IconBlock key={tool.name} label={tool.name}>
               {tool.svg}
             </IconBlock>
           ))}
