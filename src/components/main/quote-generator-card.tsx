@@ -138,8 +138,10 @@ export default function Quotegeneratorcard({
       <Button
         type="button"
         onClick={nextQuote}
-        variant="base"
-        className="absolute bottom-5 right-5 h-11 w-11 p-0 rounded-full grid place-items-center shadow-passive hover:shadow-glow focus-ring"
+        variant="neutral"
+        size="icon"
+        round={true}
+        className="absolute bottom-5 right-5"
         aria-label="Show another quote"
         title="New quote"
       >

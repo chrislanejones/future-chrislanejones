@@ -22,12 +22,12 @@ export default function Home() {
         <section className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-5 auto-rows-min">
           <HeroBox size="hero" delay={0.1} />
           <QuoteGeneratorCard size="large" delay={0.2} />
-          <MusicPlayerBox size="large" delay={0.3} />
-          <ProjectsBox size="hero" delay={0.4} />
-          <ImageGalleryBox size="hero" delay={0.6} />
-          <LinkCard size="large" delay={0.7} />
-          <ClientSliderBox size="full" delay={0.8} />
-          <TechStackBox size="full" delay={0.5} />
+          <ProjectsBox size="full" delay={0.3} />
+          <MusicPlayerBox size="large" delay={0.4} />
+          <LinkCard size="large" delay={0.5} />
+          <ImageGalleryBox size="large" delay={0.6} />
+          <ClientSliderBox size="full" delay={0.7} />
+          <TechStackBox size="full" delay={0.8} />
         </section>
       </main>
 

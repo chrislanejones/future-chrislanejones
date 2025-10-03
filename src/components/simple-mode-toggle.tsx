@@ -74,9 +74,11 @@ export function SimpleModeToggle() {
     return (
       <Button
         variant="neutral"
-        className="shadow-passive hover:shadow-glow focus-ring shrink-0"
         size="icon"
+        round={true}
+        className="shrink-0"
         disabled
+        aria-label="Loading theme toggle"
       >
         <Sun className="h-[1.2rem] w-[1.2rem]" />
       </Button>
@@ -86,9 +88,11 @@ export function SimpleModeToggle() {
   return (
     <Button
       variant="neutral"
-      className="shadow-passive hover:shadow-glow focus-ring shrink-0"
       size="icon"
+      round={true}
       onClick={toggleTheme}
+      className="shrink-0"
+      aria-label="Toggle theme"
     >
       {theme === "dark" ? (
         <Moon className="h-[1.2rem] w-[1.2rem]" />

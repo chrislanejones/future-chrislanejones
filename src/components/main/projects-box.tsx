@@ -17,30 +17,43 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "MPC Vim filter Beat Machine",
+    title: "Image Editor & Optimizer",
     description:
-      "A sleek, MPC-inspired interface for browsing and filtering Vim and NeoVim keyboard shortcuts.",
+      "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
     features: [
-      "MPC-Inspired UI with 20 drum pad-style filters",
-      "TR-505 Drum Samples for audio feedback",
-      "Smart Filtering: Toggleable shortcut categories",
+      "Offline-friendly and keyboard-navigable",
+      "Undo/redo, rotation/flip, pagination",
+      "Bulk crop mirroring across selected images",
     ],
-    image: "/projects/mpc-vim-filter-tool.webp",
-    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
-    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
+    image: "/projects/multi-image-compress-and-edit-app.webp",
+    githubUrl: "https://github.com/chrislanejones",
+    vercelUrl: "",
   },
   {
-    title: "Go Web Crawler",
+    title: "Golang Web Crawler",
     description:
-      "High-performance web crawler built with Go. Features concurrent processing, rate limiting, and comprehensive data extraction capabilities.",
+      "High-performance web crawler built with Go featuring concurrent processing, intelligent rate limiting, and comprehensive data extraction.",
     features: [
       "Concurrent crawling with goroutines",
-      "Rate limiting and politeness policies",
-      "Structured data extraction",
+      "Intelligent rate limiting and politeness policies",
+      "Structured data extraction with custom parsers",
     ],
     image: "/projects/Go-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/go-crawler",
     vercelUrl: "",
+  },
+  {
+    title: "Vim/Neovim Shortcut Finder",
+    description:
+      "Interactive app to discover and master Vim/Neovim shortcuts via intuitive search and contextual learning.",
+    features: [
+      "Interactive shortcut search and filtering",
+      "Context-aware command suggestions",
+      "Custom shortcut collection builder",
+    ],
+    image: "/projects/mpc-vim-filter-tool.webp",
+    githubUrl: "https://github.com/chrislanejones/vim-shortcuts",
+    vercelUrl: "https://vim-shortcuts.vercel.app",
   },
 ];
 
@@ -106,7 +119,7 @@ export default function Projectsbox({
               x: 0,
               transition: {
                 duration: 0.5,
-                ease: [0.4, 0, 0.2, 1], // Custom cubic-bezier for smoother animation
+                ease: [0.4, 0, 0.2, 1],
               },
             }}
             exit={{
@@ -162,7 +175,6 @@ export default function Projectsbox({
               hasGithubUrl ? "View on GitHub" : "GitHub link not available"
             }
             disabled={!hasGithubUrl}
-            className={!hasGithubUrl ? "opacity-30 cursor-not-allowed" : ""}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +203,6 @@ export default function Projectsbox({
               hasVercelUrl ? "View live demo" : "Live demo not available"
             }
             disabled={!hasVercelUrl}
-            className={!hasVercelUrl ? "opacity-30 cursor-not-allowed" : ""}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -265,7 +276,7 @@ export default function Projectsbox({
   );
 }
 
-// Icons (same as ClientSliderBox)
+// Icons
 const iconsProps: SVGProps<SVGSVGElement> = {
   xmlns: "http://www.w3.org/2000/svg",
   width: "24",

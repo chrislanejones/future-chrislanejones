@@ -92,7 +92,13 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
             <a href="#contact">See My Calendar</a>
           </Button>
 
-          <Button variant="base" onClick={replayAnimation}>
+          <Button
+            variant="neutral"
+            size="icon"
+            round={true}
+            onClick={replayAnimation}
+            aria-label="Replay animation"
+          >
             <MountainSnow className="h-5 w-5" aria-hidden="true" />
           </Button>
         </div>

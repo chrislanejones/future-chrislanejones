@@ -74,7 +74,7 @@ export default function Header() {
               />
               <path
                 className="fill-[#0e4a34]"
-                d="M820,716c8.06,11.19-56.82,45.89-71.37,45.89H178.39c-10.14.06-18.51-63.26-19.48-79.95-.09-1.63.08-3.26.49-4.84l9.96-37.87c0-3.48,14.19-11.43,21.37-16.28,2.21-1.49,4.03-3.42,5.32-5.65l64.27-110.63c1.36-2.34,3.3-4.35,5.66-5.87,16.19-10.39,79.53-48.08,95.23-57.29,2.31-1.36,4.26-3.18,5.71-5.33l42.45-63.12c1.14-1.7,2.61-3.2,4.33-4.42,1.09-.77,2.1-1.65,3.01-2.63l54.98-59.04c.25-.27.5-.52.76-.77,9.32-8.98,25.75-5.2,30.07,6.57l17.4,47.41c.57,1.56,1.39,3.03,2.43,4.38,6.62,8.56,31.35,41.16,37.06,46.7.85.82,1.61,1.71,2.27,2.67l30.14,44.07c2.62,1.03,7.98,51.96,10.79,51.79,0,0,74.41,134.2,147.41,127.2s70,77,70,77Z"
+                d="M820,716c8.06,11.19-56.82,45.89-71.37,45.89H178.39c-10.14.06-18.51-63.26-19.48-79.95-.09-1.63.08-3.26.49-4.84l9.96-37.87c0-3.48,14.19-11.43,21.37-16.28,2.21-1.49,4.03-3.42,5.32-5.65l64.27-110.63c1.36-2.34,3.3-4.35,5.66-5.87,16.19-10.39,79.53-48.08,95.23-57.29,2.31-1.36,4.26-3.18,5.71-5.33l42.45-63.12c1.14-1.7,2.61-3.2,4.33-4.42c1.09-.77,2.1-1.65,3.01-2.63l54.98-59.04c.25-.27.5-.52.76-.77,9.32-8.98,25.75-5.2,30.07,6.57l17.4,47.41c.57,1.56,1.39,3.03,2.43,4.38,6.62,8.56,31.35,41.16,37.06,46.7.85.82,1.61,1.71,2.27,2.67l30.14,44.07c2.62,1.03,7.98,51.96,10.79,51.79,0,0,74.41,134.2,147.41,127.2s70,77,70,77Z"
               />
               <path
                 className="fill-[#686128]"
@@ -131,12 +131,17 @@ export default function Header() {
 
           {/* Buttons */}
           <div className="flex items-center gap-3">
-            <Button asChild variant="neutral">
+            <Button
+              asChild
+              variant="neutral"
+              size="icon"
+              round={true}
+              title="X (formerly Twitter)"
+            >
               <a
                 href="https://x.com/cljwebdev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="whitespace-nowrap inline-flex items-center gap-2"
               >
                 <svg
                   aria-hidden="true"
@@ -151,7 +156,13 @@ export default function Header() {
               </a>
             </Button>
 
-            <Button asChild variant="neutral">
+            <Button
+              asChild
+              variant="neutral"
+              size="icon"
+              round={true}
+              title="GitHub"
+            >
               <a
                 href="https://github.com/chrislanejones"
                 target="_blank"
@@ -174,12 +185,17 @@ export default function Header() {
               </a>
             </Button>
 
-            <Button asChild variant="neutral">
+            <Button
+              asChild
+              variant="neutral"
+              size="icon"
+              round={true}
+              title="LinkedIn"
+            >
               <a
                 href="https://www.linkedin.com/in/chrislanejones"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="whitespace-nowrap inline-flex items-center gap-2"
               >
                 <svg
                   aria-hidden="true"
@@ -203,7 +219,8 @@ export default function Header() {
           <SimpleModeToggle />
           <Button
             variant="neutral"
-            className="shadow-passive hover:shadow-glow focus-ring p-2"
+            size="icon"
+            round={true}
             onClick={toggleMobileMenu}
             aria-label="Toggle mobile menu"
           >
@@ -240,7 +257,8 @@ export default function Header() {
                 <div className="flex justify-end mb-8">
                   <Button
                     variant="neutral"
-                    className="shadow-passive hover:shadow-glow focus-ring p-2"
+                    size="icon"
+                    round={true}
                     onClick={closeMobileMenu}
                     aria-label="Close mobile menu"
                   >
@@ -284,6 +302,7 @@ export default function Header() {
                     <Button
                       asChild
                       variant="neutral"
+                      size="lg"
                       className="w-full shadow-passive hover:shadow-glow focus-ring justify-start"
                     >
                       <a
@@ -309,6 +328,7 @@ export default function Header() {
                     <Button
                       asChild
                       variant="neutral"
+                      size="lg"
                       className="w-full shadow-passive hover:shadow-glow focus-ring justify-start"
                     >
                       <a
@@ -338,6 +358,7 @@ export default function Header() {
                     <Button
                       asChild
                       variant="neutral"
+                      size="lg"
                       className="w-full shadow-passive hover:shadow-glow focus-ring justify-start"
                     >
                       <a

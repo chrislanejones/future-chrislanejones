@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   [
-    "inline-flex items-center gap-2 px-3 py-1.5 rounded-lg",
+    "inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg",
     "transition shadow-passive focus-ring hover:shadow-glow",
-    "disabled:opacity-50 disabled:pointer-events-none select-none",
+    "select-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:shadow-none",
+    "disabled:opacity-40 disabled:saturate-50",
   ].join(" "),
   {
     variants: {
@@ -47,14 +48,14 @@ const buttonVariants = cva(
         sm: "h-9 text-sm",
         md: "h-10 text-sm",
         lg: "h-11 text-base",
-        icon: "h-9 w-9 p-0 justify-center",
+        icon: "h-10 w-10 p-0",
       },
-      round: { true: "rounded-full grid place-items-center", false: "" },
+      round: { true: "rounded-full", false: "" },
       asLink: { true: "no-underline", false: "" },
     },
     defaultVariants: {
       variant: "neutral",
-      size: "sm",
+      size: "md",
       round: false,
       asLink: false,
     },

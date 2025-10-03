@@ -181,7 +181,7 @@ export default function Musicplayerbox({
             onClick={togglePlayPause}
             variant="neutral"
             size="icon"
-            round
+            round={true}
             disabled={!isLoaded}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
@@ -195,7 +195,7 @@ export default function Musicplayerbox({
             onClick={nextTrack}
             variant="neutral"
             size="icon"
-            round
+            round={true}
             disabled={!isLoaded}
             aria-label="Next track"
           >

@@ -184,15 +184,14 @@ export default function IconSlider({
           <Button
             variant="neutral"
             size="icon"
-            round
-            className="h-12 w-12"
+            round={true}
             aria-label="Previous"
             onClick={() => setSlide(-1)}
           >
             <ArrowLeft />
           </Button>
         ) : (
-          <div className="w-12" />
+          <div className="w-10" />
         )}
 
         <div className="flex-1 relative h-80 overflow-hidden">
@@ -212,15 +211,14 @@ export default function IconSlider({
           <Button
             variant="neutral"
             size="icon"
-            round
-            className="h-12 w-12"
+            round={true}
             aria-label="Next"
             onClick={() => setSlide(1)}
           >
             <ArrowRight />
           </Button>
         ) : (
-          <div className="w-12" />
+          <div className="w-10" />
         )}
       </div>
 
@@ -251,8 +249,8 @@ export default function IconSlider({
 // Icons
 const iconsProps: SVGProps<SVGSVGElement> = {
   xmlns: "http://www.w3.org/2000/svg",
-  width: "28",
-  height: "28",
+  width: "24",
+  height: "24",
   viewBox: "0 0 24 24",
   fill: "none",
   stroke: "currentColor",

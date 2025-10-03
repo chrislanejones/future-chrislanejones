@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
-import { FullWidthLayout } from "@/components/page/layout";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /* ---------------------------------- Types --------------------------------- */
@@ -19,6 +19,7 @@ type Project = {
   image: string;
   githubUrl: string;
   vercelUrl: string;
+  customUrl?: string; // Optional custom link
 };
 
 /* --------------------------------- Helpers -------------------------------- */
@@ -46,6 +47,7 @@ const appProjects: Project[] = [
     image: "/projects/multi-image-compress-and-edit-app.webp",
     githubUrl: "https://github.com/chrislanejones",
     vercelUrl: "",
+    customUrl: "https://example.com/docs", // Example: documentation link
   },
   {
     title: "Go Web Crawler",
@@ -61,6 +63,7 @@ const appProjects: Project[] = [
     image: "/projects/Go-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/go-crawler",
     vercelUrl: "",
+    customUrl: "", // Disabled
   },
   {
     title: "Vim/Neovim Shortcut Finder",
@@ -76,54 +79,58 @@ const appProjects: Project[] = [
     image: "/projects/mpc-vim-filter-tool.webp",
     githubUrl: "https://github.com/chrislanejones/vim-shortcuts",
     vercelUrl: "https://vim-shortcuts.vercel.app",
+    customUrl: "https://vim-shortcuts.vercel.app/guide", // Example: guide link
   },
 ];
 
 const clientProjects: Project[] = [
   {
-    title: "Coastal Realty Group",
+    title: "Alembic - AI Marketing Analytics Platform",
     description:
-      "Modern real estate website with property search, virtual tours, and agent profiles. Built with Next.js and integrated with MLS.",
+      "Enterprise-grade marketing intelligence platform that uses advanced causality models and AI to provide predictive insights and measure marketing ROI across all channels.",
     features: [
-      "Advanced property search and filtering",
-      "Interactive map integration",
-      "Virtual tour showcase",
-      "Agent profile and contact system",
-      "Mobile-responsive design",
+      "Next.js 14 with App Router and server-side rendering",
+      "Sanity CMS integration for dynamic content management",
+      "Tailwind CSS for responsive enterprise UI/UX",
+      "TypeScript for type-safe development",
+      "Optimized image delivery and performance",
     ],
-    image: "/projects/Go-Tool.webp",
-    githubUrl: "",
-    vercelUrl: "https://coastal-realty-demo.vercel.app",
-  },
-  {
-    title: "Artisan Coffee Roasters",
-    description:
-      "E-commerce for specialty coffee with subscriptions, brewing guides, and reviews. Includes roast tracking and inventory.",
-    features: [
-      "Subscription-based ordering system",
-      "Coffee origin tracking and profiles",
-      "Brewing method guides and videos",
-      "Customer review and rating system",
-      "Inventory management dashboard",
-    ],
-    image: "/projects/multi-image-compress-and-edit-app.webp",
-    githubUrl: "",
-    vercelUrl: "https://artisan-coffee-demo.vercel.app",
-  },
-  {
-    title: "Healthcare Partners Clinic",
-    description:
-      "Patient portal and appointment scheduling. HIPAA-compliant with secure messaging, results, and telehealth.",
-    features: [
-      "HIPAA-compliant patient portal",
-      "Online appointment scheduling",
-      "Secure patient-provider messaging",
-      "Lab results and medical records access",
-      "Telehealth video consultation integration",
-    ],
-    image: "/projects/mpc-vim-filter-tool.webp",
+    image: "/projects/Get-Alembic-Website.webp",
     githubUrl: "",
     vercelUrl: "",
+    customUrl: "https://getalembic.com/",
+  },
+  {
+    title: "Job Listing Plugin for WordPress with Elementor Theme",
+    description:
+      "A comprehensive WordPress plugin that integrates with the Ashby job board API to display current job listings on your website using Elementor.",
+    features: [
+      "Scheduled API data fetching at customizable times",
+      "Database storage for improved performance",
+      "Elementor widget for easy display",
+      "Responsive card-based UI with customizable styling",
+      "Admin interface for setup and management",
+    ],
+    image: "/projects/Job-Listing-WordPress-Plugin.webp",
+    githubUrl: "https://github.com/chrislanejones/job-listing-plugin",
+    vercelUrl: "",
+    customUrl: "",
+  },
+  {
+    title: "Wheelock Communities - Real Estate Development",
+    description:
+      "Corporate website for Wheelock Communities, showcasing master-planned communities, luxury condominiums, and resort development projects across the United States.",
+    features: [
+      "WordPress with custom theme development",
+      "Advanced Custom Fields for flexible content management",
+      "Responsive design with mobile-first approach",
+      "Project portfolio with filterable gallery",
+      "Optimized image delivery and lazy loading",
+    ],
+    image: "/projects/Wheelock-Communities.webp",
+    githubUrl: "",
+    vercelUrl: "",
+    customUrl: "https://wheel.chrislanejones.com/",
   },
 ];
 
@@ -140,19 +147,15 @@ function ProjectCard({
 }) {
   const hasGithubUrl = isValidUrl(project.githubUrl);
   const hasVercelUrl = isValidUrl(project.vercelUrl);
+  const hasCustomUrl = isValidUrl(project.customUrl || "");
 
   return (
-    <Card
-      size="page-full" className="grid md:grid-cols-2 gap-8"
-      
-      
-      
-    >
+    <Card size="page-full" className="grid md:grid-cols-2 gap-8">
       {/* Left: Copy */}
       <div
         className={cn(
           "flex flex-col",
-          index % 2 === 0 ? "order-1" : "order-2 md:order-1"
+          index % 2 === 0 ? "md:order-1" : "md:order-2"
         )}
       >
         <h2 className="font-bold text-2xl mb-4">{project.title}</h2>
@@ -168,20 +171,25 @@ function ProjectCard({
         </ul>
 
         {/* Actions */}
-        <div className="flex gap-4">
-          {hasGithubUrl ? (
+        <div className="flex gap-3">
+          <Button
+            asChild={hasGithubUrl}
+            size="icon"
+            round={true}
+            disabled={!hasGithubUrl}
+            title={hasGithubUrl ? "View Code on GitHub" : "Code not available"}
+          >
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition shadow-passive focus-ring hover:shadow-glow select-none bg-panel card text-[color:var(--color-ink)] h-9 text-sm flex-1 justify-center"
             >
               <svg
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                width="18"
-                height="18"
+                width="20"
+                height="20"
                 fill="currentColor"
               >
                 <path
@@ -190,34 +198,20 @@ function ProjectCard({
                   d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
                 />
               </svg>
-              <span>View Code</span>
             </a>
-          ) : (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-panel/50 text-ink/30 cursor-not-allowed opacity-50 h-9 text-sm flex-1 justify-center">
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
-                />
-              </svg>
-              <span>View Code</span>
-            </div>
-          )}
+          </Button>
 
-          {hasVercelUrl ? (
+          <Button
+            asChild={hasVercelUrl}
+            size="icon"
+            round={true}
+            disabled={!hasVercelUrl}
+            title={hasVercelUrl ? "View Live Demo" : "Demo not available"}
+          >
             <a
               href={project.vercelUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg transition shadow-passive focus-ring hover:shadow-glow select-none bg-panel card text-[color:var(--color-ink)] h-9 text-sm flex-1 justify-center"
             >
               <svg
                 aria-hidden="true"
@@ -229,10 +223,21 @@ function ProjectCard({
               >
                 <path d="m12 0 12 21H0z" />
               </svg>
-              <span>Live Demo</span>
             </a>
-          ) : (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-panel/50 text-ink/30 cursor-not-allowed opacity-50 h-9 text-sm flex-1 justify-center">
+          </Button>
+
+          <Button
+            asChild={hasCustomUrl}
+            size="icon"
+            round={true}
+            disabled={!hasCustomUrl}
+            title={hasCustomUrl ? "View Additional Link" : "Link not available"}
+          >
+            <a
+              href={project.customUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <svg
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
@@ -241,11 +246,10 @@ function ProjectCard({
                 height="18"
                 fill="currentColor"
               >
-                <path d="m12 0 12 21H0z" />
+                <path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z" />
               </svg>
-              <span>Live Demo</span>
-            </div>
-          )}
+            </a>
+          </Button>
         </div>
       </div>
 
@@ -253,7 +257,7 @@ function ProjectCard({
       <div
         className={cn(
           "relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]",
-          index % 2 === 0 ? "order-2" : "order-1 md:order-2"
+          index % 2 === 0 ? "md:order-2" : "md:order-1"
         )}
       >
         <Image
@@ -274,12 +278,7 @@ function ProjectCard({
 
 function ProjectGridSection({ projects }: { projects: Project[] }) {
   return (
-    <motion.section
-      className="grid grid-cols-1 gap-5 auto-rows-auto"
- 
-      
- 
-    >
+    <motion.section className="grid grid-cols-1 gap-5 auto-rows-auto">
       {projects.map((project, index) => (
         <ProjectCard
           key={project.title}
@@ -303,15 +302,23 @@ export default function ProjectGrid() {
         <Banner
           title="Projects"
           breadcrumbPage="Projects"
-          description={activeTab === "apps"
-            ? "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience."
-            : "Professional websites and web applications built for clients across various industries, featuring custom design and functionality."}
-        >
-          <TabsList>
-            <TabsTrigger value="apps">App Projects</TabsTrigger>
-            <TabsTrigger value="clients">Client Websites</TabsTrigger>
+          description={
+            activeTab === "apps"
+              ? "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience."
+              : "Professional websites and web applications built for clients across various industries, featuring custom design and functionality."
+          }
+        />
+
+        <div className="flex items-center justify-center my-10">
+          <TabsList variant="pills">
+            <TabsTrigger variant="pills" value="apps">
+              App Projects
+            </TabsTrigger>
+            <TabsTrigger variant="pills" value="clients">
+              Websites Projects
+            </TabsTrigger>
           </TabsList>
-        </Banner>
+        </div>
 
         {/* Content */}
         <TabsContent value="apps">
