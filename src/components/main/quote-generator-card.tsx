@@ -29,7 +29,7 @@ const QUOTES: ReactNode[] = [
     </a>
   </>,
   "Powered by coffee and deprecated APIs since 2015",
-  "My rambling 11",
+  "I tried to explain `git blame` to my wife. I'm now sleeping on the couch.",
   "My rambling 12",
   "My rambling 13",
   "My rambling 14",

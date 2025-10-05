@@ -253,7 +253,7 @@ const linkCategories = [
   },
 ];
 
-export default function BrowserGrid() {
+export default function BrowserTabs() {
   return (
     <main className="max-w-6xl mx-auto px-5 py-12">
       <Banner

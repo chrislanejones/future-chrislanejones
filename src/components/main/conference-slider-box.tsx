@@ -4,7 +4,6 @@ import { AnimatePresence, motion, wrap } from "framer-motion";
 import Card from "../page/card";
 import { useState, SVGProps, forwardRef } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { conferences } from "@/data/conferences";
 import IconSlider, { SliderItem } from "../page/icon-slider";
 

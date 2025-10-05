@@ -54,16 +54,10 @@ export default function LinkGrid() {
             </h1>
           </div>
         </div>
-
-        <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-bold">
-            I Consult, Design, and Develop Web Interfaces for Businesses and
-            Government Agencies.
-          </h2>
-          <p className="text-sm max-w-prose">
-            I Build with React and WordPress — then escape to the Mountains. 🏔️
-          </p>
-        </div>
+        <h2 className="text-xl font-bold">
+          I Consult, Design, and Develop Web Interfaces for Businesses and
+          Government Agencies.
+        </h2>
       </Card>
 
       {/* Card 2: Social Links */}
@@ -72,17 +66,8 @@ export default function LinkGrid() {
           Connect With Me
         </h3>
         <div className="grid grid-cols-2 gap-3">
-          <Button
-            variant="base"
-            showExternalIcon={true}
-            className="justify-center"
-            asChild
-          >
-            <a
-              href="https://chrislanejones.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          <Button variant="base" className="justify-center" asChild>
+            <a href="/">
               <FaHome className="w-4 h-4 mr-2" />
               Home
             </a>
@@ -315,18 +300,6 @@ export default function LinkGrid() {
 
           <Button variant="base" showExternalIcon={true} asChild>
             <a
-              href="https://tweakcn.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between w-full"
-            >
-              <span>Tweakcn</span>
-              <span>https://tweakcn.com</span>
-            </a>
-          </Button>
-
-          <Button variant="base" showExternalIcon={true} asChild>
-            <a
               href="https://pro.aceternity.com/products/navbars"
               target="_blank"
               rel="noopener noreferrer"
@@ -347,6 +320,10 @@ export default function LinkGrid() {
               <span>Learn X in Y minutes</span>
               <span>https://learnxinyminutes.com/zig/</span>
             </a>
+          </Button>
+
+          <Button variant="accent" asChild className="w-full">
+            <a href="/browser-tabs">See More Browser Tabs</a>
           </Button>
         </div>
       </Card>

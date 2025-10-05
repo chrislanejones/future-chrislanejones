@@ -1,6 +1,6 @@
 // app/projects/page.tsx
 import Header from "@/components/layout/Header";
-import BrowserGrid from "./BrowserGrid";
+import BrowserTabs from "./BrowserTabs";
 import Footer from "@/components/layout/Footer";
 
 export const metadata = {
@@ -13,7 +13,7 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-base">
       <Header />
-      <BrowserGrid />
+      <BrowserTabs />
       <Footer />
     </div>
   );
