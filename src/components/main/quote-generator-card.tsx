@@ -110,7 +110,7 @@ export default function Quotegeneratorcard({
           <div className="font-bold text-xl text-white drop-shadow-sm">
             Chris Lane Jones
           </div>
-          <div className="text-white/90 text-md drop-shadow-sm">
+          <div className="text-white/90 text-sm drop-shadow-sm">
             UX/UI Web Design and Development
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function Quotegeneratorcard({
           <motion.blockquote
             key={index}
             exit={{ opacity: 0, y: -8 }}
-            className="text-center text-2xl leading-relaxed text-ink"
+            className="text-center text-xl leading-relaxed text-ink"
           >
             {typeof QUOTES[index] === "string"
               ? `"${QUOTES[index]}"`

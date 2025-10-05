@@ -26,7 +26,7 @@ export default function Linkbox({ size = "large", delay = 0.3 }: LinkboxProps) {
     <Card size="large">
       {/* GitHub Gist Section */}
 
-      <h3 className="text-lg font-bold text-foreground tracking-tight my-3">
+      <h3 className="text-xl font-bold text-foreground tracking-tight my-3">
         Github Gist
       </h3>
       <div className="grid grid-cols-1 gap-3 text-sm">

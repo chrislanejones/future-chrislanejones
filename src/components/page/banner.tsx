@@ -18,24 +18,17 @@ interface BannerProps {
   children?: ReactNode;
 }
 
-export default function Banner({ 
-  title, 
-  breadcrumbPage, 
+export default function Banner({
+  title,
+  breadcrumbPage,
   description,
-  children 
+  children,
 }: BannerProps) {
   return (
-    <motion.div
-      className="mb-16"
-      
-      
-      
-    >
+    <motion.div className="mb-16">
       <div className="flex items-start justify-between mb-16 gap-6">
         <div className="text-left flex-1">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-            {title}
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">{title}</h1>
 
           <Breadcrumb className="mb-6">
             <BreadcrumbList>

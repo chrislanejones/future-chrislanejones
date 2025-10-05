@@ -73,14 +73,14 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
       {/* Content */}
       <div className="flex flex-col h-full">
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl md:text-4xl font-black">
+          <h1 className="text-3xl font-black">
             UX/UI Web Design and Development
           </h1>
           <h2 className="text-xl md:text-xl font-bold">
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>
-          <p className="text-regular max-w-prose">
+          <p className="text-sm max-w-prose">
             Building digital experiences with React and WordPress — one summit
             at a time. 🏔️
           </p>

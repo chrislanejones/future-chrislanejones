@@ -268,7 +268,7 @@ export default function Projectsbox({
             />
           </motion.div>
         </AnimatePresence>
-        <div className="absolute bottom-3 right-3 text-[11px] px-2 py-1 rounded-md bg-base/80">
+        <div className="absolute bottom-3 right-3 text-sm px-2 py-1 rounded-md bg-base/80">
           {currentIndex + 1} of {projects.length}
         </div>
       </div>

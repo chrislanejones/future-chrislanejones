@@ -44,7 +44,7 @@ export default function LinkGrid() {
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>
-          <p className="text-regular max-w-prose">
+          <p className="text-sm max-w-prose">
             I Build with React and WordPress — then escape to the Mountains. 🏔️
           </p>
         </div>

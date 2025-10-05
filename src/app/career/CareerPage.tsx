@@ -1,127 +1,235 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
 import { FullWidthLayout } from "@/components/page/layout";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
 
-type AboutSection = {
+type TimelineEvent = {
+  year: string;
   title: string;
   description: string;
-  image: string;
-  imageAlt: string;
+  location?: string;
 };
 
-const aboutSections: AboutSection[] = [
+const timelineEvents: TimelineEvent[] = [
   {
-    title: "Resume --- From Video Production to Web Development",
+    year: "2013",
+    title: "Communications Degree",
     description:
-      "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry – never a dull moment in JavaScript, PHP, and their frameworks. In 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
-    image: "/gallery/Me-Recording-A-Video.webp",
-    imageAlt: "Chris recording a video",
+      "Graduated from University of North Florida after three communications internships",
+    location: "Jacksonville, FL",
   },
   {
-    title: "My Home Office Setup",
-    description:
-      "Working remotely from Louisa, Virginia with a dual-monitor standing desk setup that keeps me productive and healthy during long development sessions.",
-    image: "/gallery/Standing-Desk-Setup.webp",
-    imageAlt: "Adjustable Standing Desk with Two Displays and Laptop",
+    year: "2013-2016",
+    title: "Video Production Career",
+    description: "Started career in video editing and production",
+    location: "Jacksonville, FL",
   },
   {
-    title: "Richmond WordPress Chapter Host",
+    year: "2016",
+    title: "Career Transition",
     description:
-      "I lead Richmond's local WordPress meetup and host monthly meetups since January 2022. We discuss WordPress topics, general web knowledge, and provide support for developers in the Glen Allen area. Previously served as Digital Director for The JOMM (Jacksonville Online Marketing Meetup), where I increased monthly attendance and website engagement.",
-    image: "/gallery/Richmond-WordPress-Meetup.webp",
-    imageAlt: "Richmond WordPress Meetup",
+      "Decided to switch from video production to web development after designing personal website",
   },
   {
-    title: "Living in the Shenandoah Mountains",
-    description:
-      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia. My wife runs a local equine-assisted private practice counseling service – Heaven's Rays Ministries. In Louisa, I am close to several cities and the Shenandoah mountains.",
-    image: "/gallery/Me-on-a-Bike-Trail.webp",
-    imageAlt: "Bike Trails by Piney River",
+    year: "2018",
+    title: "Web Development Focus",
+    description: "Began working with React frameworks and WordPress",
   },
   {
-    title: "Adventure & Travel",
+    year: "2019",
+    title: "Move to Virginia",
     description:
-      "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights. After this trip, we started looking for work in the towns adjacent to the Appalachian Mountains.",
-    image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
-    imageAlt: "Glacier National Park",
+      "Relocated to Harrisonburg, Virginia in the Shenandoah Mountains",
+    location: "Harrisonburg, VA",
+  },
+  {
+    year: "2022",
+    title: "WordPress Meetup Host",
+    description:
+      "Started leading Richmond's local WordPress meetup with monthly sessions",
+    location: "Richmond, VA",
+  },
+  {
+    year: "2024",
+    title: "Remote Developer",
+    description:
+      "Working remotely specializing in Next.js, Astro, and WordPress",
+    location: "Louisa, VA",
   },
 ];
 
-function AboutCard({
-  section,
-  index,
-  total,
-}: {
-  section: AboutSection;
-  index: number;
-  total: number;
-}) {
+function DownloadCard() {
   return (
-    <Card
-      size="page-full"
-      className="grid md:grid-cols-2 gap-8"
-      delay={0.1 + index * 0.1}
-    >
-      {/* Text Content */}
-      <div
-        className={cn(
-          "flex flex-col justify-center",
-          index % 2 === 0 ? "order-1" : "order-2 md:order-1"
-        )}
-      >
-        <h2 className="font-bold text-2xl mb-6">{section.title}</h2>
-        <p className="text-muted leading-relaxed text-base">
-          {section.description}
-        </p>
-      </div>
-
-      {/* Image */}
-      <div
-        className={cn(
-          "relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]",
-          index % 2 === 0 ? "order-2" : "order-1 md:order-2"
-        )}
-      >
-        <Image
-          src={section.image}
-          alt={section.imageAlt}
-          className="w-full h-full object-cover"
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority={index === 0}
-        />
-        <div className="absolute bottom-4 right-4 text-xs px-3 py-1 rounded-full bg-base/80 backdrop-blur-sm">
-          {section.imageAlt}
-        </div>
+    <Card size="small" className="mb-8">
+      <h2 className="text-center text-[color:var(--color-ink)] text-lg pb-2">
+        Resume and Portfolio
+      </h2>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <Button asChild variant="base">
+          <a href="/resume.pdf" download>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            Resume (PDF)
+          </a>
+        </Button>
+        <Button asChild variant="base">
+          <a href="/resume.docx" download>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            Resume (Word)
+          </a>
+        </Button>
+        <Button asChild variant="base">
+          <a href="/portfolio.pdf" download>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            Portfolio
+          </a>
+        </Button>
       </div>
     </Card>
   );
 }
 
-function AboutGridSection({ sections }: { sections: AboutSection[] }) {
+function TimelineTrail() {
   return (
-    <motion.section
-      className="grid grid-cols-1 gap-8 auto-rows-auto"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-    >
-      {sections.map((section, index) => (
-        <AboutCard
-          key={section.title}
-          section={section}
-          index={index}
-          total={sections.length}
-        />
-      ))}
-    </motion.section>
+    <Card size="page-full" className="mb-12">
+      <h2 className="font-bold text-3xl mb-12 text-center">Career Journey</h2>
+
+      <div className="relative max-w-3xl mx-auto">
+        {/* Vertical trail line */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent/20 via-accent/40 to-accent/20 -translate-x-1/2" />
+
+        {/* Timeline events */}
+        <div className="relative space-y-12">
+          {timelineEvents.map((event, index) => (
+            <motion.div
+              key={event.year}
+              className="relative"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
+            >
+              <div
+                className={cn(
+                  "flex items-center gap-8",
+                  index % 2 === 0 ? "flex-row" : "flex-row-reverse"
+                )}
+              >
+                {/* Content side */}
+                <div
+                  className={cn(
+                    "flex-1",
+                    index % 2 === 0 ? "text-right" : "text-left"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "inline-block bg-panel card rounded-lg p-5 shadow-passive hover:shadow-glow transition-shadow",
+                      index % 2 === 0 ? "text-right" : "text-left"
+                    )}
+                  >
+                    <div className="text-accent font-bold text-xl mb-2">
+                      {event.year}
+                    </div>
+                    <h3 className="font-bold text-lg mb-2">{event.title}</h3>
+                    <p className="text-sm text-muted leading-relaxed mb-3">
+                      {event.description}
+                    </p>
+                    {event.location && (
+                      <div
+                        className={cn(
+                          "text-xs text-muted/70 flex items-center gap-1.5",
+                          index % 2 === 0 ? "justify-end" : "justify-start"
+                        )}
+                      >
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        {event.location}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Center marker */}
+                <motion.div
+                  className="relative flex-shrink-0 z-10"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    duration: 0.4,
+                    delay: index * 0.15 + 0.2,
+                    type: "spring",
+                    stiffness: 200,
+                  }}
+                >
+                  <div className="w-5 h-5 rounded-full bg-accent ring-4 ring-base shadow-glow" />
+                </motion.div>
+
+                {/* Empty space on opposite side */}
+                <div className="flex-1" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </Card>
   );
 }
 
@@ -135,7 +243,8 @@ export default function CareerPage() {
       />
 
       <FullWidthLayout>
-        <AboutGridSection sections={aboutSections} />
+        <DownloadCard />
+        <TimelineTrail />
       </FullWidthLayout>
     </main>
   );

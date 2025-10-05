@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 const cardVariants = cva("card rounded-3xl bg-panel", {
   variants: {
     size: {
-      small: "col-span-1 row-span-1 min-h-[200px] md:min-h-[210px]",
+      small: "col-span-1 row-span-1 min-h-[25px] md:min-h-[25px]",
       medium:
         "col-span-1 md:col-span-2 row-span-1 min-h-[200px] md:min-h-[210px]",
       large:

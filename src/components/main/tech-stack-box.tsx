@@ -73,8 +73,9 @@ export const aiTools: AiTool[] = [
   {
     name: "Claude",
     svg: (
+      // The text color class has been removed from here
       <svg
-        className="h-8 w-8 text-[color:var(--color-foreground)]"
+        className="h-8 w-8"
         viewBox="0 0 46 32"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -86,8 +87,9 @@ export const aiTools: AiTool[] = [
   {
     name: "Gemini 2.5 Pro",
     svg: (
+      // The text color class has been removed from here
       <svg
-        className="h-8 w-8 text-[color:var(--color-foreground)]"
+        className="h-8 w-8"
         viewBox="0 0 16 16"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -100,8 +102,9 @@ export const aiTools: AiTool[] = [
   {
     name: "GPT 5",
     svg: (
+      // The text color class has been removed from here
       <svg
-        className="h-8 w-8 text-[color:var(--color-foreground)]"
+        className="h-8 w-8"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="118 120 480 480"
         fill="currentColor"
@@ -125,7 +128,7 @@ export default function Techstackbox({
     >
       {/* Tech I Love Section */}
       <div className="p-3">
-        <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
+        <h3 className="text-xl font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Tech I Love 💖
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -146,7 +149,7 @@ export default function Techstackbox({
 
       {/* Learning & Exploring Section */}
       <div className="p-3">
-        <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
+        <h3 className="text-xl font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Learning & Exploring 🧪
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
@@ -166,11 +169,11 @@ export default function Techstackbox({
       </div>
 
       {/* AI Tools Section */}
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-[color:var(--color-foreground)] tracking-tight mb-4">
+      <div className="p-3">
+        <h3 className="text-xl font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Current AI Tools
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {aiTools.map((tool) => (
             <IconBlock key={tool.name} label={tool.name}>
               {tool.svg}
