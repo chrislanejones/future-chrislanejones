@@ -6,9 +6,38 @@ import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
 import { FullWidthLayout } from "@/components/page/layout";
 import { Button } from "@/components/ui/button";
+import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
+
+const photos: GalleryPhoto[] = [
+  {
+    src: "/gallery/Theo-and-I.webp",
+    alt: "Theo Browne and Chris at Render 2024",
+    description: "Theo Browne and I at Render 2024",
+  },
+  {
+    src: "/gallery/FCC-2017-Bold-Bean.webp",
+    alt: "Coding at Bold Bean Jacksonville 2017",
+    description: "Coding with Friends in Bold Bean Jax 2017",
+  },
+  {
+    src: "/gallery/Kent-C-Dodds-Friends-and-I-at-Epic-Web.webp",
+    alt: "Kent C. Dodds and friends at THAT Conference",
+    description: "Kent C. Dodds, Friends, and I at the last THAT Conference",
+  },
+  {
+    src: "/gallery/Pandemic-Office-Setup-2021.webp",
+    alt: "Home office setup during pandemic",
+    description: "Pandemic Office Setup 2021",
+  },
+  {
+    src: "/gallery/Chris-Hiking.webp",
+    alt: "Hiking in Shenandoah Valley",
+    description: "Hiking in the Shanahdoah Valley",
+  },
+];
 
 type TimelineEvent = {
   year: string;
@@ -152,6 +181,106 @@ function TimelineTrail() {
   );
 }
 
+function WorkspaceCard() {
+  return (
+    <Card size="page-full">
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Left: Office Image with Gallery */}
+        <div className="relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]">
+          <Image
+            src="/gallery/Standing-Desk-Setup.webp"
+            alt="Adjustable Standing Desk with Two Displays and Laptop"
+            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+
+          {/* Gallery Button - Top Right */}
+          <div className="absolute top-4 right-4 z-10">
+            <GalleryDrawer
+              photos={photos}
+              title="Gallery"
+              description="Photos from conferences, coding sessions, and adventures."
+              animationDelay={0.2}
+            />
+          </div>
+        </div>
+
+        {/* Right: Resume and Portfolio Downloads */}
+        <div className="flex flex-col justify-center">
+          <h2 className="text-2xl font-bold text-[color:var(--color-ink)] mb-4">
+            Resume & Portfolio
+          </h2>
+          <p className="text-muted mb-4">
+            Download my resume and portfolio to learn more about my work
+            experience, skills, and projects.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            <Button asChild variant="base" size="lg" className="justify-start">
+              <a href="/resume.pdf" download>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                Download Resume (PDF)
+              </a>
+            </Button>
+
+            <Button asChild variant="base" size="lg" className="justify-start">
+              <a href="/resume.docx" download>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                Download Resume (Word)
+              </a>
+            </Button>
+
+            <Button asChild variant="base" size="lg" className="justify-start">
+              <a href="/portfolio.pdf" download>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                Download Portfolio (PDF)
+              </a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 function DownloadCard() {
   return (
     <Card size="small" className="mb-8">
@@ -228,7 +357,7 @@ const CareerPage: React.FC = () => {
       />
 
       <FullWidthLayout>
-        <DownloadCard />
+        <WorkspaceCard />
         <TimelineTrail />
       </FullWidthLayout>
     </main>

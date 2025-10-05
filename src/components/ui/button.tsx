@@ -18,13 +18,13 @@ const buttonVariants = cva(
       variant: {
         neutral: [
           "bg-panel card",
-          "text-[color:var(--color-foreground)]",
+          "text-foreground",
           "hover:bg-[color:var(--color-surface-hover)]",
         ].join(" "),
         base: [
           "bg-[color:var(--color-muted-accent)]",
           "hover:bg-[color:var(--color-surface-hover)]",
-          "text-[color:var(--color-foreground)]",
+          "text-foreground",
           "border border-transparent",
         ].join(" "),
         accent: [
@@ -35,12 +35,12 @@ const buttonVariants = cva(
         ].join(" "),
         outline: [
           "bg-transparent",
-          "text-[color:var(--color-foreground)]",
+          "text-foreground",
           "border border-[color:var(--color-border)]",
         ].join(" "),
         ghost: [
           "bg-transparent",
-          "text-[color:var(--color-foreground)]",
+          "text-foreground",
           "hover:bg-[color:var(--color-surface-hover)]",
         ].join(" "),
       },
