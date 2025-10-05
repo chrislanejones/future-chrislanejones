@@ -14,14 +14,30 @@ import {
   FaChrome,
 } from "react-icons/fa";
 import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/page/card";
 import Image from "next/image";
+import { SiteLogo } from "@/components/page/links";
+import Link from "next/link";
+import { SimpleModeToggle } from "@/components/simple-mode-toggle";
 
 export default function LinkGrid() {
   return (
     <div className="space-y-6">
+      {/* Header with Logo and Theme Toggle */}
+      <div className="flex items-center justify-between">
+        <Link href="/" className="group inline-flex items-center gap-3">
+          <div className="grid place-content-center">
+            <SiteLogo />
+          </div>
+          <span className="font-bold text-xl whitespace-nowrap">
+            Chris Lane Jones
+          </span>
+        </Link>
+        <SimpleModeToggle />
+      </div>
+
       {/* Card 1: Main Avatar and Info */}
       <Card padding="large" glass={false} delay={0.1} className="text-center">
         <div className="grid grid-cols-[80px_1fr] gap-4 items-center mb-6">
@@ -57,7 +73,7 @@ export default function LinkGrid() {
         </h3>
         <div className="grid grid-cols-2 gap-3">
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -73,7 +89,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -89,7 +105,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -105,7 +121,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -121,7 +137,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -137,7 +153,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -153,7 +169,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -169,7 +185,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -185,7 +201,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -201,7 +217,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -217,7 +233,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -233,7 +249,7 @@ export default function LinkGrid() {
           </Button>
 
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="justify-center"
             asChild
@@ -258,7 +274,7 @@ export default function LinkGrid() {
         </h3>
         <div className="space-y-3">
           <Button
-            variant="accent"
+            variant="base"
             showExternalIcon={true}
             className="flex items-center justify-between w-full"
           >
@@ -273,7 +289,7 @@ export default function LinkGrid() {
             </a>
           </Button>
 
-          <Button variant="accent" showExternalIcon={true} asChild>
+          <Button variant="base" showExternalIcon={true} asChild>
             <a
               href="https://github.com/aulianza/aulianza.id"
               target="_blank"
@@ -285,7 +301,7 @@ export default function LinkGrid() {
             </a>
           </Button>
 
-          <Button variant="accent" showExternalIcon={true} asChild>
+          <Button variant="base" showExternalIcon={true} asChild>
             <a
               href="https://www.fffuel.co/ooorganize/"
               target="_blank"
@@ -297,7 +313,7 @@ export default function LinkGrid() {
             </a>
           </Button>
 
-          <Button variant="accent" showExternalIcon={true} asChild>
+          <Button variant="base" showExternalIcon={true} asChild>
             <a
               href="https://tweakcn.com/"
               target="_blank"
@@ -309,7 +325,7 @@ export default function LinkGrid() {
             </a>
           </Button>
 
-          <Button variant="accent" showExternalIcon={true} asChild>
+          <Button variant="base" showExternalIcon={true} asChild>
             <a
               href="https://pro.aceternity.com/products/navbars"
               target="_blank"
@@ -321,7 +337,7 @@ export default function LinkGrid() {
             </a>
           </Button>
 
-          <Button variant="accent" showExternalIcon={true} asChild>
+          <Button variant="base" showExternalIcon={true} asChild>
             <a
               href="https://learnxinyminutes.com/zig/"
               target="_blank"

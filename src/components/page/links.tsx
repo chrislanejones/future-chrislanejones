@@ -22,8 +22,8 @@ export function SiteLogo({ className = "" }: { className?: string }) {
     <Image
       src="/site-logo.svg"
       alt="Chris Lane Jones Logo"
-      width={60}
-      height={60}
+      width={50}
+      height={50}
       className={`opacity-90 ${className}`}
       priority
     />
