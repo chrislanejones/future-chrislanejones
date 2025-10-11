@@ -16,56 +16,65 @@ type SiteVersion = {
   image: string;
   imageAlt: string;
   imageDescription: string;
+  links?: { label: string; url: string }[];
 };
 
 const siteVersions: SiteVersion[] = [
   {
-    title: "Version 1.0 - WordPress Beginnings (2013-2015)",
+    title: "2007-2009 WordPress 2.1 & The Kubrick Theme",
     description:
-      "My first professional website built on WordPress using a premium theme. This was when I was transitioning from video production to web development, learning the basics of HTML, CSS, and PHP customization.\n\nFeatured a blog-centric design with portfolio sections for video work. Used popular WordPress plugins for contact forms, SEO, and social sharing. This site taught me the fundamentals of content management and web hosting.",
-    image: "/gallery/Standing-Desk-Setup.webp",
-    imageAlt: "Early WordPress site design",
-    imageDescription: "WordPress era - learning the basics",
+      "My first professional website was built on WordPress 2.1, released in January 2007. I modified the iconic Kubrick theme by Michael Heilemann—the default WordPress theme that defined an era of blogging.\n\nThe Kubrick theme was elegant in its simplicity: a clean white background, blue header, customizable header image, and that distinctive rounded sidebar. It was the face of WordPress for millions of blogs from 2005 to 2010, and learning to customize it taught me the fundamentals of WordPress theming, PHP templating, and CSS. The domain was inspirationalexperiences.org.",
+    image: "/site-history/WordPress-2.1-January-2007.webp",
+    imageAlt: "WordPress 2.1 interface with Kubrick theme from January 2007",
+    imageDescription: "WordPress 2.1 admin interface (Jan 2007)",
+    links: [
+      {
+        label: "The Secret History of Kubrick Theme",
+        url: "https://www.huffpost.com/entry/the-secret-history-of-kub_b_415050",
+      },
+      {
+        label: "A Journey Through WordPress Interface",
+        url: "https://planetozh.com/blog/2008/12/a-journey-through-five-years-of-wordpress-interface/",
+      },
+    ],
   },
   {
-    title: "Version 2.0 - Custom WordPress Theme (2015-2017)",
+    title: "2012-2016 - Chrislanejones.com: The Video Production Years",
     description:
-      "Moved away from premium themes to build my first custom WordPress theme from scratch. This was a major learning experience in theme development, PHP templating, and the WordPress loop.\n\nImplemented Advanced Custom Fields for flexible content management and began focusing more on web development projects in my portfolio. Started experimenting with CSS frameworks and responsive design patterns.",
-    image: "/gallery/Pandemic-Office-Setup-2021.webp",
-    imageAlt: "Custom WordPress theme design",
-    imageDescription: "Custom theme development phase",
+      "In 2013, I graduated with a Bachelor of Arts in Television Production after three video production communications internships at the University of North Florida.\n\nI started my career in video editing working at a local church in Jacksonville, FL—First Baptist Church of Jacksonville.When I worked at the church, I spent hours designing my website and I decided to switch careers to building websites.\n\nThis video production website portfolio helped me land my first job in tech, even though it referenced me being a video editor and web designer.\n\nI used a responsive theme to build my website, which was still a new concept in 2014. My first job in tech was at Web.com, and the majority of the websites were not responsive when I started.\n\nThis site was built with the CyberChimps Responsive WordPress theme—one of the early champions of mobile-first design in the WordPress ecosystem.",
+    image: "/site-history/Original-Video-Production-Website.webp",
+    imageAlt: "Original video production portfolio website",
+    imageDescription: "Video production portfolio site (2012-2016)",
+    links: [
+      {
+        label: "CyberChimps Responsive Theme Review",
+        url: "https://wpblog.com/responsive-wordpress-themes-review/",
+      },
+    ],
   },
   {
-    title: "Version 3.0 - React Exploration (2018-2020)",
+    title: "2017-2024 - WordPress Bootstrap Resume: The Ugly Years",
     description:
-      "Began experimenting with React and modern JavaScript frameworks. Built a static site using Create React App, learning component-based architecture and state management.\n\nThis version introduced interactive UI elements and smoother animations. Integrated with WordPress as a headless CMS via the REST API, combining the editing experience of WordPress with the performance of a static React frontend.",
-    image: "/gallery/Me-Recording-A-Video.webp",
-    imageAlt: "React-based site design",
-    imageDescription: "First steps into React development",
+      "I built my own WordPress website from scratch using Bootstrap, and honestly... it was ugly. I can't believe it was up for so long.\n\nThis website was live during my move to Virginia, a period of major life and career transition. Looking back, it's a humbling reminder that not every design decision ages well. The Bootstrap grid was there, the functionality worked, but the aesthetic? Let's just say it was more 'functional' than 'beautiful.'\n\nDespite its appearance, this site served its purpose—it got me through contract work, networking events, and eventually led to better opportunities. It's proof that perfect is the enemy of done, and sometimes you just need to ship it and iterate later.",
+    image: "/site-history/My-Resume-Website.webp",
+    imageAlt: "WordPress Bootstrap resume website from 2017-2024",
+    imageDescription: "The Bootstrap years (2017-2024)",
   },
   {
-    title: "Version 4.0 - Gatsby Static Site (2020-2022)",
+    title: "2024-2025 - The Short-Lived Post-COVID WordPress Site",
     description:
-      "Rebuilt the site using Gatsby for improved performance and SEO. Leveraged GraphQL for data queries and implemented automatic image optimization.\n\nFocused heavily on Core Web Vitals and accessibility. Added a blog with MDX support for rich content authoring. This version taught me modern build tools, static site generation, and performance optimization techniques.",
-    image: "/gallery/Richmond-WordPress-Meetup.webp",
-    imageAlt: "Gatsby-powered website",
-    imageDescription: "Static site generation with Gatsby",
+      "This site was built during my transition from WordPress to React—a bridge between two worlds. I was falling in love with React's component model and growing increasingly frustrated with WordPress's direction, particularly the controversies surrounding Matt Mullenweg and the platform's fractured ecosystem.\n\nThe block editor (Gutenberg) felt clunky compared to the elegance of React components. The WordPress drama was exhausting. And most importantly, I wanted the creative freedom that React offered—especially for animations and micro-interactions.\n\nReact with Framer Motion made it trivially easy to add smooth, performant animations that would have been painful in WordPress.\n\nThis site didn't last long.",
+    image: "/site-history/Post-Covid-WordPress-Website.webp",
+    imageAlt: "Post-COVID WordPress website during transition to React",
+    imageDescription: "Transition phase WordPress site (2024-2025)",
   },
   {
-    title: "Version 5.0 - Next.js & Modern Stack (2022-2024)",
+    title: "2025 - Future: Modern React & Framer Motion",
     description:
-      "Complete rebuild using Next.js 13+ with the App Router. Implemented server components, streaming, and modern React patterns. Added Tailwind CSS for rapid styling and Framer Motion for smooth animations.\n\nIntroduced the bento grid layout, dark mode, and TypeScript throughout. Focused on creating a unique, portfolio-first experience that showcases both projects and personality. This version represents my current understanding of modern web development.",
-    image: "/gallery/Me-on-a-Bike-Trail.webp",
-    imageAlt: "Current Next.js site",
-    imageDescription: "Modern Next.js architecture",
-  },
-  {
-    title: "The Future - Continuous Evolution",
-    description:
-      "Looking ahead, I plan to experiment with edge functions, real-time features, and advanced animations. Exploring Astro for content-heavy sections and continuing to push the boundaries of what's possible with modern web technologies.\n\nThe site will always be a playground for learning new tools and techniques, documenting my growth as a developer while serving as a functional portfolio and personal brand.",
-    image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
-    imageAlt: "Future development plans",
-    imageDescription: "Always evolving, always learning",
+      "This is the site you're looking at right now—built with Next.js 14, React, TypeScript, Tailwind CSS, and Framer Motion.\n\nI finally had the creative freedom I'd been craving. Framer Motion made animations smooth and intuitive. The component-based architecture meant I could build reusable pieces and iterate quickly. TypeScript caught bugs before they reached production. Tailwind made styling fast and consistent.\n\nThe bento grid layout, the smooth page transitions, the interactive components, the dark mode—all of this would have been significantly harder in WordPress. React gave me the tools to build the portfolio site I'd always envisioned.\n\nLooking ahead, I'm excited about experimenting with React Server Components, exploring edge computing, diving deeper into animation libraries, and continuing to push what's possible with modern web technologies. The journey continues.",
+    image: "/site-history/New-React-Website.webp",
+    imageAlt: "Current Next.js and React website with modern animations",
+    imageDescription: "Modern React era (2025-Future)",
   },
 ];
 
@@ -83,25 +92,61 @@ function SiteVersionCard({
   return (
     <Card
       size="page-full"
-      className="grid md:grid-cols-2 gap-8"
+      className="grid md:grid-cols-5 gap-8"
       delay={0.1 + index * 0.1}
     >
       <div
         className={cn(
-          "flex flex-col justify-center",
+          "flex flex-col justify-center md:col-span-2",
           "order-1",
           isImageLeft ? "md:order-2" : "md:order-1"
         )}
       >
         <h2 className="font-bold text-2xl mb-6">{version.title}</h2>
-        <p className="text-muted leading-relaxed text-base whitespace-pre-line">
+        <p className="text-muted leading-relaxed text-base whitespace-pre-line mb-6">
           {version.description}
         </p>
+
+        {/* Links section */}
+        {version.links && version.links.length > 0 && (
+          <div className="mt-auto pt-4 border-t border-[color:var(--color-border)]">
+            <h3 className="text-sm font-semibold text-[color:var(--color-ink)] mb-3">
+              Related Links:
+            </h3>
+            <ul className="space-y-2">
+              {version.links.map((link, i) => (
+                <li key={i}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent hover:underline text-sm inline-flex items-center gap-2"
+                  >
+                    {link.label}
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <div
         className={cn(
-          "relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]",
+          "relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[400px] md:col-span-3",
           "order-2",
           isImageLeft ? "md:order-1" : "md:order-2"
         )}
@@ -111,7 +156,7 @@ function SiteVersionCard({
           alt={version.imageAlt}
           className="w-full h-full object-cover"
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, 60vw"
           priority={index === 0}
         />
         <div className="absolute bottom-4 right-4 text-xs px-3 py-1 rounded-full bg-base/80 backdrop-blur-sm">
@@ -144,11 +189,11 @@ function SiteHistoryGrid({ versions }: { versions: SiteVersion[] }) {
 
 export default function SiteHistoryPage() {
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="max-w-6xl mx-auto px-5 py-12" id="main-content">
       <Banner
         title="Site History"
         breadcrumbPage="Site History"
-        description="The evolution of chrislanejones.com through various technologies, frameworks, and design iterations over the years."
+        description="The evolution of chrislanejones.com through various technologies, frameworks, and design iterations—from WordPress 2.1 and the iconic Kubrick theme to modern Next.js."
       />
 
       <FullWidthLayout>
