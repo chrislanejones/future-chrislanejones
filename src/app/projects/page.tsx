@@ -3,11 +3,11 @@ import Header from "@/components/layout/Header";
 import ProjectGrid from "@/app/projects/ProjectGrid";
 import Footer from "@/components/layout/Footer";
 
-export const metadata = {
-  title: "Projects I Worked On | Chris Lane Jones — Dev & Hiker",
-  description:
-    "Explore my full-stack development projects featuring Next.js, TypeScript, and modern web technologies.",
-};
+import { getPageSEO } from "@/lib/seo";
+
+export async function generateMetadata() {
+  return await getPageSEO("/projects");
+}
 
 export default function ProjectsPage() {
   return (

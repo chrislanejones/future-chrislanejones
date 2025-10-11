@@ -1,12 +1,11 @@
 import Header from "@/components/layout/Header";
 import CareerPage from "@/app/career/CareerPage";
 import Footer from "@/components/layout/Footer";
+import { getPageSEO } from "@/lib/seo";
 
-export const metadata = {
-  title: "Career | Chris Lane Jones — Dev & Hiker",
-  description:
-    "See My Career - Explore my professional journey, skills, and experiences in software development and beyond.",
-};
+export async function generateMetadata() {
+  return await getPageSEO("/career");
+}
 
 export default function About() {
   return (

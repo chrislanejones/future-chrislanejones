@@ -26,12 +26,6 @@ const interphases = localFont({
   variable: "--font-interphases",
 });
 
-export const metadata: Metadata = {
-  title: "Chris Lane Jones — UX/UI Web Design and Development - Dev & Hiker",
-  description:
-    "I Consult, Design, and Develop Web Interfaces for Businesses and Government Agencies.",
-};
-
 export default function RootLayout({
   children,
 }: {

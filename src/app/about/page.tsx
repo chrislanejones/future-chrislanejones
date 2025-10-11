@@ -1,12 +1,11 @@
 import Header from "@/components/layout/Header";
 import AboutPage from "@/app/about/AboutPage";
 import Footer from "@/components/layout/Footer";
+import { getPageSEO } from "@/lib/seo";
 
-export const metadata = {
-  title: "About | Chris Lane Jones — Dev & Hiker",
-  description:
-    "Learn about my journey from video production to web development, community leadership in Richmond's WordPress meetup, and life in the Shenandoah Mountains.",
-};
+export async function generateMetadata() {
+  return await getPageSEO("/about");
+}
 
 export default function About() {
   return (

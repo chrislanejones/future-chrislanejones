@@ -1,289 +1,267 @@
-# Chris Lane Jones - Developer Portfolio
+Here's an updated **README.md** for your project:
 
-![Portfolio Cover](/public/Github-Cover-V2.jpg)
+```markdown
+# Chris Lane Jones Portfolio
 
-🔗 **Live Demo: [https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)**
+Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard for content management.
 
-A modern, interactive portfolio website built with Next.js 15, featuring a bento grid layout, working music player, photo gallery, browser tabs showcase, and project highlights.
+## 🚀 Tech Stack
 
-## Features
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Animations:** Framer Motion
+- **Database:** Convex (real-time backend)
+- **Authentication:** Clerk
+- **UI Components:** Radix UI, shadcn/ui
+- **Icons:** Lucide React, React Icons, Simple Icons
+- **Package Manager:** Bun
 
-### Interactive Bento Grid Layout
+## ✨ Features
 
-- **Hero Section**: Introduction with animated background elements
-- **Quote Generator**: Rotating inspirational quotes with refresh functionality
-- **Music Player**: Fully functional audio player with volume controls and track navigation
-- **Tech Stack Display**: Current technologies and future learning goals
-- **Conference Slider**: Featured conference talks and presentations
-- **Project Showcase**: Navigable project cards with live demo links
-- **Client Slider**: Animated carousel of past and present clients
-- **Terminal UI**: Command-line interface with custom alerts and dialogs
+- 🎨 Modern bento grid homepage layout
+- 🌙 Dark mode with system preference detection
+- 🎭 Smooth animations with Framer Motion
+- 📱 Fully responsive design
+- 🔐 Admin dashboard with Clerk authentication
+- 📝 SEO manager for metadata optimization
+- 🎵 Interactive music player
+- 🖼️ Photo gallery with Polaroid-style drawer
+- 📊 Project showcase with carousel
+- 🎤 Conference attendance tracker
+- 🔗 Curated resource links (browser tabs)
 
-### Key Functionality
-
-- **Working Audio Player**: Play/pause, volume control, track switching
-- **Browser Tabs Showcase**: Interactive display of interesting browser tabs and resources
-- **Project Navigation**: Arrow navigation through featured projects
-- **Responsive Design**: Mobile-first approach with breakpoint optimization
-- **Dark/Light Theme Support**: Automatic theme switching based on system preference
-- **Prefers Color Scheme**: Respects user's OS-level light/dark mode settings
-- **Theme Toggle**: Manual theme switching with persistent preference storage
-- **Terminal Interface**: Command-line style interactions with custom dialog components
-
-## Tech Stack
-
-### Core Technologies
-
-- **Next.js 15** - App Router with TypeScript
-- **Tailwind CSS** - Utility-first styling with custom design tokens
-- **Framer Motion** - Animation library for smooth interactions
-- **Lucide React** - Icon system
-- **Radix UI** - Accessible component primitives
-
-### Additional Libraries
-
-- **vaul** - Drawer component for mobile-friendly interactions
-- **simple-icons** - Technology icons for skill display
-- **class-variance-authority** - Type-safe component variants
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── globals.css           # Global styles and CSS variables
-│   ├── layout.tsx            # Root layout with metadata
-│   ├── page.tsx              # Homepage
-│   ├── about/
-│   │   └── page.tsx          # About page
-│   ├── browser-tabs/
-│   │   └── page.tsx          # Browser tabs showcase
-│   ├── career/
-│   │   └── page.tsx          # Career page
-│   ├── links/
-│   │   └── page.tsx          # Links page
-│   └── projects/
-│       └── page.tsx          # Projects page
-├── components/
-│   ├── BentoGrid.tsx         # Main grid layout
-│   ├── layout/
-│   │   ├── footer.tsx        # Site footer
-│   │   └── header.tsx        # Navigation header
-│   ├── main/
-│   │   ├── client-slider-box.tsx      # Client carousel
-│   │   ├── conference-slider-box.tsx  # Conference talks
-│   │   ├── hero-box.tsx                # Hero section
-│   │   ├── music-player-box.tsx       # Audio player
-│   │   ├── projects-box.tsx           # Project showcase
-│   │   ├── quote-generator-card.tsx   # Quote rotator
-│   │   └── tech-stack-box.tsx         # Skills display
-│   ├── page/
-│   │   └── card.tsx          # Reusable card variants
-│   └── ui/
-│       ├── button.tsx        # Reusable button component
-│       └── terminal-alert-dialog.tsx  # Terminal-style dialogs
-└── lib/
-    └── utils.ts              # Utility functions
+## 🏗️ Project Structure
 ```
 
-## Design System
+.
+├── convex/ # Convex backend functions
+│ ├── schema.ts # Database schema
+│ └── seo.ts # SEO metadata functions
+├── middleware.ts # Clerk authentication middleware
+├── public/ # Static assets
+│ ├── client-icons/
+│ ├── conferences/
+│ ├── gallery/
+│ ├── music/
+│ ├── projects/
+│ └── fonts/
+├── src/
+│ ├── app/ # Next.js app directory
+│ │ ├── about/
+│ │ ├── admin/ # Admin dashboard
+│ │ ├── browser-tabs/
+│ │ ├── career/
+│ │ ├── conferences/
+│ │ ├── link-page/
+│ │ ├── logo-page/
+│ │ ├── projects/
+│ │ ├── sign-in/ # Clerk sign-in page
+│ │ └── site-history/
+│ ├── components/
+│ │ ├── layout/ # Header, Footer
+│ │ ├── main/ # Homepage components
+│ │ ├── page/ # Reusable page components
+│ │ └── ui/ # shadcn/ui components
+│ ├── data/
+│ │ └── conferences.ts # Conference data
+│ ├── lib/
+│ │ └── utils.ts # Utility functions
+│ └── providers/
+│ └── ConvexClientProvider.tsx
+└── package.json
 
-### Color Palette
+````
 
-- **Light Theme**: Sunlit scrub with evergreen accents
-- **Dark Theme**: Night trail with hi-viz green highlights
-- **Accent Color**: Forest green (#2f7d32 light, #8de36b dark)
-
-### Typography
-
-- **Primary Font**: TT Interphases Pro (Custom font family)
-  - Regular (400), Bold (700), and Black (900) weights
-  - Modern, clean typeface optimized for digital interfaces
-- **Handwriting**: Comic Sans MS for polaroid descriptions
-
-### Components
-
-- **Cards**: Rounded corners with subtle borders and glass effects
-- **Buttons**: Multiple variants with focus states and animations
-- **Interactive Elements**: Hover states and tap feedback
-
-## Getting Started
+## 🚦 Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ or Bun
-- Git
+- Clerk account
+- Convex account
 
 ### Installation
 
 1. Clone the repository:
-
 ```bash
-git clone https://github.com/chrislanejones/future-chrislanejones.git
-cd future-chrislanejones
-```
+git clone https://github.com/chrislanejones/your-repo.git
+cd your-repo
+````
 
 2. Install dependencies:
 
 ```bash
 bun install
+# or
+npm install
 ```
 
-3. Set up media files:
+3. Set up environment variables:
+
+Create a `.env.local` file in the root directory:
 
 ```bash
-# Create directories for media
-mkdir -p public/music/audio public/music/art public/gallery public/client-icons
+# Convex
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
 
-# Add your audio files to public/music/audio/
-# Add album art to public/music/art/
-# Add hiking photos to public/gallery/
-# Add client logos to public/client-icons/
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
 ```
 
-4. Start the development server:
+4. Initialize Convex:
+
+```bash
+npx convex dev
+```
+
+5. Seed the database:
+
+```bash
+npx convex run seo:seedSEOData
+```
+
+6. Run the development server:
 
 ```bash
 bun dev
+# or
+npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-## Pages
+## 🔐 Admin Dashboard
 
-- **Home** (`/`) - Main bento grid portfolio layout
-- **About** (`/about`) - Personal introduction and background
-- **Projects** (`/projects`) - Detailed project showcase with tabs
-- **Browser Tabs** (`/browser-tabs`) - Collection of interesting resources and links
-- **Links** (`/links`) - Social media and contact links
-- **Career** (`/career`) - Professional experience and work history
+Access the admin dashboard at `/admin` to manage:
 
-## Media Setup
+- **SEO Metadata:** Edit page titles and descriptions with character count validation
+- **Media Manager:** (Coming soon)
+- **Settings:** (Coming soon)
 
-### Audio Files
+### Admin Features:
 
-Place audio files in `public/music/audio/`:
+- Real-time character counters for SEO optimization
+- Google search preview
+- Page search and filtering
+- Add new pages
+- Automatic save with success/error feedback
 
-- `after-the-earthquake.mp3`
-- Additional tracks as needed
+## 📦 Key Dependencies
 
-### Album Art
-
-Place album artwork in `public/music/art/`:
-
-- `Alvvays-Blue-Rev-Album-Art.webp`
-
-### Photo Gallery
-
-Place hiking photos in `public/gallery/`:
-
-- `Hiking-1.webp`, `Hiking-2.webp`, etc.
-
-### Client Logos
-
-Place client logos in `public/client-icons/`:
-
-- Various client logo files in WebP format
-
-## Customization
-
-### Adding Projects
-
-Update the projects array in `src/components/main/projects-box.tsx`:
-
-```typescript
-const projects: Project[] = [
-  {
-    title: "Your Project",
-    description: "Project description",
-    features: ["Feature 1", "Feature 2"],
-    image: "/project-image.webp",
-    githubUrl: "https://github.com/username/repo",
-    vercelUrl: "https://project.vercel.app",
-  },
-];
+```json
+{
+  "next": "14.0.4",
+  "react": "^18",
+  "typescript": "^5",
+  "tailwindcss": "^3.4.17",
+  "framer-motion": "^10.16.16",
+  "convex": "latest",
+  "@clerk/nextjs": "latest",
+  "@radix-ui/react-*": "latest",
+  "lucide-react": "^0.541.0"
+}
 ```
 
-### Adding Music Tracks
+## 🎨 Design System
 
-Update the playlist in `src/components/main/music-player-box.tsx`:
+### Colors
 
-```typescript
-const playlist = [
-  {
-    title: "Song Title",
-    artist: "Artist Name",
-    album: "Album Name",
-    albumArt: "/music/art/album.webp",
-    audioSrc: "/music/audio/song.mp3",
-  },
-];
+```css
+/* Light Mode */
+--color-base: #f9fafb --color-panel: #ffffff --color-ink: #111827
+  --color-accent: #22c55e /* Dark Mode */ --color-base: #0b0d10
+  --color-panel: #111418 --color-ink: #f3f4f6 --color-accent: #4ade80;
 ```
 
-### Conference Pages Structure
+### Typography
 
-The conference section uses a data-driven approach with dynamic routing:
+- **Font:** TT Interphases Pro
+- **Weights:** Regular (400), Bold (700), Black (900)
 
-1. **Data Structure** - Update `src/data/conferences.ts`:
+## 📄 Pages
 
-```typescript
-export const conferences: Conference[] = [
-  {
-    slug: "conference-slug",
-    name: "Conference Name",
-    year: 2024,
-    dates: { start: "2024-10-27", end: "2024-10-29" },
-    city: "City, State",
-    venue: "Venue Name",
-    url: "https://conference-website.com",
-    topics: ["Open Source", "Cloud", "AI/ML"],
-    coverImage: "/conferences/conference-image.png",
-    summary: "Brief conference description...",
-    talkLinks: [{ label: "Talk Title", url: "https://link.com" }]
-  }
-];
-```
+- `/` - Homepage with bento grid layout
+- `/about` - Personal journey and background
+- `/projects` - Portfolio of web projects
+- `/career` - Professional timeline and experience
+- `/conferences` - Tech conferences attended
+- `/browser-tabs` - Curated developer resources
+- `/link-page` - Social media and contact links
+- `/logo-page` - Brand identity and logo variations
+- `/site-history` - Portfolio evolution over 18 years
+- `/admin` - Content management dashboard
 
-2. **Routes Generated**:
-   - `/conferences` - Main listing page with all conferences
-   - `/conferences/[year]/[slug]` - Individual conference detail pages
-
-3. **Conference Images**: Place conference logos/images in `public/conferences/`
-
-### Updating Quotes
-
-Modify the quotes array in `src/components/main/quote-generator-card.tsx`.
-
-## Deployment
+## 🚀 Deployment
 
 ### Vercel (Recommended)
 
 1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Deploy automatically on push
+2. Import project to Vercel
+3. Add environment variables
+4. Deploy
 
-### Manual Build
+### Environment Variables for Production
 
 ```bash
-bun run build
-bun start
+NEXT_PUBLIC_CONVEX_URL=your_production_convex_url
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_live_key
+CLERK_SECRET_KEY=your_clerk_live_secret
 ```
 
-## Performance Features
+## 📝 SEO Optimization
 
-- **Static Site Generation** for optimal loading
-- **Image Optimization** with Next.js Image component
-- **Code Splitting** with dynamic imports
-- **Lazy Loading** for media content
-- **Responsive Images** with appropriate sizing
+All pages include:
 
-## Browser Support
+- Optimized meta titles (50-60 characters)
+- Meta descriptions (150-160 characters)
+- Open Graph tags
+- Structured data (JSON-LD)
+- Sitemap generation
 
-- Chrome/Edge 88+
-- Firefox 78+
-- Safari 14+
-- Mobile browsers with modern JavaScript support
+## 🤝 Contributing
 
-## License
+This is a personal portfolio project, but suggestions are welcome! Feel free to open an issue.
 
-This project is open source and available under the [MIT License](LICENCE).
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 👤 Author
+
+**Chris Lane Jones**
+
+- Website: [chrislanejones.com](https://chrislanejones.com)
+- GitHub: [@chrislanejones](https://github.com/chrislanejones)
+- LinkedIn: [/in/chrislanejones](https://linkedin.com/in/chrislanejones)
+- Twitter: [@cljwebdev](https://twitter.com/cljwebdev)
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - React framework
+- [Convex](https://convex.dev/) - Backend platform
+- [Clerk](https://clerk.com/) - Authentication
+- [Vercel](https://vercel.com/) - Hosting platform
+- [shadcn/ui](https://ui.shadcn.com/) - UI components
+- [Framer Motion](https://www.framer.com/motion/) - Animation library
+
+---
+
+Built with ❤️ and ☕ in Virginia
+
+```
+
+This updated README:
+
+✅ **Removed all Supabase references**
+✅ **Added Convex and Clerk setup**
+✅ **Includes admin dashboard documentation**
+✅ **Shows complete project structure**
+✅ **Has deployment instructions**
+✅ **Documents SEO features**
+✅ **Includes design system details**
+✅ **Lists all pages and features**
+
+Ready to commit! 🚀
+```

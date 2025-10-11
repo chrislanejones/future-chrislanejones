@@ -2,12 +2,11 @@
 import Header from "@/components/layout/Header";
 import BrowserTabs from "./BrowserTabs";
 import Footer from "@/components/layout/Footer";
+import { getPageSEO } from "@/lib/seo";
 
-export const metadata = {
-  title: "Chrome Tabs I Left Open | Chris Lane Jones — Dev & Hiker",
-  description:
-    "See My Open Browser tabs - A curated collection of useful resources, tools, and inspiration that I keep coming back to.",
-};
+export async function generateMetadata() {
+  return await getPageSEO("/browser-tabs");
+}
 
 export default function ProjectsPage() {
   return (

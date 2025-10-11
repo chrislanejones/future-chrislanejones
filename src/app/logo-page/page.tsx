@@ -2,11 +2,10 @@ import Header from "@/components/layout/Header";
 import LogoPage from "./LogoPage";
 import Footer from "@/components/layout/Footer";
 
-export const metadata = {
-  title: "About the Logo | Chris Lane Jones — Dev & Hiker",
-  description:
-    "Exploring the design and meaning behind the mountain logo - a symbol of the journey through code and trails.",
-};
+import { getPageSEO } from "@/lib/seo";
+export async function generateMetadata() {
+  return await getPageSEO("/logo-page");
+}
 
 export default function Logo() {
   return (

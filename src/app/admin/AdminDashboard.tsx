@@ -14,6 +14,8 @@ import {
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useUser, SignOutButton } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 // SEO Character limits
 const SEO_LIMITS = {
@@ -76,7 +78,10 @@ const CharacterCounter = ({
 const SEOTab = () => {
   const pages = useQuery(api.seo.getAllSEO) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
+  const addNewPage = useMutation(api.seo.updateSEO); // ← Moved inside component
 
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newPagePath, setNewPagePath] = useState("");
   const [selectedPage, setSelectedPage] = useState<any>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
@@ -107,6 +112,24 @@ const SEOTab = () => {
       page.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
       page.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleAddPage = async () => {
+    if (!newPagePath) return;
+
+    try {
+      await addNewPage({
+        path: newPagePath,
+        title: `${newPagePath}`,
+        description: "Add your description here",
+      });
+      setShowAddModal(false);
+      setNewPagePath("");
+      setSaveStatus("success");
+    } catch (error) {
+      console.error("Failed to add page:", error);
+      setSaveStatus("error");
+    }
+  };
 
   const handlePageSelect = (page: any) => {
     setSelectedPage(page);
@@ -153,8 +176,8 @@ const SEOTab = () => {
     <div className="flex gap-6 h-full">
       {/* Page List */}
       <div className="w-80 bg-[#111418] border border-[#1f242b] rounded-2xl p-4 flex flex-col">
-        <div className="mb-4">
-          <div className="relative">
+        <div className="mb-4 flex gap-2">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#9ca3af]" />
             <input
               type="text"
@@ -164,7 +187,48 @@ const SEOTab = () => {
               className="w-full pl-10 pr-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] text-sm focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
             />
           </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg text-sm font-medium hover:bg-[#22c55e] transition-colors whitespace-nowrap"
+          >
+            + Add
+          </button>
         </div>
+
+        {/* Add Page Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold text-[#f3f4f6] mb-4">
+                Add New Page
+              </h3>
+              <input
+                type="text"
+                value={newPagePath}
+                onChange={(e) => setNewPagePath(e.target.value)}
+                placeholder="/new-page"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80] mb-4"
+              />
+              <div className="flex gap-3">
+                <button
+                  onClick={handleAddPage}
+                  className="flex-1 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg font-medium hover:bg-[#22c55e] transition-colors"
+                >
+                  Add Page
+                </button>
+                <button
+                  onClick={() => {
+                    setShowAddModal(false);
+                    setNewPagePath("");
+                  }}
+                  className="flex-1 px-4 py-2 bg-[#1a1e24] text-[#9ca3af] rounded-lg font-medium hover:bg-[#1f242b] transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto space-y-2">
           {filteredPages.map((page) => (
@@ -326,7 +390,14 @@ const ComingSoonTab = ({ title }: { title: string }) => (
 
 const AdminDashboard = () => {
   const { user } = useUser();
+  const { signOut } = useClerk();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("seo");
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   const tabs = [
     { id: "seo", label: "SEO Manager", icon: FileText },
@@ -369,12 +440,13 @@ const AdminDashboard = () => {
         </nav>
 
         <div className="pt-4 border-t border-[#1f242b]">
-          <SignOutButton>
-            <button className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#9ca3af] hover:text-[#f3f4f6] transition-colors">
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </button>
-          </SignOutButton>
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#9ca3af] hover:text-[#f3f4f6] transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
         </div>
       </div>
 

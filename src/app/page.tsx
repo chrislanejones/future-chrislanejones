@@ -11,6 +11,11 @@ import ProjectsBox from "@/components/main/projects-box";
 import ImageGalleryBox from "@/components/main/image-gallery-box";
 import HeroBox from "@/components/main/hero-box";
 import LinkCard from "@/components/main/link-box";
+import { getPageSEO } from "@/lib/seo";
+
+export async function generateMetadata() {
+  return await getPageSEO("/");
+}
 
 export default function Home() {
   return (

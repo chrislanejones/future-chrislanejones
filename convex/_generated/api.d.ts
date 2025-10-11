@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as http from "../http.js";
 import type * as seo from "../seo.js";
 
 /**
@@ -24,6 +25,7 @@ import type * as seo from "../seo.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  http: typeof http;
   seo: typeof seo;
 }>;
 export declare const api: FilterApi<
