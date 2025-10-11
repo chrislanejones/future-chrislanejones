@@ -82,12 +82,13 @@ export const footerNavLinks: FooterSection[] = [
     ],
   },
   {
-    title: "Extra",
+    title: "Others",
     links: [
       { href: "/site-history", label: "History of this Site" },
       { href: "/logo-page", label: "About The Logo" },
+      { href: "/404", label: "404 Music Lounge" },
       { href: "/changelog", label: "Lorem Ipsum 9" },
-      { href: "/links", label: "Lorem Ipsum 11" },
+      { href: "/admin", label: "Admin" },
     ],
   },
 ];

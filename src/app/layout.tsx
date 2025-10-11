@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 const interphases = localFont({
   src: [
@@ -36,17 +38,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${interphases.className}`}
-        suppressHydrationWarning
-        style={{
-          backgroundColor: "var(--color-base)",
-          color: "var(--color-ink)",
-        }}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        variables: {
+          colorPrimary: "#4ade80",
+          colorBackground: "#0b0d10",
+          colorInputBackground: "#111418",
+          colorInputText: "#f3f4f6",
+        },
+      }}
+    >
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${interphases.className}`}
+          suppressHydrationWarning
+          style={{
+            backgroundColor: "var(--color-base)",
+            color: "var(--color-ink)",
+          }}
+        >
+          <ConvexClientProvider>{children}</ConvexClientProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
