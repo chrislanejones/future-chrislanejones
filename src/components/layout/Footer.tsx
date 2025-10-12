@@ -3,15 +3,19 @@
 import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { footerSocialLinks, SiteLogo, footerNavLinks, NavLinkComponent } from "../page/links";
+import {
+  footerSocialLinks,
+  SiteLogo,
+  footerNavLinks,
+  NavLinkComponent,
+} from "../page/links";
 
 export default function Footer() {
-
   return (
     <motion.footer className="max-w-6xl mx-auto px-5 pt-5 pb-10">
-      <div className="flex flex-col md:flex-row md:justify-between gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
         {/* Branding */}
-        <div className="flex flex-col gap-4 max-w-sm">
+        <div className="flex flex-col gap-4 max-w-sm md:col-span-2 md:h-full md:justify-between">
           <div>
             <Link href="/" className="flex items-center gap-3">
               <div className="grid place-content-center">
@@ -28,8 +32,8 @@ export default function Footer() {
             Government Agencies.
           </p>
 
-          {/* Social Icons */}
-          <div className="flex items-center gap-3 pt-3">
+          {/* Social Icons - will align to bottom on desktop */}
+          <div className="flex items-center gap-3 pt-3 md:mt-auto">
             {footerSocialLinks.map((social) => (
               <Button
                 key={social.href}
@@ -45,16 +49,12 @@ export default function Footer() {
               </Button>
             ))}
           </div>
-
-          <p className="text-sm text-muted pt-3">
-            © {new Date().getFullYear()} Chris Lane Jones. All rights reserved.
-          </p>
         </div>
 
         {/* Footer Sections */}
-        <div className="grid grid-cols-1 gap-8 text-sm text-muted sm:grid-cols-3 pt-8 md:pt-0">
+        <div className="grid grid-cols-1 gap-8 text-sm text-muted sm:grid-cols-3 md:col-span-3 md:grid-cols-3">
           {footerNavLinks.map((section) => (
-            <div key={section.title}>
+            <div key={section.title} className="justify-self-end text-right">
               <span className="mb-4 block font-bold text-xl whitespace-nowrap text-foreground">
                 {section.title}
               </span>
@@ -71,6 +71,13 @@ export default function Footer() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Copyright Statement */}
+      <div className="mt-8 pt-6 text-center">
+        <p className="text-sm text-muted">
+          © {new Date().getFullYear()} Chris Lane Jones. All rights reserved.
+        </p>
       </div>
     </motion.footer>
   );

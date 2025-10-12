@@ -10,6 +10,43 @@ import ConferenceSliderBox from "@/components/main/conference-slider-box";
 const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
 
+// Simple function to parse markdown links and render them as JSX
+function parseMarkdownLinks(text: string): React.ReactNode {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    // Add text before the link
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    // Add the link
+    parts.push(
+      <a
+        key={match.index}
+        href={match[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-green-500 hover:text-green-400 underline underline-offset-2"
+      >
+        {match[1]}
+      </a>
+    );
+
+    lastIndex = linkRegex.lastIndex;
+  }
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
 type AboutSection = {
   title: string;
   description: string;
@@ -28,14 +65,6 @@ const aboutSections: AboutSection[] = [
     imageDescription: "Recording a video in the field in 2013",
   },
   {
-    title: "My Home Office Setup",
-    description:
-      "Working remotely from Louisa, Virginia with a dual-monitor standing desk setup that keeps me productive and healthy during long development sessions.\n\nThis setup has served me well through countless projects and late-night coding sessions.",
-    image: "/gallery/Standing-Desk-Setup.webp",
-    imageAlt: "Adjustable Standing Desk with Two Displays and Laptop",
-    imageDescription: "My now old standing desk setup",
-  },
-  {
     title: "Local Meetup Host & Community Leader",
     description:
       "I led Richmond's local WordPress meetup and hosted monthly meetups from January 2022 till January 2025. We discussed WordPress topics, general web knowledge, and provide support for developers in the Glen Allen area.\n\nPreviously served as Digital Director for The JOMM (Jacksonville Online Marketing Meetup), where I increased monthly attendance and website engagement.",
@@ -46,7 +75,7 @@ const aboutSections: AboutSection[] = [
   {
     title: "Living in the Shenandoah Mountains",
     description:
-      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service – Heaven's Rays Ministries. In Louisa, I am close to several cities and the Shenandoah mountains.",
+      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service – [Heaven's Rays Ministries](https://heavensraysministries.com/). In Louisa, I am close to several cities and the Shenandoah mountains.",
     image: "/gallery/Me-on-a-Bike-Trail.webp",
     imageAlt: "Me on my bike at the Bike Trails by Piney River",
     imageDescription: "Exploring bike trails near the Piney River",
@@ -54,7 +83,7 @@ const aboutSections: AboutSection[] = [
   {
     title: "Adventure & Travel",
     description:
-      "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights.\n\nAfter this trip, we started looking for work in the towns adjacent to the Appalachian Mountains.",
+      "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights.\n\nAfter this trip, we started looking for work in the towns adjacent to the Appalachian Mountains. We love hiking, biking, and exploring the outdoors. We ended up moving to Harrisonburg, Virginia in 2018 and then moved to Central Virginia in 2019.",
     image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
     imageAlt: "Glacier National Park",
     imageDescription: "Adventures at Glacier National Park",
@@ -90,9 +119,9 @@ function AboutCard({
         )}
       >
         <h2 className="font-bold text-2xl mb-6">{section.title}</h2>
-        <p className="text-muted leading-relaxed text-base whitespace-pre-line">
-          {section.description}
-        </p>
+        <div className="text-muted leading-relaxed text-base whitespace-pre-line">
+          {parseMarkdownLinks(section.description)}
+        </div>
       </div>
 
       {/* Image - Always appears second on mobile, alternates on desktop */}
