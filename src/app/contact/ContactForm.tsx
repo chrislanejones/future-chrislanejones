@@ -22,7 +22,9 @@ export default function ContactForm() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(
+    null
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
@@ -87,7 +89,9 @@ export default function ContactForm() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error for this field when user starts typing
@@ -114,7 +118,10 @@ export default function ContactForm() {
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+              >
                 Name *
               </label>
               <Input
@@ -133,7 +140,10 @@ export default function ContactForm() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+              >
                 Email *
               </label>
               <Input
@@ -152,8 +162,14 @@ export default function ContactForm() {
 
             {/* Phone Field */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2">
-                Phone Number <span className="text-[color:var(--color-muted)]">(Optional)</span>
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+              >
+                Phone Number{" "}
+                <span className="text-[color:var(--color-muted)]">
+                  (Optional)
+                </span>
               </label>
               <Input
                 type="tel"
@@ -171,7 +187,10 @@ export default function ContactForm() {
 
             {/* Message Field */}
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2">
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+              >
                 Message *
               </label>
               <Textarea
@@ -232,7 +251,9 @@ export default function ContactForm() {
                   className="flex items-center gap-2 text-red-500"
                 >
                   <AlertCircle className="w-5 h-5" />
-                  <span className="text-sm">Failed to send message. Please try again.</span>
+                  <span className="text-sm">
+                    Failed to send message. Please try again.
+                  </span>
                 </motion.div>
               )}
             </div>
@@ -248,12 +269,6 @@ export default function ContactForm() {
         viewport={{ once: true }}
         className="mt-12 text-center"
       >
-        <p className="text-[color:var(--color-foreground)] mb-4">
-          Prefer email? Reach out directly at{" "}
-          <a href="mailto:contact@chrislanejones.com" className="text-[color:var(--color-accent)] hover:text-[color:var(--color-accent-alt)] transition-colors">
-            contact@chrislanejones.com
-          </a>
-        </p>
         <p className="text-[color:var(--color-muted)] text-sm">
           I typically respond within 24-48 hours during business days.
         </p>

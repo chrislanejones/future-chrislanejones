@@ -89,11 +89,11 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
         {/* Buttons pinned to bottom-left */}
         <div className="mt-auto flex items-center gap-3">
           <Button asChild variant="base">
-            <a href="#contact">See My Calendar</a>
+            <a href="/contact">Contact Me</a>
           </Button>
 
           <Button
-            variant="neutral"
+            variant="base"
             size="icon"
             round={true}
             onClick={replayAnimation}

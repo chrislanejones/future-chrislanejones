@@ -40,7 +40,7 @@ const QUOTES: ReactNode[] = [
     >
       Tanner Linsley
     </a>
-    The Following week I learned he was the creator of Tanstack.
+    . The following week I learned he was the creator of Tanstack.
   </>,
   <>
     I will apply to any tech company that swaps JavaScript questions for{" "}
@@ -50,10 +50,11 @@ const QUOTES: ReactNode[] = [
       rel="nofollow noopener noreferrer"
       className="underline"
     >
-      Technology Connection
-    </a>
-    Questions
+      Technology Connections
+    </a>{" "}
+    questions.
   </>,
+  "My code reviews have been described as 'thorough' and 'why are you like this?'",
   "My rambling 14",
   "My rambling 15",
   "My rambling 16",
