@@ -2,6 +2,8 @@
 
 Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard for content management.
 
+![Image of Light and Dark Mode](public/Github-Cover-V2.jpg)
+
 ## 🚀 Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
@@ -15,6 +17,7 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - **UI Components:** Radix UI, shadcn/ui
 - **Icons:** Lucide React, React Icons, Simple Icons
 - **Package Manager:** Bun
+- **Blog:** Next.js MDX Blog
 
 ## ✨ Features
 

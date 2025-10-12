@@ -12,6 +12,7 @@ import {
   FaHome,
   FaTools,
   FaChrome,
+  FaAtom,
 } from "react-icons/fa";
 import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
 import { ExternalLink, Link as LinkIcon } from "lucide-react";
@@ -223,13 +224,9 @@ export default function LinkGrid() {
             className="justify-center"
             asChild
           >
-            <a
-              href="https://chrislanejones.com/wordpress-site-maintenance/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaTools className="w-4 h-4 mr-2" />
-              WP Service
+            <a href="/react-maintenance">
+              <FaAtom className="w-4 h-4 mr-2" />
+              React Services
             </a>
           </Button>
 
@@ -239,13 +236,9 @@ export default function LinkGrid() {
             className="justify-center"
             asChild
           >
-            <a
-              href="https://chrislanejones.com/category/blog-post/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaWordpress className="w-4 h-4 mr-2" />
-              Blog
+            <a href="/wordpress-maintenance">
+              <FaTools className="w-4 h-4 mr-2" />
+              WordPress Services
             </a>
           </Button>
         </div>

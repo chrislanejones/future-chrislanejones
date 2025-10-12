@@ -42,6 +42,7 @@ export const headerNavLinks: NavLink[] = [
   { href: "/projects", label: "Projects" },
   { href: "/career", label: "Career" },
   { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
   { href: "/browser-tabs", label: "Browser Tabs" },
   { href: "/contact", label: "Contact" },
 ];
@@ -55,7 +56,7 @@ export const footerNavLinks: FooterSection[] = [
       { href: "/about", label: "About" },
       { href: "/link-page", label: "Link Page" },
       { href: "/browser-tabs", label: "Browser Tabs" },
-      { href: "/contacts", label: "Contacts" },
+      { href: "/contact", label: "Contact" },
     ],
   },
   {
@@ -63,9 +64,9 @@ export const footerNavLinks: FooterSection[] = [
     links: [
       { href: "/projects", label: "Projects" },
       { href: "/career", label: "Career" },
+      { href: "/blog", label: "Blog" },
       { href: "/react-maintenance", label: "React Services" },
       { href: "/wordpress-maintenance", label: "WordPress Services" },
-      { href: "/blog", label: "Blog" },
       { href: "/conferences", label: "Conferences" },
     ],
   },
