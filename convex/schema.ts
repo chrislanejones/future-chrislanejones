@@ -8,4 +8,13 @@ export default defineSchema({
     description: v.string(),
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
+
+  contactMessages: defineTable({
+    name: v.string(),
+    email: v.string(),
+    phone: v.optional(v.string()),
+    message: v.string(),
+    createdAt: v.number(),
+    read: v.boolean(),
+  }).index("by_created", ["createdAt"]),
 });

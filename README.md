@@ -1,6 +1,3 @@
-Here's an updated **README.md** for your project:
-
-```markdown
 # Chris Lane Jones Portfolio
 
 Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard for content management.
@@ -13,6 +10,8 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - **Animations:** Framer Motion
 - **Database:** Convex (real-time backend)
 - **Authentication:** Clerk
+- **Analytics:** PostHog (product analytics & session recording)
+- **Email:** Resend (transactional emails)
 - **UI Components:** Radix UI, shadcn/ui
 - **Icons:** Lucide React, React Icons, Simple Icons
 - **Package Manager:** Bun
@@ -25,53 +24,13 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - 📱 Fully responsive design
 - 🔐 Admin dashboard with Clerk authentication
 - 📝 SEO manager for metadata optimization
+- 📊 PostHog analytics with session recording
+- 📧 Contact form with email notifications
 - 🎵 Interactive music player
 - 🖼️ Photo gallery with Polaroid-style drawer
 - 📊 Project showcase with carousel
 - 🎤 Conference attendance tracker
 - 🔗 Curated resource links (browser tabs)
-
-## 🏗️ Project Structure
-```
-
-.
-├── convex/ # Convex backend functions
-│ ├── schema.ts # Database schema
-│ └── seo.ts # SEO metadata functions
-├── middleware.ts # Clerk authentication middleware
-├── public/ # Static assets
-│ ├── client-icons/
-│ ├── conferences/
-│ ├── gallery/
-│ ├── music/
-│ ├── projects/
-│ └── fonts/
-├── src/
-│ ├── app/ # Next.js app directory
-│ │ ├── about/
-│ │ ├── admin/ # Admin dashboard
-│ │ ├── browser-tabs/
-│ │ ├── career/
-│ │ ├── conferences/
-│ │ ├── link-page/
-│ │ ├── logo-page/
-│ │ ├── projects/
-│ │ ├── sign-in/ # Clerk sign-in page
-│ │ └── site-history/
-│ ├── components/
-│ │ ├── layout/ # Header, Footer
-│ │ ├── main/ # Homepage components
-│ │ ├── page/ # Reusable page components
-│ │ └── ui/ # shadcn/ui components
-│ ├── data/
-│ │ └── conferences.ts # Conference data
-│ ├── lib/
-│ │ └── utils.ts # Utility functions
-│ └── providers/
-│ └── ConvexClientProvider.tsx
-└── package.json
-
-````
 
 ## 🚦 Getting Started
 
@@ -80,14 +39,17 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - Node.js 18+ or Bun
 - Clerk account
 - Convex account
+- PostHog account (for analytics)
+- Resend account (for email)
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/chrislanejones/your-repo.git
 cd your-repo
-````
+```
 
 2. Install dependencies:
 
@@ -108,6 +70,14 @@ NEXT_PUBLIC_CONVEX_URL=your_convex_url
 # Clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
+
+# PostHog Analytics
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_api_key
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+# Resend Email
+RESEND_API_KEY=your_resend_api_key
+NEXT_PUBLIC_CONTACT_EMAIL=your@email.com
 ```
 
 4. Initialize Convex:
@@ -148,6 +118,61 @@ Access the admin dashboard at `/admin` to manage:
 - Add new pages
 - Automatic save with success/error feedback
 
+## 📊 Analytics & Monitoring
+
+### PostHog Integration
+
+The site uses PostHog for:
+
+- **Product Analytics:** Track page views, button clicks, and user behavior
+- **Session Recording:** Visual playback of user sessions
+- **Feature Flags:** A/B testing and feature rollouts
+- **User Identification:** Track authenticated users via Clerk integration
+
+#### Testing PostHog:
+
+1. Open browser console and type `posthog` to verify initialization
+2. Check Network tab for requests to `app.posthog.com`
+3. View events in PostHog dashboard within 1-2 minutes
+4. Use the debug component (in development mode) to test events
+
+#### Custom Event Tracking:
+
+```typescript
+import { usePostHog } from "posthog-js/react";
+
+const posthog = usePostHog();
+posthog.capture("button_clicked", {
+  button_name: "Download Resume",
+  location: "career_page",
+});
+```
+
+## 📧 Contact Form
+
+The contact form uses Resend for email delivery with:
+
+- Server-side validation
+- Rate limiting
+- Email templates with React Email
+- Success/error notifications
+- Form state management
+
+### Setting up Resend:
+
+1. Sign up at [resend.com](https://resend.com)
+2. Verify your domain (or use their sandbox for testing)
+3. Get your API key from the dashboard
+4. Add `RESEND_API_KEY` to `.env.local`
+
+### Contact Form Features:
+
+- Client-side validation
+- Server action for secure submission
+- Automatic email notifications
+- Spam protection with rate limiting
+- Responsive design with accessible forms
+
 ## 📦 Key Dependencies
 
 ```json
@@ -160,7 +185,9 @@ Access the admin dashboard at `/admin` to manage:
   "convex": "latest",
   "@clerk/nextjs": "latest",
   "@radix-ui/react-*": "latest",
-  "lucide-react": "^0.541.0"
+  "lucide-react": "^0.541.0",
+  "posthog-js": "latest",
+  "resend": "latest"
 }
 ```
 
@@ -170,9 +197,16 @@ Access the admin dashboard at `/admin` to manage:
 
 ```css
 /* Light Mode */
---color-base: #f9fafb --color-panel: #ffffff --color-ink: #111827
-  --color-accent: #22c55e /* Dark Mode */ --color-base: #0b0d10
-  --color-panel: #111418 --color-ink: #f3f4f6 --color-accent: #4ade80;
+--color-base: #f9fafb;
+--color-panel: #ffffff;
+--color-ink: #111827;
+--color-accent: #22c55e;
+
+/* Dark Mode */
+--color-base: #0b0d10;
+--color-panel: #111418;
+--color-ink: #f3f4f6;
+--color-accent: #4ade80;
 ```
 
 ### Typography
@@ -192,6 +226,7 @@ Access the admin dashboard at `/admin` to manage:
 - `/logo-page` - Brand identity and logo variations
 - `/site-history` - Portfolio evolution over 18 years
 - `/admin` - Content management dashboard
+- `/contact` - Contact form with email integration
 
 ## 🚀 Deployment
 
@@ -205,9 +240,20 @@ Access the admin dashboard at `/admin` to manage:
 ### Environment Variables for Production
 
 ```bash
+# Convex
 NEXT_PUBLIC_CONVEX_URL=your_production_convex_url
+
+# Clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_live_key
 CLERK_SECRET_KEY=your_clerk_live_secret
+
+# PostHog
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_live_key
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+# Resend
+RESEND_API_KEY=your_resend_live_key
+NEXT_PUBLIC_CONTACT_EMAIL=your@email.com
 ```
 
 ## 📝 SEO Optimization
@@ -219,6 +265,28 @@ All pages include:
 - Open Graph tags
 - Structured data (JSON-LD)
 - Sitemap generation
+
+## 🔒 Privacy & Security
+
+- PostHog data is anonymized by default
+- Contact form includes rate limiting
+- Admin routes protected by Clerk authentication
+- Environment variables for sensitive data
+- CORS policies configured
+- No localStorage usage in artifacts (Claude.ai compatible)
+
+## 🧪 Testing
+
+### PostHog Testing:
+
+```bash
+# In browser console
+posthog.capture('test_event', { test: true })
+```
+
+### Email Testing:
+
+Use Resend sandbox domain for development testing before verifying your domain.
 
 ## 🤝 Contributing
 
@@ -242,26 +310,12 @@ This project is open source and available under the [MIT License](LICENSE).
 - [Next.js](https://nextjs.org/) - React framework
 - [Convex](https://convex.dev/) - Backend platform
 - [Clerk](https://clerk.com/) - Authentication
+- [PostHog](https://posthog.com/) - Product analytics
+- [Resend](https://resend.com/) - Email delivery
 - [Vercel](https://vercel.com/) - Hosting platform
 - [shadcn/ui](https://ui.shadcn.com/) - UI components
 - [Framer Motion](https://www.framer.com/motion/) - Animation library
 
 ---
 
-Built with ❤️ and ☕ in Virginia
-
-```
-
-This updated README:
-
-✅ **Removed all Supabase references**
-✅ **Added Convex and Clerk setup**
-✅ **Includes admin dashboard documentation**
-✅ **Shows complete project structure**
-✅ **Has deployment instructions**
-✅ **Documents SEO features**
-✅ **Includes design system details**
-✅ **Lists all pages and features**
-
-Ready to commit! 🚀
-```
+Built with ❤️ and ☕ from a Florida boy living in Virginia

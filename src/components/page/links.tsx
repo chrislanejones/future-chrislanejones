@@ -36,16 +36,6 @@ export function SiteLogo({ className = "" }: { className?: string }) {
   );
 }
 
-// Navigation Links (deprecated - use headerNavLinks or footerNavLinks instead)
-export const navLinks: NavLink[] = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/career", label: "Career" },
-  { href: "/about", label: "About" },
-  { href: "/browser-tabs", label: "Browser Tabs" },
-  { href: "#contact", label: "Contact" },
-];
-
 // Header Navigation Links
 export const headerNavLinks: NavLink[] = [
   { href: "/", label: "Home" },
@@ -53,7 +43,7 @@ export const headerNavLinks: NavLink[] = [
   { href: "/career", label: "Career" },
   { href: "/about", label: "About" },
   { href: "/browser-tabs", label: "Browser Tabs" },
-  { href: "#contact", label: "Contact" },
+  { href: "/contact", label: "Contact" },
 ];
 
 // Footer Navigation Sections
@@ -65,6 +55,7 @@ export const footerNavLinks: FooterSection[] = [
       { href: "/about", label: "About" },
       { href: "/link-page", label: "Link Page" },
       { href: "/browser-tabs", label: "Browser Tabs" },
+      { href: "/contacts", label: "Contacts" },
     ],
   },
   {

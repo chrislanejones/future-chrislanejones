@@ -10,12 +10,14 @@ import {
   AlertCircle,
   CheckCircle,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import ContactMessagesTab from "./ContactMessagesTab";
 
 // SEO Character limits
 const SEO_LIMITS = {
@@ -402,6 +404,7 @@ const AdminDashboard = () => {
   const tabs = [
     { id: "seo", label: "SEO Manager", icon: FileText },
     { id: "media", label: "Media", icon: Image },
+    { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -454,6 +457,7 @@ const AdminDashboard = () => {
       <div className="flex-1 p-6 overflow-hidden">
         {activeTab === "seo" && <SEOTab />}
         {activeTab === "media" && <ComingSoonTab title="Media Manager" />}
+        {activeTab === "messages" && <ContactMessagesTab />}
         {activeTab === "settings" && <ComingSoonTab title="Settings" />}
       </div>
     </div>
