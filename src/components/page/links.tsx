@@ -59,7 +59,7 @@ export const footerNavLinks: FooterSection[] = [
     ],
   },
   {
-    title: "My Work",
+    title: "Work",
     links: [
       { href: "/projects", label: "Projects" },
       { href: "/career", label: "Career" },
@@ -70,13 +70,13 @@ export const footerNavLinks: FooterSection[] = [
     ],
   },
   {
-    title: "Others",
+    title: "More",
     links: [
       { href: "/site-history", label: "History of this Site" },
       { href: "/logo-page", label: "About The Logo" },
-      { href: "/404", label: "404 Music Lounge" },
-      { href: "/changelog", label: "Lorem Ipsum 9" },
+      { href: "/changelog", label: "Change Log" },
       { href: "/admin", label: "Admin" },
+      { href: "/404", label: "404 Music Lounge" },
     ],
   },
 ];

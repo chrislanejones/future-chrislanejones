@@ -1,19 +1,56 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
 import { conferences } from "@/data/conferences";
 
 export default function ConferencesPage() {
-  const byYear = [...conferences].sort((a, b) => b.year - a.year);
+  const [selectedYear, setSelectedYear] = useState<number | "all">("all");
+
+  // Get unique years and sort them (newest first)
+  const availableYears = [...new Set(conferences.map(c => c.year))].sort((a, b) => b - a);
+
+  // Filter conferences based on selected year
+  const filteredConferences = selectedYear === "all"
+    ? conferences
+    : conferences.filter(c => c.year === selectedYear);
+
+  const byYear = [...filteredConferences].sort((a, b) => b.year - a.year);
 
   return (
     <main className="max-w-6xl mx-auto px-5 py-12">
       <Banner
         title="Conferences"
         breadcrumbPage="Conferences"
-        description="Highlights and notes from events I’ve attended—open source, web, and community conferences across the years."
+        description="Highlights and notes from events I've attended—open source, web, and community conferences across the years."
       />
+
+      {/* Year Filter Buttons */}
+      <section className="mb-8">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={selectedYear === "all" ? "accent" : "outline"}
+            onClick={() => setSelectedYear("all")}
+            size="sm"
+          >
+            All
+          </Button>
+          {availableYears.map((year) => (
+            <Button
+              key={year}
+              variant={selectedYear === year ? "accent" : "outline"}
+              onClick={() => setSelectedYear(year)}
+              size="sm"
+            >
+              {year}
+            </Button>
+          ))}
+        </div>
+      </section>
 
       {/* 3 cards per row: md:grid-cols-6 + Card size='large' (md:col-span-2) */}
       <section
