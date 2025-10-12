@@ -63,11 +63,8 @@ export const footerNavLinks: FooterSection[] = [
     links: [
       { href: "/projects", label: "Projects" },
       { href: "/career", label: "Career" },
-      {
-        href: "https://codepen.io/chrislanejones",
-        label: "Codepen",
-        isExternal: true,
-      },
+      { href: "/react-maintenance", label: "React Services" },
+      { href: "/wordpress-maintenance", label: "WordPress Services" },
       { href: "/blog", label: "Blog" },
       { href: "/conferences", label: "Conferences" },
     ],

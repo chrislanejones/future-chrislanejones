@@ -30,8 +30,30 @@ const QUOTES: ReactNode[] = [
   </>,
   "Powered by coffee and deprecated APIs since 2015",
   "I tried to explain `git blame` to my wife. I'm now sleeping on the couch.",
-  "My rambling 12",
-  "My rambling 13",
+  <>
+    I once met{" "}
+    <a
+      href="https://x.com/tannerlinsley"
+      target="_blank"
+      rel="nofollow noopener noreferrer"
+      className="underline"
+    >
+      Tanner Linsley
+    </a>
+    The Following week I learned he was the creator of Tanstack.
+  </>,
+  <>
+    I will apply to any tech company that swaps JavaScript questions for{" "}
+    <a
+      href="https://www.youtube.com/technologyconnections"
+      target="_blank"
+      rel="nofollow noopener noreferrer"
+      className="underline"
+    >
+      Technology Connection
+    </a>
+    Questions
+  </>,
   "My rambling 14",
   "My rambling 15",
   "My rambling 16",
