@@ -180,118 +180,67 @@ function TimelineTrail() {
     </Card>
   );
 }
-
-function WorkspaceCard() {
+function PhotoGalleryCard() {
   return (
-    <Card size="page-full">
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Left: Office Image with Gallery */}
-        <div className="relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]">
-          <Image
-            src="/gallery/Standing-Desk-Setup.webp"
-            alt="Adjustable Standing Desk with Two Displays and Laptop"
-            className="w-full h-full object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority
+    <Card
+      size="page-half"
+      delay={0.1}
+      padding="none"
+      className="overflow-hidden flex flex-col"
+    >
+      <div className="relative flex-1 min-h-[200px]">
+        <Image
+          alt="Standing desk setup"
+          src="/gallery/Standing-Desk-Setup.webp"
+          className="absolute inset-0 w-full h-full object-cover opacity-70"
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
+
+        {/* Gallery Button - Top Right */}
+        <div className="absolute top-4 right-4 z-10">
+          <GalleryDrawer
+            photos={photos}
+            title="Gallery"
+            description="Photos from conferences, coding sessions, and adventures."
+            animationDelay={0.2}
           />
-
-          {/* Gallery Button - Top Right */}
-          <div className="absolute top-4 right-4 z-10">
-            <GalleryDrawer
-              photos={photos}
-              title="Gallery"
-              description="Photos from conferences, coding sessions, and adventures."
-              animationDelay={0.2}
-            />
-          </div>
         </div>
+      </div>
 
-        {/* Right: Resume and Portfolio Downloads */}
-        <div className="flex flex-col justify-center">
-          <h2 className="text-2xl font-bold text-[color:var(--color-ink)] mb-4">
-            Resume & Portfolio
-          </h2>
-          <p className="text-muted mb-4">
-            Download my resume and portfolio to learn more about my work
-            experience, skills, and projects.
-          </p>
-
-          <div className="flex flex-col gap-3">
-            <Button asChild variant="base" size="lg" className="justify-start">
-              <a href="/resume.pdf" download>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                Download Resume (PDF)
-              </a>
-            </Button>
-
-            <Button asChild variant="base" size="lg" className="justify-start">
-              <a href="/resume.docx" download>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                Download Resume (Word)
-              </a>
-            </Button>
-
-            <Button asChild variant="base" size="lg" className="justify-start">
-              <a href="/portfolio.pdf" download>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                Download Portfolio (PDF)
-              </a>
-            </Button>
-          </div>
-        </div>
+      <div className="p-6">
+        <h3 className="text-xl md:text-xl font-bold">Photo Gallery</h3>
+        <p className="text-sm text-muted">Desk Setups Throughout the Years</p>
       </div>
     </Card>
   );
 }
-
-function DownloadCard() {
+function ResumeDownloadCard() {
   return (
-    <Card size="small" className="mb-8">
-      <h2 className="text-center text-[color:var(--color-ink)] text-lg pb-2">
-        Resume and Portfolio
+    <Card
+      size="page-half"
+      delay={0.2}
+      padding="large"
+      className="flex flex-col justify-center"
+    >
+      <h2 className="text-2xl font-bold text-[color:var(--color-ink)] mb-4">
+        Resume & Portfolio
       </h2>
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        <Button asChild variant="base">
-          <a href="/resume.pdf" download>
+      <p className="text-muted mb-6">
+        Download my resume and portfolio to learn more about my work experience,
+        skills, and projects.
+      </p>
+
+      <div className="flex flex-col gap-3">
+        <Button asChild variant="base" size="lg" className="justify-start">
+          <a
+            href="/career-files/Chris-Lane-Jones-UX-UI-Engineer-Resume-December-2024.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -303,13 +252,18 @@ function DownloadCard() {
                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            Resume (PDF)
+            Download Resume (PDF)
           </a>
         </Button>
-        <Button asChild variant="base">
-          <a href="/resume.docx" download>
+
+        <Button asChild variant="base" size="lg" className="justify-start">
+          <a
+            href="/career-files/Chris-Lane-Jones-UX-UI-Engineer-Resume-December-2024.docx"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -321,13 +275,18 @@ function DownloadCard() {
                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            Resume (Word)
+            Download Resume (Word)
           </a>
         </Button>
-        <Button asChild variant="base">
-          <a href="/portfolio.pdf" download>
+
+        <Button asChild variant="base" size="lg" className="justify-start">
+          <a
+            href="/career-files/Portfolio-2025.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -339,14 +298,13 @@ function DownloadCard() {
                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-            Portfolio
+            Download Portfolio (PDF)
           </a>
         </Button>
       </div>
     </Card>
   );
 }
-
 const CareerPage: React.FC = () => {
   return (
     <main className="max-w-6xl mx-auto px-5 py-12">
@@ -357,7 +315,12 @@ const CareerPage: React.FC = () => {
       />
 
       <FullWidthLayout>
-        <WorkspaceCard />
+        {/* Two Cards Side by Side */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <PhotoGalleryCard />
+          <ResumeDownloadCard />
+        </div>
+
         <TimelineTrail />
       </FullWidthLayout>
     </main>

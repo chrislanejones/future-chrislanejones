@@ -1,9 +1,12 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
+import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { Suspense } from "react";
 
 const interphases = localFont({
   src: [
@@ -52,7 +55,14 @@ export default function RootLayout({
             color: "var(--color-ink)",
           }}
         >
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <PHProvider>
+            <ConvexClientProvider>
+              <Suspense fallback={null}>
+                <PostHogPageView />
+              </Suspense>
+              {children}
+            </ConvexClientProvider>
+          </PHProvider>
         </body>
       </html>
     </ClerkProvider>
