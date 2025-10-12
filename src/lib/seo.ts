@@ -71,6 +71,16 @@ function getDefaultSEO(path: string): Metadata {
       description:
         "18 years of website evolution: from the Kubrick WordPress theme in 2007 to modern Next.js. See how my portfolio transformed alongside web technology.",
     },
+    "/wordpress-maintenance": {
+      title: "WordPress Maintenance Services | Monthly Action Plan",
+      description:
+        "Comprehensive WordPress maintenance including security scans, plugin updates, performance optimization, and technical support. Three hours of site changes monthly with 99.9% uptime guarantee.",
+    },
+    "/react-maintenance": {
+      title: "React Application Maintenance | Monthly Support & Optimization",
+      description:
+        "Expert React app maintenance with dependency updates, security monitoring, performance optimization, and debugging. Three hours of consulting monthly for Next.js and React applications.",
+    },
   };
 
   return (
