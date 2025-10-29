@@ -52,9 +52,12 @@ export default function Footer() {
         </div>
 
         {/* Footer Sections */}
-        <div className="grid grid-cols-1 gap-8 text-sm text-muted sm:grid-cols-3 md:col-span-3 md:grid-cols-3">
-          {footerNavLinks.map((section) => (
-            <div key={section.title} className="justify-self-end text-right">
+        <div className="grid grid-cols-2 gap-8 text-sm text-muted md:col-span-3 md:grid-cols-3">
+          {footerNavLinks.map((section, index) => (
+            <div
+              key={section.title}
+              className={`justify-self-end text-right ${index === 2 ? "col-span-2 md:col-span-1" : ""}`}
+            >
               <span className="mb-4 block font-bold text-xl whitespace-nowrap text-foreground">
                 {section.title}
               </span>
