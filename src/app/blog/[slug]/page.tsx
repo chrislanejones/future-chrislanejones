@@ -5,11 +5,11 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
-import { MDXComponents } from "@/components/mdx/MDXComponents";
-import { MDXRemote } from "next-mdx-remote";
 import { Calendar, Clock, User, Tag } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { compileMDX } from "next-mdx-remote/rsc";
+import { MDXComponents } from "@/components/mdx/MDXComponents";
 
 export async function generateStaticParams() {
   const posts = getAllPosts();
@@ -42,12 +42,25 @@ export async function generateMetadata({
   };
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = getPostBySlug(params.slug);
 
   if (!post) {
     notFound();
   }
+
+  // Compile MDX content
+  const { content } = await compileMDX({
+    source: post.content!,
+    components: MDXComponents,
+    options: {
+      parseFrontmatter: false,
+    },
+  });
 
   return (
     <div className="min-h-screen bg-base">
@@ -94,9 +107,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </div>
 
             {/* MDX Content */}
-            <article className="prose prose-lg max-w-none">
-              <MDXRemote source={post.content!} components={MDXComponents} />
-            </article>
+            <article className="prose prose-lg max-w-none">{content}</article>
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (
