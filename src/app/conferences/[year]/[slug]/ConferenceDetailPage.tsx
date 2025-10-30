@@ -65,7 +65,7 @@ export default function ConferenceDetailPage({
           </div>
 
           {/* Right: Metadata Pills (desktop) / Below title (mobile) */}
-          <div className="flex flex-wrap gap-3 md:justify-end">
+          <div className="flex flex-col gap-3 md:items-end">
             {dateRange && (
               <Badge variant="blue" className="px-4 py-2">
                 <div className="flex items-center gap-2">
@@ -79,31 +79,33 @@ export default function ConferenceDetailPage({
               </Badge>
             )}
 
-            {conf.city && (
-              <Badge variant="green" className="px-4 py-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-muted uppercase">
-                    City
-                  </span>
-                  <span className="text-sm text-[color:var(--color-ink)]">
-                    {conf.city}
-                  </span>
-                </div>
-              </Badge>
-            )}
+            <div className="flex flex-wrap gap-3 md:justify-end">
+              {conf.city && (
+                <Badge variant="green" className="px-4 py-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-muted uppercase">
+                      City
+                    </span>
+                    <span className="text-sm text-[color:var(--color-ink)]">
+                      {conf.city}
+                    </span>
+                  </div>
+                </Badge>
+              )}
 
-            {conf.venue && (
-              <Badge variant="purple" className="px-4 py-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-muted uppercase">
-                    Venue
-                  </span>
-                  <span className="text-sm text-[color:var(--color-ink)]">
-                    {conf.venue}
-                  </span>
-                </div>
-              </Badge>
-            )}
+              {conf.venue && (
+                <Badge variant="purple" className="px-4 py-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-muted uppercase">
+                      Venue
+                    </span>
+                    <span className="text-sm text-[color:var(--color-ink)]">
+                      {conf.venue}
+                    </span>
+                  </div>
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </div>
