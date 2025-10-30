@@ -26,9 +26,15 @@ export default function Banner({
 }: BannerProps) {
   return (
     <motion.div className="mb-16">
-      <div className="flex items-start justify-between mb-16 gap-6">
+      <div className="flex flex-col lg:flex-row items-start lg:justify-between mb-16 gap-6">
         <div className="text-left flex-1">
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4">{title}</h1>
+
+          {description && (
+            <p className="text-[color:var(--color-ink)] text-lg max-w-md text-left lg:hidden mb-6">
+              {description}
+            </p>
+          )}
 
           <Breadcrumb className="mb-6">
             <BreadcrumbList>
@@ -46,7 +52,7 @@ export default function Banner({
         </div>
 
         {description && (
-          <p className="text-[color:var(--color-ink)] text-lg max-w-md text-right">
+          <p className="text-[color:var(--color-ink)] text-lg max-w-md text-right hidden lg:block">
             {description}
           </p>
         )}

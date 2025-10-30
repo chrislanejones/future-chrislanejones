@@ -11,13 +11,15 @@ import {
   CheckCircle,
   LogOut,
   MessageSquare,
+  Link as LinkIcon,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import ContactMessagesTab from "./ContactMessagesTab";
+import LinksManagerTab from "./LinksManagerTab";
 
 // SEO Character limits
 const SEO_LIMITS = {
@@ -80,7 +82,7 @@ const CharacterCounter = ({
 const SEOTab = () => {
   const pages = useQuery(api.seo.getAllSEO) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
-  const addNewPage = useMutation(api.seo.updateSEO); // ← Moved inside component
+  const addNewPage = useMutation(api.seo.updateSEO);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPagePath, setNewPagePath] = useState("");
@@ -237,7 +239,7 @@ const SEOTab = () => {
             <button
               key={page._id}
               onClick={() => handlePageSelect(page)}
-              className={`w-full text-left p-3 rounded-lg transition-colors ${
+              className={`w-full text-left px-3 py-2 rounded-lg transition-all ${
                 selectedPage._id === page._id
                   ? "bg-[#1a1e24] border border-[#4ade80]"
                   : "bg-[#0b0d10] border border-[#1f242b] hover:border-[#4ade80]"
@@ -404,6 +406,7 @@ const AdminDashboard = () => {
   const tabs = [
     { id: "seo", label: "SEO Manager", icon: FileText },
     { id: "media", label: "Media", icon: Image },
+    { id: "links", label: "Links", icon: LinkIcon },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "settings", label: "Settings", icon: Settings },
   ];
@@ -457,6 +460,7 @@ const AdminDashboard = () => {
       <div className="flex-1 p-6 overflow-hidden">
         {activeTab === "seo" && <SEOTab />}
         {activeTab === "media" && <ComingSoonTab title="Media Manager" />}
+        {activeTab === "links" && <LinksManagerTab />}
         {activeTab === "messages" && <ContactMessagesTab />}
         {activeTab === "settings" && <ComingSoonTab title="Settings" />}
       </div>

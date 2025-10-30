@@ -13,8 +13,8 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
-import { Id } from "../../../convex/_generated/dataModel";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 const ContactMessagesTab = () => {
   const messages = useQuery(api.contactMessages.getAll) ?? [];
@@ -85,7 +85,9 @@ const ContactMessagesTab = () => {
       <div className="bg-[#0b0d10] border-b border-[#1f242b] p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#f3f4f6]">Contact Messages</h1>
+            <h1 className="text-2xl font-bold text-[#f3f4f6]">
+              Contact Messages
+            </h1>
             <p className="text-sm text-[#9ca3af] mt-1">
               {messages.length} total messages • {unreadCount} unread
             </p>
@@ -139,9 +141,11 @@ const ContactMessagesTab = () => {
                       ) : (
                         <CheckCircle className="w-3 h-3 text-[#6b7280]" />
                       )}
-                      <span className={`font-semibold ${
-                        !message.read ? "text-[#f3f4f6]" : "text-[#9ca3af]"
-                      }`}>
+                      <span
+                        className={`font-semibold ${
+                          !message.read ? "text-[#f3f4f6]" : "text-[#9ca3af]"
+                        }`}
+                      >
                         {message.name}
                       </span>
                     </div>
@@ -149,7 +153,9 @@ const ContactMessagesTab = () => {
                       {formatRelativeTime(message.createdAt)}
                     </span>
                   </div>
-                  <p className="text-sm text-[#9ca3af] truncate">{message.email}</p>
+                  <p className="text-sm text-[#9ca3af] truncate">
+                    {message.email}
+                  </p>
                   <p className="text-sm text-[#6b7280] mt-1 line-clamp-2">
                     {message.message}
                   </p>
@@ -205,7 +211,9 @@ const ContactMessagesTab = () => {
                 </div>
 
                 <div className="pt-4 border-t border-[#1f242b]">
-                  <h3 className="text-sm font-semibold text-[#9ca3af] mb-3">Message</h3>
+                  <h3 className="text-sm font-semibold text-[#9ca3af] mb-3">
+                    Message
+                  </h3>
                   <p className="text-[#f3f4f6] whitespace-pre-wrap">
                     {selectedMessage.message}
                   </p>
@@ -259,7 +267,9 @@ const ContactMessagesTab = () => {
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
                 <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[#6b7280] opacity-50" />
-                <p className="text-[#9ca3af]">Select a message to view details</p>
+                <p className="text-[#9ca3af]">
+                  Select a message to view details
+                </p>
               </div>
             </div>
           )}

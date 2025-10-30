@@ -110,6 +110,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 Access the admin dashboard at `/admin` to manage:
 
 - **SEO Metadata:** Edit page titles and descriptions with character count validation
+- **Browser Links:** Manage curated developer resource links with categories
 - **Media Manager:** (Coming soon)
 - **Settings:** (Coming soon)
 
@@ -120,6 +121,70 @@ Access the admin dashboard at `/admin` to manage:
 - Page search and filtering
 - Add new pages
 - Automatic save with success/error feedback
+
+## 🔗 Browser Links Management
+
+The `/browser-tabs` page displays curated developer resources organized by category. Links are stored in Convex with full CRUD operations.
+
+### Browser Links Features:
+
+- **Categorized Links:** Organized by development areas (Development Tools, Design & UI, etc.)
+- **Color-coded Categories:** Each category has a distinct color for visual organization
+- **Favicon Support:** Automatic favicon fetching for visual recognition
+- **Ordering System:** Links can be ordered within categories
+- **Domain Extraction:** Automatic domain parsing from URLs
+
+### Browser Links CRUD Operations:
+
+#### Convex Functions (`convex/browserLinks.ts`):
+
+**Queries:**
+- `getAll()` - Retrieve all browser links ordered by creation
+- `getByCategory(category)` - Get links filtered by category, ordered by position
+- `getCategories()` - Get unique categories with their colors
+
+**Mutations:**
+- `create(data)` - Add new link with href, label, domain, favicon, category, color, order
+- `update(id, data)` - Update existing link properties
+- `deleteLink(id)` - Remove single link by ID
+- `deleteCategory(category)` - Remove all links in a category
+- `seedLinks()` - Populate database with initial curated links
+
+#### Data Structure:
+
+```typescript
+{
+  href: string;           // Full URL
+  label: string;          // Display name
+  domain: string;         // Extracted domain
+  favicon?: string;       // Icon URL (optional)
+  category: string;       // Group name
+  color: string;          // Category color
+  order: number;          // Position in category
+  createdAt: number;      // Timestamp
+  updatedAt: number;      // Last modified
+}
+```
+
+#### Seeding Browser Links:
+
+```bash
+# Via Convex dashboard
+npx convex run browserLinks:seedLinks
+
+# Or create custom script
+npm run seed-browserlinks
+```
+
+### Browser Links Categories:
+
+- **Development Tools** (orange) - Effect, Bun, dev tools
+- **Design & UI Resources** (cyan) - Chakra UI, Radix, Framer Motion
+- **Learning & Tutorials** (purple) - Josh Comeau, MDN, guides
+- **Layout & Design Patterns** (green) - Bento grids, CSS patterns
+- **Icon Libraries** (blue) - Lucide, React Icons, Simple Icons
+- **Developer Portfolios** (pink) - Inspiration and examples
+- **FOSS** (red) - Open source software and tools
 
 ## 📊 Analytics & Monitoring
 
