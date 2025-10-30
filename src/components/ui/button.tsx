@@ -6,7 +6,8 @@ import { Slot } from "@radix-ui/react-slot";
 import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
+// ✅ Exported now so NavigationMenu can import it
+export const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg",
     "transition shadow-passive focus-ring hover:shadow-glow",
@@ -84,11 +85,10 @@ export function Button({
 
   const Comp = asChild ? Slot : "button";
 
-  // Create enhanced children with external icon
+  // Add external link icon on focus if enabled
   const enhancedChildren = React.useMemo(() => {
     if (!showExternalIcon) return children;
 
-    // If it's a single React element (like an <a> tag), clone it and add the icon
     if (React.isValidElement(children)) {
       const originalChildren = children.props.children;
 
@@ -120,7 +120,7 @@ export function Button({
       });
     }
 
-    // Fallback for other cases
+    // Fallback for text-only children
     return (
       <>
         {children}
@@ -137,20 +137,12 @@ export function Button({
   const buttonProps = {
     ...props,
     onFocus: (e: React.FocusEvent<HTMLElement>) => {
-      if (!showExternalIcon) {
-        setIsFocused(true);
-      }
-      if (props.onFocus) {
-        props.onFocus(e as React.FocusEvent<HTMLButtonElement>);
-      }
+      if (!showExternalIcon) setIsFocused(true);
+      props.onFocus?.(e as React.FocusEvent<HTMLButtonElement>);
     },
     onBlur: (e: React.FocusEvent<HTMLElement>) => {
-      if (!showExternalIcon) {
-        setIsFocused(false);
-      }
-      if (props.onBlur) {
-        props.onBlur(e as React.FocusEvent<HTMLButtonElement>);
-      }
+      if (!showExternalIcon) setIsFocused(false);
+      props.onBlur?.(e as React.FocusEvent<HTMLButtonElement>);
     },
   };
 

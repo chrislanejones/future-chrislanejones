@@ -8,14 +8,12 @@ import {
   FaTiktok,
   FaCodepen,
   FaDev,
-  FaWordpress,
   FaHome,
   FaTools,
   FaChrome,
   FaAtom,
 } from "react-icons/fa";
 import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
-import { ExternalLink, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/page/card";
 import Image from "next/image";
@@ -40,7 +38,14 @@ export default function LinkGrid() {
       </div>
 
       {/* Card 1: Main Avatar and Info */}
-      <Card padding="large" glass={false} delay={0.1} className="text-center">
+      <Card
+        size="page-full"
+        padding="large"
+        shadow="soft"
+        border="thin"
+        delay={0.1}
+        className="text-center"
+      >
         <div className="grid grid-cols-[80px_1fr] gap-4 items-center mb-6">
           <Image
             alt="Chris Lane Jones"
@@ -62,7 +67,13 @@ export default function LinkGrid() {
       </Card>
 
       {/* Card 2: Social Links */}
-      <Card padding="medium" glass={false} delay={0.2}>
+      <Card
+        size="page-full"
+        padding="medium"
+        shadow="soft"
+        border="thin"
+        delay={0.2}
+      >
         <h3 className="text-xl md:text-xl mb-6 text-center flex items-center justify-center space-x-2 font-bold">
           Connect With Me
         </h3>
@@ -245,7 +256,13 @@ export default function LinkGrid() {
       </Card>
 
       {/* Card 3: Current Chrome Tabs */}
-      <Card padding="medium" glass={false} delay={0.3}>
+      <Card
+        size="page-full"
+        padding="medium"
+        shadow="soft"
+        border="thin"
+        delay={0.3}
+      >
         <h3 className="text-xl md:text-xl mb-6 text-center flex items-center justify-center space-x-2 font-bold">
           <FaChrome className="w-6 h-6" />
           <span>Chrome Tabs I Left Open...</span>

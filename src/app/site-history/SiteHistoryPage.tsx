@@ -92,6 +92,9 @@ function SiteVersionCard({
   return (
     <Card
       size="page-full"
+      padding="large"
+      shadow="soft"
+      border="thin"
       className="grid md:grid-cols-5 gap-8"
       delay={0.1 + index * 0.1}
     >

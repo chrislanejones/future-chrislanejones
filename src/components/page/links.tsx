@@ -11,6 +11,12 @@ export interface NavLink {
   isExternal?: boolean;
 }
 
+export interface DropdownNavItem {
+  label: string;
+  href?: string;
+  children?: NavLink[];
+}
+
 export interface SocialLink {
   href: string;
   label: string;
@@ -36,7 +42,33 @@ export function SiteLogo({ className = "" }: { className?: string }) {
   );
 }
 
-// Header Navigation Links
+// Header Navigation Links - New Structure with Dropdowns
+export const headerNavItems: DropdownNavItem[] = [
+  { label: "Home", href: "/" },
+  {
+    label: "About",
+    children: [
+      { href: "/about", label: "About" },
+      { href: "/browser-tabs", label: "Chrome Tabs I Left Open" },
+      { href: "/site-history", label: "History of this Site" },
+      { href: "/link-page", label: "Link Page" },
+    ],
+  },
+  {
+    label: "Work",
+    children: [
+      { href: "/projects", label: "Projects" },
+      { href: "/career", label: "Career" },
+      { href: "/conferences", label: "Conferences" },
+      { href: "/react-maintenance", label: "React Services" },
+      { href: "/wordpress-maintenance", label: "WordPress Services" },
+    ],
+  },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+];
+
+// Legacy header navigation links for backward compatibility
 export const headerNavLinks: NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
@@ -44,13 +76,12 @@ export const headerNavLinks: NavLink[] = [
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
   { href: "/browser-tabs", label: "Browser Tabs" },
-  { href: "/contact", label: "Contact" },
 ];
 
 // Footer Navigation Sections
 export const footerNavLinks: FooterSection[] = [
   {
-    title: "General",
+    title: "About",
     links: [
       { href: "/", label: "Home" },
       { href: "/about", label: "About" },
@@ -71,11 +102,11 @@ export const footerNavLinks: FooterSection[] = [
     ],
   },
   {
-    title: "More",
+    title: "Resources",
     links: [
       { href: "/site-history", label: "History of this Site" },
       { href: "/logo-page", label: "About The Logo" },
-      { href: "/changelog", label: "Change Log" },
+      { href: "/site-map", label: "Change Log / Site Map" },
       { href: "/admin", label: "Admin" },
       { href: "/404", label: "404 Music Lounge" },
     ],
