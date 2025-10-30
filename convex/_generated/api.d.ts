@@ -13,9 +13,11 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as blogPosts from "../blogPosts.js";
 import type * as browserLinks from "../browserLinks.js";
 import type * as contactMessages from "../contactMessages.js";
 import type * as http from "../http.js";
+import type * as seedBlogPosts from "../seedBlogPosts.js";
 import type * as seo from "../seo.js";
 
 /**
@@ -27,9 +29,11 @@ import type * as seo from "../seo.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  blogPosts: typeof blogPosts;
   browserLinks: typeof browserLinks;
   contactMessages: typeof contactMessages;
   http: typeof http;
+  seedBlogPosts: typeof seedBlogPosts;
   seo: typeof seo;
 }>;
 export declare const api: FilterApi<
