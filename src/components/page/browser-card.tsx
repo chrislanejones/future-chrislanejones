@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/page/card";
 
 type BrowserLink = {
@@ -41,14 +42,12 @@ export default function BrowserCard({
       delay={delay}
     >
       <div className="space-y-4">
-        {/* Chrome Tab Group Pill */}
-        <div
-          className={`chrome-group-${color} rounded-full px-4 py-2 inline-block`}
-        >
+        {/* Chrome Tab Group Badge */}
+        <Badge variant={color} className="px-4 py-2">
           <h4 className="font-semibold text-[color:var(--color-ink)] text-sm">
             {title}
           </h4>
-        </div>
+        </Badge>
 
         {/* Links Container */}
         <div className="space-y-2">
