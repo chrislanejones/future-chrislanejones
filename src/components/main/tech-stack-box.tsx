@@ -1,10 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Card from "../page/card";
 import IconBlock from "../page/icon-block";
 
-// Component props interface
 interface TechstackboxProps {
   size?:
     | "small"
@@ -42,7 +40,6 @@ type TechItem = { name: string; icon: { path: string } };
 
 type AiTool = {
   name: string;
-  // inline SVG (width/height driven by className)
   svg: JSX.Element;
 };
 
@@ -68,12 +65,10 @@ const techStackFuture: TechItem[] = [
   { name: "Svelte", icon: siSvelte },
 ];
 
-// ✅ Only one aiTools definition
 export const aiTools: AiTool[] = [
   {
     name: "Claude",
     svg: (
-      // The text color class has been removed from here
       <svg
         className="h-8 w-8"
         viewBox="0 0 46 32"
@@ -87,7 +82,6 @@ export const aiTools: AiTool[] = [
   {
     name: "Gemini 2.5 Pro",
     svg: (
-      // The text color class has been removed from here
       <svg
         className="h-8 w-8"
         viewBox="0 0 16 16"
@@ -102,7 +96,6 @@ export const aiTools: AiTool[] = [
   {
     name: "GPT 5",
     svg: (
-      // The text color class has been removed from here
       <svg
         className="h-8 w-8"
         xmlns="http://www.w3.org/2000/svg"
@@ -122,11 +115,12 @@ export default function Techstackbox({
   return (
     <Card
       size={size}
-      delay={delay}
       padding="small"
+      shadow="soft"
+      border="thin"
+      delay={delay}
       className="flex flex-col gap-3"
     >
-      {/* Tech I Love Section */}
       <div className="p-3">
         <h3 className="text-xl font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Tech I Love 💖
@@ -147,7 +141,6 @@ export default function Techstackbox({
         </div>
       </div>
 
-      {/* Learning & Exploring Section */}
       <div className="p-3">
         <h3 className="text-xl font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Learning & Exploring 🧪
@@ -168,7 +161,6 @@ export default function Techstackbox({
         </div>
       </div>
 
-      {/* AI Tools Section */}
       <div className="p-3">
         <h3 className="text-xl font-bold text-[color:var(--color-foreground)] tracking-tight mb-3">
           Current AI Tools

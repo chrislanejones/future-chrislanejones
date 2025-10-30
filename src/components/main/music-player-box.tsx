@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Component props interface
 interface MusicplayerboxProps {
   size?:
     | "small"
@@ -61,7 +60,6 @@ export default function Musicplayerbox({
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Set initial volume
     audio.volume = volume;
 
     const handleCanPlayThrough = () => {
@@ -91,7 +89,6 @@ export default function Musicplayerbox({
     audio.addEventListener("pause", handlePause);
     audio.addEventListener("error", handleError);
 
-    // Load the audio
     audio.load();
 
     return () => {
@@ -138,11 +135,12 @@ export default function Musicplayerbox({
   return (
     <Card
       size={size}
-      delay={delay}
       padding="none"
+      shadow="soft"
+      border="thin"
+      delay={delay}
       className="overflow-hidden flex flex-col"
     >
-      {/* Hidden audio element */}
       <audio
         ref={audioRef}
         src={currentTrack.audioSrc}
@@ -161,7 +159,6 @@ export default function Musicplayerbox({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
 
-        {/* Volume Control - Top Left */}
         <div className="absolute top-4 left-4 flex items-center gap-2 bg-base/80 hover:bg-base/90 backdrop-blur-sm rounded-lg px-3 py-2 transition-colors">
           <Volume2 size={16} className="text-ink/70" />
           <input
@@ -175,7 +172,6 @@ export default function Musicplayerbox({
           />
         </div>
 
-        {/* Play/Pause and Next Controls - Top Right Corner */}
         <div className="absolute top-4 right-4 flex items-center gap-2">
           <Button
             onClick={togglePlayPause}
@@ -209,11 +205,11 @@ export default function Musicplayerbox({
           {isPlaying
             ? "Now Playing"
             : isLoaded
-            ? "Ready to Play"
-            : "Loading..."}
+              ? "Ready to Play"
+              : "Loading..."}
         </h3>
         <p className="text-sm text-muted">
-          {currentTrack.artist} — {currentTrack.title}
+          {currentTrack.artist} – {currentTrack.title}
         </p>
       </div>
     </Card>

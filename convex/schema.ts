@@ -31,4 +31,43 @@ export default defineSchema({
   })
     .index("by_category", ["category"])
     .index("by_order", ["order"]),
+
+  blogPosts: defineTable({
+    title: v.string(),
+    slug: v.string(),
+    excerpt: v.string(),
+    content: v.string(),
+    coverImage: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    published: v.boolean(),
+    likesCount: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_published", ["published"])
+    .index("by_created", ["createdAt"]),
+
+  blogLikes: defineTable({
+    postId: v.id("blogPosts"),
+    userIdentifier: v.string(), // Can be IP address or user ID
+    createdAt: v.number(),
+  })
+    .index("by_post", ["postId"])
+    .index("by_user_post", ["userIdentifier", "postId"]),
+
+  blogComments: defineTable({
+    postId: v.id("blogPosts"),
+    parentId: v.optional(v.id("blogComments")), // For nested replies
+    authorName: v.string(),
+    authorEmail: v.string(),
+    content: v.string(),
+    approved: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_post", ["postId"])
+    .index("by_parent", ["parentId"])
+    .index("by_approved", ["approved"])
+    .index("by_created", ["createdAt"]),
 });

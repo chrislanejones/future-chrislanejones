@@ -57,7 +57,6 @@ const projects: Project[] = [
   },
 ];
 
-// Component props interface
 interface ProjectsboxProps {
   size?:
     | "small"
@@ -90,7 +89,6 @@ export default function Projectsbox({
   const previousProject = () => setProject(-1);
   const nextProject = () => setProject(1);
 
-  // Check if URLs are valid (not empty, not "#")
   const hasGithubUrl =
     currentProject.githubUrl &&
     currentProject.githubUrl !== "#" &&
@@ -104,8 +102,10 @@ export default function Projectsbox({
     <Card
       id="projects"
       size={size}
-      delay={delay}
       padding="medium"
+      shadow="soft"
+      border="thin"
+      delay={delay}
       className="grid md:grid-cols-2 gap-6 relative"
     >
       <div className="order-2 md:order-1 flex flex-col">
@@ -146,13 +146,10 @@ export default function Projectsbox({
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation and Action Buttons - Bottom Left */}
         <div className="flex items-center gap-3 mt-6">
-          {/* See Projects Button */}
           <Button asChild variant="base">
             <a href="/projects">More Projects</a>
           </Button>
-          {/* Left Arrow */}
           <Button
             onClick={previousProject}
             variant="base"
@@ -163,7 +160,6 @@ export default function Projectsbox({
             <ArrowLeft />
           </Button>
 
-          {/* GitHub Icon Button */}
           <Button
             onClick={() =>
               hasGithubUrl && window.open(currentProject.githubUrl, "_blank")
@@ -191,7 +187,6 @@ export default function Projectsbox({
             </svg>
           </Button>
 
-          {/* Vercel Icon Button */}
           <Button
             onClick={() =>
               hasVercelUrl && window.open(currentProject.vercelUrl, "_blank")
@@ -215,7 +210,6 @@ export default function Projectsbox({
             </svg>
           </Button>
 
-          {/* Right Arrow */}
           <Button
             onClick={nextProject}
             variant="base"
@@ -228,7 +222,6 @@ export default function Projectsbox({
         </div>
       </div>
 
-      {/* Project Image */}
       <div className="order-1 md:order-2 relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[200px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -276,7 +269,6 @@ export default function Projectsbox({
   );
 }
 
-// Icons
 const iconsProps: SVGProps<SVGSVGElement> = {
   xmlns: "http://www.w3.org/2000/svg",
   width: "24",

@@ -1,12 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Card from "../page/card";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
-// Component props interface
 interface LinkboxProps {
   size?:
     | "small"
@@ -23,9 +20,13 @@ interface LinkboxProps {
 
 export default function Linkbox({ size = "large", delay = 0.3 }: LinkboxProps) {
   return (
-    <Card size="large">
-      {/* GitHub Gist Section */}
-
+    <Card
+      size={size}
+      padding="medium"
+      shadow="soft"
+      border="thin"
+      delay={delay}
+    >
       <h3 className="text-xl font-bold text-foreground tracking-tight my-3">
         Github Gist
       </h3>

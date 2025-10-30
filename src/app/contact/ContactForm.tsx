@@ -101,7 +101,7 @@ export default function ContactForm() {
   };
 
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="site-container py-12">
       <Banner
         title="Contact"
         breadcrumbPage="Contact"
