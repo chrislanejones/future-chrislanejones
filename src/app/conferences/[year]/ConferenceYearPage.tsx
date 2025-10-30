@@ -3,7 +3,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Card from "@/components/page/card";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
 import type { Conference } from "@/data/conferences";
 
 interface ConferenceYearPageProps {
@@ -16,7 +17,7 @@ export default function ConferenceYearPage({
   year,
 }: ConferenceYearPageProps) {
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Banner */}
       <div className="mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
@@ -35,31 +36,33 @@ export default function ConferenceYearPage({
         </div>
       </div>
 
-      {/* Conference Grid - 3 cards per row */}
+      {/* Conference Grid - Responsive 1/2/3 columns */}
       <section
-        className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[1fr]"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         aria-label="Conferences grid"
       >
         {conferences.map((c, i) => (
           <Card
             key={`${c.year}-${c.slug}`}
-            size="large"
+            size="page-third"
+            padding="none"
+            hover="lift"
+            border="standard"
+            shadow="soft"
+            height="full"
+            delay={0.05 + i * 0.05}
             className="overflow-hidden"
-            delay={0.1 + i * 0.05}
           >
-            <Link
-              href={`/conferences/${c.year}/${c.slug}`}
-              className="group flex h-full flex-col"
-            >
+            <div className="group flex h-full flex-col">
               {/* Conference Logo */}
-              <div className="relative w-full aspect-[16/9] bg-white">
+              <div className="relative w-full aspect-[16/9] bg-white/5">
                 {c.coverImage && (
                   <Image
                     src={c.coverImage}
                     alt={`${c.name} ${c.year}`}
                     fill
-                    className="object-contain p-4"
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     priority={i < 3}
                   />
                 )}
@@ -101,18 +104,23 @@ export default function ConferenceYearPage({
                   </div>
                 )}
 
-                <span className="mt-auto pt-4 inline-flex items-center gap-2 text-sm font-medium text-accent group-hover:underline">
-                  View details →
-                </span>
+                {/* Button at bottom */}
+                <div className="mt-auto pt-4">
+                  <Button variant="outline" asChild className="w-full">
+                    <Link href={`/conferences/${c.year}/${c.slug}`}>
+                      View Details
+                    </Link>
+                  </Button>
+                </div>
               </div>
-            </Link>
+            </div>
           </Card>
         ))}
       </section>
 
       {/* Empty State */}
       {conferences.length === 0 && (
-        <Card size="page-full" className="text-center py-12">
+        <Card size="page-full" padding="large" className="text-center">
           <p className="text-muted">No conferences found for {year}</p>
           <Link
             href="/conferences"

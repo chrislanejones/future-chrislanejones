@@ -3,7 +3,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Card from "@/components/page/card";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import type { Conference } from "@/data/conferences";
 
 interface ConferenceDetailPageProps {
@@ -30,15 +32,15 @@ export default function ConferenceDetailPage({
   };
 
   return (
-    <main className="max-w-6xl mx-auto px-5 pb-16">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Banner with two-column layout */}
-      <div className="mb-16">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
+      {/* Banner with title, breadcrumb, and metadata pills */}
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
           {/* Left: Title and Breadcrumb */}
           <div className="flex-1">
             <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
@@ -62,49 +64,61 @@ export default function ConferenceDetailPage({
             </div>
           </div>
 
-          {/* Right: Metadata */}
-          <div className="grid grid-cols-3 gap-6 md:min-w-[500px]">
+          {/* Right: Metadata Pills (desktop) / Below title (mobile) */}
+          <div className="flex flex-wrap gap-3 md:justify-end">
             {dateRange && (
-              <div>
-                <div className="text-sm font-semibold text-muted mb-1">
-                  Dates
+              <Badge variant="blue" className="px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted uppercase">
+                    Dates
+                  </span>
+                  <span className="text-sm text-[color:var(--color-ink)]">
+                    {dateRange}
+                  </span>
                 </div>
-                <div className="text-[color:var(--color-ink)] text-sm">
-                  {dateRange}
-                </div>
-              </div>
+              </Badge>
             )}
 
             {conf.city && (
-              <div>
-                <div className="text-sm font-semibold text-muted mb-1">
-                  City
+              <Badge variant="green" className="px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted uppercase">
+                    City
+                  </span>
+                  <span className="text-sm text-[color:var(--color-ink)]">
+                    {conf.city}
+                  </span>
                 </div>
-                <div className="text-[color:var(--color-ink)] text-sm">
-                  {conf.city}
-                </div>
-              </div>
+              </Badge>
             )}
 
             {conf.venue && (
-              <div>
-                <div className="text-sm font-semibold text-muted mb-1">
-                  Venue
+              <Badge variant="purple" className="px-4 py-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted uppercase">
+                    Venue
+                  </span>
+                  <span className="text-sm text-[color:var(--color-ink)]">
+                    {conf.venue}
+                  </span>
                 </div>
-                <div className="text-[color:var(--color-ink)] text-sm">
-                  {conf.venue}
-                </div>
-              </div>
+              </Badge>
             )}
           </div>
         </div>
       </div>
 
       {/* Single Card with all content */}
-      <Card size="page-full" className="overflow-hidden">
+      <Card
+        size="page-full"
+        padding="none"
+        border="standard"
+        shadow="soft"
+        className="overflow-hidden"
+      >
         {/* Image */}
         {conf.coverImage && (
-          <div className="relative w-full aspect-[16/9] bg-white">
+          <div className="relative w-full aspect-[16/9] bg-white/5">
             <Image
               src={conf.coverImage}
               alt={`${conf.name} ${conf.year}`}
@@ -121,27 +135,11 @@ export default function ConferenceDetailPage({
           {/* Website Link */}
           {conf.url && (
             <div className="mb-6">
-              <Link
-                href={conf.url}
-                className="text-accent underline hover:no-underline inline-flex items-center gap-2"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visit Official Website
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </Link>
+              <Button variant="accent" showExternalIcon asChild>
+                <a href={conf.url} target="_blank" rel="noopener noreferrer">
+                  Visit Official Website
+                </a>
+              </Button>
             </div>
           )}
 
@@ -173,32 +171,22 @@ export default function ConferenceDetailPage({
 
       {/* Talks & Resources section */}
       {conf.talkLinks && conf.talkLinks.length > 0 && (
-        <Card size="page-full" className="mt-6">
+        <Card
+          size="page-full"
+          padding="large"
+          border="standard"
+          shadow="soft"
+          className="mt-6"
+        >
           <h2 className="text-xl font-bold mb-4">Talks & Resources</h2>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {conf.talkLinks.map((talk, i) => (
               <li key={i}>
-                <Link
-                  className="text-accent underline hover:no-underline inline-flex items-center gap-2"
-                  href={talk.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {talk.label}
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </Link>
+                <Button variant="outline" showExternalIcon asChild>
+                  <a href={talk.url} target="_blank" rel="noopener noreferrer">
+                    {talk.label}
+                  </a>
+                </Button>
               </li>
             ))}
           </ul>

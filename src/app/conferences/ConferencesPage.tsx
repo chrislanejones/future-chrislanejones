@@ -1,105 +1,122 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
-import Card from "@/components/page/card";
+import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
-import { conferences } from "@/data/conferences";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { conferences, type Conference } from "@/data/conferences";
 
 export default function ConferencesPage() {
-  const [selectedYear, setSelectedYear] = useState<number | "all">("all");
-
   // Get unique years and sort them (newest first)
-  const availableYears = [...new Set(conferences.map(c => c.year))].sort((a, b) => b - a);
-
-  // Filter conferences based on selected year
-  const filteredConferences = selectedYear === "all"
-    ? conferences
-    : conferences.filter(c => c.year === selectedYear);
-
-  const byYear = [...filteredConferences].sort((a, b) => b.year - a.year);
+  const availableYears = [...new Set(conferences.map((c) => c.year))].sort(
+    (a, b) => b - a
+  );
 
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Banner
         title="Conferences"
         breadcrumbPage="Conferences"
         description="Highlights and notes from events I've attended—open source, web, and community conferences across the years."
       />
 
-      {/* Year Filter Buttons */}
-      <section className="mb-8">
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedYear === "all" ? "accent" : "outline"}
-            onClick={() => setSelectedYear("all")}
-            size="sm"
-          >
+      {/* Year Filter Tabs */}
+      <Tabs defaultValue="all" className="mb-8">
+        <TabsList variant="pills">
+          <TabsTrigger variant="pills" value="all">
             All
-          </Button>
+          </TabsTrigger>
           {availableYears.map((year) => (
-            <Button
-              key={year}
-              variant={selectedYear === year ? "accent" : "outline"}
-              onClick={() => setSelectedYear(year)}
-              size="sm"
-            >
+            <TabsTrigger key={year} variant="pills" value={String(year)}>
               {year}
-            </Button>
+            </TabsTrigger>
           ))}
-        </div>
-      </section>
+        </TabsList>
 
-      {/* 3 cards per row: md:grid-cols-6 + Card size='large' (md:col-span-2) */}
-      <section
-        className="grid grid-cols-1 md:grid-cols-6 gap-6 auto-rows-[1fr]"
-        aria-label="Conferences grid"
-      >
-        {byYear.map((c, i) => (
-          <Card
-            key={`${c.year}-${c.slug}`}
-            size="large"
-            className="overflow-hidden"
-          >
-            <Link
-              href={`/conferences/${c.year}/${c.slug}`}
-              className="group flex h-full flex-col"
-            >
-              <div className="relative w-full aspect-[16/9]">
-                {c.coverImage && (
-                  <Image
-                    src={c.coverImage}
-                    alt={`${c.name} ${c.year}`}
-                    fill
-                    className="object-contain bg-white/5"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    priority={i < 3}
-                  />
-                )}
-              </div>
+        {/* All Years Tab */}
+        <TabsContent value="all" className="mt-8">
+          <ConferenceGrid
+            conferences={conferences.sort((a, b) => b.year - a.year)}
+          />
+        </TabsContent>
 
-              <div className="flex-1 p-5 flex flex-col">
-                <h2 className="text-xl font-semibold">
-                  {c.name} {c.year}
-                </h2>
-                <p className="text-sm text-muted mt-1">
-                  {[c.city, c.venue].filter(Boolean).join(" • ")}
-                </p>
-                {c.summary && (
-                  <p className="mt-3 text-[color:var(--color-ink)] line-clamp-4">
-                    {c.summary}
-                  </p>
-                )}
-                <span className="mt-4 inline-flex items-center gap-2 text-sm font-medium underline-offset-2 group-hover:underline">
-                  View notes
-                </span>
-              </div>
-            </Link>
-          </Card>
+        {/* Individual Year Tabs */}
+        {availableYears.map((year) => (
+          <TabsContent key={year} value={String(year)} className="mt-8">
+            <ConferenceGrid
+              conferences={conferences
+                .filter((c) => c.year === year)
+                .sort((a, b) => a.name.localeCompare(b.name))}
+            />
+          </TabsContent>
         ))}
-      </section>
+      </Tabs>
     </main>
+  );
+}
+
+// Separate component for the conference grid with proper typing
+function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
+  return (
+    <section
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      aria-label="Conferences grid"
+    >
+      {conferences.map((c, i) => (
+        <Card
+          key={`${c.year}-${c.slug}`}
+          size="page-third"
+          padding="none"
+          hover="lift"
+          border="standard"
+          shadow="soft"
+          height="full"
+          delay={0.05 + i * 0.05}
+          className="overflow-hidden"
+        >
+          <div className="group flex h-full flex-col">
+            {/* Conference Logo */}
+            <div className="relative w-full aspect-[16/9] bg-white/5">
+              {c.coverImage && (
+                <Image
+                  src={c.coverImage}
+                  alt={`${c.name} ${c.year}`}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  priority={i < 3}
+                />
+              )}
+            </div>
+
+            {/* Conference Info */}
+            <div className="flex-1 p-5 flex flex-col">
+              <h2 className="text-xl font-semibold group-hover:text-accent transition-colors">
+                {c.name} {c.year}
+              </h2>
+              <p className="text-sm text-muted mt-1">
+                {[c.city, c.venue].filter(Boolean).join(" • ")}
+              </p>
+              {c.summary && (
+                <p className="mt-3 text-[color:var(--color-ink)] line-clamp-3">
+                  {c.summary}
+                </p>
+              )}
+
+              {/* Button at bottom */}
+              <div className="mt-auto pt-4">
+                <Button variant="outline" asChild className="w-full">
+                  <Link href={`/conferences/${c.year}/${c.slug}`}>
+                    View Details
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </section>
   );
 }
