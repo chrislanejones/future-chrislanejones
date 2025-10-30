@@ -12,8 +12,24 @@ import {
 
 export default function Footer() {
   return (
-    <motion.footer className="max-w-6xl mx-auto px-5 pt-5 pb-10">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
+    <motion.footer className="relative max-w-6xl mx-auto px-5 pt-5 pb-10 overflow-hidden">
+      <div className="footer-hills">
+        <div className="hill hill-1"></div>
+        <div className="hill hill-2"></div>
+        <div className="hill hill-3"></div>
+      </div>
+      <div className="footer-hills"></div>
+
+      {/* Goat Element */}
+      <div className="absolute bottom-[25%] left-1/4 transform -translate-x-1/2 z-0">
+        <div className="goat-body">
+          <div className="goat-head"></div>
+          <div className="goat-legs"></div>
+          <div className="goat-horns"></div>
+        </div>
+      </div>
+
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
         {/* Branding */}
         <div className="flex flex-col gap-4 max-w-sm md:col-span-2 md:h-full md:justify-between">
           <div>
@@ -77,7 +93,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright Statement */}
-      <div className="mt-8 pt-6 text-center">
+      <div className="mt-8 pt-6 text-center relative z-10">
         <p className="text-sm text-muted">
           © {new Date().getFullYear()} Chris Lane Jones. All rights reserved.
         </p>
