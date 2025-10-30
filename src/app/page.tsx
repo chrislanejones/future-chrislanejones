@@ -23,7 +23,7 @@ export default function Home() {
       <Header />
 
       {/* Bento Grid - directly in page.tsx */}
-      <main className="max-w-6xl mx-auto px-5 pb-24">
+      <main className="site-container pb-24">
         <section className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-5 auto-rows-min">
           <HeroBox size="hero" delay={0.1} />
           <QuoteGeneratorCard size="large" delay={0.2} />

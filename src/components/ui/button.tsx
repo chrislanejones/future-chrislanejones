@@ -44,6 +44,9 @@ export const buttonVariants = cva(
           "text-foreground",
           "hover:bg-[color:var(--color-surface-hover)]",
         ].join(" "),
+        disabled: [
+          "bg-muted text-muted-foreground border border-dashed opacity-50 cursor-not-allowed pointer-events-none shadow-none saturate-50",
+        ].join(" "),
       },
       size: {
         sm: "h-9 text-sm",

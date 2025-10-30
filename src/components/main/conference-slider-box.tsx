@@ -1,13 +1,9 @@
 "use client";
 
-import { AnimatePresence, motion, wrap } from "framer-motion";
 import Card from "../page/card";
-import { useState, SVGProps, forwardRef } from "react";
-import Image from "next/image";
 import { conferences } from "@/data/conferences";
 import IconSlider, { SliderItem } from "../page/icon-slider";
 
-// Transform conferences data to match SliderItem format
 const conferenceItems: SliderItem[] = conferences.map((conf) => ({
   name: conf.name,
   logo: conf.coverImage || "",
@@ -16,7 +12,6 @@ const conferenceItems: SliderItem[] = conferences.map((conf) => ({
   location: conf.city,
 }));
 
-// Component props interface
 interface ConferenceSliderBoxProps {
   size?:
     | "small"
@@ -36,7 +31,13 @@ export default function ConferenceSliderBox({
   delay = 0.3,
 }: ConferenceSliderBoxProps) {
   return (
-    <Card size={size} delay={delay} padding="medium">
+    <Card
+      size={size}
+      padding="medium"
+      shadow="soft"
+      border="thin"
+      delay={delay}
+    >
       <IconSlider
         items={conferenceItems}
         itemsPerGroup={6}

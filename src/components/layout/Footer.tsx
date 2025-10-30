@@ -12,7 +12,7 @@ import {
 
 export default function Footer() {
   return (
-    <motion.footer className="relative max-w-6xl mx-auto px-5 pt-5 pb-10 overflow-hidden">
+    <motion.footer className="relative site-container pt-5 pb-10 overflow-hidden">
       <div className="footer-hills">
         <div className="hill hill-1"></div>
         <div className="hill hill-2"></div>

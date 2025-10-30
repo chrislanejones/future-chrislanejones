@@ -74,7 +74,6 @@ const QUOTES: ReactNode[] = [
   "My rambling 30",
 ];
 
-// Component props interface
 interface QuotegeneratorcardProps {
   size?:
     | "small"
@@ -93,10 +92,9 @@ export default function Quotegeneratorcard({
   size = "large",
   delay = 0.3,
 }: QuotegeneratorcardProps) {
-  const [index, setIndex] = useState(0); // Start with first quote to avoid hydration mismatch
+  const [index, setIndex] = useState(0);
   const [isClient, setIsClient] = useState(false);
 
-  // Only randomize after client-side hydration
   useEffect(() => {
     setIsClient(true);
     setIndex(Math.floor(Math.random() * QUOTES.length));
@@ -116,11 +114,12 @@ export default function Quotegeneratorcard({
   return (
     <Card
       size={size}
-      delay={delay}
       padding="medium"
+      shadow="soft"
+      border="thin"
+      delay={delay}
       className="relative overflow-hidden flex flex-col gap-6"
     >
-      {/* Top: Avatar + Name inside Speech Bubble using CSS Grid */}
       <div className="speech-bubble-container">
         <Image
           alt="avatar"
@@ -139,7 +138,6 @@ export default function Quotegeneratorcard({
         </div>
       </div>
 
-      {/* Middle: Rotating Quote */}
       <div
         className="grid place-items-center px-2 py-3 flex-1"
         aria-live="polite"
@@ -157,7 +155,6 @@ export default function Quotegeneratorcard({
         </AnimatePresence>
       </div>
 
-      {/* Bottom-right: Round Refresh Button */}
       <Button
         type="button"
         onClick={nextQuote}

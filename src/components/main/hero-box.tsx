@@ -38,7 +38,8 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
     <Card
       size={size}
       padding="medium"
-      glass={false}
+      shadow="soft"
+      border="thin"
       delay={delay}
       className="relative overflow-hidden"
       key={animationKey}
@@ -81,7 +82,7 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
             Government Agencies.
           </h2>
           <p className="text-sm max-w-prose">
-            Building digital experiences with React and WordPress — one summit
+            Building digital experiences with React and WordPress – one summit
             at a time. 🏔️
           </p>
         </div>

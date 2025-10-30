@@ -294,7 +294,7 @@ function ResumeDownloadCard() {
           </a>
         </Button>
 
-        <Button asChild variant="base" size="lg" className="justify-start">
+        <Button asChild variant="disabled" size="lg" className="justify-start">
           <a
             href="/career-files/Portfolio-2025.pdf"
             target="_blank"
@@ -323,7 +323,7 @@ function ResumeDownloadCard() {
 
 const CareerPage: React.FC = () => {
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="site-container py-12">
       <Banner
         title="Career"
         breadcrumbPage="Career"

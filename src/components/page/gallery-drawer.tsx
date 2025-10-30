@@ -78,10 +78,7 @@ const Photo = ({
 
       {/* White description area at bottom like a real Polaroid */}
       <div className="px-2.5 py-2 h-12 flex items-center justify-center">
-        <p
-          className="text-gray-800 text-xs text-center leading-tight"
-          style={{ fontFamily: "Comic Sans MS, cursive" }}
-        >
+        <p className="text-gray-800 text-xs text-center leading-tight font-medium">
           {description}
         </p>
       </div>
@@ -115,9 +112,12 @@ const PhotoGallery = ({
       setIsVisible(true);
     }, animationDelay * 1000);
 
-    const animationTimer = setTimeout(() => {
-      setIsLoaded(true);
-    }, (animationDelay + 0.4) * 1000);
+    const animationTimer = setTimeout(
+      () => {
+        setIsLoaded(true);
+      },
+      (animationDelay + 0.4) * 1000
+    );
 
     return () => {
       window.removeEventListener("resize", checkMobile);

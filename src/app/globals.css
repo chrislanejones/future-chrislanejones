@@ -294,6 +294,28 @@ html.dark .footer-hills .hill-3 {
 
 /* --- Utilities & components (no :root edits) --- */
 @layer utilities {
+  /* Single source of truth for site width & horizontal padding */
+  .site-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80rem; /* 1280px ~ tailwind's max-w-7xl */
+    padding-left: 1rem;  /* px-4 */
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .site-container {
+      padding-left: 1.5rem; /* sm:px-6 */
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .site-container {
+      padding-left: 2rem; /* lg:px-8 */
+      padding-right: 2rem;
+    }
+  }
   /* Subtle, accent-tinted passive shadow (no green background) */
   .shadow-passive {
     /* mirrors your exact numbers, but uses --color-accent via color-mix */

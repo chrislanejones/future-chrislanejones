@@ -15,7 +15,7 @@ export default function ConferencesPage() {
   );
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main className="site-container py-12">
       <Banner
         title="Conferences"
         breadcrumbPage="Conferences"

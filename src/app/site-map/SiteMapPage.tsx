@@ -74,7 +74,7 @@ const sitemapSections = [
 
 export default function SiteMapPage() {
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="site-container py-12">
       <Banner
         title="Site Map & Changelog"
         breadcrumbPage="Changelog"

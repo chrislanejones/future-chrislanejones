@@ -41,7 +41,7 @@ export default function Header() {
       </div>
 
       <motion.header
-        className="max-w-6xl mx-auto px-5 pt-10 pb-6"
+        className="site-container pt-10 pb-6"
         role="banner"
       >
         <nav

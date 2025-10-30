@@ -192,7 +192,7 @@ function SiteHistoryGrid({ versions }: { versions: SiteVersion[] }) {
 
 export default function SiteHistoryPage() {
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12" id="main-content">
+    <main className="site-container py-12" id="main-content">
       <Banner
         title="Site History"
         breadcrumbPage="Site History"

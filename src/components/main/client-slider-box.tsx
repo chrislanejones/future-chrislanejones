@@ -98,14 +98,12 @@ const clients: Client[] = [
   },
 ];
 
-// Transform to SliderItem format
 const clientItems: SliderItem[] = clients.map((client) => ({
   name: client.name,
   logo: client.logo,
   url: client.url,
 }));
 
-// Component props interface
 interface ClientsliderboxProps {
   size?:
     | "small"
@@ -125,7 +123,13 @@ export default function Clientsliderbox({
   delay = 0.3,
 }: ClientsliderboxProps) {
   return (
-    <Card size={size} delay={delay} padding="medium">
+    <Card
+      size={size}
+      padding="medium"
+      shadow="soft"
+      border="thin"
+      delay={delay}
+    >
       <IconSlider
         items={clientItems}
         itemsPerGroup={6}
