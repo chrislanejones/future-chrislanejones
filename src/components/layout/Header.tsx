@@ -6,23 +6,21 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
 import { SimpleModeToggle } from "../simple-mode-toggle";
+import { headerNavItems, socialLinks, SiteLogo } from "../page/links";
 import {
-  headerNavLinks,
-  socialLinks,
-  NavLinkComponent,
-  SiteLogo,
-} from "../page/links";
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../ui/navigation-menu";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
     <>
@@ -65,22 +63,56 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Push everything else to the right */}
+          {/* Right side */}
           <div className="hidden lg:flex items-center gap-4 ms-auto">
-            {/* Links */}
-            <div
-              className="flex items-center gap-3 text-sm text-muted"
-              role="list"
-            >
-              {headerNavLinks.map((link) => (
-                <div key={link.href} role="listitem">
-                  <NavLinkComponent
-                    link={link}
-                    className="nav-link text-center whitespace-nowrap"
-                  />
-                </div>
-              ))}
-            </div>
+            {/* Navigation Menu */}
+            <NavigationMenu>
+              <NavigationMenuList className="flex items-center gap-3">
+                {headerNavItems.map((item) => (
+                  <NavigationMenuItem key={item.label} className="relative">
+                    {item.children ? (
+                      <>
+                        {/* Trigger styled like a button (via buttonVariants in ui/navigation-menu) */}
+                        <NavigationMenuTrigger>
+                          {item.label}
+                        </NavigationMenuTrigger>
+
+                        {/* IMPORTANT: let the Viewport position this; no absolute/left/top here */}
+                        <NavigationMenuContent>
+                          <div className="w-56 p-2">
+                            {" "}
+                            {/* ← no bg/border/shadow here */}
+                            <ul className="space-y-1">
+                              {item.children.map((child) => (
+                                <li key={child.href}>
+                                  <NavigationMenuLink asChild>
+                                    <Link
+                                      href={child.href}
+                                      className="block w-full rounded-md px-3 py-2 text-sm text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring"
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  </NavigationMenuLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </NavigationMenuContent>
+                      </>
+                    ) : (
+                      <NavigationMenuLink asChild>
+                        <Link
+                          href={item.href!}
+                          className="h-9 px-4 py-2 bg-panel card text-sm font-medium shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg"
+                        >
+                          {item.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
 
             {/* Social Buttons */}
             <div
@@ -108,7 +140,6 @@ export default function Header() {
                   </Button>
                 </div>
               ))}
-
               <SimpleModeToggle />
             </div>
           </div>
@@ -177,13 +208,36 @@ export default function Header() {
 
                 {/* Mobile Navigation Links */}
                 <nav className="space-y-4" aria-label="Mobile navigation">
-                  {headerNavLinks.map((link) => (
-                    <NavLinkComponent
-                      key={link.href}
-                      link={link}
-                      className="block text-lg font-medium py-3 px-4 rounded-lg hover:bg-base/60 transition-colors"
-                      onClick={closeMobileMenu}
-                    />
+                  {headerNavItems.map((item) => (
+                    <div key={item.label}>
+                      {item.children ? (
+                        <div>
+                          <div className="text-lg font-semibold py-2 px-4 text-foreground">
+                            {item.label}
+                          </div>
+                          <div className="ml-4 space-y-2">
+                            {item.children.map((child) => (
+                              <Link
+                                key={child.href}
+                                href={child.href}
+                                className="block nav-link text-md py-2 px-4"
+                                onClick={closeMobileMenu}
+                              >
+                                {child.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.href!}
+                          className="block nav-link text-lg font-medium py-3 px-4"
+                          onClick={closeMobileMenu}
+                        >
+                          {item.label}
+                        </Link>
+                      )}
+                    </div>
                   ))}
 
                   {/* Mobile Social Links */}

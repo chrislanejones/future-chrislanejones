@@ -114,8 +114,14 @@ export default function ContactForm() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="mt-8"
       >
-        <Card size="page-full" className="max-w-2xl mx-auto">
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <Card
+          size="page-full"
+          padding="large"
+          shadow="soft"
+          border="thin"
+          className="max-w-2xl mx-auto"
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
               <label

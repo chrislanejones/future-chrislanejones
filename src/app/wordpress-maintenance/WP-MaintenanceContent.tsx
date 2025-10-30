@@ -8,7 +8,7 @@ import Card from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import ClientSliderBox from "@/components/main/client-slider-box";
 
-const actionPlanItems = [
+const WPactionPlanItems = [
   {
     icon: "🎨",
     title: "Website Consulting & Design Edits",
@@ -110,7 +110,7 @@ export default function WordPressServicesPage() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-4">
-          {actionPlanItems.map((item, index) => (
+          {WPactionPlanItems.map((item, index) => (
             <Card
               key={index}
               size="page-full"

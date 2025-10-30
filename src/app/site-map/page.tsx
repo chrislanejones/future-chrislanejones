@@ -1,17 +1,17 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import WPMaintenanceContent from "./WP-MaintenanceContent";
+import SiteMapPage from "./SiteMapPage";
 import { getPageSEO } from "@/lib/seo";
 
 export async function generateMetadata() {
-  return await getPageSEO("/WordPress-Maintenance");
+  return await getPageSEO("/site-map");
 }
 
-export default function WordPressMaintenancePage() {
+export default function SiteMap() {
   return (
     <div className="min-h-screen bg-base">
       <Header />
-      <WPMaintenanceContent />
+      <SiteMapPage />
       <Footer />
     </div>
   );
