@@ -7,6 +7,9 @@ import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+const cn = (...classes: Array<string | undefined | null | false>) =>
+  classes.filter(Boolean).join(" ");
+
 /* ---------------------------------- Types --------------------------------- */
 
 type Project = {
@@ -135,43 +138,37 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const hasVercelUrl = isValidUrl(project.vercelUrl);
   const hasCustomUrl = isValidUrl(project.customUrl);
 
+  // Determine if this card should have image on the left (even indices) or right (odd indices)
+  const isImageLeft = index % 2 === 0;
+
   return (
     <Card
-      size="page-third"
+      size="page-full"
       padding="none"
       hover="lift"
       border="standard"
       shadow="soft"
-      height="full"
+      height="auto"
       delay={0.05 + index * 0.05}
       className="overflow-hidden"
     >
-      <div className="group flex h-full flex-col">
-        {/* Project Image */}
-        <div className="relative w-full aspect-[16/9] bg-white/5">
-          <Image
-            src={project.image}
-            alt={`${project.title} preview`}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={index < 3}
-          />
-        </div>
+      <div className="grid md:grid-cols-2 gap-0 h-full">
+        {/* Text Content */}
+        <div
+          className={cn(
+            "flex flex-col justify-center p-6 sm:p-8",
+            isImageLeft ? "md:order-2" : "md:order-1"
+          )}
+        >
+          <h2 className="text-xl font-semibold mb-3">{project.title}</h2>
 
-        {/* Project Info */}
-        <div className="flex-1 p-5 flex flex-col">
-          <h2 className="text-xl font-semibold group-hover:text-accent transition-colors mb-2">
-            {project.title}
-          </h2>
-
-          <p className="text-sm text-[color:var(--color-ink)] line-clamp-3 mb-4">
+          <p className="text-[color:var(--color-ink)] leading-relaxed mb-4">
             {project.description}
           </p>
 
           {/* Features */}
-          <ul className="space-y-2 mb-4 flex-1">
-            {project.features.slice(0, 3).map((feature, i) => (
+          <ul className="space-y-2 mb-6 flex-1">
+            {project.features.map((feature, i) => (
               <li key={i} className="flex items-start gap-2">
                 <svg
                   className="w-4 h-4 text-accent flex-shrink-0 mt-0.5"
@@ -187,7 +184,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-sm text-[color:var(--color-ink)] leading-relaxed line-clamp-2">
+                <span className="text-sm text-[color:var(--color-ink)] leading-relaxed">
                   {feature}
                 </span>
               </li>
@@ -195,7 +192,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </ul>
 
           {/* Action Buttons */}
-          <div className="flex gap-2 mt-auto pt-4">
+          <div className="flex gap-2 mt-auto">
             {hasGithubUrl && (
               <Button
                 asChild
@@ -282,6 +279,23 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             )}
           </div>
         </div>
+
+        {/* Image */}
+        <div
+          className={cn(
+            "relative min-h-[300px] md:min-h-full",
+            isImageLeft ? "md:order-1" : "md:order-2"
+          )}
+        >
+          <Image
+            src={project.image}
+            alt={`${project.title} preview`}
+            className="object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority={index === 0}
+          />
+        </div>
       </div>
     </Card>
   );
@@ -289,10 +303,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 function ProjectGridSection({ projects }: { projects: Project[] }) {
   return (
-    <section
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      aria-label="Projects grid"
-    >
+    <section className="grid grid-cols-1 gap-6" aria-label="Projects grid">
       {projects.map((project, index) => (
         <ProjectCard key={project.title} project={project} index={index} />
       ))}
@@ -317,11 +328,11 @@ export default function ProjectGrid() {
         }
       />
 
-      {/* Tabs - Left aligned like conferences page */}
+      {/* Tabs - Left aligned with padding */}
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "apps" | "clients")}
-        className="mb-8"
+        className="py-8"
       >
         <TabsList variant="pills">
           <TabsTrigger variant="pills" value="apps">

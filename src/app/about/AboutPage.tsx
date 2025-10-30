@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
-import Card from "@/components/page/card";
+import { Card } from "@/components/page/card";
 import { FullWidthLayout } from "@/components/page/layout";
 import ConferenceSliderBox from "@/components/main/conference-slider-box";
 
@@ -23,14 +23,14 @@ function parseMarkdownLinks(text: string): React.ReactNode {
       parts.push(text.slice(lastIndex, match.index));
     }
 
-    // Add the link
+    // Add the link with proper styling
     parts.push(
       <a
         key={match.index}
         href={match[2]}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-green-500 hover:text-green-400 underline underline-offset-2"
+        className="text-[color:var(--color-ink)] underline decoration-accent decoration-2 underline-offset-2 hover:text-accent transition-colors"
       >
         {match[1]}
       </a>
@@ -59,7 +59,7 @@ const aboutSections: AboutSection[] = [
   {
     title: "From Video Production to Web Development",
     description:
-      "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry – never a dull moment in JavaScript, PHP, and their frameworks.\n\nIn 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
+      "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry — never a dull moment in JavaScript, PHP, and their frameworks.\n\nIn 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
     image: "/gallery/Me-Recording-A-Video.webp",
     imageAlt: "Chris recording a video",
     imageDescription: "Recording a video in the field in 2013",
@@ -75,7 +75,7 @@ const aboutSections: AboutSection[] = [
   {
     title: "Living in the Shenandoah Mountains",
     description:
-      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service – [Heaven's Rays Ministries](https://heavensraysministries.com/). In Louisa, I am close to several cities and the Shenandoah mountains.",
+      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service — [Heaven's Rays Ministries](https://heavensraysministries.com/). In Louisa, I am close to several cities and the Shenandoah mountains.",
     image: "/gallery/Me-on-a-Bike-Trail.webp",
     imageAlt: "Me on my bike at the Bike Trails by Piney River",
     imageDescription: "Exploring bike trails near the Piney River",
@@ -93,11 +93,9 @@ const aboutSections: AboutSection[] = [
 function AboutCard({
   section,
   index,
-  total,
 }: {
   section: AboutSection;
   index: number;
-  total: number;
 }) {
   // Determine if this card should have image on the left (even indices) or right (odd indices)
   const isImageLeft = index % 2 === 0;
@@ -105,45 +103,46 @@ function AboutCard({
   return (
     <Card
       size="page-full"
-      className="grid md:grid-cols-2 gap-8"
-      delay={0.1 + index * 0.1}
+      padding="none"
+      hover="lift"
+      border="standard"
+      shadow="soft"
+      height="auto"
+      delay={0.05 + index * 0.05}
+      className="overflow-hidden"
     >
-      {/* Text Content - Always appears first on mobile, alternates on desktop */}
-      <div
-        className={cn(
-          "flex flex-col justify-center",
-          // Mobile: always first (order-1)
-          "order-1",
-          // Desktop: alternate based on index
-          isImageLeft ? "md:order-2" : "md:order-1"
-        )}
-      >
-        <h2 className="font-bold text-2xl mb-6">{section.title}</h2>
-        <div className="text-muted leading-relaxed text-base whitespace-pre-line">
-          {parseMarkdownLinks(section.description)}
+      <div className="grid md:grid-cols-2 gap-0 h-full">
+        {/* Text Content */}
+        <div
+          className={cn(
+            "flex flex-col justify-center p-6 sm:p-8",
+            isImageLeft ? "md:order-2" : "md:order-1"
+          )}
+        >
+          <h2 className="font-bold text-2xl mb-4">{section.title}</h2>
+          <div className="text-[color:var(--color-ink)] leading-relaxed whitespace-pre-line">
+            {parseMarkdownLinks(section.description)}
+          </div>
         </div>
-      </div>
 
-      {/* Image - Always appears second on mobile, alternates on desktop */}
-      <div
-        className={cn(
-          "relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[300px]",
-          // Mobile: always second (order-2)
-          "order-2",
-          // Desktop: alternate based on index
-          isImageLeft ? "md:order-1" : "md:order-2"
-        )}
-      >
-        <Image
-          src={section.image}
-          alt={section.imageAlt}
-          className="w-full h-full object-cover"
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority={index === 0}
-        />
-        <div className="absolute bottom-4 right-4 text-xs px-3 py-1 rounded-full bg-base/80 backdrop-blur-sm">
-          {section.imageDescription}
+        {/* Image */}
+        <div
+          className={cn(
+            "relative min-h-[300px] md:min-h-full",
+            isImageLeft ? "md:order-1" : "md:order-2"
+          )}
+        >
+          <Image
+            src={section.image}
+            alt={section.imageAlt}
+            className="object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority={index === 0}
+          />
+          <div className="absolute bottom-4 right-4 text-xs px-3 py-1.5 rounded-full bg-base/80 backdrop-blur-sm border border-[color:var(--color-border)]">
+            {section.imageDescription}
+          </div>
         </div>
       </div>
     </Card>
@@ -153,27 +152,22 @@ function AboutCard({
 function AboutGridSection({ sections }: { sections: AboutSection[] }) {
   return (
     <motion.section
-      className="grid grid-cols-1 gap-8 auto-rows-auto"
+      className="grid grid-cols-1 gap-6 auto-rows-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
     >
-      <ConferenceSliderBox size="page-full" delay={0.5} />
       {sections.map((section, index) => (
-        <AboutCard
-          key={section.title}
-          section={section}
-          index={index}
-          total={sections.length}
-        />
+        <AboutCard key={section.title} section={section} index={index} />
       ))}
+      <ConferenceSliderBox size="page-full" delay={0.05} />
     </motion.section>
   );
 }
 
 export default function AboutPage() {
   return (
-    <main className="max-w-6xl mx-auto px-5 py-12">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <Banner
         title="About Me"
         breadcrumbPage="About"
