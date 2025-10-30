@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Card from "@/components/page/card";
+import { Card } from "@/components/page/card";
 
 type BrowserLink = {
   href: string;
@@ -35,8 +35,10 @@ export default function BrowserCard({
     <Card
       size="page-third"
       padding="medium"
+      hover="lift"
+      border="thin"
+      shadow="soft"
       delay={delay}
-      className="backdrop-blur-sm"
     >
       <div className="space-y-4">
         {/* Chrome Tab Group Pill */}
@@ -48,7 +50,7 @@ export default function BrowserCard({
           </h4>
         </div>
 
-        {/* Links Container - No colored background */}
+        {/* Links Container */}
         <div className="space-y-2">
           {links.map((link) => (
             <Button
@@ -71,7 +73,6 @@ export default function BrowserCard({
                       alt=""
                       className="w-4 h-4 flex-shrink-0"
                       onError={(e) => {
-                        // Fallback if favicon fails to load
                         e.currentTarget.style.display = "none";
                       }}
                     />

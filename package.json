@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed-seo": "node scripts/seed-seo.js",
+    "check-seo": "node scripts/check-seo.js"
   },
   "dependencies": {
     "@clerk/nextjs": "5.7.4",

@@ -17,4 +17,18 @@ export default defineSchema({
     createdAt: v.number(),
     read: v.boolean(),
   }).index("by_created", ["createdAt"]),
+
+  browserLinks: defineTable({
+    href: v.string(),
+    label: v.string(),
+    domain: v.string(),
+    favicon: v.optional(v.string()),
+    category: v.string(),
+    color: v.string(), // Chrome tab group color
+    order: v.number(), // For sorting within category
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_category", ["category"])
+    .index("by_order", ["order"]),
 });

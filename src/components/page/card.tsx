@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
+// Unified card variants that standardize all styles
 const cardVariants = cva("card rounded-3xl bg-panel", {
   variants: {
     size: {
@@ -36,16 +37,22 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
       full: "h-full",
       fit: "h-fit",
     },
-    color: {
-      default: "bg-panel",
-      blue: "!bg-blue-500/40 border-blue-400/30 border !bg-opacity-100",
-      red: "!bg-red-500/40 border-red-400/30 border !bg-opacity-100",
-      yellow: "!bg-yellow-500/40 border-yellow-400/30 border !bg-opacity-100",
-      green: "!bg-green-500/40 border-green-400/30 border !bg-opacity-100",
-      pink: "!bg-pink-500/40 border-pink-400/30 border !bg-opacity-100",
-      purple: "!bg-purple-500/40 border-purple-400/30 border !bg-opacity-100",
-      cyan: "!bg-cyan-500/40 border-cyan-400/30 border !bg-opacity-100",
-      orange: "!bg-orange-500/40 border-orange-400/30 border !bg-opacity-100",
+    border: {
+      none: "border-0",
+      thin: "border border-[color:var(--color-border)] border-opacity-30",
+      standard: "border border-[color:var(--color-border)]",
+      accent: "border border-accent",
+    },
+    shadow: {
+      none: "shadow-none",
+      soft: "shadow-passive",
+      glow: "shadow-glow",
+    },
+    hover: {
+      none: "",
+      lift: "transition-transform hover:scale-[1.02]",
+      glow: "transition hover:shadow-glow",
+      border: "transition-colors hover:border-accent",
     },
   },
   defaultVariants: {
@@ -53,11 +60,13 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
     padding: "medium",
     glass: false,
     height: "full",
-    color: "default",
+    border: "standard",
+    shadow: "soft",
+    hover: "none",
   },
 });
 
-interface CardProps extends VariantProps<typeof cardVariants> {
+interface UnifiedCardProps extends VariantProps<typeof cardVariants> {
   children: ReactNode;
   className?: string;
   delay?: number;
@@ -71,12 +80,14 @@ export function Card({
   padding,
   glass,
   height,
-  color,
+  border,
+  shadow,
+  hover,
   className = "",
   delay = 0,
   id,
   style,
-}: CardProps) {
+}: UnifiedCardProps) {
   return (
     <motion.article
       id={id}
@@ -85,7 +96,9 @@ export function Card({
         padding,
         glass,
         height,
-        color,
+        border,
+        shadow,
+        hover,
       })} ${className}`}
       style={{
         ...style,
@@ -109,12 +122,55 @@ export function Card({
         stiffness: 300, // Higher stiffness for less bouncy feel
         damping: 30, // More damping for smoother animation
       }}
-      // Removed whileHover animation
       // Add viewport animation trigger
       viewport={{ once: true }}
     >
       {children}
     </motion.article>
+  );
+}
+
+// Define image styles that are consistent across all cards
+export function CardImage({
+  src,
+  alt,
+  className = "",
+  priority = false,
+  fill = false,
+  sizes = "(max-width: 768px) 100vw, 50vw",
+  ...props
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  priority?: boolean;
+  fill?: boolean;
+  sizes?: string;
+} & Omit<React.ComponentPropsWithoutRef<typeof motion.img>, "src" | "alt">) {
+  return (
+    <div className="relative overflow-hidden rounded-xl aspect-[16/9]">
+      {fill ? (
+        <motion.img
+          src={src}
+          alt={alt}
+          className={`object-cover w-full h-full border border-[color:var(--color-border)] border-opacity-30 ${className}`}
+          initial={{ scale: 1.1, opacity: 0.8 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          {...props}
+        />
+      ) : (
+        <motion.img
+          src={src}
+          alt={alt}
+          className={`object-cover w-full h-full border border-[color:var(--color-border)] border-opacity-30 ${className}`}
+          initial={{ scale: 1.1, opacity: 0.8 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          {...props}
+        />
+      )}
+    </div>
   );
 }
 
