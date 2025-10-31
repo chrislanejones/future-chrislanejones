@@ -129,7 +129,7 @@ export default function Quotegeneratorcard({
           height={80}
         />
         <div className="flex flex-col justify-center">
-          <div className="font-bold text-xl text-white drop-shadow-sm">
+          <div className="h4 font-semibold text-white drop-shadow-sm">
             Chris Lane Jones
           </div>
           <div className="text-white/90 text-sm drop-shadow-sm">
@@ -146,7 +146,7 @@ export default function Quotegeneratorcard({
           <motion.blockquote
             key={index}
             exit={{ opacity: 0, y: -8 }}
-            className="text-center text-xl leading-relaxed text-ink"
+            className="text-center h4 leading-relaxed text-ink"
           >
             {typeof QUOTES[index] === "string"
               ? `"${QUOTES[index]}"`

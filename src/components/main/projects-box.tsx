@@ -132,13 +132,13 @@ export default function Projectsbox({
             }}
             className="flex flex-col h-full"
           >
-            <h3 className="text-xl md:text-xl font-bold">
+            <h3 className="h3 font-semibold text-ink tracking-tight">
               Project: {currentProject.title}
             </h3>
-            <p className="text-muted font-normal mt-6">
+            <p className="p text-ink/80 font-normal mt-6">
               {currentProject.description}
             </p>
-            <ul className="text-sm text-muted font-normal mt-6 space-y-2 flex-1">
+            <ul className="text-sm text-ink/70 font-normal mt-6 space-y-2 flex-1">
               {currentProject.features.map((feature, index) => (
                 <li key={index}>• {feature}</li>
               ))}

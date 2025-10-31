@@ -46,7 +46,7 @@ export default function BlogPage() {
 
         {posts.length === 0 ? (
           <Card size="page-full" className="text-center py-12">
-            <p className="text-muted">No blog posts yet. Check back soon!</p>
+            <p className="p text-ink/70">No blog posts yet. Check back soon!</p>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -70,11 +70,11 @@ export default function BlogPage() {
                 )}
 
                 <div className="flex-1 p-6 flex flex-col">
-                  <h2 className="text-xl font-bold mb-2 line-clamp-2">
+                  <h2 className="h3 font-semibold text-ink tracking-tight mb-2 line-clamp-2">
                     {post.title}
                   </h2>
 
-                  <div className="flex items-center gap-4 text-xs text-muted mb-3">
+                  <div className="flex items-center gap-4 text-xs text-ink/70 mb-3">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       <time dateTime={new Date(post.createdAt).toISOString()}>
@@ -91,7 +91,7 @@ export default function BlogPage() {
                     </div>
                   </div>
 
-                  <p className="text-sm text-muted mb-4 line-clamp-3 flex-1">
+                  <p className="text-sm text-ink/70 mb-4 line-clamp-3 flex-1">
                     {post.excerpt}
                   </p>
 
@@ -109,7 +109,7 @@ export default function BlogPage() {
                   )}
 
                   <div className="mt-auto">
-                    <Button asChild variant="default" size="sm" className="w-full">
+                    <Button asChild variant="accent" size="sm" className="w-full">
                       <Link href={`/blog/${post.slug}`}>
                         Read More
                         <ArrowRight className="w-4 h-4 ml-2" />

@@ -201,14 +201,14 @@ export default function Musicplayerbox({
       </div>
 
       <div className="p-6">
-        <h3 className="text-xl md:text-xl font-bold">
+        <h3 className="h3 font-semibold text-ink tracking-tight">
           {isPlaying
             ? "Now Playing"
             : isLoaded
               ? "Ready to Play"
               : "Loading..."}
         </h3>
-        <p className="text-sm text-muted">
+        <p className="text-sm text-ink/70">
           {currentTrack.artist} – {currentTrack.title}
         </p>
       </div>

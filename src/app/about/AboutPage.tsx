@@ -119,8 +119,8 @@ function AboutCard({
             isImageLeft ? "md:order-2" : "md:order-1"
           )}
         >
-          <h2 className="font-bold text-2xl mb-4">{section.title}</h2>
-          <div className="text-[color:var(--color-ink)] leading-relaxed whitespace-pre-line">
+          <h2 className="h2 font-semibold text-ink tracking-tight mb-4">{section.title}</h2>
+          <div className="p text-ink/80 leading-relaxed whitespace-pre-line">
             {parseMarkdownLinks(section.description)}
           </div>
         </div>
