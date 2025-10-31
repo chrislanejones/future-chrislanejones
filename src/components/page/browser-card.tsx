@@ -44,7 +44,7 @@ export default function BrowserCard({
       <div className="space-y-4">
         {/* Chrome Tab Group Badge */}
         <Badge variant={color} className="px-4 py-2">
-          <h4 className="font-semibold text-[color:var(--color-ink)] text-sm">
+          <h4 className="">
             {title}
           </h4>
         </Badge>
@@ -78,7 +78,7 @@ export default function BrowserCard({
                   )}
                   <span className="truncate">{link.label}</span>
                 </div>
-                <span className="text-xs text-muted truncate max-w-[120px] flex-shrink-0">
+                <span className="text-muted truncate max-w-[120px] flex-shrink-0">
                   {link.domain}
                 </span>
               </a>

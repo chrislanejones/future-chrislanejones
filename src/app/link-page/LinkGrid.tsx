@@ -30,7 +30,7 @@ export default function LinkGrid() {
           <div className="grid place-content-center">
             <SiteLogo />
           </div>
-          <span className="font-bold text-xl whitespace-nowrap">
+          <span className="whitespace-nowrap">
             Chris Lane Jones
           </span>
         </Link>
@@ -55,12 +55,12 @@ export default function LinkGrid() {
             src="/Professional-Photo-of-Chris-Lane-Jones.webp"
           />
           <div className="flex flex-col justify-center text-left">
-            <h1 className="text-2xl font-black">
+            <h1 className="">
               UX/UI Web Design and Development
             </h1>
           </div>
         </div>
-        <h2 className="text-xl font-bold">
+        <h2 className="">
           I Consult, Design, and Develop Web Interfaces for Businesses and
           Government Agencies.
         </h2>
@@ -74,7 +74,7 @@ export default function LinkGrid() {
         border="thin"
         delay={0.2}
       >
-        <h3 className="text-xl md:text-xl mb-6 text-center flex items-center justify-center space-x-2 font-bold">
+        <h3 className="mb-6 text-center flex items-center justify-center space-x-2">
           Connect With Me
         </h3>
         <div className="grid grid-cols-2 gap-3">
@@ -263,7 +263,7 @@ export default function LinkGrid() {
         border="thin"
         delay={0.3}
       >
-        <h3 className="text-xl md:text-xl mb-6 text-center flex items-center justify-center space-x-2 font-bold">
+        <h3 className="mb-6 text-center flex items-center justify-center space-x-2">
           <FaChrome className="w-6 h-6" />
           <span>Chrome Tabs I Left Open...</span>
         </h3>

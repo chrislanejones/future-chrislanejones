@@ -52,9 +52,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
           </Button>
         </div>
 
-        <h3 className="h3 font-semibold text-ink tracking-tight mb-4">
-          Latest Blog Posts
-        </h3>
+        <h3 className="text-ink tracking-tight mb-4">Latest Blog Posts</h3>
 
         <div className="space-y-3">
           {!posts ? (
@@ -62,7 +60,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
               <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : recentPosts.length === 0 ? (
-            <p className="text-sm text-ink/70 text-center py-8">
+            <p className="text-ink text-center py-8">
               No blog posts yet. Check back soon!
             </p>
           ) : (

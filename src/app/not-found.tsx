@@ -25,7 +25,7 @@ export default function NotFound() {
           className="text-center mt-10"
         >
           <div className="space-y-6">
-            <h3 className="text-xl font-semibold">
+            <h3 className="">
               Japanese Breakfast – Live on SNL – "Be Sweet" and "Paprika"
             </h3>
 

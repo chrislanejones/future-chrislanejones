@@ -13,17 +13,22 @@ const interphases = localFont({
     {
       path: "../../public/fonts/TT-Interphases-Pro-Regular.ttf",
       weight: "400",
-      style: "regular",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/TT-Interphases-Pro-DemiBold.ttf",
+      weight: "600",
+      style: "normal",
     },
     {
       path: "../../public/fonts/TT-Interphases-Pro-Bold.ttf",
       weight: "700",
-      style: "bold",
+      style: "normal",
     },
     {
       path: "../../public/fonts/TT-Interphases-Pro-Black.ttf",
       weight: "900",
-      style: "black",
+      style: "normal",
     },
   ],
   variable: "--font-interphases",
@@ -48,7 +53,7 @@ export default function RootLayout({
     >
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${interphases.className}`}
+          className={`${interphases.className} ${interphases.variable} antialiased`}
           suppressHydrationWarning
           style={{
             backgroundColor: "var(--color-base)",

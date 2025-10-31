@@ -160,7 +160,7 @@ export default function Musicplayerbox({
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
 
         <div className="absolute top-4 left-4 flex items-center gap-2 bg-base/80 hover:bg-base/90 backdrop-blur-sm rounded-lg px-3 py-2 transition-colors">
-          <Volume2 size={16} className="text-ink/70" />
+          <Volume2 size={16} className="text-ink" />
           <input
             type="range"
             min="0"
@@ -201,14 +201,14 @@ export default function Musicplayerbox({
       </div>
 
       <div className="p-6">
-        <h3 className="h3 font-semibold text-ink tracking-tight">
+        <h3 className="text-ink tracking-tight">
           {isPlaying
             ? "Now Playing"
             : isLoaded
               ? "Ready to Play"
               : "Loading..."}
         </h3>
-        <p className="text-sm text-ink/70">
+        <p className="text-ink">
           {currentTrack.artist} – {currentTrack.title}
         </p>
       </div>

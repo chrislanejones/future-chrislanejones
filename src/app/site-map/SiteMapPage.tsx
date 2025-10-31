@@ -96,7 +96,7 @@ export default function SiteMapPage() {
           >
             <div className="flex items-center gap-3 mb-6">
               <FileText className="w-6 h-6 text-accent" />
-              <h2 className="text-2xl font-bold">Changelog</h2>
+              <h2 className="">Changelog</h2>
             </div>
 
             <div className="flex-1 flex items-center justify-center text-center py-12">
@@ -104,10 +104,10 @@ export default function SiteMapPage() {
                 <div className="w-16 h-16 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
                   <Code className="w-8 h-8 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold text-muted">
+                <h3 className="text-muted">
                   Coming Soon
                 </h3>
-                <p className="text-sm text-muted max-w-sm">
+                <p className="text-muted max-w-sm">
                   Detailed version history and site updates will be documented
                   here. Check back soon for a comprehensive changelog.
                 </p>
@@ -127,7 +127,7 @@ export default function SiteMapPage() {
           >
             <div className="flex items-center gap-3 mb-6">
               <Mountain className="w-6 h-6 text-accent" />
-              <h2 className="text-2xl font-bold">Site Map</h2>
+              <h2 className="">Site Map</h2>
             </div>
 
             <div className="space-y-6 flex-1">
@@ -139,9 +139,9 @@ export default function SiteMapPage() {
                   transition={{ duration: 0.3, delay: 0.1 * index }}
                   className="space-y-3"
                 >
-                  <div className="flex items-center gap-2 text-accent font-semibold">
+                  <div className="flex items-center gap-2 text-accent">
                     {section.icon}
-                    <h3 className="text-sm uppercase tracking-wide">
+                    <h3 className="uppercase tracking-wide">
                       {section.title}
                     </h3>
                   </div>
@@ -154,7 +154,7 @@ export default function SiteMapPage() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-muted hover:text-accent transition-colors inline-flex items-center gap-1.5 group"
+                            className="text-muted hover:text-accent transition-colors inline-flex items-center gap-1.5 group"
                           >
                             {link.label}
                             <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -162,7 +162,7 @@ export default function SiteMapPage() {
                         ) : (
                           <Link
                             href={link.href}
-                            className="text-sm text-muted hover:text-accent transition-colors inline-block"
+                            className="text-muted hover:text-accent transition-colors inline-block"
                           >
                             {link.label}
                           </Link>
@@ -187,7 +187,7 @@ export default function SiteMapPage() {
           style={{ minHeight: "auto" }}
         >
           <div className="text-center space-y-4">
-            <h2 className="text-2xl font-bold">Built With</h2>
+            <h2 className="">Built With</h2>
             <p className="text-muted max-w-2xl mx-auto">
               This site is built with Next.js 14, React, TypeScript, Tailwind
               CSS, and Framer Motion. Hosted on Vercel with data managed through
@@ -205,7 +205,7 @@ export default function SiteMapPage() {
               ].map((tech) => (
                 <span
                   key={tech}
-                  className="px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium"
+                  className="px-4 py-2 rounded-full bg-accent/10 text-accent"
                 >
                   {tech}
                 </span>

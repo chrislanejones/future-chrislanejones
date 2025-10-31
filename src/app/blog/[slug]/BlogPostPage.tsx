@@ -99,13 +99,13 @@ export default function BlogPostPage({
   const renderContent = (content: string) => {
     return content.split('\n').map((line, index) => {
       if (line.startsWith('# ')) {
-        return <h1 key={index} className="text-3xl font-bold mb-4 mt-8">{line.substring(2)}</h1>;
+        return <h1 key={index} className="mb-4 mt-8">{line.substring(2)}</h1>;
       }
       if (line.startsWith('## ')) {
-        return <h2 key={index} className="text-2xl font-semibold mb-3 mt-6">{line.substring(3)}</h2>;
+        return <h2 key={index} className="mb-3 mt-6">{line.substring(3)}</h2>;
       }
       if (line.startsWith('### ')) {
-        return <h3 key={index} className="text-xl font-medium mb-2 mt-4">{line.substring(4)}</h3>;
+        return <h3 key={index} className="mb-2 mt-4">{line.substring(4)}</h3>;
       }
       if (line.startsWith('- ')) {
         return <li key={index} className="ml-4 mb-1">{line.substring(2)}</li>;
@@ -148,7 +148,7 @@ export default function BlogPostPage({
 
           <div className="p-8">
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted mb-8 pb-6 border-b border-[color:var(--color-border)]">
+            <div className="flex flex-wrap items-center gap-4 text-muted mb-8 pb-6 border-b border-[color:var(--color-border)]">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 <time dateTime={new Date(post.createdAt).toISOString()}>
@@ -181,7 +181,7 @@ export default function BlogPostPage({
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center text-sm px-3 py-1 rounded-full bg-accent/10 text-accent"
+                      className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 text-accent"
                     >
                       {tag}
                     </span>
@@ -206,7 +206,7 @@ export default function BlogPostPage({
             {/* Comments Section */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-semibold">Comments ({comments?.length || 0})</h3>
+                <h3 className="">Comments ({comments?.length || 0})</h3>
                 <Button
                   onClick={() => setShowCommentForm(!showCommentForm)}
                   variant="outline"
@@ -222,7 +222,7 @@ export default function BlogPostPage({
                   <form onSubmit={handleCommentSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-medium mb-2">
+                        <label htmlFor="name" className="block mb-2">
                           Name *
                         </label>
                         <div className="relative">
@@ -233,13 +233,13 @@ export default function BlogPostPage({
                             required
                             value={commentForm.authorName}
                             onChange={(e) => setCommentForm(prev => ({ ...prev, authorName: e.target.value }))}
-                            className="w-full pl-10 pr-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] text-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-accent"
+                            className="w-full pl-10 pr-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] focus:outline-none focus:ring-2 focus:ring-accent"
                             placeholder="Your name"
                           />
                         </div>
                       </div>
                       <div>
-                        <label htmlFor="email" className="block text-sm font-medium mb-2">
+                        <label htmlFor="email" className="block mb-2">
                           Email *
                         </label>
                         <div className="relative">
@@ -250,14 +250,14 @@ export default function BlogPostPage({
                             required
                             value={commentForm.authorEmail}
                             onChange={(e) => setCommentForm(prev => ({ ...prev, authorEmail: e.target.value }))}
-                            className="w-full pl-10 pr-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] text-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-accent"
+                            className="w-full pl-10 pr-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] focus:outline-none focus:ring-2 focus:ring-accent"
                             placeholder="your@email.com"
                           />
                         </div>
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="comment" className="block text-sm font-medium mb-2">
+                      <label htmlFor="comment" className="block mb-2">
                         Comment *
                       </label>
                       <textarea
@@ -266,7 +266,7 @@ export default function BlogPostPage({
                         rows={4}
                         value={commentForm.content}
                         onChange={(e) => setCommentForm(prev => ({ ...prev, content: e.target.value }))}
-                        className="w-full px-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] text-[color:var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                        className="w-full px-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] focus:outline-none focus:ring-2 focus:ring-accent resize-none"
                         placeholder="Share your thoughts..."
                       />
                     </div>
@@ -283,7 +283,7 @@ export default function BlogPostPage({
                         Cancel
                       </Button>
                     </div>
-                    <p className="text-xs text-muted">
+                    <p className="text-muted">
                       Comments are moderated and will appear after approval.
                     </p>
                   </form>
@@ -301,12 +301,12 @@ export default function BlogPostPage({
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="font-medium">{comment.authorName}</span>
-                            <span className="text-xs text-muted">
+                            <span className="">{comment.authorName}</span>
+                            <span className="text-muted">
                               {new Date(comment.createdAt).toLocaleDateString()}
                             </span>
                           </div>
-                          <p className="text-[color:var(--color-ink)] leading-relaxed">
+                          <p className="leading-relaxed">
                             {comment.content}
                           </p>
                         </div>

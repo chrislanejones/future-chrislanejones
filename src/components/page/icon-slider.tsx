@@ -50,9 +50,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
     return (
       <motion.div
         ref={ref}
-        className={`absolute inset-0 grid ${
-          isMobile ? "grid-cols-2 grid-rows-2" : "grid-cols-3 grid-rows-2"
-        } gap-6 p-4`}
+        className={`absolute inset-0 grid ${ isMobile ? "grid-cols-2 grid-rows-2" : "grid-cols-3 grid-rows-2" } gap-6 p-4`}
         initial={{
           opacity: 0,
         }}
@@ -88,9 +86,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center relative transition-all duration-300 
-             opacity-90 hover:opacity-100 bg-[color:var(--color-base)] 
-             hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3 border border-transparent hover:border-accent"
+              className="group flex items-center justify-center relative transition-all duration-300 opacity-90 hover:opacity-100 bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3 border border-transparent hover:border-accent"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 1, scale: 0.9 }}
               animate={{
@@ -175,7 +171,7 @@ export default function IconSlider({
   return (
     <div className={className}>
       {title && (
-        <h2 className="text-center font-semibold text-lg mb-4">{title}</h2>
+        <h2 className="text-center mb-4">{title}</h2>
       )}
 
       <div className="flex items-center justify-between gap-4">
@@ -232,11 +228,7 @@ export default function IconSlider({
                 setDirection(index > selectedGroup ? 1 : -1);
                 setSelectedGroup(index);
               }}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                index === selectedGroup
-                  ? "bg-ink scale-110"
-                  : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${ index === selectedGroup ? "bg-ink scale-110" : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70" }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}

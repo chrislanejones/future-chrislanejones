@@ -80,10 +80,8 @@ export default function ImageGalleryBox({
       </div>
 
       <div className="p-6">
-        <h3 className="h3 font-semibold text-ink tracking-tight">Photo Gallery</h3>
-        <p className="text-sm text-ink/70">
-          summits, coding, conf friends, and more...
-        </p>
+        <h3 className="text-ink tracking-tight">Photo Gallery</h3>
+        <p className="text-ink">summits, coding, conf friends, and more...</p>
       </div>
     </Card>
   );

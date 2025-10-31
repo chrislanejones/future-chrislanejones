@@ -15,19 +15,19 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
-        // Color group variants
-        blue: "bg-[rgba(59,130,246,0.15)] border-[rgba(59,130,246,0.3)] text-[color:var(--color-ink)]",
-        red: "bg-[rgba(239,68,68,0.15)] border-[rgba(239,68,68,0.3)] text-[color:var(--color-ink)]",
+        // Color group variants with dark mode support
+        blue: "bg-[rgba(59,130,246,0.15)] border-[rgba(59,130,246,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(59,130,246,0.25)] dark:border-[rgba(59,130,246,0.5)]",
+        red: "bg-[rgba(239,68,68,0.15)] border-[rgba(239,68,68,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(239,68,68,0.25)] dark:border-[rgba(239,68,68,0.5)]",
         yellow:
-          "bg-[rgba(234,179,8,0.15)] border-[rgba(234,179,8,0.3)] text-[color:var(--color-ink)]",
+          "bg-[rgba(234,179,8,0.15)] border-[rgba(234,179,8,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(234,179,8,0.25)] dark:border-[rgba(234,179,8,0.5)]",
         green:
-          "bg-[rgba(34,197,94,0.15)] border-[rgba(34,197,94,0.3)] text-[color:var(--color-ink)]",
-        pink: "bg-[rgba(236,72,153,0.15)] border-[rgba(236,72,153,0.3)] text-[color:var(--color-ink)]",
+          "bg-[rgba(34,197,94,0.15)] border-[rgba(34,197,94,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(34,197,94,0.25)] dark:border-[rgba(34,197,94,0.5)]",
+        pink: "bg-[rgba(236,72,153,0.15)] border-[rgba(236,72,153,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(236,72,153,0.25)] dark:border-[rgba(236,72,153,0.5)]",
         purple:
-          "bg-[rgba(168,85,247,0.15)] border-[rgba(168,85,247,0.3)] text-[color:var(--color-ink)]",
-        cyan: "bg-[rgba(6,182,212,0.15)] border-[rgba(6,182,212,0.3)] text-[color:var(--color-ink)]",
+          "bg-[rgba(168,85,247,0.15)] border-[rgba(168,85,247,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(168,85,247,0.25)] dark:border-[rgba(168,85,247,0.5)]",
+        cyan: "bg-[rgba(6,182,212,0.15)] border-[rgba(6,182,212,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(6,182,212,0.25)] dark:border-[rgba(6,182,212,0.5)]",
         orange:
-          "bg-[rgba(249,115,22,0.15)] border-[rgba(249,115,22,0.3)] text-[color:var(--color-ink)]",
+          "bg-[rgba(249,115,22,0.15)] border-[rgba(249,115,22,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(249,115,22,0.25)] dark:border-[rgba(249,115,22,0.5)]",
       },
     },
     defaultVariants: {

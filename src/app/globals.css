@@ -22,12 +22,12 @@
   --focus-ring: 2px solid var(--color-accent-alt);
 
   /* fluid typography */
-  --step--1: clamp(0.88rem, 0.84rem + 0.21vw, 1.00rem);
-  --step-0: clamp(1.00rem, 0.94rem + 0.32vw, 1.125rem);
-  --step-1: clamp(1.25rem, 1.14rem + 0.55vw, 1.5rem);
-  --step-2: clamp(1.56rem, 1.30rem + 1.03vw, 1.88rem);
-  --step-3: clamp(1.95rem, 1.47rem + 1.89vw, 2.36rem);
-  --step-4: clamp(2.44rem, 1.63rem + 3.18vw, 3.00rem);
+  --step--1: clamp(0.88rem, 0.84rem + 0.21vw, 1rem);
+  --step-0: clamp(1rem, 0.94rem + 0.32vw, 1.125rem);
+  --step-1: clamp(1.15rem, 1.08rem + 0.4vw, 1.35rem); /* smaller h4 */
+  --step-2: clamp(1.35rem, 1.18rem + 0.7vw, 1.62rem); /* smaller h3 */
+  --step-3: clamp(1.6rem, 1.3rem + 1.3vw, 1.95rem); /* smaller h2 */
+  --step-4: clamp(2rem, 1.45rem + 2.3vw, 2.5rem); /* smaller h1 */
 }
 
 html.dark {
@@ -98,206 +98,166 @@ body {
 }
 
 /* ================================
-   FOOTER HILLS – CLEAN REBUILD
+   FOOTER MOUNTAINS – LAYERED
    ================================ */
 
 .footer-hills {
   position: absolute;
   inset: 0;
   bottom: 0;
-  height: 70%;
+  height: 72%;
   z-index: 0;
   overflow: hidden;
+  pointer-events: none;
 }
 
-/* Wavy background hill (main shape) */
+/* BACK RANGE: distant cool ridge */
 .footer-hills::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: auto 0 0 0;
+  height: 65%;
+  background:
+    linear-gradient(to top, rgba(36, 99, 235, 0.12), transparent 45%),
+    linear-gradient(180deg, rgba(96, 165, 250, 0.1), rgba(59, 130, 246, 0.1));
+  clip-path: polygon(
+    0% 100%,
+    0% 68%,
+    6% 66%,
+    12% 70%,
+    18% 63%,
+    24% 69%,
+    32% 62%,
+    42% 66%,
+    52% 60%,
+    60% 68%,
+    70% 62%,
+    78% 65%,
+    88% 61%,
+    94% 64%,
+    100% 60%,
+    100% 100%
+  );
+  transform: translateY(10px);
+  filter: blur(0.2px);
+}
+
+/* MID RANGE: green mountains with snowcaps */
+.footer-hills .hill-2 {
+  position: absolute;
   bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58%;
   background: linear-gradient(
-    to bottom,
-    rgba(74, 222, 128, 0.9) 0%,
-    rgba(34, 197, 94, 0.8) 30%,
-    rgba(22, 163, 74, 0.7) 60%,
-    rgba(21, 128, 61, 0.6) 100%
+    180deg,
+    color-mix(in srgb, var(--color-accent) 90%, white 10%) 0%,
+    color-mix(in srgb, var(--color-accent) 65%, black 10%) 100%
   );
   clip-path: polygon(
     0% 100%,
-    0% 60%,
-    5% 55%,
-    10% 58%,
-    15% 52%,
-    20% 56%,
-    25% 50%,
-    30% 55%,
-    35% 48%,
-    40% 53%,
-    45% 47%,
-    50% 52%,
-    55% 46%,
-    60% 51%,
-    65% 45%,
-    70% 50%,
-    75% 44%,
-    80% 49%,
-    85% 43%,
-    90% 48%,
-    95% 42%,
-    100% 47%,
+    0% 72%,
+    8% 66%,
+    15% 72%,
+    22% 61%,
+    30% 70%,
+    38% 58%,
+    48% 68%,
+    60% 56%,
+    72% 68%,
+    82% 60%,
+    90% 66%,
+    100% 62%,
     100% 100%
   );
+  transform: translateY(4px);
+}
+.footer-hills .hill-2::after {
+  /* snowcaps along select peaks */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      20px 10px at 22% 43%,
+      rgba(255, 255, 255, 0.7),
+      transparent 60%
+    ),
+    radial-gradient(
+      22px 12px at 38% 40%,
+      rgba(255, 255, 255, 0.7),
+      transparent 60%
+    ),
+    radial-gradient(
+      18px 10px at 60% 38%,
+      rgba(255, 255, 255, 0.7),
+      transparent 60%
+    ),
+    radial-gradient(
+      18px 10px at 82% 42%,
+      rgba(255, 255, 255, 0.7),
+      transparent 60%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.8;
 }
 
-/* Round soft hills layered on top */
-.footer-hills .hill-1,
-.footer-hills .hill-2,
+/* FOREGROUND: rounded foothills for depth */
 .footer-hills .hill-3 {
   position: absolute;
   bottom: 0;
+  left: 12%;
+  width: 380px;
+  height: 140px;
   border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--color-accent) 85%, white 8%) 0%,
+    color-mix(in srgb, var(--color-accent) 55%, black 10%) 75%
+  );
+  box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.06) inset;
 }
 
-/* Hill 1 (big round left hill) */
 .footer-hills .hill-1 {
-  width: 220px;
-  height: 110px;
-  left: 8%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(34, 197, 94, 0.7) 0%,
-    rgba(21, 128, 61, 0.4) 70%
-  );
-}
-
-/* Hill 2 (middle smaller hill) */
-.footer-hills .hill-2 {
-  width: 170px;
-  height: 85px;
-  left: 40%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(74, 222, 128, 0.6) 0%,
-    rgba(22, 163, 74, 0.3) 70%
-  );
-}
-
-/* Hill 3 (right-side one) */
-.footer-hills .hill-3 {
-  width: 190px;
-  height: 95px;
-  right: 15%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(34, 197, 94, 0.5) 0%,
-    rgba(21, 128, 61, 0.2) 70%
-  );
-}
-
-/* ------------------------
-     DARK MODE VARIANTS
-     ------------------------ */
-html.dark .footer-hills::before {
-  background: linear-gradient(
-    to bottom,
-    rgba(74, 222, 128, 0.6) 0%,
-    rgba(34, 197, 94, 0.5) 30%,
-    rgba(22, 163, 74, 0.4) 60%,
-    rgba(21, 128, 61, 0.3) 100%
-  );
-}
-
-html.dark .footer-hills .hill-1 {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(34, 197, 94, 0.5) 0%,
-    rgba(21, 128, 61, 0.3) 70%
-  );
-}
-
-html.dark .footer-hills .hill-2 {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(74, 222, 128, 0.4) 0%,
-    rgba(22, 163, 74, 0.2) 70%
-  );
-}
-
-html.dark .footer-hills .hill-3 {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(34, 197, 94, 0.3) 0%,
-    rgba(21, 128, 61, 0.15) 70%
-  );
-}
-
-/* ================================
-     GOAT STYLING – UNCHANGED BUT CLEANED
-     ================================ */
-
-.goat-body {
-  position: relative;
-  width: 80px;
-  height: 60px;
-}
-
-.goat-body::before {
-  content: "";
   position: absolute;
-  width: 80px;
-  height: 60px;
-  background: var(--color-ink);
-  border-radius: 40% 40% 30% 30%;
-}
-
-.goat-head {
-  position: absolute;
-  top: -20px;
-  left: 50px;
-  width: 30px;
-  height: 30px;
-  background: var(--color-ink);
+  bottom: -6px;
+  right: 8%;
+  width: 320px;
+  height: 120px;
   border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--color-accent) 80%, white 6%) 0%,
+    color-mix(in srgb, var(--color-accent) 50%, black 12%) 75%
+  );
+  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.06) inset;
 }
 
-.goat-legs::before,
-.goat-legs::after {
-  content: "";
-  position: absolute;
-  width: 8px;
-  height: 30px;
-  background: var(--color-ink);
-  bottom: -10px;
+/* Dark mode tuning */
+html.dark .footer-hills::before {
+  background:
+    linear-gradient(to top, rgba(96, 165, 250, 0.12), transparent 45%),
+    linear-gradient(180deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.1));
+}
+html.dark .footer-hills .hill-2,
+html.dark .footer-hills .hill-3,
+html.dark .footer-hills .hill-1 {
+  filter: brightness(0.95) saturate(0.95);
 }
 
-.goat-legs::before {
-  left: 15px;
+/* subtle breathing bob */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
 }
-
-.goat-legs::after {
-  right: 15px;
-}
-
-.goat-horns::before,
-.goat-horns::after {
-  content: "";
-  position: absolute;
-  width: 5px;
-  height: 15px;
-  top: -15px;
-  border-radius: 4px;
-  background: var(--color-muted);
-}
-
-.goat-horns::before {
-  left: 55px;
-  transform: rotate(-20deg);
-}
-
-.goat-horns::after {
-  left: 65px;
-  transform: rotate(20deg);
+.footer-hills + .relative .text-ink > svg,
+.footer-hills + .relative .text-ink > svg {
+  animation: breathe 4.5s ease-in-out infinite;
 }
 
 /* --- Utilities & components (no :root edits) --- */
@@ -307,7 +267,7 @@ html.dark .footer-hills .hill-3 {
     margin-left: auto;
     margin-right: auto;
     max-width: 80rem; /* 1280px ~ tailwind's max-w-7xl */
-    padding-left: 1rem;  /* px-4 */
+    padding-left: 1rem; /* px-4 */
     padding-right: 1rem;
   }
 
@@ -326,35 +286,45 @@ html.dark .footer-hills .hill-3 {
   }
 
   /* Typography scale utilities */
+  h1,
   .h1 {
     font-size: var(--step-4);
     line-height: 1.1;
     letter-spacing: -0.01em;
+    font-weight: var(--weight-semibold);
   }
 
+  h2,
   .h2 {
     font-size: var(--step-3);
     line-height: 1.15;
+    font-weight: var(--weight-semibold);
   }
 
-  .h3 {
+  h3,
+  h3 {
     font-size: var(--step-2);
     line-height: 1.2;
+    font-weight: var(--weight-semibold);
   }
 
+  h4,
   .h4 {
     font-size: var(--step-1);
     line-height: 1.3;
+    font-weight: var(--weight-regular);
   }
 
-  .p {
+  p {
     font-size: var(--step-0);
     line-height: 1.6;
+    font-weight: var(--weight-regular);
   }
 
-  .text-sm {
+  text-sm {
     font-size: var(--step--1);
     line-height: 1.5;
+    font-weight: var(--weight-regular);
   }
   /* Subtle, accent-tinted passive shadow (no green background) */
   .shadow-passive {
@@ -497,8 +467,4 @@ html.dark .footer-hills .hill-3 {
   border-right: 13px solid transparent;
   border-top: 13px solid #2f7d32;
   z-index: -1;
-}
-
-.text-foreground {
-  color: var(--color-ink);
 }

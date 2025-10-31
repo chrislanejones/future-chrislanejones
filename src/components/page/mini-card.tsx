@@ -40,9 +40,9 @@ export default function MiniCard({
       )}
 
       <div className="flex-1 min-w-0">
-        <h4 className="p font-semibold text-ink group-hover:text-accent transition-colors">
+        <p className=" text-ink group-hover:text-accent transition-colors">
           {title}
-        </h4>
+        </p>
       </div>
     </Link>
   );

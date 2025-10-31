@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
+import { Badge } from "@/components/ui/badge";
 import { FullWidthLayout } from "@/components/page/layout";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
@@ -78,6 +79,65 @@ const siteVersions: SiteVersion[] = [
   },
 ];
 
+// Browser-style link component matching the browser-tabs aesthetic
+function BrowserLink({ label, url }: { label: string; url: string }) {
+  // Extract domain for display
+  const domain = new URL(url).hostname.replace("www.", "");
+
+  return (
+    <motion.a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[color:var(--color-panel)] border border-[color:var(--color-border)] hover:border-accent transition-all duration-200 hover:shadow-glow"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {/* Favicon placeholder */}
+      <div className="flex-shrink-0 w-4 h-4 rounded-sm bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
+        <svg
+          className="w-2.5 h-2.5 text-accent"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+          />
+        </svg>
+      </div>
+
+      {/* Link content */}
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium text-[color:var(--color-ink)] truncate group-hover:text-accent transition-colors">
+          {label}
+        </div>
+        <div className="text-xs text-[color:var(--color-muted)] truncate">
+          {domain}
+        </div>
+      </div>
+
+      {/* External link icon */}
+      <svg
+        className="flex-shrink-0 w-4 h-4 text-[color:var(--color-muted)] group-hover:text-accent transition-colors"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+        />
+      </svg>
+    </motion.a>
+  );
+}
+
 function SiteVersionCard({
   version,
   index,
@@ -105,44 +165,22 @@ function SiteVersionCard({
           isImageLeft ? "md:order-2" : "md:order-1"
         )}
       >
-        <h2 className="font-bold text-2xl mb-6">{version.title}</h2>
-        <p className="text-muted leading-relaxed text-base whitespace-pre-line mb-6">
+        <h3 className="font-bold mb-6">{version.title}</h3>
+        <p className="p text-muted leading-relaxed whitespace-pre-line mb-6">
           {version.description}
         </p>
 
-        {/* Links section */}
+        {/* Browser-style links section */}
         {version.links && version.links.length > 0 && (
-          <div className="mt-auto pt-4 border-t border-[color:var(--color-border)]">
+          <div className="mt-auto pt-6 border-t border-[color:var(--color-border)]">
             <h3 className="text-sm font-semibold text-[color:var(--color-ink)] mb-3">
-              Related Links:
+              Related Links
             </h3>
-            <ul className="space-y-2">
+            <div className="space-y-2">
               {version.links.map((link, i) => (
-                <li key={i}>
-                  <a
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent hover:underline text-sm inline-flex items-center gap-2"
-                  >
-                    {link.label}
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                  </a>
-                </li>
+                <BrowserLink key={i} label={link.label} url={link.url} />
               ))}
-            </ul>
+            </div>
           </div>
         )}
       </div>
@@ -162,9 +200,31 @@ function SiteVersionCard({
           sizes="(max-width: 768px) 100vw, 60vw"
           priority={index === 0}
         />
-        <div className="absolute bottom-4 right-4 text-xs px-3 py-1 rounded-full bg-base/80 backdrop-blur-sm">
+        <Badge
+          variant={
+            [
+              "blue",
+              "green",
+              "purple",
+              "yellow",
+              "pink",
+              "cyan",
+              "orange",
+              "red",
+            ][index % 8] as
+              | "blue"
+              | "green"
+              | "purple"
+              | "yellow"
+              | "pink"
+              | "cyan"
+              | "orange"
+              | "red"
+          }
+          className="absolute bottom-4 right-4 px-3 py-1.5 backdrop-blur-sm shadow-lg"
+        >
           {version.imageDescription}
-        </div>
+        </Badge>
       </div>
     </Card>
   );

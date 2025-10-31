@@ -20,10 +20,10 @@ export default function ConferenceYearPage({
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Banner */}
       <div className="mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+        <h1 className="mb-4">
           Conferences in {year}
         </h1>
-        <div className="flex items-center gap-2 text-sm text-muted">
+        <div className="flex items-center gap-2 text-muted">
           <Link href="/" className="hover:text-foreground">
             Home
           </Link>
@@ -70,17 +70,17 @@ export default function ConferenceYearPage({
 
               {/* Conference Info */}
               <div className="flex-1 p-5 flex flex-col">
-                <h2 className="text-xl font-semibold group-hover:text-accent transition-colors">
+                <h2 className="group-hover:text-accent transition-colors">
                   {c.name}
                 </h2>
-                <p className="text-sm text-muted mt-2">
+                <p className="text-muted mt-2">
                   {[c.dates?.start, c.city, c.venue]
                     .filter(Boolean)
                     .join(" • ")}
                 </p>
 
                 {c.summary && (
-                  <p className="mt-3 text-sm text-[color:var(--color-ink)] line-clamp-3">
+                  <p className="mt-3 line-clamp-3">
                     {c.summary}
                   </p>
                 )}
@@ -91,13 +91,13 @@ export default function ConferenceYearPage({
                     {c.topics.slice(0, 3).map((topic) => (
                       <span
                         key={topic}
-                        className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5 text-xs"
+                        className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5"
                       >
                         {topic}
                       </span>
                     ))}
                     {c.topics.length > 3 && (
-                      <span className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5 text-xs text-muted">
+                      <span className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5 text-muted">
                         +{c.topics.length - 3}
                       </span>
                     )}

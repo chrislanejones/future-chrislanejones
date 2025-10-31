@@ -85,17 +85,17 @@ const ContactMessagesTab = () => {
       <div className="bg-[#0b0d10] border-b border-[#1f242b] p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#f3f4f6]">
+            <h1 className="">
               Contact Messages
             </h1>
-            <p className="text-sm text-[#9ca3af] mt-1">
+            <p className="mt-1">
               {messages.length} total messages • {unreadCount} unread
             </p>
           </div>
           {unreadCount > 0 && (
             <button
               onClick={handleMarkAllAsRead}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1a1e24] text-[#4ade80] rounded-lg hover:bg-[#1f242b] transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
             >
               <CheckCircle className="w-4 h-4" />
               Mark all as read
@@ -105,13 +105,13 @@ const ContactMessagesTab = () => {
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9ca3af]" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" />
           <input
             type="text"
             placeholder="Search messages..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            className="w-full pl-10 pr-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
           />
         </div>
       </div>
@@ -120,7 +120,7 @@ const ContactMessagesTab = () => {
         {/* Messages List */}
         <div className="w-1/3 border-r border-[#1f242b] overflow-y-auto">
           {filteredMessages.length === 0 ? (
-            <div className="p-8 text-center text-[#9ca3af]">
+            <div className="p-8 text-center">
               <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
               <p>No messages found</p>
             </div>
@@ -130,33 +130,29 @@ const ContactMessagesTab = () => {
                 <button
                   key={message._id}
                   onClick={() => handleSelectMessage(message)}
-                  className={`w-full p-4 text-left hover:bg-[#1a1e24] transition-all ${
-                    selectedMessage?._id === message._id ? "bg-[#1a1e24]" : ""
-                  } ${!message.read ? "border-l-4 border-[#4ade80]" : ""}`}
+                  className={`w-full p-4 text-left hover:bg-[#1a1e24] transition-all ${ selectedMessage?._id === message._id ? "bg-[#1a1e24]" : "" } ${!message.read ? "border-l-4 border-[#4ade80]" : ""}`}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
                       {!message.read ? (
-                        <Circle className="w-2 h-2 fill-[#4ade80] text-[#4ade80]" />
+                        <Circle className="w-2 h-2 fill-[#4ade80]" />
                       ) : (
-                        <CheckCircle className="w-3 h-3 text-[#6b7280]" />
+                        <CheckCircle className="w-3 h-3" />
                       )}
                       <span
-                        className={`font-semibold ${
-                          !message.read ? "text-[#f3f4f6]" : "text-[#9ca3af]"
-                        }`}
+                        className={`${ !message.read ? "text-[#f3f4f6]" : "text-[#9ca3af]" }`}
                       >
                         {message.name}
                       </span>
                     </div>
-                    <span className="text-xs text-[#6b7280]">
+                    <span className="">
                       {formatRelativeTime(message.createdAt)}
                     </span>
                   </div>
-                  <p className="text-sm text-[#9ca3af] truncate">
+                  <p className="truncate">
                     {message.email}
                   </p>
-                  <p className="text-sm text-[#6b7280] mt-1 line-clamp-2">
+                  <p className="mt-1 line-clamp-2">
                     {message.message}
                   </p>
                 </button>
@@ -172,31 +168,31 @@ const ContactMessagesTab = () => {
               <div className="bg-[#0b0d10] rounded-lg p-6 mb-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h2 className="text-xl font-semibold text-[#f3f4f6] mb-2">
+                    <h2 className="mb-2">
                       {selectedMessage.name}
                     </h2>
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm text-[#9ca3af]">
+                      <div className="flex items-center gap-2">
                         <Mail className="w-4 h-4" />
                         <a
                           href={`mailto:${selectedMessage.email}`}
-                          className="hover:text-[#4ade80] transition-colors"
+                          className="transition-colors"
                         >
                           {selectedMessage.email}
                         </a>
                       </div>
                       {selectedMessage.phone && (
-                        <div className="flex items-center gap-2 text-sm text-[#9ca3af]">
+                        <div className="flex items-center gap-2">
                           <Phone className="w-4 h-4" />
                           <a
                             href={`tel:${selectedMessage.phone}`}
-                            className="hover:text-[#4ade80] transition-colors"
+                            className="transition-colors"
                           >
                             {selectedMessage.phone}
                           </a>
                         </div>
                       )}
-                      <div className="flex items-center gap-2 text-sm text-[#9ca3af]">
+                      <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
                         <span>{formatDate(selectedMessage.createdAt)}</span>
                       </div>
@@ -211,10 +207,10 @@ const ContactMessagesTab = () => {
                 </div>
 
                 <div className="pt-4 border-t border-[#1f242b]">
-                  <h3 className="text-sm font-semibold text-[#9ca3af] mb-3">
+                  <h3 className="mb-3">
                     Message
                   </h3>
-                  <p className="text-[#f3f4f6] whitespace-pre-wrap">
+                  <p className="whitespace-pre-wrap">
                     {selectedMessage.message}
                   </p>
                 </div>
@@ -222,7 +218,7 @@ const ContactMessagesTab = () => {
                 {/* Delete Confirmation */}
                 {deleteConfirmId === selectedMessage._id && (
                   <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <p className="text-sm text-[#f3f4f6] mb-3">
+                    <p className="mb-3">
                       Are you sure you want to delete this message?
                     </p>
                     <div className="flex gap-2">
@@ -234,7 +230,7 @@ const ContactMessagesTab = () => {
                       </button>
                       <button
                         onClick={() => setDeleteConfirmId(null)}
-                        className="px-4 py-2 bg-[#1a1e24] text-[#f3f4f6] rounded-lg hover:bg-[#1f242b] transition-all"
+                        className="px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
                       >
                         Cancel
                       </button>
@@ -247,7 +243,7 @@ const ContactMessagesTab = () => {
               <div className="grid grid-cols-2 gap-4">
                 <a
                   href={`mailto:${selectedMessage.email}`}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1e24] text-[#4ade80] rounded-lg hover:bg-[#1f242b] transition-all"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
                 >
                   <Mail className="w-4 h-4" />
                   Reply via Email
@@ -255,7 +251,7 @@ const ContactMessagesTab = () => {
                 {selectedMessage.phone && (
                   <a
                     href={`tel:${selectedMessage.phone}`}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1e24] text-[#4ade80] rounded-lg hover:bg-[#1f242b] transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
                   >
                     <Phone className="w-4 h-4" />
                     Call
@@ -266,8 +262,8 @@ const ContactMessagesTab = () => {
           ) : (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <MessageSquare className="w-16 h-16 mx-auto mb-4 text-[#6b7280] opacity-50" />
-                <p className="text-[#9ca3af]">
+                <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                <p className="">
                   Select a message to view details
                 </p>
               </div>
