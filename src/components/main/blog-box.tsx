@@ -26,7 +26,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
   const posts = useQuery(api.blogPosts.getAllPosts);
 
   // Get the last 3 posts
-  const recentPosts = posts?.slice(0, 3) || [];
+  const recentPosts = posts?.slice(0, 2) || [];
 
   return (
     <Card
@@ -37,8 +37,36 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
       delay={delay}
       className="overflow-hidden flex flex-col"
     >
-      <div className="relative flex-1 min-h-[200px] p-6">
-        <div className="absolute top-4 right-4 z-10">
+      <div className="relative flex-1 min-h-[50px] flex flex-col">
+        {/* Top center: Blog posts */}
+        <div className="flex-1 flex items-center justify-center p-4">
+          {!posts ? (
+            <div className="flex justify-center py-8">
+              <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : recentPosts.length === 0 ? (
+            <p className="text-ink text-center py-8">
+              No blog posts yet. Check back soon!
+            </p>
+          ) : (
+            <div className="flex gap-3 items-stretch justify-stretch w-full max-w-2xl">
+              {recentPosts.map((post) => (
+                <MiniCard
+                  key={post._id}
+                  title={post.title}
+                  excerpt={post.excerpt}
+                  coverImage={post.coverImage}
+                  slug={post.slug}
+                  createdAt={post.createdAt}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Bottom row: Title left, Button right */}
+        <div className="flex items-center justify-between p-4">
+          <h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
           <Button
             variant="neutral"
             size="icon"
@@ -50,31 +78,6 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
               <StickyNote size={20} className="text-ink" />
             </Link>
           </Button>
-        </div>
-
-        <h3 className="text-ink tracking-tight mb-4">Latest Blog Posts</h3>
-
-        <div className="space-y-3">
-          {!posts ? (
-            <div className="flex justify-center py-8">
-              <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : recentPosts.length === 0 ? (
-            <p className="text-ink text-center py-8">
-              No blog posts yet. Check back soon!
-            </p>
-          ) : (
-            recentPosts.map((post) => (
-              <MiniCard
-                key={post._id}
-                title={post.title}
-                excerpt={post.excerpt}
-                coverImage={post.coverImage}
-                slug={post.slug}
-                createdAt={post.createdAt}
-              />
-            ))
-          )}
         </div>
       </div>
     </Card>
