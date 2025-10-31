@@ -10,7 +10,7 @@ import TechStackBox from "@/components/main/tech-stack-box";
 import ProjectsBox from "@/components/main/projects-box";
 import ImageGalleryBox from "@/components/main/image-gallery-box";
 import HeroBox from "@/components/main/hero-box";
-import LinkCard from "@/components/main/link-box";
+import BlogCard from "@/components/main/blog-box";
 import { getPageSEO } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -29,7 +29,7 @@ export default function Home() {
           <QuoteGeneratorCard size="large" delay={0.2} />
           <ProjectsBox size="full" delay={0.3} />
           <MusicPlayerBox size="large" delay={0.4} />
-          <LinkCard size="large" delay={0.5} />
+          <BlogCard size="large" delay={0.5} />
           <ImageGalleryBox size="large" delay={0.6} />
           <ClientSliderBox size="full" delay={0.7} />
           <TechStackBox size="full" delay={0.8} />
