@@ -43,10 +43,10 @@ export default function ConferenceDetailPage({
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
           {/* Left: Title and Breadcrumb */}
           <div className="flex-1">
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+            <h1 className="mb-4">
               {conf.name}
             </h1>
-            <div className="flex items-center gap-2 text-sm text-muted">
+            <div className="flex items-center gap-2 text-muted">
               <Link href="/" className="hover:text-foreground">
                 Home
               </Link>
@@ -69,10 +69,10 @@ export default function ConferenceDetailPage({
             {dateRange && (
               <Badge variant="blue" className="px-4 py-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-muted uppercase">
+                  <span className="text-muted uppercase">
                     Dates
                   </span>
-                  <span className="text-sm text-[color:var(--color-ink)]">
+                  <span className="">
                     {dateRange}
                   </span>
                 </div>
@@ -83,10 +83,10 @@ export default function ConferenceDetailPage({
               {conf.city && (
                 <Badge variant="green" className="px-4 py-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-muted uppercase">
+                    <span className="text-muted uppercase">
                       City
                     </span>
-                    <span className="text-sm text-[color:var(--color-ink)]">
+                    <span className="">
                       {conf.city}
                     </span>
                   </div>
@@ -96,10 +96,10 @@ export default function ConferenceDetailPage({
               {conf.venue && (
                 <Badge variant="purple" className="px-4 py-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-muted uppercase">
+                    <span className="text-muted uppercase">
                       Venue
                     </span>
-                    <span className="text-sm text-[color:var(--color-ink)]">
+                    <span className="">
                       {conf.venue}
                     </span>
                   </div>
@@ -148,8 +148,8 @@ export default function ConferenceDetailPage({
           {/* About Section */}
           {conf.summary && (
             <>
-              <h2 className="text-xl font-bold mb-4">About</h2>
-              <p className="leading-relaxed text-[color:var(--color-ink)] whitespace-pre-line mb-6">
+              <h2 className="mb-4">About</h2>
+              <p className="leading-relaxed whitespace-pre-line mb-6">
                 {conf.summary}
               </p>
             </>
@@ -161,7 +161,7 @@ export default function ConferenceDetailPage({
               {conf.topics.map((topic) => (
                 <span
                   key={topic}
-                  className="inline-block rounded-full border border-[color:var(--color-border)] px-3 py-1 text-xs"
+                  className="inline-block rounded-full border border-[color:var(--color-border)] px-3 py-1"
                 >
                   {topic}
                 </span>
@@ -180,7 +180,7 @@ export default function ConferenceDetailPage({
           shadow="soft"
           className="mt-6"
         >
-          <h2 className="text-xl font-bold mb-4">Talks & Resources</h2>
+          <h2 className="mb-4">Talks & Resources</h2>
           <ul className="space-y-3">
             {conf.talkLinks.map((talk, i) => (
               <li key={i}>

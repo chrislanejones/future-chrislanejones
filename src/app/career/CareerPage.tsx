@@ -43,7 +43,7 @@ const photos: GalleryPhoto[] = [
 function TimelineTrail() {
   return (
     <div className="mb-12">
-      <h2 className="font-bold text-3xl mb-8 text-center">Career Journey</h2>
+      <h2 className="mb-8 text-center">Career Journey</h2>
 
       {/* Timeline container - max width for desktop */}
       <div className="relative max-w-5xl mx-auto">
@@ -83,17 +83,17 @@ function TimelineTrail() {
                         style={{ minHeight: "auto" }}
                         className="text-right"
                       >
-                        <time className="block text-sm font-semibold text-green-500 mb-2">
+                        <time className="block text-green-500 mb-2">
                           {event.year}
                         </time>
-                        <h3 className="text-lg md:text-xl font-bold text-[color:var(--color-ink)] mb-2">
+                        <h3 className="mb-2">
                           {event.title}
                         </h3>
-                        <p className="text-base text-muted leading-relaxed mb-3">
+                        <p className="text-muted leading-relaxed mb-3">
                           {event.description}
                         </p>
                         {event.location && (
-                          <div className="inline-flex items-center gap-1.5 text-sm text-muted/80 flex-row-reverse">
+                          <div className="inline-flex items-center gap-1.5 text-muted/80 flex-row-reverse">
                             <svg
                               className="w-4 h-4"
                               fill="none"
@@ -143,17 +143,17 @@ function TimelineTrail() {
                       style={{ minHeight: "auto" }}
                       className="text-left"
                     >
-                      <time className="block text-sm font-semibold text-green-500 mb-2">
+                      <time className="block text-green-500 mb-2">
                         {event.year}
                       </time>
-                      <h3 className="text-lg md:text-xl font-bold text-[color:var(--color-ink)] mb-2">
+                      <h3 className="mb-2">
                         {event.title}
                       </h3>
-                      <p className="text-base text-muted leading-relaxed mb-3">
+                      <p className="text-muted leading-relaxed mb-3">
                         {event.description}
                       </p>
                       {event.location && (
-                        <div className="inline-flex items-center gap-1.5 text-sm text-muted/80">
+                        <div className="inline-flex items-center gap-1.5 text-muted/80">
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -221,8 +221,8 @@ function PhotoGalleryCard() {
       </div>
 
       <div className="p-6">
-        <h3 className="text-xl md:text-xl font-bold">Setup Photo Gallery</h3>
-        <p className="text-sm text-muted">Desk Setups Throughout the Years</p>
+        <h3 className="">Setup Photo Gallery</h3>
+        <p className="text-muted">Desk Setups Throughout the Years</p>
       </div>
     </Card>
   );
@@ -239,7 +239,7 @@ function ResumeDownloadCard() {
       delay={0.2}
       className="flex flex-col justify-center"
     >
-      <h2 className="text-2xl font-bold text-[color:var(--color-ink)] mb-4">
+      <h2 className="mb-4">
         Resume & Portfolio
       </h2>
       <p className="text-muted mb-6">

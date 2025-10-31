@@ -221,10 +221,10 @@ const LinksManagerTab = () => {
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
         <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-[#f3f4f6]">{title}</h3>
+            <h3 className="">{title}</h3>
             <button
               onClick={onClose}
-              className="p-2 text-[#9ca3af] hover:text-[#f3f4f6] transition-colors"
+              className="p-2 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -233,7 +233,7 @@ const LinksManagerTab = () => {
           <div className="space-y-4">
             {/* URL */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 URL *
               </label>
               <div className="flex gap-2">
@@ -244,11 +244,11 @@ const LinksManagerTab = () => {
                     setFormData({ ...formData, href: e.target.value })
                   }
                   placeholder="https://example.com"
-                  className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+                  className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
                 />
                 <button
                   onClick={handleAutoFill}
-                  className="px-4 py-2 bg-[#1a1e24] text-[#4ade80] rounded-lg hover:bg-[#1f242b] transition-colors whitespace-nowrap"
+                  className="px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-colors whitespace-nowrap"
                 >
                   Auto-fill
                 </button>
@@ -257,7 +257,7 @@ const LinksManagerTab = () => {
 
             {/* Label */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 Label *
               </label>
               <input
@@ -267,13 +267,13 @@ const LinksManagerTab = () => {
                   setFormData({ ...formData, label: e.target.value })
                 }
                 placeholder="My Awesome Site"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
               />
             </div>
 
             {/* Domain */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 Domain *
               </label>
               <input
@@ -283,13 +283,13 @@ const LinksManagerTab = () => {
                   setFormData({ ...formData, domain: e.target.value })
                 }
                 placeholder="example.com"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
               />
             </div>
 
             {/* Favicon */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 Favicon URL
               </label>
               <div className="flex gap-2">
@@ -300,7 +300,7 @@ const LinksManagerTab = () => {
                     setFormData({ ...formData, favicon: e.target.value })
                   }
                   placeholder="https://example.com/favicon.ico"
-                  className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+                  className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
                 />
                 {formData.favicon && (
                   <img
@@ -317,7 +317,7 @@ const LinksManagerTab = () => {
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 Category *
               </label>
               <input
@@ -327,13 +327,13 @@ const LinksManagerTab = () => {
                   setFormData({ ...formData, category: e.target.value })
                 }
                 placeholder="Development Tools"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
               />
             </div>
 
             {/* Color */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 Chrome Group Color *
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -343,11 +343,7 @@ const LinksManagerTab = () => {
                     onClick={() =>
                       setFormData({ ...formData, color: color.id })
                     }
-                    className={`${color.class} px-4 py-2 rounded-lg font-medium transition-all ${
-                      formData.color === color.id
-                        ? "ring-2 ring-[#4ade80] ring-offset-2 ring-offset-[#111418]"
-                        : "opacity-60 hover:opacity-100"
-                    }`}
+                    className={`${color.class} px-4 py-2 rounded-lg transition-all ${ formData.color === color.id ? "ring-2 ring-[#4ade80] ring-offset-2 ring-offset-[#111418]" : "opacity-60 hover:opacity-100" }`}
                   >
                     {color.name}
                   </button>
@@ -357,7 +353,7 @@ const LinksManagerTab = () => {
 
             {/* Order */}
             <div>
-              <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+              <label className="block mb-2">
                 Order
               </label>
               <input
@@ -369,7 +365,7 @@ const LinksManagerTab = () => {
                     order: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
               />
             </div>
           </div>
@@ -383,14 +379,14 @@ const LinksManagerTab = () => {
                 !formData.domain ||
                 !formData.category
               }
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#4ade80] text-[#0b0d10] rounded-lg font-medium hover:bg-[#22c55e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="w-4 h-4" />
               Save Link
             </button>
             <button
               onClick={onClose}
-              className="px-6 py-3 bg-[#1a1e24] text-[#9ca3af] rounded-lg font-medium hover:bg-[#1f242b] transition-colors"
+              className="px-6 py-3 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-colors"
             >
               Cancel
             </button>
@@ -406,8 +402,8 @@ const LinksManagerTab = () => {
       <div className="bg-[#0b0d10] border-b border-[#1f242b] p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#f3f4f6]">Links Manager</h1>
-            <p className="text-sm text-[#9ca3af] mt-1">
+            <h1 className="">Links Manager</h1>
+            <p className="mt-1">
               {allLinks.length} total links • {categories.length} categories
             </p>
           </div>
@@ -415,7 +411,7 @@ const LinksManagerTab = () => {
             {allLinks.length === 0 && (
               <button
                 onClick={handleSeedData}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1a1e24] text-[#4ade80] rounded-lg hover:bg-[#1f242b] transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
               >
                 <Plus className="w-4 h-4" />
                 Seed Initial Data
@@ -426,13 +422,13 @@ const LinksManagerTab = () => {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9ca3af]" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" />
           <input
             type="text"
             placeholder="Search links..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            className="w-full pl-10 pr-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
           />
         </div>
       </div>
@@ -441,7 +437,7 @@ const LinksManagerTab = () => {
         {/* Categories Sidebar */}
         <div className="w-64 border-r border-[#1f242b] p-4 overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-[#d1d5db]">Categories</h2>
+            <h2 className="">Categories</h2>
           </div>
           <div className="space-y-1">
             {categories.map((cat) => {
@@ -455,19 +451,15 @@ const LinksManagerTab = () => {
                 <button
                   key={cat.category}
                   onClick={() => setSelectedCategory(cat.category)}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-all ${
-                    selectedCategory === cat.category
-                      ? "bg-[#1a1e24] border border-[#4ade80]"
-                      : "hover:bg-[#1a1e24]"
-                  }`}
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-all ${ selectedCategory === cat.category ? "bg-[#1a1e24] border border-[#4ade80]" : "hover:bg-[#1a1e24]" }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className={`w-3 h-3 rounded-full ${colorClass}`} />
-                    <span className="text-sm font-medium text-[#f3f4f6] truncate">
+                    <span className="truncate">
                       {cat.category}
                     </span>
                   </div>
-                  <span className="text-xs text-[#9ca3af]">
+                  <span className="">
                     {linksInCategory.length} links
                   </span>
                 </button>
@@ -481,13 +473,13 @@ const LinksManagerTab = () => {
           {selectedCategory && (
             <div className="p-4 border-b border-[#1f242b] bg-[#0b0d10]">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-[#f3f4f6]">
+                <h2 className="">
                   {selectedCategory}
                 </h2>
                 <div className="flex gap-2">
                   <button
                     onClick={handleAddLink}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-all"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-all"
                   >
                     <Plus className="w-4 h-4" />
                     Add Link
@@ -504,7 +496,7 @@ const LinksManagerTab = () => {
           )}
 
           {searchedLinks.length === 0 ? (
-            <div className="p-8 text-center text-[#9ca3af]">
+            <div className="p-8 text-center">
               <LinkIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
               <p>No links found</p>
             </div>
@@ -529,22 +521,22 @@ const LinksManagerTab = () => {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium text-[#f3f4f6] truncate">
+                          <h3 className="truncate">
                             {link.label}
                           </h3>
                           <a
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#4ade80] hover:text-[#22c55e] flex-shrink-0"
+                            className="flex-shrink-0"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         </div>
-                        <p className="text-sm text-[#9ca3af] truncate">
+                        <p className="truncate">
                           {link.domain}
                         </p>
-                        <p className="text-xs text-[#6b7280] mt-1 truncate">
+                        <p className="mt-1 truncate">
                           {link.href}
                         </p>
                       </div>
@@ -552,7 +544,7 @@ const LinksManagerTab = () => {
                     <div className="flex gap-2 ml-4">
                       <button
                         onClick={() => handleEditLink(link)}
-                        className="p-2 text-[#4ade80] hover:bg-[#4ade80]/10 rounded-lg transition-all"
+                        className="p-2 hover:bg-[#4ade80]/10 rounded-lg transition-all"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -568,19 +560,19 @@ const LinksManagerTab = () => {
                   {/* Delete Confirmation */}
                   {showDeleteConfirm === link._id && (
                     <div className="mt-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                      <p className="text-sm text-[#f3f4f6] mb-3">
+                      <p className="mb-3">
                         Delete this link?
                       </p>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleDeleteLink(link._id)}
-                          className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-all"
+                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-all"
                         >
                           Delete
                         </button>
                         <button
                           onClick={() => setShowDeleteConfirm(null)}
-                          className="px-3 py-1 bg-[#1a1e24] text-[#f3f4f6] rounded text-sm hover:bg-[#1f242b] transition-all"
+                          className="px-3 py-1 bg-[#1a1e24] rounded hover:bg-[#1f242b] transition-all"
                         >
                           Cancel
                         </button>
@@ -612,11 +604,11 @@ const LinksManagerTab = () => {
           <div className="bg-[#111418] border border-red-500/30 rounded-2xl p-6 max-w-md w-full mx-4">
             <div className="flex items-center gap-3 mb-4">
               <AlertCircle className="w-6 h-6 text-red-500" />
-              <h3 className="text-xl font-bold text-[#f3f4f6]">
+              <h3 className="">
                 Delete Category?
               </h3>
             </div>
-            <p className="text-[#9ca3af] mb-6">
+            <p className="mb-6">
               This will delete all links in "{selectedCategory}". This action
               cannot be undone.
             </p>
@@ -629,7 +621,7 @@ const LinksManagerTab = () => {
               </button>
               <button
                 onClick={() => setShowCategoryDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 bg-[#1a1e24] text-[#f3f4f6] rounded-lg hover:bg-[#1f242b] transition-all"
+                className="flex-1 px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
               >
                 Cancel
               </button>
@@ -642,18 +634,14 @@ const LinksManagerTab = () => {
       {saveStatus && (
         <div className="fixed bottom-6 right-6 z-50">
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${
-              saveStatus === "success"
-                ? "bg-[#4ade80] text-[#0b0d10]"
-                : "bg-red-500 text-white"
-            }`}
+            className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${ saveStatus === "success" ? "bg-[#4ade80] text-[#0b0d10]" : "bg-red-500 text-white" }`}
           >
             {saveStatus === "success" ? (
               <CheckCircle className="w-5 h-5" />
             ) : (
               <AlertCircle className="w-5 h-5" />
             )}
-            <span className="font-medium">
+            <span className="">
               {saveStatus === "success" ? "Success!" : "Error occurred"}
             </span>
           </div>

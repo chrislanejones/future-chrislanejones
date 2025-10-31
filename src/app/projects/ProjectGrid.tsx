@@ -160,9 +160,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             isImageLeft ? "md:order-2" : "md:order-1"
           )}
         >
-          <h2 className="h3 font-semibold text-ink tracking-tight mb-3">{project.title}</h2>
+          <h3 className=" text-ink tracking-tight mb-3">{project.title}</h3>
 
-          <p className="p text-ink/80 leading-relaxed mb-4">
+          <p className="p text-ink leading-relaxed mb-4">
             {project.description}
           </p>
 
@@ -184,9 +184,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-sm text-ink/70 leading-relaxed">
-                  {feature}
-                </span>
+                <span className="text-ink leading-relaxed">{feature}</span>
               </li>
             ))}
           </ul>

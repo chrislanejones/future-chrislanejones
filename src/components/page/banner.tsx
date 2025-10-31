@@ -28,11 +28,11 @@ export default function Banner({
     <motion.div className="py-8">
       <div className="flex flex-col lg:flex-row items-start lg:justify-between gap-6">
         <div className="text-left flex-1">
-          <h1 className="h1 font-semibold tracking-tight text-ink pb-4">{title}</h1>
+          <h1 className="h1 tracking-tight text-ink pb-4">{title}</h1>
 
           {/* Mobile: Description comes after title, before breadcrumbs */}
           {description && (
-            <p className="p text-ink/80 max-w-md text-left lg:hidden pb-6">
+            <p className="p text-ink max-w-md text-left lg:hidden pb-6">
               {description}
             </p>
           )}
@@ -59,7 +59,7 @@ export default function Banner({
 
         {/* Desktop: Description on the right */}
         {description && (
-          <p className="p text-ink/80 max-w-md text-right hidden lg:block">
+          <p className="p text-ink max-w-md text-right hidden lg:block">
             {description}
           </p>
         )}

@@ -22,19 +22,7 @@ export default function IconBlock({
 
   return (
     <div
-      className={`
-        group relative flex flex-col items-center gap-2 p-3 rounded-xl
-        bg-[color:var(--color-muted-accent)] transition-all duration-300
-        cursor-pointer tabindex="0"
-        hover:bg-gradient-to-br hover:from-[color:var(--color-muted-accent)]
-        hover:to-[color:var(--color-muted-accent)]/80
-        focus:outline-none focus:ring-2 focus:ring-accent
-        focus:ring-opacity-50
-        before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-br
-        before:from-white/10 before:to-transparent before:opacity-0
-        hover:before:opacity-100 before:transition-opacity before:duration-300
-        ${className}
-      `}
+      className={`group relative flex flex-col items-center gap-2 p-3 rounded-xl bg-[color:var(--color-muted-accent)] transition-all duration-300 cursor-pointer tabindex="0" hover:bg-gradient-to-br hover:from-[color:var(--color-muted-accent)] hover:to-[color:var(--color-muted-accent)]/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-opacity-50 before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 ${className}`}
       tabIndex={0}
       onClick={handleClick}
     >
@@ -60,10 +48,10 @@ export default function IconBlock({
         }
       `}</style>
 
-      <div className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors text-[color:var(--color-foreground)] group-hover:text-[color:var(--color-accent)] group-focus:text-[color:var(--color-accent)] relative z-10">
+      <div className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors relative z-10">
         {children}
       </div>
-      <span className="text-center text-sm font-medium text-[color:var(--color-foreground)] relative z-10">
+      <span className="text-center relative z-10">
         {label}
       </span>
     </div>

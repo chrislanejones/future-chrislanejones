@@ -57,21 +57,15 @@ const CharacterCounter = ({
 
   return (
     <div className="space-y-2">
-      <div className="flex justify-between items-center text-sm">
-        <span className="text-[#9ca3af]">{label}</span>
-        <span className={`${status.color} font-medium`}>
+      <div className="flex justify-between items-center">
+        <span className="">{label}</span>
+        <span className={`${status.color}`}>
           {current}/{limits.max} - {status.message}
         </span>
       </div>
       <div className="h-2 bg-[#0b0d10] rounded-full overflow-hidden">
         <div
-          className={`h-full transition-all ${
-            percentage > 100
-              ? "bg-red-500"
-              : percentage > 90
-                ? "bg-yellow-500"
-                : "bg-green-500"
-          }`}
+          className={`h-full transition-all ${ percentage > 100 ? "bg-red-500" : percentage > 90 ? "bg-yellow-500" : "bg-green-500" }`}
           style={{ width: `${Math.min(percentage, 100)}%` }}
         />
       </div>
@@ -166,7 +160,7 @@ const SEOTab = () => {
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#4ade80] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#9ca3af]">Loading pages...</p>
+          <p className="">Loading pages...</p>
         </div>
       </div>
     );
@@ -182,18 +176,18 @@ const SEOTab = () => {
       <div className="w-80 bg-[#111418] border border-[#1f242b] rounded-2xl p-4 flex flex-col">
         <div className="mb-4 flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#9ca3af]" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search pages..."
-              className="w-full pl-10 pr-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] text-sm focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+              className="w-full pl-10 pr-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
             />
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg text-sm font-medium hover:bg-[#22c55e] transition-colors whitespace-nowrap"
+            className="px-4 py-2 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-colors whitespace-nowrap"
           >
             + Add
           </button>
@@ -203,7 +197,7 @@ const SEOTab = () => {
         {showAddModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-xl font-bold text-[#f3f4f6] mb-4">
+              <h3 className="mb-4">
                 Add New Page
               </h3>
               <input
@@ -211,12 +205,12 @@ const SEOTab = () => {
                 value={newPagePath}
                 onChange={(e) => setNewPagePath(e.target.value)}
                 placeholder="/new-page"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80] mb-4"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80] mb-4"
               />
               <div className="flex gap-3">
                 <button
                   onClick={handleAddPage}
-                  className="flex-1 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg font-medium hover:bg-[#22c55e] transition-colors"
+                  className="flex-1 px-4 py-2 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-colors"
                 >
                   Add Page
                 </button>
@@ -225,7 +219,7 @@ const SEOTab = () => {
                     setShowAddModal(false);
                     setNewPagePath("");
                   }}
-                  className="flex-1 px-4 py-2 bg-[#1a1e24] text-[#9ca3af] rounded-lg font-medium hover:bg-[#1f242b] transition-colors"
+                  className="flex-1 px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-colors"
                 >
                   Cancel
                 </button>
@@ -239,16 +233,12 @@ const SEOTab = () => {
             <button
               key={page._id}
               onClick={() => handlePageSelect(page)}
-              className={`w-full text-left px-3 py-2 rounded-lg transition-all ${
-                selectedPage._id === page._id
-                  ? "bg-[#1a1e24] border border-[#4ade80]"
-                  : "bg-[#0b0d10] border border-[#1f242b] hover:border-[#4ade80]"
-              }`}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-all ${ selectedPage._id === page._id ? "bg-[#1a1e24] border border-[#4ade80]" : "bg-[#0b0d10] border border-[#1f242b] hover:border-[#4ade80]" }`}
             >
-              <div className="font-medium text-[#f3f4f6] text-sm mb-1">
+              <div className="mb-1">
                 {page.path}
               </div>
-              <div className="text-[#9ca3af] text-xs truncate">
+              <div className="truncate">
                 {page.title}
               </div>
             </button>
@@ -259,25 +249,25 @@ const SEOTab = () => {
       {/* Editor */}
       <div className="flex-1 bg-[#111418] border border-[#1f242b] rounded-2xl p-6 flex flex-col">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-[#f3f4f6] mb-2">
+          <h2 className="mb-2">
             Edit SEO Metadata
           </h2>
-          <p className="text-[#9ca3af]">
-            Page: <span className="text-[#4ade80]">{selectedPage.path}</span>
+          <p className="">
+            Page: <span className="">{selectedPage.path}</span>
           </p>
         </div>
 
         <div className="flex-1 space-y-6 overflow-y-auto">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+            <label className="block mb-2">
               Page Title
             </label>
             <input
               type="text"
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
-              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
               placeholder="Enter page title..."
             />
             <div className="mt-3">
@@ -288,21 +278,21 @@ const SEOTab = () => {
               />
             </div>
             <div className="mt-3 p-3 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
-              <p className="text-xs text-[#9ca3af] mb-1">Google Preview:</p>
-              <p className="text-sm text-[#60a5fa] truncate">{editedTitle}</p>
+              <p className="mb-1">Google Preview:</p>
+              <p className="truncate">{editedTitle}</p>
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-[#d1d5db] mb-2">
+            <label className="block mb-2">
               Meta Description
             </label>
             <textarea
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
               rows={4}
-              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-[#4ade80] resize-none"
+              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80] resize-none"
               placeholder="Enter meta description..."
             />
             <div className="mt-3">
@@ -313,8 +303,8 @@ const SEOTab = () => {
               />
             </div>
             <div className="mt-3 p-3 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
-              <p className="text-xs text-[#9ca3af] mb-1">Google Preview:</p>
-              <p className="text-xs text-[#9ca3af] line-clamp-2">
+              <p className="mb-1">Google Preview:</p>
+              <p className="line-clamp-2">
                 {editedDescription}
               </p>
             </div>
@@ -322,24 +312,24 @@ const SEOTab = () => {
 
           {/* SEO Tips */}
           <div className="p-4 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
-            <h3 className="text-sm font-semibold text-[#f3f4f6] mb-3">
+            <h3 className="mb-3">
               SEO Best Practices
             </h3>
-            <ul className="space-y-2 text-xs text-[#9ca3af]">
+            <ul className="space-y-2">
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-[#4ade80] mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>Title: 30-60 characters (optimal: 50-60)</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-[#4ade80] mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>Description: 120-160 characters (optimal: 150-160)</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-[#4ade80] mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>Include primary keyword near the beginning</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 text-[#4ade80] mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>Make it compelling - this is your search result ad</span>
               </li>
             </ul>
@@ -351,25 +341,21 @@ const SEOTab = () => {
           <button
             onClick={handleSave}
             disabled={!hasChanges}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
-              hasChanges
-                ? "bg-[#4ade80] text-[#0b0d10] hover:bg-[#22c55e]"
-                : "bg-[#1a1e24] text-[#9ca3af] cursor-not-allowed"
-            }`}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all ${ hasChanges ? "bg-[#4ade80] hover:bg-[#22c55e]" : "bg-[#1a1e24] cursor-not-allowed" }`}
           >
             <Save className="w-4 h-4" />
             Save Changes
           </button>
 
           {saveStatus === "success" && (
-            <div className="flex items-center gap-2 text-[#4ade80] text-sm">
+            <div className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
               <span>Changes saved successfully!</span>
             </div>
           )}
 
           {saveStatus === "error" && (
-            <div className="flex items-center gap-2 text-red-500 text-sm">
+            <div className="flex items-center gap-2 text-red-500">
               <AlertCircle className="w-4 h-4" />
               <span>Failed to save changes</span>
             </div>
@@ -384,10 +370,10 @@ const ComingSoonTab = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-full bg-[#111418] border border-[#1f242b] rounded-2xl">
     <div className="text-center">
       <div className="w-16 h-16 bg-[#1a1e24] rounded-full flex items-center justify-center mx-auto mb-4">
-        <AlertCircle className="w-8 h-8 text-[#4ade80]" />
+        <AlertCircle className="w-8 h-8" />
       </div>
-      <h2 className="text-2xl font-bold text-[#f3f4f6] mb-2">{title}</h2>
-      <p className="text-[#9ca3af]">This feature is coming soon</p>
+      <h2 className="mb-2">{title}</h2>
+      <p className="">This feature is coming soon</p>
     </div>
   </div>
 );
@@ -416,10 +402,10 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <div className="w-64 bg-[#111418] border-r border-[#1f242b] p-4 flex flex-col">
         <div className="mb-8">
-          <h1 className="text-xl font-bold text-[#f3f4f6]">Admin Dashboard</h1>
-          <p className="text-sm text-[#9ca3af] mt-1">Portfolio Manager</p>
+          <h1 className="">Admin Dashboard</h1>
+          <p className="mt-1">Portfolio Manager</p>
           {user && (
-            <p className="text-xs text-[#6b7280] mt-2 truncate">
+            <p className="mt-2 truncate">
               {user.primaryEmailAddress?.emailAddress}
             </p>
           )}
@@ -432,14 +418,10 @@ const AdminDashboard = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  activeTab === tab.id
-                    ? "bg-[#1a1e24] text-[#4ade80] border border-[#4ade80]"
-                    : "text-[#9ca3af] hover:bg-[#1a1e24] hover:text-[#f3f4f6]"
-                }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${ activeTab === tab.id ? "bg-[#1a1e24] border border-[#4ade80]" : "text-[#9ca3af] hover:bg-[#1a1e24] hover:text-[#f3f4f6]" }`}
               >
                 <Icon className="w-5 h-5" />
-                <span className="font-medium">{tab.label}</span>
+                <span className="">{tab.label}</span>
               </button>
             );
           })}
@@ -448,7 +430,7 @@ const AdminDashboard = () => {
         <div className="pt-4 border-t border-[#1f242b]">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[#9ca3af] hover:text-[#f3f4f6] transition-colors"
+            className="w-full flex items-center gap-2 px-4 py-2 transition-colors"
           >
             <LogOut className="w-4 h-4" />
             Sign Out

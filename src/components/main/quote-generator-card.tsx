@@ -12,7 +12,7 @@ const QUOTES: ReactNode[] = [
   "My rambling 1",
   "My rambling 2",
   "My rambling 3",
-  "My rambling 4",
+  "When I tried SQL for the first time I hit DROP TABLE attempting to download.",
   "Locked my fridge with a CAPTCHA to stop my midnight snacking.",
   'In 2017, three people called on the same day asking me "How can I learn to code?"',
   'I didn\'t code as a child because this "<!--[if !(IE 6)]>" scared me.',
@@ -129,10 +129,8 @@ export default function Quotegeneratorcard({
           height={80}
         />
         <div className="flex flex-col justify-center">
-          <div className="h4 font-semibold text-white drop-shadow-sm">
-            Chris Lane Jones
-          </div>
-          <div className="text-white/90 text-sm drop-shadow-sm">
+          <div className=" text-white drop-shadow-sm">Chris Lane Jones</div>
+          <div className="text-white/90 drop-shadow-sm">
             UX/UI Web Design and Development
           </div>
         </div>

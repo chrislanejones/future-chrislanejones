@@ -58,7 +58,7 @@ export default function Header() {
             <div className="grid place-content-center">
               <SiteLogo />
             </div>
-            <span className="font-bold text-xl whitespace-nowrap">
+            <span className="whitespace-nowrap">
               Chris Lane Jones
             </span>
           </Link>
@@ -88,7 +88,7 @@ export default function Header() {
                                   <NavigationMenuLink asChild>
                                     <Link
                                       href={child.href}
-                                      className="block w-full rounded-md px-3 py-2 text-sm text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring"
+                                      className="block w-full rounded-md px-3 py-2 text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring"
                                     >
                                       {child.label}
                                     </Link>
@@ -103,7 +103,7 @@ export default function Header() {
                       <NavigationMenuLink asChild>
                         <Link
                           href={item.href!}
-                          className="h-9 px-4 py-2 bg-panel card text-sm font-medium shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg"
+                          className="h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg"
                         >
                           {item.label}
                         </Link>
@@ -212,7 +212,7 @@ export default function Header() {
                     <div key={item.label}>
                       {item.children ? (
                         <div>
-                          <div className="text-lg font-semibold py-2 px-4 text-foreground">
+                          <div className="py-2 px-4 text-foreground">
                             {item.label}
                           </div>
                           <div className="ml-4 space-y-2">
@@ -231,7 +231,7 @@ export default function Header() {
                       ) : (
                         <Link
                           href={item.href!}
-                          className="block nav-link text-lg font-medium py-3 px-4"
+                          className="block nav-link py-3 px-4"
                           onClick={closeMobileMenu}
                         >
                           {item.label}
@@ -242,7 +242,7 @@ export default function Header() {
 
                   {/* Mobile Social Links */}
                   <div className="pt-6 border-t border-white/10 space-y-3">
-                    <h2 className="text-sm font-semibold text-muted px-4 mb-3">
+                    <h2 className="text-muted px-4 mb-3">
                       Social Links
                     </h2>
                     {socialLinks.map((social) => (

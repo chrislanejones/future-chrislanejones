@@ -78,7 +78,7 @@ const Photo = ({
 
       {/* White description area at bottom like a real Polaroid */}
       <div className="px-2.5 py-2 h-12 flex items-center justify-center">
-        <p className="text-gray-800 text-xs text-center leading-tight font-medium">
+        <p className="text-gray-800 text-center leading-tight">
           {description}
         </p>
       </div>
@@ -345,7 +345,7 @@ export default function GalleryDrawer({
       <DrawerContent className="h-[60vh]">
         <div className="mx-auto w-full max-w-7xl">
           <DrawerHeader>
-            <DrawerTitle className="text-center text-2xl font-bold">
+            <DrawerTitle className="text-center">
               {title}
             </DrawerTitle>
             <DrawerDescription className="text-center">

@@ -30,7 +30,7 @@ function parseMarkdownLinks(text: string): React.ReactNode {
         href={match[2]}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[color:var(--color-ink)] underline decoration-accent decoration-2 underline-offset-2 hover:text-accent transition-colors"
+        className="underline decoration-accent decoration-2 underline-offset-2 hover:text-accent transition-colors"
       >
         {match[1]}
       </a>
@@ -119,8 +119,8 @@ function AboutCard({
             isImageLeft ? "md:order-2" : "md:order-1"
           )}
         >
-          <h2 className="h2 font-semibold text-ink tracking-tight mb-4">{section.title}</h2>
-          <div className="p text-ink/80 leading-relaxed whitespace-pre-line">
+          <h2 className="h2 text-ink tracking-tight mb-4">{section.title}</h2>
+          <div className="p text-ink leading-relaxed whitespace-pre-line">
             {parseMarkdownLinks(section.description)}
           </div>
         </div>
@@ -140,7 +140,7 @@ function AboutCard({
             sizes="(max-width: 768px) 100vw, 50vw"
             priority={index === 0}
           />
-          <div className="absolute bottom-4 right-4 text-xs px-3 py-1.5 rounded-full bg-base/80 backdrop-blur-sm border border-[color:var(--color-border)]">
+          <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-base/80 backdrop-blur-sm border border-[color:var(--color-border)]">
             {section.imageDescription}
           </div>
         </div>

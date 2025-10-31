@@ -91,15 +91,7 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({
-        size,
-        padding,
-        glass,
-        height,
-        border,
-        shadow,
-        hover,
-      })} ${className}`}
+      className={`${cardVariants({ size, padding, glass, height, border, shadow, hover, })} ${className}`}
       style={{
         ...style,
         // Force visibility with inline styles

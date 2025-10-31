@@ -89,7 +89,7 @@ export default function WordPressServicesPage() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-4xl"
           >
-            <h2 className="text-2xl md:text-3xl font-semibold text-white">
+            <h2 className="text-white">
               Provides comprehensive website maintenance, including regular
               updates, security scans, performance optimization, and technical
               support.
@@ -105,7 +105,7 @@ export default function WordPressServicesPage() {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="mb-16"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 className="text-center mb-12">
           The Full Maintenance Action Plan 🎯
         </h2>
 
@@ -122,13 +122,13 @@ export default function WordPressServicesPage() {
               style={{ minHeight: "auto" }}
             >
               <div className="flex items-start gap-4">
-                <div className="text-3xl flex-shrink-0">{item.icon}</div>
+                <div className="flex-shrink-0">{item.icon}</div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                  <p className="text-[color:var(--color-muted)] text-sm mb-2">
+                  <h3 className="mb-2">{item.title}</h3>
+                  <p className="mb-2">
                     {item.description}
                   </p>
-                  <p className="text-[color:var(--color-muted)] text-xs opacity-80">
+                  <p className="opacity-80">
                     {item.details}
                   </p>
                 </div>
@@ -146,7 +146,7 @@ export default function WordPressServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 className="text-center mb-12">
           Monthly Costs
         </h2>
 
@@ -159,48 +159,48 @@ export default function WordPressServicesPage() {
             border="thin"
             className="flex flex-col"
           >
-            <h3 className="text-2xl font-bold mb-6">The Action Plan</h3>
+            <h3 className="mb-6">The Action Plan</h3>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">
+                <span className="">
                   Three hours of site changes and consulting monthly
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">99.9% website uptime</span>
+                <span className="">99.9% website uptime</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">
+                <span className="">
                   Monthly security scans & vulnerability testing
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Plugin/theme updates</span>
+                <span className="">Plugin/theme updates</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Daily WordPress offsite backups</span>
+                <span className="">Daily WordPress offsite backups</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Fix broken links and images</span>
+                <span className="">Fix broken links and images</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Resolve errors and conflicts</span>
+                <span className="">Resolve errors and conflicts</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Performance optimization</span>
+                <span className="">Performance optimization</span>
               </li>
             </ul>
 
             <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
-              <div className="text-3xl font-bold text-accent mb-6">
+              <div className="text-accent mb-6">
                 $200 / month
               </div>
               <Button asChild variant="accent" size="lg" className="w-full">
@@ -217,48 +217,48 @@ export default function WordPressServicesPage() {
             border="thin"
             className="flex flex-col"
           >
-            <h3 className="text-2xl font-bold mb-6">
+            <h3 className="mb-6">
               The Action Plan (With SEO)
             </h3>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Everything in the basic plan</span>
+                <span className="">Everything in the basic plan</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Quarterly SEO Reviews</span>
+                <span className="">Quarterly SEO Reviews</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">SEO improvements to meta tags</span>
+                <span className="">SEO improvements to meta tags</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Page-level content optimization</span>
+                <span className="">Page-level content optimization</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">
+                <span className="">
                   Keyword research and implementation
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Competitor analysis</span>
+                <span className="">Competitor analysis</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Search ranking monitoring</span>
+                <span className="">Search ranking monitoring</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="text-sm">Analytics reporting</span>
+                <span className="">Analytics reporting</span>
               </li>
             </ul>
 
             <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
-              <div className="text-3xl font-bold text-accent mb-6">
+              <div className="text-accent mb-6">
                 $250 / month
               </div>
               <Button asChild variant="accent" size="lg" className="w-full">
@@ -277,7 +277,7 @@ export default function WordPressServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 className="text-center mb-12">
           Present and Past WordPress Clients
         </h2>
         <ClientSliderBox size="page-full" delay={0} />
@@ -292,7 +292,7 @@ export default function WordPressServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        <h2 className="text-center mb-12">
           Contact Us to Get Started
         </h2>
 
@@ -306,48 +306,48 @@ export default function WordPressServicesPage() {
           <form className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block mb-2">
                   First Name *
                 </label>
                 <input
                   type="text"
                   required
-                  className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] text-[color:var(--color-ink)]"
+                  className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block mb-2">
                   Last Name *
                 </label>
                 <input
                   type="text"
                   required
-                  className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] text-[color:var(--color-ink)]"
+                  className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Email *</label>
+              <label className="block mb-2">Email *</label>
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] text-[color:var(--color-ink)]"
+                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block mb-2">
                 Phone Number
               </label>
               <input
                 type="tel"
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] text-[color:var(--color-ink)]"
+                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block mb-2">
                 Choose An Action Plan
               </label>
               <div className="space-y-2">
@@ -358,7 +358,7 @@ export default function WordPressServicesPage() {
                     value="basic"
                     className="text-accent"
                   />
-                  <span className="text-sm">The Action Plan</span>
+                  <span className="">The Action Plan</span>
                 </label>
                 <label className="flex items-center gap-2">
                   <input
@@ -367,26 +367,26 @@ export default function WordPressServicesPage() {
                     value="seo"
                     className="text-accent"
                   />
-                  <span className="text-sm">The Action Plan (With SEO)</span>
+                  <span className="">The Action Plan (With SEO)</span>
                 </label>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Website</label>
+              <label className="block mb-2">Website</label>
               <input
                 type="url"
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] text-[color:var(--color-ink)]"
+                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block mb-2">
                 Additional Info
               </label>
               <textarea
                 rows={4}
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] text-[color:var(--color-ink)] resize-none"
+                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] resize-none"
               ></textarea>
             </div>
 

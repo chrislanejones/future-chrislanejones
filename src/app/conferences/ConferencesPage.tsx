@@ -93,16 +93,14 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
 
             {/* Conference Info */}
             <div className="flex-1 p-5 flex flex-col">
-              <h2 className="h3 font-semibold text-ink tracking-tight group-hover:text-accent transition-colors">
+              <h2 className="text-ink tracking-tight group-hover:text-accent transition-colors">
                 {c.name} {c.year}
               </h2>
-              <p className="text-sm text-ink/70 mt-1">
+              <p className="text-ink mt-1">
                 {[c.city, c.venue].filter(Boolean).join(" • ")}
               </p>
               {c.summary && (
-                <p className="p text-ink/80 mt-3 line-clamp-3">
-                  {c.summary}
-                </p>
+                <p className="text-ink mt-3 line-clamp-3">{c.summary}</p>
               )}
 
               {/* Button at bottom */}

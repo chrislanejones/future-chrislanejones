@@ -126,7 +126,7 @@ export default function ContactForm() {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+                className="block mb-2"
               >
                 Name *
               </label>
@@ -140,7 +140,7 @@ export default function ContactForm() {
                 placeholder="John Doe"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                <p className="mt-1 text-red-500">{errors.name}</p>
               )}
             </div>
 
@@ -148,7 +148,7 @@ export default function ContactForm() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+                className="block mb-2"
               >
                 Email *
               </label>
@@ -162,7 +162,7 @@ export default function ContactForm() {
                 placeholder="john@example.com"
               />
               {errors.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                <p className="mt-1 text-red-500">{errors.email}</p>
               )}
             </div>
 
@@ -170,10 +170,10 @@ export default function ContactForm() {
             <div>
               <label
                 htmlFor="phone"
-                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+                className="block mb-2"
               >
                 Phone Number{" "}
-                <span className="text-[color:var(--color-muted)]">
+                <span className="">
                   (Optional)
                 </span>
               </label>
@@ -187,7 +187,7 @@ export default function ContactForm() {
                 placeholder="+1 (555) 123-4567"
               />
               {errors.phone && (
-                <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                <p className="mt-1 text-red-500">{errors.phone}</p>
               )}
             </div>
 
@@ -195,7 +195,7 @@ export default function ContactForm() {
             <div>
               <label
                 htmlFor="message"
-                className="block text-sm font-medium text-[color:var(--color-foreground)] mb-2"
+                className="block mb-2"
               >
                 Message *
               </label>
@@ -209,9 +209,9 @@ export default function ContactForm() {
                 placeholder="Tell me about your project or inquiry..."
               />
               {errors.message && (
-                <p className="mt-1 text-sm text-red-500">{errors.message}</p>
+                <p className="mt-1 text-red-500">{errors.message}</p>
               )}
-              <p className="mt-1 text-xs text-[color:var(--color-muted)]">
+              <p className="mt-1">
                 {formData.message.length} characters
               </p>
             </div>
@@ -243,10 +243,10 @@ export default function ContactForm() {
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-2 text-[color:var(--color-accent)]"
+                  className="flex items-center gap-2"
                 >
                   <CheckCircle className="w-5 h-5" />
-                  <span className="text-sm">Message sent successfully!</span>
+                  <span className="">Message sent successfully!</span>
                 </motion.div>
               )}
 
@@ -257,7 +257,7 @@ export default function ContactForm() {
                   className="flex items-center gap-2 text-red-500"
                 >
                   <AlertCircle className="w-5 h-5" />
-                  <span className="text-sm">
+                  <span className="">
                     Failed to send message. Please try again.
                   </span>
                 </motion.div>
@@ -275,7 +275,7 @@ export default function ContactForm() {
         viewport={{ once: true }}
         className="mt-12 text-center"
       >
-        <p className="text-[color:var(--color-muted)] text-sm">
+        <p className="">
           I typically respond within 24-48 hours during business days.
         </p>
       </motion.div>

@@ -71,8 +71,8 @@ function LogoCard({ variant, index }: { variant: LogoVariant; index: number }) {
 
         {/* Content */}
         <div className="p-6 flex-1 flex flex-col">
-          <h3 className="text-xl font-bold mb-3">{variant.title}</h3>
-          <p className="text-muted leading-relaxed text-sm">
+          <h3 className="mb-3">{variant.title}</h3>
+          <p className="text-muted leading-relaxed">
             {variant.description}
           </p>
         </div>
