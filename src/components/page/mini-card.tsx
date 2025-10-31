@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { Calendar } from "lucide-react";
 
 interface MiniCardProps {
   title: string;
@@ -11,6 +9,16 @@ interface MiniCardProps {
   slug: string;
   createdAt: number;
   onClick?: () => void;
+}
+
+function getDaysAgo(timestamp: number): string {
+  const now = Date.now();
+  const diffInMs = now - timestamp;
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInDays === 0) return "today";
+  if (diffInDays === 1) return "1 day ago";
+  return `${diffInDays} days ago`;
 }
 
 export default function MiniCard({
@@ -25,25 +33,14 @@ export default function MiniCard({
     <Link
       href={`/blog/${slug}`}
       onClick={onClick}
-      className="group flex items-start gap-3 relative transition-all duration-300 opacity-90 hover:opacity-100 bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3 border border-transparent hover:border-accent"
+      className="group flex flex-col items-center justify-center relative transition-all duration-300 opacity-90 hover:opacity-100 bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] rounded-lg p-8 border-1 border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow w-full min-h-[80px]"
     >
-      {coverImage && (
-        <div className="relative w-16 h-16 flex-shrink-0 rounded-md overflow-hidden">
-          <Image
-            src={coverImage}
-            alt={title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-200"
-            sizes="64px"
-          />
-        </div>
-      )}
-
-      <div className="flex-1 min-w-0">
-        <p className=" text-ink group-hover:text-accent transition-colors">
+      <div className="flex-1 text-center">
+        <h4 className="text-ink group-hover:text-accent transition-colors">
           {title}
-        </p>
+        </h4>
       </div>
+      <p className="text-muted mt-2">created {getDaysAgo(createdAt)}</p>
     </Link>
   );
 }

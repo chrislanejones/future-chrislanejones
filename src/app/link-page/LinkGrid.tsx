@@ -46,24 +46,22 @@ export default function LinkGrid() {
         delay={0.1}
         className="text-center"
       >
-        <div className="grid grid-cols-[80px_1fr] gap-4 items-center mb-6">
+        <div className="flex flex-col items-center gap-4">
           <Image
             alt="Chris Lane Jones"
-            width={80}
-            height={80}
-            className="h-20 w-20 rounded-2xl ring-2 ring-white/5 object-cover"
+            width={120}
+            height={120}
+            className="h-30 w-30 rounded-2xl ring-2 ring-white/5 object-cover"
             src="/Professional-Photo-of-Chris-Lane-Jones.webp"
           />
-          <div className="flex flex-col justify-center text-left">
-            <h1 className="">
-              UX/UI Web Design and Development
-            </h1>
-          </div>
+          <h1 className="">
+            UX/UI Web Design and Development
+          </h1>
+          <h2 className="">
+            I Consult, Design, and Develop Web Interfaces for Businesses and
+            Government Agencies.
+          </h2>
         </div>
-        <h2 className="">
-          I Consult, Design, and Develop Web Interfaces for Businesses and
-          Government Agencies.
-        </h2>
       </Card>
 
       {/* Card 2: Social Links */}

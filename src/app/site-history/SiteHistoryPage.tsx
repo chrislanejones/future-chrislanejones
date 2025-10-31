@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
-import { Badge } from "@/components/ui/badge";
+// REPLACE Badge import with the helper:
+import { ImagePill } from "@/components/ui/image-pill";
 import { FullWidthLayout } from "@/components/page/layout";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
@@ -81,7 +82,6 @@ const siteVersions: SiteVersion[] = [
 
 // Browser-style link component matching the browser-tabs aesthetic
 function BrowserLink({ label, url }: { label: string; url: string }) {
-  // Extract domain for display
   const domain = new URL(url).hostname.replace("www.", "");
 
   return (
@@ -93,7 +93,6 @@ function BrowserLink({ label, url }: { label: string; url: string }) {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      {/* Favicon placeholder */}
       <div className="flex-shrink-0 w-4 h-4 rounded-sm bg-gradient-to-br from-accent/20 to-accent/10 flex items-center justify-center">
         <svg
           className="w-2.5 h-2.5 text-accent"
@@ -110,7 +109,6 @@ function BrowserLink({ label, url }: { label: string; url: string }) {
         </svg>
       </div>
 
-      {/* Link content */}
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium text-[color:var(--color-ink)] truncate group-hover:text-accent transition-colors">
           {label}
@@ -120,7 +118,6 @@ function BrowserLink({ label, url }: { label: string; url: string }) {
         </div>
       </div>
 
-      {/* External link icon */}
       <svg
         className="flex-shrink-0 w-4 h-4 text-[color:var(--color-muted)] group-hover:text-accent transition-colors"
         fill="none"
@@ -170,7 +167,6 @@ function SiteVersionCard({
           {version.description}
         </p>
 
-        {/* Browser-style links section */}
         {version.links && version.links.length > 0 && (
           <div className="mt-auto pt-6 border-t border-[color:var(--color-border)]">
             <h3 className="text-sm font-semibold text-[color:var(--color-ink)] mb-3">
@@ -200,31 +196,28 @@ function SiteVersionCard({
           sizes="(max-width: 768px) 100vw, 60vw"
           priority={index === 0}
         />
-        <Badge
+
+        {/* Text pill over image (now consistent across themes) */}
+        <ImagePill
           variant={
-            [
-              "blue",
-              "green",
-              "purple",
-              "yellow",
-              "pink",
-              "cyan",
-              "orange",
-              "red",
-            ][index % 8] as
-              | "blue"
-              | "green"
-              | "purple"
-              | "yellow"
-              | "pink"
-              | "cyan"
-              | "orange"
-              | "red"
+            (
+              [
+                "blue",
+                "green",
+                "purple",
+                "yellow",
+                "pink",
+                "cyan",
+                "orange",
+                "red",
+              ] as const
+            )[index % 8]
           }
-          className="absolute bottom-4 right-4 px-3 py-1.5 backdrop-blur-sm shadow-lg"
+          // If you prefer a single look everywhere, use: variant="dark"
+          className="backdrop-blur-sm"
         >
           {version.imageDescription}
-        </Badge>
+        </ImagePill>
       </div>
     </Card>
   );

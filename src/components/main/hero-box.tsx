@@ -81,10 +81,10 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>
-          <p className="p text-ink max-w-prose">
+          {/* <p className="p text-ink max-w-prose">
             Building digital experiences with React and WordPress – one summit
             at a time. 🏔️
-          </p>
+          </p> */}
         </div>
 
         {/* Buttons pinned to bottom-left */}

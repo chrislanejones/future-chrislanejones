@@ -138,7 +138,9 @@ export default function Footer() {
               <div className="grid place-content-center">
                 <SiteLogo />
               </div>
-              <span className="whitespace-nowrap">Chris Lane Jones</span>
+              <span className="whitespace-nowrap site-title">
+                Chris Lane Jones
+              </span>
             </Link>
           </div>
 

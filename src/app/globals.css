@@ -278,6 +278,12 @@ html.dark .footer-hills .hill-fore {
   }
 
   /* Typography scale utilities */
+  .site-title {
+    font-size: var(--step-2);
+    line-height: 1.2;
+    font-weight: var(--weight-semibold);
+  }
+
   h1,
   .h1 {
     font-size: var(--step-4);

@@ -38,8 +38,8 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
       className="overflow-hidden flex flex-col"
     >
       <div className="relative flex-1 min-h-[200px]">
-        {/* Top center: Blog posts */}
-        <div className="absolute inset-0 flex items-center justify-center p-4">
+        {/* Blog posts with space-evenly */}
+        <div className="absolute inset-0 flex flex-col items-center justify-evenly gap-4 p-3">
           {!posts ? (
             <div className="flex justify-center py-8">
               <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
@@ -49,7 +49,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
               No blog posts yet. Check back soon!
             </p>
           ) : (
-            <div className="flex flex-col gap-3 items-stretch w-full max-w-2xl">
+            <>
               {recentPosts.map((post) => (
                 <MiniCard
                   key={post._id}
@@ -60,25 +60,25 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
                   createdAt={post.createdAt}
                 />
               ))}
-            </div>
+            </>
           )}
         </div>
+      </div>
 
-        {/* Bottom row: Title left, Button right */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-          <h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
-          <Button
-            variant="neutral"
-            size="icon"
-            round
-            aria-label="View all blog posts"
-            asChild
-          >
-            <Link href="/blog">
-              <StickyNote size={20} className="text-ink" />
-            </Link>
-          </Button>
-        </div>
+      {/* Bottom section - same height as Photo Gallery */}
+      <div className="p-6 flex items-center justify-between">
+        <h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
+        <Button
+          variant="neutral"
+          size="icon"
+          round
+          aria-label="View all blog posts"
+          asChild
+        >
+          <Link href="/blog">
+            <StickyNote size={20} className="text-ink" />
+          </Link>
+        </Button>
       </div>
     </Card>
   );

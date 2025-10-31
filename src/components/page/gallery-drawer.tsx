@@ -78,9 +78,7 @@ const Photo = ({
 
       {/* White description area at bottom like a real Polaroid */}
       <div className="px-2.5 py-2 h-12 flex items-center justify-center">
-        <p className="text-gray-800 text-center leading-tight">
-          {description}
-        </p>
+        <p className="text-gray-800 text-center leading-tight">{description}</p>
       </div>
     </motion.button>
   );
@@ -346,7 +344,7 @@ export default function GalleryDrawer({
         <div className="mx-auto w-full max-w-7xl">
           <DrawerHeader>
             <DrawerTitle className="text-center">
-              {title}
+              <h3>{title}</h3>
             </DrawerTitle>
             <DrawerDescription className="text-center">
               {description}
