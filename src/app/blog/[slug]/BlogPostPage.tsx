@@ -194,7 +194,7 @@ export default function BlogPostPage({
             <div className="mb-8">
               <Button
                 onClick={handleLike}
-                variant={userLikeStatus?.liked ? "default" : "outline"}
+                variant={userLikeStatus?.liked ? "base" : "outline"}
                 size="lg"
                 className="gap-2"
               >

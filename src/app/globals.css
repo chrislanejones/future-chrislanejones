@@ -22,12 +22,16 @@
   --focus-ring: 2px solid var(--color-accent-alt);
 
   /* fluid typography */
-  --step--1: clamp(0.88rem, 0.84rem + 0.21vw, 1rem);
-  --step-0: clamp(1rem, 0.94rem + 0.32vw, 1.125rem);
-  --step-1: clamp(1.15rem, 1.08rem + 0.4vw, 1.35rem); /* smaller h4 */
-  --step-2: clamp(1.35rem, 1.18rem + 0.7vw, 1.62rem); /* smaller h3 */
-  --step-3: clamp(1.6rem, 1.3rem + 1.3vw, 1.95rem); /* smaller h2 */
-  --step-4: clamp(2rem, 1.45rem + 2.3vw, 2.5rem); /* smaller h1 */
+  --step--1: clamp(0.82rem, 0.8rem + 0.18vw, 0.95rem); /* small text */
+  --step-0: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem); /* base paragraph */
+  --step-1: clamp(1.1rem, 1rem + 0.35vw, 1.25rem); /* smaller h4 */
+  --step-2: clamp(1.25rem, 1.1rem + 0.55vw, 1.45rem); /* smaller h3 */
+  --step-3: clamp(1.45rem, 1.2rem + 1vw, 1.75rem); /* smaller h2 */
+  --step-4: clamp(2rem, 1.45rem + 2.3vw, 2.5rem); /* h1 stays same */
+  --weight-regular: 400;
+  --weight-demibold: 600;
+  --weight-bold: 700;
+  --weight-black: 900;
 }
 
 html.dark {
@@ -98,166 +102,154 @@ body {
 }
 
 /* ================================
-   FOOTER MOUNTAINS – LAYERED
+   FOOTER MOUNTAINS – ENHANCED VERSION
    ================================ */
 
 .footer-hills {
   position: absolute;
   inset: 0;
   bottom: 0;
-  height: 72%;
-  z-index: 0;
+  height: 75%;
   overflow: hidden;
+  z-index: 0;
   pointer-events: none;
 }
 
-/* BACK RANGE: distant cool ridge */
+/* BACK RANGE – distant blue haze */
 .footer-hills::before {
   content: "";
   position: absolute;
   inset: auto 0 0 0;
-  height: 65%;
+  height: 60%;
   background:
-    linear-gradient(to top, rgba(36, 99, 235, 0.12), transparent 45%),
-    linear-gradient(180deg, rgba(96, 165, 250, 0.1), rgba(59, 130, 246, 0.1));
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-accent-alt) 12%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.08));
   clip-path: polygon(
     0% 100%,
-    0% 68%,
-    6% 66%,
-    12% 70%,
-    18% 63%,
-    24% 69%,
-    32% 62%,
-    42% 66%,
-    52% 60%,
-    60% 68%,
-    70% 62%,
-    78% 65%,
-    88% 61%,
-    94% 64%,
-    100% 60%,
+    0% 70%,
+    5% 68%,
+    10% 72%,
+    18% 65%,
+    26% 70%,
+    34% 64%,
+    45% 68%,
+    54% 63%,
+    62% 69%,
+    72% 64%,
+    80% 68%,
+    88% 63%,
+    94% 67%,
+    100% 64%,
     100% 100%
   );
   transform: translateY(10px);
-  filter: blur(0.2px);
+  filter: blur(0.3px);
+  opacity: 0.9;
 }
 
-/* MID RANGE: green mountains with snowcaps */
-.footer-hills .hill-2 {
+/* MID RANGE – green ridges with subtle snow */
+.footer-hills .hill-mid {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 58%;
+  height: 65%;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--color-accent) 90%, white 10%) 0%,
-    color-mix(in srgb, var(--color-accent) 65%, black 10%) 100%
+    color-mix(in srgb, var(--color-accent) 85%, white 5%) 0%,
+    color-mix(in srgb, var(--color-accent) 60%, black 15%) 100%
   );
   clip-path: polygon(
     0% 100%,
-    0% 72%,
-    8% 66%,
-    15% 72%,
-    22% 61%,
-    30% 70%,
-    38% 58%,
-    48% 68%,
-    60% 56%,
-    72% 68%,
-    82% 60%,
-    90% 66%,
-    100% 62%,
+    0% 75%,
+    6% 68%,
+    14% 74%,
+    20% 63%,
+    30% 72%,
+    38% 62%,
+    46% 70%,
+    55% 61%,
+    64% 69%,
+    74% 63%,
+    82% 68%,
+    90% 64%,
+    96% 67%,
+    100% 65%,
     100% 100%
   );
-  transform: translateY(4px);
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.05) inset;
+  transform: translateY(6px);
 }
-.footer-hills .hill-2::after {
-  /* snowcaps along select peaks */
+.footer-hills .hill-mid::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
     radial-gradient(
-      20px 10px at 22% 43%,
+      18px 10px at 22% 47%,
       rgba(255, 255, 255, 0.7),
       transparent 60%
     ),
     radial-gradient(
-      22px 12px at 38% 40%,
+      20px 12px at 42% 44%,
       rgba(255, 255, 255, 0.7),
       transparent 60%
     ),
     radial-gradient(
-      18px 10px at 60% 38%,
+      18px 10px at 68% 40%,
       rgba(255, 255, 255, 0.7),
       transparent 60%
     ),
     radial-gradient(
-      18px 10px at 82% 42%,
+      16px 9px at 85% 43%,
       rgba(255, 255, 255, 0.7),
       transparent 60%
     );
   mix-blend-mode: screen;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-/* FOREGROUND: rounded foothills for depth */
-.footer-hills .hill-3 {
-  position: absolute;
-  bottom: 0;
-  left: 12%;
-  width: 380px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--color-accent) 85%, white 8%) 0%,
-    color-mix(in srgb, var(--color-accent) 55%, black 10%) 75%
-  );
-  box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.06) inset;
-}
-
-.footer-hills .hill-1 {
+/* FOREGROUND – soft foothills wrapping bottom */
+.footer-hills .hill-fore {
   position: absolute;
   bottom: -6px;
-  right: 8%;
-  width: 320px;
-  height: 120px;
+  left: 10%;
+  width: 420px;
+  height: 160px;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    color-mix(in srgb, var(--color-accent) 80%, white 6%) 0%,
-    color-mix(in srgb, var(--color-accent) 50%, black 12%) 75%
+    color-mix(in srgb, var(--color-accent) 90%, white 8%) 0%,
+    color-mix(in srgb, var(--color-accent) 50%, black 10%) 75%
   );
-  box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.06) inset;
+  box-shadow:
+    0 -12px 30px rgba(0, 0, 0, 0.05) inset,
+    0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.footer-hills .hill-fore.right {
+  left: auto;
+  right: 8%;
+  width: 360px;
+  height: 140px;
 }
 
-/* Dark mode tuning */
+/* DARK MODE – cooler tint & subtle dimming */
 html.dark .footer-hills::before {
   background:
-    linear-gradient(to top, rgba(96, 165, 250, 0.12), transparent 45%),
-    linear-gradient(180deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.1));
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-accent-alt) 8%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));
 }
-html.dark .footer-hills .hill-2,
-html.dark .footer-hills .hill-3,
-html.dark .footer-hills .hill-1 {
-  filter: brightness(0.95) saturate(0.95);
-}
-
-/* subtle breathing bob */
-@keyframes breathe {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
-}
-.footer-hills + .relative .text-ink > svg,
-.footer-hills + .relative .text-ink > svg {
-  animation: breathe 4.5s ease-in-out infinite;
+html.dark .footer-hills .hill-mid,
+html.dark .footer-hills .hill-fore {
+  filter: brightness(0.92) saturate(0.95);
 }
 
 /* --- Utilities & components (no :root edits) --- */
@@ -315,7 +307,8 @@ html.dark .footer-hills .hill-1 {
     font-weight: var(--weight-regular);
   }
 
-  p {
+  p,
+  .p {
     font-size: var(--step-0);
     line-height: 1.6;
     font-weight: var(--weight-regular);

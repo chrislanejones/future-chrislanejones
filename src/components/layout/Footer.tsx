@@ -120,9 +120,9 @@ export default function Footer() {
   return (
     <motion.footer className="relative site-container pt-5 pb-10 overflow-hidden">
       <div className="footer-hills">
-        <div className="hill-1"></div>
-        <div className="hill-2"></div>
-        <div className="hill-3"></div>
+        <div className="hill-mid"></div>
+        <div className="hill-fore"></div>
+        <div className="hill-fore right"></div>
       </div>
 
       {/* Bighorn Sheep */}
@@ -173,9 +173,9 @@ export default function Footer() {
               key={section.title}
               className={`justify-self-end text-right ${index === 2 ? "col-span-2 md:col-span-1" : ""}`}
             >
-              <span className="mb-4 block whitespace-nowrap text-foreground">
+              <h3 className="mb-4 block whitespace-nowrap text-foreground">
                 {section.title}
-              </span>
+              </h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li className="nav-link" key={link.href}>
