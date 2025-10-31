@@ -40,10 +40,7 @@ export default function Header() {
         </a>
       </div>
 
-      <motion.header
-        className="site-container pt-10 pb-6"
-        role="banner"
-      >
+      <motion.header className="site-container pt-10 pb-6" role="banner">
         <nav
           id="main-navigation"
           className="flex items-center gap-4"
@@ -58,7 +55,7 @@ export default function Header() {
             <div className="grid place-content-center">
               <SiteLogo />
             </div>
-            <span className="whitespace-nowrap">
+            <span className="whitespace-nowrap site-title">
               Chris Lane Jones
             </span>
           </Link>
@@ -242,9 +239,7 @@ export default function Header() {
 
                   {/* Mobile Social Links */}
                   <div className="pt-6 border-t border-white/10 space-y-3">
-                    <h2 className="text-muted px-4 mb-3">
-                      Social Links
-                    </h2>
+                    <h2 className="text-muted px-4 mb-3">Social Links</h2>
                     {socialLinks.map((social) => (
                       <Button
                         key={social.href}

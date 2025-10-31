@@ -1,6 +1,6 @@
+// src/components/ui/badge.tsx
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
@@ -8,6 +8,7 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
+        // keep your base shadcn-like variants
         default:
           "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
         secondary:
@@ -15,19 +16,19 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
         outline: "text-foreground",
-        // Color group variants with dark mode support
-        blue: "bg-[rgba(59,130,246,0.15)] border-[rgba(59,130,246,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(59,130,246,0.25)] dark:border-[rgba(59,130,246,0.5)]",
-        red: "bg-[rgba(239,68,68,0.15)] border-[rgba(239,68,68,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(239,68,68,0.25)] dark:border-[rgba(239,68,68,0.5)]",
-        yellow:
-          "bg-[rgba(234,179,8,0.15)] border-[rgba(234,179,8,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(234,179,8,0.25)] dark:border-[rgba(234,179,8,0.5)]",
-        green:
-          "bg-[rgba(34,197,94,0.15)] border-[rgba(34,197,94,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(34,197,94,0.25)] dark:border-[rgba(34,197,94,0.5)]",
-        pink: "bg-[rgba(236,72,153,0.15)] border-[rgba(236,72,153,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(236,72,153,0.25)] dark:border-[rgba(236,72,153,0.5)]",
-        purple:
-          "bg-[rgba(168,85,247,0.15)] border-[rgba(168,85,247,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(168,85,247,0.25)] dark:border-[rgba(168,85,247,0.5)]",
-        cyan: "bg-[rgba(6,182,212,0.15)] border-[rgba(6,182,212,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(6,182,212,0.25)] dark:border-[rgba(6,182,212,0.5)]",
-        orange:
-          "bg-[rgba(249,115,22,0.15)] border-[rgba(249,115,22,0.3)] text-[color:var(--color-ink)] dark:bg-[rgba(249,115,22,0.25)] dark:border-[rgba(249,115,22,0.5)]",
+
+        // SOLID, MODE-INDEPENDENT COLOR BADGES (same in light/dark)
+        blue: "bg-[#3b82f6] text-white border-[#3b82f6]",
+        red: "bg-[#ef4444] text-white border-[#ef4444]",
+        yellow: "bg-[#eab308] text-white border-[#eab308]",
+        green: "bg-[#22c55e] text-white border-[#22c55e]",
+        pink: "bg-[#ec4899] text-white border-[#ec4899]",
+        purple: "bg-[#a855f7] text-white border-[#a855f7]",
+        cyan: "bg-[#06b6d4] text-white border-[#06b6d4]",
+        orange: "bg-[#f97316] text-white border-[#f97316]",
+
+        // Optional neutral pill for overlays where you want a single look
+        dark: "bg-[#0f172a] text-white border-[#0f172a]", // slate-900
       },
     },
     defaultVariants: {

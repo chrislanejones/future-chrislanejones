@@ -201,16 +201,9 @@ export default function Musicplayerbox({
       </div>
 
       <div className="p-6">
-        <h3 className="text-ink tracking-tight">
-          {isPlaying
-            ? "Now Playing"
-            : isLoaded
-              ? "Ready to Play"
-              : "Loading..."}
-        </h3>
-        <p className="text-ink">
+        <h3 className="text-ink">
           {currentTrack.artist} – {currentTrack.title}
-        </p>
+        </h3>
       </div>
     </Card>
   );

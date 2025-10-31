@@ -160,7 +160,7 @@ export default function Techstackbox({
       </div>
 
       <div className="p-3">
-        <h3 className=" text-ink tracking-tight mb-3">Current AI Tools</h3>
+        <h3 className=" text-ink tracking-tight mb-3">Current AI Tools 🤖</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {aiTools.map((tool) => (
             <IconBlock key={tool.name} label={tool.name}>
