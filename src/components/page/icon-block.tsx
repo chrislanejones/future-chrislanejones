@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 interface IconBlockProps {
   children: React.ReactNode;
@@ -13,47 +13,28 @@ export default function IconBlock({
   label,
   className = "",
 }: IconBlockProps) {
-  const [isClicked, setIsClicked] = useState(false);
-
-  const handleClick = () => {
-    setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 1000); // Reset after animation
-  };
-
   return (
     <div
-      className={`group relative flex flex-col items-center gap-2 p-3 rounded-xl bg-[color:var(--color-muted-accent)] transition-all duration-300 cursor-pointer tabindex="0" border-1 border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow focus:outline-none focus:ring-2 focus:ring-accent focus:ring-opacity-50 before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-br before:from-white/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 ${className}`}
+      className={`group flex flex-col items-center justify-center
+        rounded-lg border border-transparent
+        bg-[color:var(--color-base)]
+        hover:bg-[color:var(--color-muted-accent)]
+        hover:border-[color:var(--color-accent)]
+        hover:shadow-glow
+        transition-all duration-300 cursor-pointer
+        overflow-hidden aspect-square
+        ${className}`}
       tabIndex={0}
-      onClick={handleClick}
     >
-      {/* Animated border effect */}
-      {isClicked && (
-        <div className="absolute -inset-0.5 rounded-xl pointer-events-none overflow-hidden">
-          <div
-            className="absolute -left-1/4 -top-1/4 h-[150%] w-[150%]"
-            style={{
-              background:
-                "conic-gradient(rgba(34, 197, 94, 0) 0deg, rgba(34, 197, 94, 1) 0deg, transparent 40deg)",
-              animation: "border-spin 1s linear",
-            }}
-          ></div>
+      {/* inner icon centered */}
+      <div className="flex flex-col items-center justify-center h-full w-full p-3">
+        <div className="flex items-center justify-center flex-1">
+          {children}
         </div>
-      )}
-
-      <style jsx>{`
-        @keyframes border-spin {
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-
-      <div className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors relative z-10">
-        {children}
+        <span className="text-center text-xs text-[color:var(--color-ink)] mt-2 leading-tight">
+          {label}
+        </span>
       </div>
-      <span className="text-center relative z-10">
-        {label}
-      </span>
     </div>
   );
 }

@@ -119,7 +119,7 @@ export default function Techstackbox({
       shadow="soft"
       border="thin"
       delay={delay}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-3 h-auto min-h-0"
     >
       <div className="p-3">
         <h3 className="text-ink tracking-tight mb-3">Tech I Love 💖</h3>
