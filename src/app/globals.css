@@ -441,11 +441,34 @@ html.dark .footer-hills .hill-fore {
   filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
 }
 
+.speech-bubble--compact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* prevent row stretching; bubble sizes to content */
+  width: 100%;
+  color: #fff; /* white text in light */
+  min-height: 280px;
+}
+html.dark .speech-bubble--compact {
+  color: #fff; /* white text in dark */
+}
+.speech-bubble--compact * {
+  color: inherit; /* force inner text/links to white */
+}
+
+/* When compact is present, neutralize the 80px grid from base class */
+.speech-bubble-container.speech-bubble--compact {
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  padding: 1rem 1.25rem; /* comfy but not tall */
+}
+
 .speech-bubble-container::after {
   content: "";
   position: absolute;
   bottom: -12px;
-  left: 10%;
+  left: 7%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
@@ -458,7 +481,7 @@ html.dark .footer-hills .hill-fore {
   content: "";
   position: absolute;
   bottom: -13px;
-  left: 10%;
+  left: 7%;
   transform: translateX(-50%);
   width: 0;
   height: 0;

@@ -22,9 +22,6 @@ type ItemGroupProps = {
 
 interface IconSliderProps {
   items: SliderItem[];
-  itemsPerGroup?: number;
-  gridCols?: 2 | 3 | 4 | 6;
-  gridRows?: 1 | 2 | 3;
   title?: string;
   showNavigation?: boolean;
   showPagination?: boolean;
@@ -32,79 +29,71 @@ interface IconSliderProps {
   className?: string;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                Item  Group                                */
+/* -------------------------------------------------------------------------- */
+
 const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
-  ({ items, direction, isMobile, variant }, ref) => {
-    // Determine image filter classes based on variant
-    const getImageClasses = () => {
-      if (variant === "no-filter") {
-        return "object-contain w-full h-full max-w-[180px] max-h-[126px] transition-all duration-300";
-      }
-      return `
-        object-contain w-full h-full max-w-[180px] max-h-[126px]
-        transition-all duration-300
-        brightness-0 dark:brightness-0 dark:invert
-        group-hover:filter-none
-      `;
-    };
+  ({ items, direction }, ref) => {
+    const getImageClasses = () => `
+      object-contain
+      w-auto h-20 sm:h-24 lg:h-28
+      opacity-90 hover:opacity-100
+      transition-all duration-300
+      grayscale contrast-110 brightness-[0.95]
+      dark:invert
+    `;
 
     return (
       <motion.div
         ref={ref}
-        className={`absolute inset-0 grid ${ isMobile ? "grid-cols-2 grid-rows-2" : "grid-cols-3 grid-rows-2" } gap-6 p-4`}
-        initial={{
-          opacity: 0,
-        }}
+        className={`
+          absolute inset-0
+          grid gap-6 p-4
+          grid-cols-1 grid-rows-2          /* mobile: 1×2 */
+          sm:grid-cols-2 sm:grid-rows-2    /* tablet: 2×2 */
+          lg:grid-cols-4 lg:grid-rows-2    /* desktop: 4×2 */
+        `}
+        initial={{ opacity: 0 }}
         animate={{
           opacity: 1,
-          transition: {
-            duration: 0.3,
-            ease: "easeOut",
-          },
+          transition: { duration: 0.3, ease: "easeOut" },
         }}
         exit={{
           opacity: 0,
-          transition: {
-            duration: 0.2,
-            ease: "easeIn",
-          },
+          transition: { duration: 0.2, ease: "easeIn" },
         }}
       >
-        {items.map((item: SliderItem, index: number) => {
-          // Skip empty slots
-          if (!item.name || !item.logo) {
-            return (
-              <div
-                key={`empty-${index}`}
-                className="flex items-center justify-center"
-              />
-            );
-          }
-
-          return (
+        {items.map((item, i) =>
+          !item.name || !item.logo ? (
+            <div key={`empty-${i}`} />
+          ) : (
             <motion.a
-              key={`${item.name}-${index}`}
+              key={`${item.name}-${i}`}
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center relative transition-all duration-300 opacity-90 hover:opacity-100 bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] rounded-lg p-3 border-1 border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow"
+              className="group flex items-center justify-center rounded-lg bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] p-4 transition-all duration-300 border border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow"
               whileHover={{ scale: 1.05 }}
-              initial={{ opacity: 1, scale: 0.9 }}
+              initial={{ opacity: 1, scale: 0.95 }}
               animate={{
                 scale: 1,
-                transition: { duration: 0.5, ease: "easeOut" },
+                transition: { duration: 0.45, ease: "easeOut" },
               }}
             >
               <Image
                 src={item.logo}
                 alt={`${item.name} logo`}
-                width={180}
-                height={126}
+                width={200}
+                height={120}
                 className={getImageClasses()}
-                sizes="160px"
+                sizes="(max-width: 640px) 100vw,
+                       (max-width: 1024px) 50vw,
+                       25vw"
               />
             </motion.a>
-          );
-        })}
+          )
+        )}
       </motion.div>
     );
   }
@@ -112,11 +101,12 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
 
 ItemGroup.displayName = "ItemGroup";
 
+/* -------------------------------------------------------------------------- */
+/*                                Icon Slider                                */
+/* -------------------------------------------------------------------------- */
+
 export default function IconSlider({
   items,
-  itemsPerGroup = 6,
-  gridCols = 3,
-  gridRows = 2,
   title,
   showNavigation = true,
   showPagination = true,
@@ -125,54 +115,48 @@ export default function IconSlider({
 }: IconSliderProps) {
   const [selectedGroup, setSelectedGroup] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
-  const [isMobile, setIsMobile] = useState(false);
+  const [itemsPerView, setItemsPerView] = useState(8);
 
-  // Detect mobile viewport
+  // responsive grouping
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 640)
+        setItemsPerView(2); // mobile: 1×2
+      else if (w < 1024)
+        setItemsPerView(4); // tablet: 2×2
+      else setItemsPerView(8); // desktop: 4×2
     };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    return () => window.removeEventListener("resize", checkMobile);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Adjust items per group based on mobile
-  const effectiveItemsPerGroup = isMobile ? 4 : itemsPerGroup;
-
-  // Create groups
+  /* ---------------------------- group calculation --------------------------- */
   const itemGroups: SliderItem[][] = [];
-  for (let i = 0; i < items.length; i += effectiveItemsPerGroup) {
-    const group = items.slice(i, i + effectiveItemsPerGroup);
-    // Pad group with empty slots if needed
-    while (group.length < effectiveItemsPerGroup) {
-      group.push({
-        name: "",
-        logo: "",
-        url: "#",
-      });
-    }
+  for (let i = 0; i < items.length; i += itemsPerView) {
+    const group = items.slice(i, i + itemsPerView);
+    while (group.length < itemsPerView)
+      group.push({ name: "", logo: "", url: "#" });
     itemGroups.push(group);
   }
 
+  /* ---------------------------- navigation logic ---------------------------- */
   function setSlide(newDirection: 1 | -1) {
-    const nextGroup = wrap(0, itemGroups.length, selectedGroup + newDirection);
-    setSelectedGroup(nextGroup);
+    const next = wrap(0, itemGroups.length, selectedGroup + newDirection);
+    setSelectedGroup(next);
     setDirection(newDirection);
   }
 
   const shouldShowNavigation = showNavigation && itemGroups.length > 1;
   const shouldShowPagination = showPagination && itemGroups.length > 1;
   const currentItems =
-    itemGroups[selectedGroup] || items.slice(0, effectiveItemsPerGroup);
+    itemGroups[selectedGroup] || items.slice(0, itemsPerView);
 
+  /* ---------------------------------- render --------------------------------- */
   return (
     <div className={className}>
-      {title && (
-        <h2 className="text-center mb-4">{title}</h2>
-      )}
+      {title && <h2 className="text-center mb-4">{title}</h2>}
 
       <div className="flex items-center justify-between gap-4">
         {/* Left Arrow */}
@@ -190,13 +174,13 @@ export default function IconSlider({
           <div className="w-10" />
         )}
 
-        <div className="flex-1 relative h-80 overflow-hidden">
+        <div className="flex-1 relative h-[30rem] md:h-[32rem] overflow-hidden">
           <AnimatePresence custom={direction} initial={false} mode="wait">
             <ItemGroup
               key={selectedGroup}
               items={currentItems}
               direction={direction}
-              isMobile={isMobile}
+              isMobile={false}
               variant={variant}
             />
           </AnimatePresence>
@@ -221,15 +205,19 @@ export default function IconSlider({
       {/* Pagination dots */}
       {shouldShowPagination && (
         <div className="flex justify-center gap-2 mt-4">
-          {itemGroups.map((_, index) => (
+          {itemGroups.map((_, i) => (
             <button
-              key={index}
+              key={i}
               onClick={() => {
-                setDirection(index > selectedGroup ? 1 : -1);
-                setSelectedGroup(index);
+                setDirection(i > selectedGroup ? 1 : -1);
+                setSelectedGroup(i);
               }}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${ index === selectedGroup ? "bg-ink scale-110" : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70" }`}
-              aria-label={`Go to slide ${index + 1}`}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                i === selectedGroup
+                  ? "bg-ink scale-110"
+                  : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
@@ -238,7 +226,10 @@ export default function IconSlider({
   );
 }
 
-// Icons
+/* -------------------------------------------------------------------------- */
+/*                                   Icons                                   */
+/* -------------------------------------------------------------------------- */
+
 const iconsProps: SVGProps<SVGSVGElement> = {
   xmlns: "http://www.w3.org/2000/svg",
   width: "24",
