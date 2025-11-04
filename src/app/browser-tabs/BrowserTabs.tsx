@@ -6,11 +6,9 @@ import Banner from "@/components/page/banner";
 import BrowserCard from "@/components/page/browser-card";
 
 export default function BrowserTabs() {
-  // Fetch all links and categories from Convex
   const allLinks = useQuery(api.browserLinks.getAll) ?? [];
   const categories = useQuery(api.browserLinks.getCategories) ?? [];
 
-  // Group links by category
   const linkCategories = categories.map((cat) => ({
     title: cat.category,
     color: cat.color as
@@ -33,7 +31,6 @@ export default function BrowserTabs() {
       })),
   }));
 
-  // Show loading state
   if (!allLinks.length) {
     return (
       <main className="site-container py-12">
@@ -44,8 +41,8 @@ export default function BrowserTabs() {
         />
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#4ade80] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="">Loading links...</p>
+            <div className="w-16 h-16 border-4 border-[#4ade80] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p>Loading links...</p>
           </div>
         </div>
       </main>
@@ -60,8 +57,8 @@ export default function BrowserTabs() {
         description="A curated collection of useful resources, tools, and inspiration that I keep coming back to."
       />
 
-      {/* Link Categories Grid - Responsive 1/2/3 columns */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid of BrowserCards (no top row of badges) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
         {linkCategories.map((category, categoryIndex) => (
           <BrowserCard
             key={category.title}

@@ -111,7 +111,7 @@ export default function BlogPage() {
                   <div className="mt-auto">
                     <Button
                       asChild
-                      variant="accent"
+                      variant="neutral"
                       size="sm"
                       className="w-full"
                     >

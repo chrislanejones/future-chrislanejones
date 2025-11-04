@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   Drawer,
@@ -37,7 +37,10 @@ interface GalleryDrawerProps {
   animationDelay?: number;
 }
 
-// Photo component - styled as polaroid
+/* -------------------------------------------------------------------------- */
+/*                                   Photo                                   */
+/* -------------------------------------------------------------------------- */
+
 const Photo = ({
   width = 300,
   height = 300,
@@ -46,45 +49,43 @@ const Photo = ({
   direction,
   description,
   onClick,
-}: PhotoProps) => {
-  return (
-    <motion.button
-      className="relative bg-white shadow-xl cursor-pointer transform-gpu focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
-      style={{
-        width: width + 20,
-        height: height + 60,
-      }}
-      onClick={onClick}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      aria-label={`View ${description} - click to bring to front`}
-    >
-      {/* Photo area */}
-      <div className="p-2.5 pb-0">
-        <div
-          className="relative overflow-hidden"
-          style={{ width: width - 5, height: height - 40 }}
-        >
-          <Image
-            src={src}
-            alt={alt}
-            width={width}
-            height={height}
-            className="object-cover rounded-sm"
-            sizes={`${width}px`}
-          />
-        </div>
+}: PhotoProps) => (
+  <motion.button
+    className="relative bg-white shadow-xl cursor-pointer transform-gpu focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+    style={{
+      width: width + 20,
+      height: height + 60,
+    }}
+    onClick={onClick}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    aria-label={`View ${description}`}
+  >
+    <div className="p-2.5 pb-0">
+      <div
+        className="relative overflow-hidden"
+        style={{ width: width - 5, height: height - 40 }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          className="object-cover rounded-sm"
+          sizes={`${width}px`}
+        />
       </div>
+    </div>
+    <div className="px-2.5 py-2 h-12 flex items-center justify-center">
+      <p className="text-gray-800 text-center leading-tight">{description}</p>
+    </div>
+  </motion.button>
+);
 
-      {/* White description area at bottom like a real Polaroid */}
-      <div className="px-2.5 py-2 h-12 flex items-center justify-center">
-        <p className="text-gray-800 text-center leading-tight">{description}</p>
-      </div>
-    </motion.button>
-  );
-};
+/* -------------------------------------------------------------------------- */
+/*                              Photo Gallery View                           */
+/* -------------------------------------------------------------------------- */
 
-// Photo Gallery component
 const PhotoGallery = ({
   photos,
   animationDelay = 0.5,
@@ -96,62 +97,58 @@ const PhotoGallery = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [clickedPhotoId, setClickedPhotoId] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // Check if mobile view
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    const visibilityTimer = setTimeout(() => {
-      setIsVisible(true);
-    }, animationDelay * 1000);
-
-    const animationTimer = setTimeout(
-      () => {
-        setIsLoaded(true);
-      },
+    const visTimer = setTimeout(
+      () => setIsVisible(true),
+      animationDelay * 1000
+    );
+    const loadTimer = setTimeout(
+      () => setIsLoaded(true),
       (animationDelay + 0.4) * 1000
     );
 
     return () => {
+      clearTimeout(visTimer);
+      clearTimeout(loadTimer);
       window.removeEventListener("resize", checkMobile);
-      clearTimeout(visibilityTimer);
-      clearTimeout(animationTimer);
     };
   }, [animationDelay]);
 
-  // Handle photo click to bring to front
   const handlePhotoClick = (photoId: number) => {
-    // Toggle selection - if already clicked, unclick; otherwise click it
-    if (clickedPhotoId === photoId) {
-      setClickedPhotoId(null);
-    } else {
-      setClickedPhotoId(photoId);
-    }
+    setClickedPhotoId(clickedPhotoId === photoId ? null : photoId);
   };
+
+  const showNext = () => setCurrentIndex((i) => (i + 1) % photos.length);
+  const showPrev = () =>
+    setCurrentIndex((i) => (i - 1 + photos.length) % photos.length);
+
+  /* ---------------------- Photo positions for desktop ---------------------- */
+  const positions = [...Array(Math.min(photos.length, 5)).keys()].map((i) => ({
+    id: i + 1,
+    order: i,
+    x: ["-400px", "-200px", "0px", "200px", "400px"][i] || "0px",
+    y: ["15px", "32px", "8px", "22px", "44px"][i] || "0px",
+    rotate: [-8, 5, -3, 7, -5][i] || 0,
+    zIndex: 50 - i * 10,
+    direction: (i % 2 === 0 ? "left" : "right") as Direction,
+  }));
 
   const containerVariants = {
     hidden: { opacity: 1 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
     },
   };
 
   const photoVariants = {
-    hidden: () => ({
-      x: 0,
-      y: 0,
-      rotate: 0,
-      scale: 1,
-    }),
+    hidden: () => ({ x: 0, y: 0, rotate: 0, scale: 1 }),
     visible: (custom: any) => ({
       x: custom.x,
       y: custom.y,
@@ -161,59 +158,91 @@ const PhotoGallery = ({
         type: "spring",
         stiffness: 70,
         damping: 12,
-        mass: 1,
         delay: custom.order * 0.15,
       },
     }),
   };
 
-  // Mobile positions for 2x2 grid (showing all photos) - no rotation for clean grid
-  const getMobilePositions = () => {
-    const positions = [];
-    const maxPhotos = Math.min(photos.length, 4); // Show max 4 on mobile
+  /* -------------------------------------------------------------------------- */
+  /*                                    View                                   */
+  /* -------------------------------------------------------------------------- */
 
-    for (let i = 0; i < maxPhotos; i++) {
-      const row = Math.floor(i / 2);
-      const col = i % 2;
-      positions.push({
-        id: i + 1,
-        order: i,
-        x: col === 0 ? "-90px" : "90px",
-        y: row === 0 ? "-90px" : "90px",
-        rotate: 0,
-        zIndex: 50 - i * 10,
-        direction: "left" as Direction,
-      });
-    }
-    return positions;
-  };
+  if (isMobile) {
+    // Mobile slider with finger swipe gesture
+    const swipeConfidenceThreshold = 80; // minimum drag px before it switches
+    const swipePower = (offset: number, velocity: number) =>
+      Math.abs(offset) * velocity;
 
-  // Desktop positions - scattered layout
-  const getDesktopPositions = () => {
-    const positions = [];
-    const maxPhotos = Math.min(photos.length, 5); // Show max 5 on desktop
-    const xPositions = ["-400px", "-200px", "0px", "200px", "400px"];
-    const yPositions = ["15px", "32px", "8px", "22px", "44px"];
-    const rotations = [-8, 5, -3, 7, -5];
+    const handleDragEnd = (_: any, { offset, velocity }: any) => {
+      const swipe = swipePower(offset.x, velocity.x);
 
-    for (let i = 0; i < maxPhotos; i++) {
-      positions.push({
-        id: i + 1,
-        order: i,
-        x: xPositions[i] || "0px",
-        y: yPositions[i] || "0px",
-        rotate: rotations[i] || 0,
-        zIndex: 50 - i * 10,
-        direction: (i % 2 === 0 ? "left" : "right") as Direction,
-      });
-    }
-    return positions;
-  };
+      if (swipe < -swipeConfidenceThreshold) {
+        // Swipe left → Next photo
+        setCurrentIndex((i) => (i + 1) % photos.length);
+      } else if (swipe > swipeConfidenceThreshold) {
+        // Swipe right → Previous photo
+        setCurrentIndex((i) => (i - 1 + photos.length) % photos.length);
+      }
+    };
 
-  const photoPositions = isMobile
-    ? getMobilePositions()
-    : getDesktopPositions();
+    return (
+      <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden touch-pan-y">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={photos[currentIndex].src}
+            className="absolute inset-0 flex items-center justify-center p-3"
+            initial={{ opacity: 0, x: 70 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -70 }}
+            transition={{ duration: 0.35 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.8}
+            onDragEnd={handleDragEnd}
+          >
+            <Image
+              src={photos[currentIndex].src}
+              alt={photos[currentIndex].alt}
+              width={600}
+              height={600}
+              className="object-contain rounded-lg w-full h-auto max-h-[50vh] shadow-lg"
+            />
+          </motion.div>
+        </AnimatePresence>
 
+        {/* Description */}
+        <p className="absolute bottom-16 text-center text-sm px-4 text-[color:var(--color-ink)] w-full">
+          {photos[currentIndex].description}
+        </p>
+
+        {/* (Keep navigation buttons for accessibility) */}
+        <div className="absolute bottom-3 flex justify-center gap-6">
+          <Button
+            variant="neutral"
+            size="icon"
+            round
+            aria-label="Previous photo"
+            onClick={() =>
+              setCurrentIndex((i) => (i - 1 + photos.length) % photos.length)
+            }
+          >
+            ‹
+          </Button>
+          <Button
+            variant="neutral"
+            size="icon"
+            round
+            aria-label="Next photo"
+            onClick={() => setCurrentIndex((i) => (i + 1) % photos.length)}
+          >
+            ›
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop scattered polaroid layout
   return (
     <div className="relative flex h-[500px] w-full items-center justify-center">
       <motion.div
@@ -222,112 +251,89 @@ const PhotoGallery = ({
         animate={{ opacity: isVisible ? 1 : 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
-        {isMobile ? (
-          // Mobile: Simple 2x2 grid layout
-          <motion.div
-            className="grid grid-cols-2 gap-4 p-4"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isLoaded ? "visible" : "hidden"}
-          >
-            {photoPositions.map((position, index) => (
-              <motion.div
-                key={position.id}
-                variants={{
-                  hidden: { opacity: 0, scale: 0.8 },
-                  visible: {
-                    opacity: 1,
-                    scale: 1,
-                    transition: {
-                      delay: position.order * 0.15,
-                      duration: 0.5,
-                      ease: "easeOut",
-                    },
-                  },
-                }}
-                className={clickedPhotoId === position.id ? "z-50" : ""}
-              >
-                <Photo
-                  width={140}
-                  height={140}
-                  src={photos[index]?.src || ""}
-                  alt={photos[index]?.alt || ""}
-                  direction={position.direction}
-                  description={photos[index]?.description || ""}
-                  onClick={() => handlePhotoClick(position.id)}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        ) : (
-          // Desktop: Original scattered layout
-          <motion.div
-            className="relative flex w-full justify-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isLoaded ? "visible" : "hidden"}
-          >
-            <div className="relative h-[360px] w-[320px]">
-              {[...photoPositions].reverse().map((position, index) => {
-                const photoIndex = photoPositions.length - 1 - index;
-                return (
-                  <motion.div
-                    key={position.id}
-                    className="absolute left-0 top-0"
-                    style={{
-                      zIndex:
-                        clickedPhotoId === position.id ? 100 : position.zIndex,
-                    }}
-                    variants={photoVariants}
-                    custom={{
-                      x: position.x,
-                      y: position.y,
-                      rotate: position.rotate,
-                      order: position.order,
-                    }}
-                    animate={
-                      clickedPhotoId === position.id
-                        ? {
-                            x: position.x,
-                            y: position.y,
-                            rotate: 0,
-                            scale: 1.05,
-                            transition: {
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 30,
-                            },
-                          }
-                        : undefined
-                    }
-                  >
-                    <Photo
-                      width={300}
-                      height={300}
-                      src={photos[photoIndex]?.src || ""}
-                      alt={photos[photoIndex]?.alt || ""}
-                      direction={position.direction}
-                      description={photos[photoIndex]?.description || ""}
-                      onClick={() => handlePhotoClick(position.id)}
-                    />
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
+        <motion.div
+          className="relative flex w-full justify-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isLoaded ? "visible" : "hidden"}
+        >
+          <div className="relative h-[360px] w-[320px]">
+            {[...positions].reverse().map((position, index) => {
+              const photoIndex = positions.length - 1 - index;
+              const photo = photos[photoIndex];
+              return (
+                <motion.div
+                  key={position.id}
+                  className="absolute left-0 top-0"
+                  style={{
+                    zIndex:
+                      clickedPhotoId === position.id ? 100 : position.zIndex,
+                  }}
+                  variants={photoVariants}
+                  custom={{
+                    x: position.x,
+                    y: position.y,
+                    rotate: position.rotate,
+                    order: position.order,
+                  }}
+                  animate={
+                    clickedPhotoId === position.id
+                      ? {
+                          x: position.x,
+                          y: position.y,
+                          rotate: 0,
+                          scale: 1.05,
+                          transition: {
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 30,
+                          },
+                        }
+                      : undefined
+                  }
+                >
+                  <Photo
+                    width={300}
+                    height={300}
+                    src={photo?.src || ""}
+                    alt={photo?.alt || ""}
+                    direction={position.direction}
+                    description={photo?.description || ""}
+                    onClick={() => handlePhotoClick(position.id)}
+                  />
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );
 };
 
-// Main Gallery Drawer component
+/* -------------------------------------------------------------------------- */
+/*                                Gallery Drawer                              */
+/* -------------------------------------------------------------------------- */
+
 export default function GalleryDrawer({
   photos,
   title = "Gallery Drawer",
   description = "Click photos to bring them to the front",
   animationDelay = 0.2,
 }: GalleryDrawerProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const adjustedDescription = isMobile
+    ? "Swipe left or right to view the next photo"
+    : description;
+
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -340,6 +346,7 @@ export default function GalleryDrawer({
           <Images size={20} className="text-ink" />
         </Button>
       </DrawerTrigger>
+
       <DrawerContent className="h-[60vh]">
         <div className="mx-auto w-full max-w-7xl">
           <DrawerHeader>
@@ -347,9 +354,10 @@ export default function GalleryDrawer({
               <h3>{title}</h3>
             </DrawerTitle>
             <DrawerDescription className="text-center">
-              {description}
+              {adjustedDescription}
             </DrawerDescription>
           </DrawerHeader>
+
           <div className="px-4 pb-4 flex-1 overflow-hidden">
             <PhotoGallery photos={photos} animationDelay={animationDelay} />
           </div>

@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as blogPosts from "../blogPosts.js";
 import type * as browserLinks from "../browserLinks.js";
+import type * as careerTimeline from "../careerTimeline.js";
 import type * as contactMessages from "../contactMessages.js";
 import type * as http from "../http.js";
 import type * as seedBlogPosts from "../seedBlogPosts.js";
@@ -31,6 +32,7 @@ import type * as seo from "../seo.js";
 declare const fullApi: ApiFromModules<{
   blogPosts: typeof blogPosts;
   browserLinks: typeof browserLinks;
+  careerTimeline: typeof careerTimeline;
   contactMessages: typeof contactMessages;
   http: typeof http;
   seedBlogPosts: typeof seedBlogPosts;

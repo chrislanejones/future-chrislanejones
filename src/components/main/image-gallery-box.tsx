@@ -73,7 +73,6 @@ export default function ImageGalleryBox({
           <GalleryDrawer
             photos={photos}
             title="Gallery Drawer"
-            description="Pictures I found in random folders on my computer."
             animationDelay={0.2}
           />
         </div>

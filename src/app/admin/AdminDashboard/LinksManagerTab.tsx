@@ -41,6 +41,188 @@ interface LinkFormData {
   order: number;
 }
 
+// Extract LinkModal as separate component to prevent re-rendering issues
+const LinkModal = ({
+  show,
+  onClose,
+  title,
+  formData,
+  onFormChange,
+  onSave,
+  onAutoFill,
+}: {
+  show: boolean;
+  onClose: () => void;
+  title: string;
+  formData: LinkFormData;
+  onFormChange: (data: LinkFormData) => void;
+  onSave: () => void;
+  onAutoFill: () => void;
+}) => {
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-[#f3f4f6] font-bold">{title}</h3>
+          <button onClick={onClose} className="p-2 text-[#9ca3af] hover:text-[#f3f4f6] transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {/* URL */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">URL *</label>
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={formData.href}
+                onChange={(e) =>
+                  onFormChange({ ...formData, href: e.target.value })
+                }
+                placeholder="https://example.com"
+                className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+              />
+              <button
+                onClick={onAutoFill}
+                className="px-4 py-2 bg-[#1a1e24] text-[#f3f4f6] rounded-lg hover:bg-[#1f242b] transition-colors whitespace-nowrap"
+              >
+                Auto-fill
+              </button>
+            </div>
+          </div>
+
+          {/* Label */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">Label *</label>
+            <input
+              type="text"
+              value={formData.label}
+              onChange={(e) =>
+                onFormChange({ ...formData, label: e.target.value })
+              }
+              placeholder="My Awesome Site"
+              className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            />
+          </div>
+
+          {/* Domain */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">Domain *</label>
+            <input
+              type="text"
+              value={formData.domain}
+              onChange={(e) =>
+                onFormChange({ ...formData, domain: e.target.value })
+              }
+              placeholder="example.com"
+              className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            />
+          </div>
+
+          {/* Favicon */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">Favicon URL</label>
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={formData.favicon}
+                onChange={(e) =>
+                  onFormChange({ ...formData, favicon: e.target.value })
+                }
+                placeholder="https://example.com/favicon.ico"
+                className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+              />
+              {formData.favicon && (
+                <img
+                  src={formData.favicon}
+                  alt="favicon preview"
+                  className="w-8 h-8 rounded"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">Category *</label>
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) =>
+                onFormChange({ ...formData, category: e.target.value })
+              }
+              placeholder="Development Tools"
+              className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            />
+          </div>
+
+          {/* Color */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">Chrome Group Color *</label>
+            <div className="grid grid-cols-4 gap-2">
+              {CHROME_COLORS.map((color) => (
+                <button
+                  key={color.id}
+                  onClick={() =>
+                    onFormChange({ ...formData, color: color.id })
+                  }
+                  className={`${color.class} px-4 py-2 rounded-lg transition-all ${formData.color === color.id ? "ring-2 ring-[#4ade80] ring-offset-2 ring-offset-[#111418]" : "opacity-60 hover:opacity-100"}`}
+                >
+                  {color.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Order */}
+          <div>
+            <label className="block mb-2 text-[#f3f4f6] font-medium">Order</label>
+            <input
+              type="number"
+              value={formData.order}
+              onChange={(e) =>
+                onFormChange({
+                  ...formData,
+                  order: parseInt(e.target.value) || 0,
+                })
+              }
+              className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={onSave}
+            disabled={
+              !formData.href ||
+              !formData.label ||
+              !formData.domain ||
+              !formData.category
+            }
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Save className="w-4 h-4" />
+            Save Link
+          </button>
+          <button
+            onClick={onClose}
+            className="px-6 py-3 bg-[#1a1e24] text-[#f3f4f6] rounded-lg hover:bg-[#1f242b] transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LinksManagerTab = () => {
   const allLinks = useQuery(api.browserLinks.getAll) ?? [];
   const categories = useQuery(api.browserLinks.getCategories) ?? [];
@@ -206,229 +388,37 @@ const LinksManagerTab = () => {
     }
   };
 
-  const LinkModal = ({
-    show,
-    onClose,
-    title,
-  }: {
-    show: boolean;
-    onClose: () => void;
-    title: string;
-  }) => {
-    if (!show) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="">{title}</h3>
-            <button
-              onClick={onClose}
-              className="p-2 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {/* URL */}
-            <div>
-              <label className="block mb-2">
-                URL *
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="url"
-                  value={formData.href}
-                  onChange={(e) =>
-                    setFormData({ ...formData, href: e.target.value })
-                  }
-                  placeholder="https://example.com"
-                  className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-                />
-                <button
-                  onClick={handleAutoFill}
-                  className="px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-colors whitespace-nowrap"
-                >
-                  Auto-fill
-                </button>
-              </div>
-            </div>
-
-            {/* Label */}
-            <div>
-              <label className="block mb-2">
-                Label *
-              </label>
-              <input
-                type="text"
-                value={formData.label}
-                onChange={(e) =>
-                  setFormData({ ...formData, label: e.target.value })
-                }
-                placeholder="My Awesome Site"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-              />
-            </div>
-
-            {/* Domain */}
-            <div>
-              <label className="block mb-2">
-                Domain *
-              </label>
-              <input
-                type="text"
-                value={formData.domain}
-                onChange={(e) =>
-                  setFormData({ ...formData, domain: e.target.value })
-                }
-                placeholder="example.com"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-              />
-            </div>
-
-            {/* Favicon */}
-            <div>
-              <label className="block mb-2">
-                Favicon URL
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="url"
-                  value={formData.favicon}
-                  onChange={(e) =>
-                    setFormData({ ...formData, favicon: e.target.value })
-                  }
-                  placeholder="https://example.com/favicon.ico"
-                  className="flex-1 px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-                />
-                {formData.favicon && (
-                  <img
-                    src={formData.favicon}
-                    alt="favicon preview"
-                    className="w-8 h-8 rounded"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Category */}
-            <div>
-              <label className="block mb-2">
-                Category *
-              </label>
-              <input
-                type="text"
-                value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-                placeholder="Development Tools"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-              />
-            </div>
-
-            {/* Color */}
-            <div>
-              <label className="block mb-2">
-                Chrome Group Color *
-              </label>
-              <div className="grid grid-cols-4 gap-2">
-                {CHROME_COLORS.map((color) => (
-                  <button
-                    key={color.id}
-                    onClick={() =>
-                      setFormData({ ...formData, color: color.id })
-                    }
-                    className={`${color.class} px-4 py-2 rounded-lg transition-all ${ formData.color === color.id ? "ring-2 ring-[#4ade80] ring-offset-2 ring-offset-[#111418]" : "opacity-60 hover:opacity-100" }`}
-                  >
-                    {color.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Order */}
-            <div>
-              <label className="block mb-2">
-                Order
-              </label>
-              <input
-                type="number"
-                value={formData.order}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    order: parseInt(e.target.value) || 0,
-                  })
-                }
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-3 mt-6">
-            <button
-              onClick={handleSaveLink}
-              disabled={
-                !formData.href ||
-                !formData.label ||
-                !formData.domain ||
-                !formData.category
-              }
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Save className="w-4 h-4" />
-              Save Link
-            </button>
-            <button
-              onClick={onClose}
-              className="px-6 py-3 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="h-full flex flex-col bg-[#111418] border border-[#1f242b] rounded-2xl overflow-hidden">
       {/* Header */}
       <div className="bg-[#0b0d10] border-b border-[#1f242b] p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="">Links Manager</h1>
-            <p className="mt-1">
+            <h1 className="text-[#f3f4f6] font-bold">Links Manager</h1>
+            <p className="text-[#9ca3af] mt-1">
               {allLinks.length} total links • {categories.length} categories
             </p>
           </div>
           <div className="flex gap-2">
-            {allLinks.length === 0 && (
-              <button
-                onClick={handleSeedData}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
-              >
-                <Plus className="w-4 h-4" />
-                Seed Initial Data
-              </button>
-            )}
+            <button
+              onClick={handleSeedData}
+              className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-all font-medium"
+            >
+              <Plus className="w-4 h-4" />
+              {allLinks.length === 0 ? "Seed Initial Data" : "Reseed Data"}
+            </button>
           </div>
         </div>
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9ca3af]" />
           <input
             type="text"
             placeholder="Search links..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+            className="w-full pl-10 pr-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
           />
         </div>
       </div>
@@ -437,7 +427,7 @@ const LinksManagerTab = () => {
         {/* Categories Sidebar */}
         <div className="w-64 border-r border-[#1f242b] p-4 overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="">Categories</h2>
+            <h2 className="text-[#f3f4f6] font-semibold">Categories</h2>
           </div>
           <div className="space-y-1">
             {categories.map((cat) => {
@@ -451,17 +441,13 @@ const LinksManagerTab = () => {
                 <button
                   key={cat.category}
                   onClick={() => setSelectedCategory(cat.category)}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-all ${ selectedCategory === cat.category ? "bg-[#1a1e24] border border-[#4ade80]" : "hover:bg-[#1a1e24]" }`}
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-all ${selectedCategory === cat.category ? "bg-[#1a1e24] border border-[#4ade80]" : "hover:bg-[#1a1e24]"}`}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className={`w-3 h-3 rounded-full ${colorClass}`} />
-                    <span className="truncate">
-                      {cat.category}
-                    </span>
+                    <span className="truncate text-[#f3f4f6]">{cat.category}</span>
                   </div>
-                  <span className="">
-                    {linksInCategory.length} links
-                  </span>
+                  <span className="text-[#9ca3af]">{linksInCategory.length} links</span>
                 </button>
               );
             })}
@@ -473,13 +459,11 @@ const LinksManagerTab = () => {
           {selectedCategory && (
             <div className="p-4 border-b border-[#1f242b] bg-[#0b0d10]">
               <div className="flex items-center justify-between">
-                <h2 className="">
-                  {selectedCategory}
-                </h2>
+                <h2 className="text-[#f3f4f6] font-semibold">{selectedCategory}</h2>
                 <div className="flex gap-2">
                   <button
                     onClick={handleAddLink}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-all"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-all font-medium"
                   >
                     <Plus className="w-4 h-4" />
                     Add Link
@@ -497,8 +481,8 @@ const LinksManagerTab = () => {
 
           {searchedLinks.length === 0 ? (
             <div className="p-8 text-center">
-              <LinkIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No links found</p>
+              <LinkIcon className="w-12 h-12 mx-auto mb-3 text-[#9ca3af] opacity-50" />
+              <p className="text-[#9ca3af]">No links found</p>
             </div>
           ) : (
             <div className="p-4 grid gap-3">
@@ -521,36 +505,30 @@ const LinksManagerTab = () => {
                       )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="truncate">
-                            {link.label}
-                          </h3>
+                          <h3 className="truncate text-[#f3f4f6] font-medium">{link.label}</h3>
                           <a
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-shrink-0"
+                            className="flex-shrink-0 text-[#4ade80] hover:text-[#22c55e]"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         </div>
-                        <p className="truncate">
-                          {link.domain}
-                        </p>
-                        <p className="mt-1 truncate">
-                          {link.href}
-                        </p>
+                        <p className="truncate text-[#9ca3af]">{link.domain}</p>
+                        <p className="mt-1 truncate text-[#6b7280]">{link.href}</p>
                       </div>
                     </div>
                     <div className="flex gap-2 ml-4">
                       <button
                         onClick={() => handleEditLink(link)}
-                        className="p-2 hover:bg-[#4ade80]/10 rounded-lg transition-all"
+                        className="p-2 text-[#9ca3af] hover:text-[#4ade80] hover:bg-[#4ade80]/10 rounded-lg transition-all"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setShowDeleteConfirm(link._id)}
-                        className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                        className="p-2 text-[#9ca3af] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -560,19 +538,17 @@ const LinksManagerTab = () => {
                   {/* Delete Confirmation */}
                   {showDeleteConfirm === link._id && (
                     <div className="mt-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                      <p className="mb-3">
-                        Delete this link?
-                      </p>
+                      <p className="mb-3 text-[#f3f4f6]">Delete this link?</p>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleDeleteLink(link._id)}
-                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-all"
+                          className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-all font-medium"
                         >
                           Delete
                         </button>
                         <button
                           onClick={() => setShowDeleteConfirm(null)}
-                          className="px-3 py-1 bg-[#1a1e24] rounded hover:bg-[#1f242b] transition-all"
+                          className="px-3 py-1 bg-[#1a1e24] text-[#f3f4f6] rounded hover:bg-[#1f242b] transition-all"
                         >
                           Cancel
                         </button>
@@ -591,11 +567,19 @@ const LinksManagerTab = () => {
         show={showAddModal}
         onClose={() => setShowAddModal(false)}
         title="Add New Link"
+        formData={formData}
+        onFormChange={setFormData}
+        onSave={handleSaveLink}
+        onAutoFill={handleAutoFill}
       />
       <LinkModal
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
         title="Edit Link"
+        formData={formData}
+        onFormChange={setFormData}
+        onSave={handleSaveLink}
+        onAutoFill={handleAutoFill}
       />
 
       {/* Category Delete Confirmation */}
@@ -604,24 +588,22 @@ const LinksManagerTab = () => {
           <div className="bg-[#111418] border border-red-500/30 rounded-2xl p-6 max-w-md w-full mx-4">
             <div className="flex items-center gap-3 mb-4">
               <AlertCircle className="w-6 h-6 text-red-500" />
-              <h3 className="">
-                Delete Category?
-              </h3>
+              <h3 className="text-[#f3f4f6] font-bold">Delete Category?</h3>
             </div>
-            <p className="mb-6">
+            <p className="text-[#9ca3af] mb-6">
               This will delete all links in "{selectedCategory}". This action
               cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={handleDeleteCategory}
-                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all font-medium"
               >
                 Delete Category
               </button>
               <button
                 onClick={() => setShowCategoryDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 bg-[#1a1e24] rounded-lg hover:bg-[#1f242b] transition-all"
+                className="flex-1 px-4 py-2 bg-[#1a1e24] text-[#f3f4f6] rounded-lg hover:bg-[#1f242b] transition-all"
               >
                 Cancel
               </button>
@@ -634,14 +616,14 @@ const LinksManagerTab = () => {
       {saveStatus && (
         <div className="fixed bottom-6 right-6 z-50">
           <div
-            className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg ${ saveStatus === "success" ? "bg-[#4ade80] text-[#0b0d10]" : "bg-red-500 text-white" }`}
+            className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg font-medium ${saveStatus === "success" ? "bg-[#4ade80] text-[#0b0d10]" : "bg-red-500 text-white"}`}
           >
             {saveStatus === "success" ? (
               <CheckCircle className="w-5 h-5" />
             ) : (
               <AlertCircle className="w-5 h-5" />
             )}
-            <span className="">
+            <span>
               {saveStatus === "success" ? "Success!" : "Error occurred"}
             </span>
           </div>
