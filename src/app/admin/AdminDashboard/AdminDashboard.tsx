@@ -12,6 +12,9 @@ import {
   LogOut,
   MessageSquare,
   Link as LinkIcon,
+  Calendar,
+  PanelLeft,
+  Plus,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -20,6 +23,19 @@ import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import ContactMessagesTab from "./ContactMessagesTab";
 import LinksManagerTab from "./LinksManagerTab";
+import CareerTimelineTab from "./CareerTimelineTab";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 // SEO Character limits
 const SEO_LIMITS = {
@@ -58,8 +74,8 @@ const CharacterCounter = ({
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <span className="">{label}</span>
-        <span className={`${status.color}`}>
+        <span className="text-[#9ca3af]">{label}</span>
+        <span className={`${status.color} font-medium`}>
           {current}/{limits.max} - {status.message}
         </span>
       </div>
@@ -77,6 +93,7 @@ const SEOTab = () => {
   const pages = useQuery(api.seo.getAllSEO) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
   const addNewPage = useMutation(api.seo.updateSEO);
+  const seedSEOData = useMutation(api.seo.seedSEOData);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPagePath, setNewPagePath] = useState("");
@@ -154,13 +171,31 @@ const SEOTab = () => {
     (editedTitle !== selectedPage.title ||
       editedDescription !== selectedPage.description);
 
-  // Show loading state
+  const handleSeedData = async () => {
+    try {
+      await seedSEOData();
+      setSaveStatus("success");
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (error) {
+      console.error("Failed to seed SEO data:", error);
+      setSaveStatus("error");
+    }
+  };
+
+  // Show empty state
   if (!pages.length) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#4ade80] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="">Loading pages...</p>
+          <AlertCircle className="w-12 h-12 text-[#9ca3af] mx-auto mb-4" />
+          <p className="text-[#9ca3af] mb-4">No SEO pages yet.</p>
+          <button
+            onClick={handleSeedData}
+            className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium mx-auto"
+          >
+            <Plus className="w-4 h-4" />
+            Seed Initial Data
+          </button>
         </div>
       </div>
     );
@@ -174,22 +209,31 @@ const SEOTab = () => {
     <div className="flex gap-6 h-full">
       {/* Page List */}
       <div className="w-80 bg-[#111418] border border-[#1f242b] rounded-2xl p-4 flex flex-col">
-        <div className="mb-4 flex gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search pages..."
-              className="w-full pl-10 pr-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
-            />
+        <div className="mb-4 space-y-2">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search pages..."
+                className="w-full pl-10 pr-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+              />
+            </div>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors whitespace-nowrap font-medium"
+            >
+              + Add
+            </button>
           </div>
           <button
-            onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 bg-[#4ade80] rounded-lg hover:bg-[#22c55e] transition-colors whitespace-nowrap"
+            onClick={handleSeedData}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium"
           >
-            + Add
+            <Plus className="w-4 h-4" />
+            {pages.length === 0 ? "Seed Initial Data" : "Reseed Data"}
           </button>
         </div>
 
@@ -197,7 +241,7 @@ const SEOTab = () => {
         {showAddModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-md w-full mx-4">
-              <h3 className="mb-4">
+              <h3 className="mb-4 text-[#f3f4f6] font-bold">
                 Add New Page
               </h3>
               <input
@@ -205,7 +249,7 @@ const SEOTab = () => {
                 value={newPagePath}
                 onChange={(e) => setNewPagePath(e.target.value)}
                 placeholder="/new-page"
-                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80] mb-4"
+                className="w-full px-4 py-2 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80] mb-4"
               />
               <div className="flex gap-3">
                 <button
@@ -235,10 +279,10 @@ const SEOTab = () => {
               onClick={() => handlePageSelect(page)}
               className={`w-full text-left px-3 py-2 rounded-lg transition-all ${ selectedPage._id === page._id ? "bg-[#1a1e24] border border-[#4ade80]" : "bg-[#0b0d10] border border-[#1f242b] hover:border-[#4ade80]" }`}
             >
-              <div className="mb-1">
+              <div className="mb-1 text-[#4ade80] font-medium">
                 {page.path}
               </div>
-              <div className="truncate">
+              <div className="truncate text-[#f3f4f6]">
                 {page.title}
               </div>
             </button>
@@ -249,25 +293,25 @@ const SEOTab = () => {
       {/* Editor */}
       <div className="flex-1 bg-[#111418] border border-[#1f242b] rounded-2xl p-6 flex flex-col">
         <div className="mb-6">
-          <h2 className="mb-2">
+          <h2 className="mb-2 text-[#f3f4f6] font-bold">
             Edit SEO Metadata
           </h2>
-          <p className="">
-            Page: <span className="">{selectedPage.path}</span>
+          <p className="text-[#9ca3af]">
+            Page: <span className="text-[#4ade80] font-medium">{selectedPage.path}</span>
           </p>
         </div>
 
         <div className="flex-1 space-y-6 overflow-y-auto">
           {/* Title */}
           <div>
-            <label className="block mb-2">
+            <label className="block mb-2 text-[#f3f4f6] font-medium">
               Page Title
             </label>
             <input
               type="text"
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
-              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
+              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80]"
               placeholder="Enter page title..."
             />
             <div className="mt-3">
@@ -278,21 +322,21 @@ const SEOTab = () => {
               />
             </div>
             <div className="mt-3 p-3 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
-              <p className="mb-1">Google Preview:</p>
-              <p className="truncate">{editedTitle}</p>
+              <p className="mb-1 text-[#9ca3af] font-medium">Google Preview:</p>
+              <p className="truncate text-[#f3f4f6]">{editedTitle}</p>
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block mb-2">
+            <label className="block mb-2 text-[#f3f4f6] font-medium">
               Meta Description
             </label>
             <textarea
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
               rows={4}
-              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ade80] resize-none"
+              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80] resize-none"
               placeholder="Enter meta description..."
             />
             <div className="mt-3">
@@ -303,8 +347,8 @@ const SEOTab = () => {
               />
             </div>
             <div className="mt-3 p-3 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
-              <p className="mb-1">Google Preview:</p>
-              <p className="line-clamp-2">
+              <p className="mb-1 text-[#9ca3af] font-medium">Google Preview:</p>
+              <p className="line-clamp-2 text-[#f3f4f6]">
                 {editedDescription}
               </p>
             </div>
@@ -312,25 +356,25 @@ const SEOTab = () => {
 
           {/* SEO Tips */}
           <div className="p-4 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
-            <h3 className="mb-3">
+            <h3 className="mb-3 text-[#f3f4f6] font-semibold">
               SEO Best Practices
             </h3>
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Title: 30-60 characters (optimal: 50-60)</span>
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
+                <span className="text-[#9ca3af]">Title: 30-60 characters (optimal: 50-60)</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Description: 120-160 characters (optimal: 150-160)</span>
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
+                <span className="text-[#9ca3af]">Description: 120-160 characters (optimal: 150-160)</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Include primary keyword near the beginning</span>
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
+                <span className="text-[#9ca3af]">Include primary keyword near the beginning</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Make it compelling - this is your search result ad</span>
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
+                <span className="text-[#9ca3af]">Make it compelling - this is your search result ad</span>
               </li>
             </ul>
           </div>
@@ -341,14 +385,14 @@ const SEOTab = () => {
           <button
             onClick={handleSave}
             disabled={!hasChanges}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all ${ hasChanges ? "bg-[#4ade80] hover:bg-[#22c55e]" : "bg-[#1a1e24] cursor-not-allowed" }`}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-medium ${ hasChanges ? "bg-[#4ade80] text-[#0b0d10] hover:bg-[#22c55e]" : "bg-[#1a1e24] text-[#6b7280] cursor-not-allowed" }`}
           >
             <Save className="w-4 h-4" />
             Save Changes
           </button>
 
           {saveStatus === "success" && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 text-[#4ade80]">
               <CheckCircle className="w-4 h-4" />
               <span>Changes saved successfully!</span>
             </div>
@@ -370,10 +414,10 @@ const ComingSoonTab = ({ title }: { title: string }) => (
   <div className="flex items-center justify-center h-full bg-[#111418] border border-[#1f242b] rounded-2xl">
     <div className="text-center">
       <div className="w-16 h-16 bg-[#1a1e24] rounded-full flex items-center justify-center mx-auto mb-4">
-        <AlertCircle className="w-8 h-8" />
+        <AlertCircle className="w-8 h-8 text-[#4ade80]" />
       </div>
-      <h2 className="mb-2">{title}</h2>
-      <p className="">This feature is coming soon</p>
+      <h2 className="mb-2 text-[#f3f4f6] font-bold">{title}</h2>
+      <p className="text-[#9ca3af]">This feature is coming soon</p>
     </div>
   </div>
 );
@@ -393,60 +437,81 @@ const AdminDashboard = () => {
     { id: "seo", label: "SEO Manager", icon: FileText },
     { id: "media", label: "Media", icon: Image },
     { id: "links", label: "Links", icon: LinkIcon },
+    { id: "career-timeline", label: "Career Timeline", icon: Calendar },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
   return (
-    <div className="flex h-screen bg-[#0b0d10]">
-      {/* Sidebar */}
-      <div className="w-64 bg-[#111418] border-r border-[#1f242b] p-4 flex flex-col">
-        <div className="mb-8">
-          <h1 className="">Admin Dashboard</h1>
-          <p className="mt-1">Portfolio Manager</p>
-          {user && (
-            <p className="mt-2 truncate">
-              {user.primaryEmailAddress?.emailAddress}
-            </p>
-          )}
-        </div>
+    <SidebarProvider defaultOpen={true}>
+      <div className="dark flex h-screen w-full bg-[#0b0d10]">
+        {/* Sidebar */}
+        <Sidebar collapsible="icon" className="border-r border-[#1f242b]">
+          <SidebarHeader>
+            <div className="px-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+              <h1 className="font-bold text-[#f3f4f6]">Admin</h1>
+              <p className="text-[#9ca3af] mt-1">Portfolio Manager</p>
+              {user && (
+                <p className="text-[#9ca3af] mt-2 truncate">
+                  {user.primaryEmailAddress?.emailAddress}
+                </p>
+              )}
+            </div>
+          </SidebarHeader>
 
-        <nav className="flex-1 space-y-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${ activeTab === tab.id ? "bg-[#1a1e24] border border-[#4ade80]" : "text-[#9ca3af] hover:bg-[#1a1e24] hover:text-[#f3f4f6]" }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="">{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+          <SidebarContent>
+            <SidebarMenu>
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <SidebarMenuItem key={tab.id}>
+                    <SidebarMenuButton
+                      onClick={() => setActiveTab(tab.id)}
+                      isActive={activeTab === tab.id}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                        {tab.label}
+                      </span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarContent>
 
-        <div className="pt-4 border-t border-[#1f242b]">
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center gap-2 px-4 py-2 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </button>
-        </div>
+          <SidebarFooter>
+            <button
+              onClick={handleSignOut}
+              className="w-full flex items-center gap-2 px-4 py-2 rounded-md text-[#9ca3af] hover:bg-[#1a1e24] hover:text-[#f3f4f6] transition-colors"
+            >
+              <LogOut className="w-4 h-4 flex-shrink-0" />
+              <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                Sign Out
+              </span>
+            </button>
+          </SidebarFooter>
+        </Sidebar>
+
+        {/* Main Content */}
+        <SidebarInset className="flex-1">
+          <div className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b border-[#1f242b] bg-[#111418] px-4">
+            <SidebarTrigger className="text-[#f3f4f6]" />
+            <h2 className="font-semibold text-[#f3f4f6]">
+              {tabs.find((t) => t.id === activeTab)?.label}
+            </h2>
+          </div>
+          <div className="flex-1 p-6 overflow-auto">
+            {activeTab === "seo" && <SEOTab />}
+            {activeTab === "media" && <ComingSoonTab title="Media Manager" />}
+            {activeTab === "links" && <LinksManagerTab />}
+            {activeTab === "career-timeline" && <CareerTimelineTab />}
+            {activeTab === "messages" && <ContactMessagesTab />}
+            {activeTab === "settings" && <ComingSoonTab title="Settings" />}
+          </div>
+        </SidebarInset>
       </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 overflow-hidden">
-        {activeTab === "seo" && <SEOTab />}
-        {activeTab === "media" && <ComingSoonTab title="Media Manager" />}
-        {activeTab === "links" && <LinksManagerTab />}
-        {activeTab === "messages" && <ContactMessagesTab />}
-        {activeTab === "settings" && <ComingSoonTab title="Settings" />}
-      </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

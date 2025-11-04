@@ -8,9 +8,56 @@ import { FullWidthLayout } from "@/components/page/layout";
 import { Button } from "@/components/ui/button";
 import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
 import { timelineEvents } from "@/data/career-timeline";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import React from "react";
+import {
+  GraduationCap,
+  Video,
+  Star,
+  Lightbulb,
+  Mountain,
+  Home,
+  Users,
+  Code2,
+  Briefcase,
+  Award,
+  BookOpen,
+  Coffee,
+  Rocket,
+  Target,
+} from "lucide-react";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
+
+// Lucide icon mapping helper
+const iconMap: Record<string, React.ComponentType<any>> = {
+  // New Lucide icon names
+  GraduationCap,
+  Video,
+  Star,
+  Lightbulb,
+  Mountain,
+  Home,
+  Users,
+  Code2,
+  Briefcase,
+  Award,
+  BookOpen,
+  Coffee,
+  Rocket,
+  Target,
+  // Legacy icon names for backwards compatibility with static data
+  GradIcon: GraduationCap,
+  VideoIcon: Video,
+  StarIcon: Star,
+  BulbIcon: Lightbulb,
+  MountainsIcon: Mountain,
+  HomeIcon: Home,
+  MeetupIcon: Users,
+  ReactWPIcon: Code2,
+};
 
 const photos: GalleryPhoto[] = [
   {
@@ -41,6 +88,22 @@ const photos: GalleryPhoto[] = [
 ];
 
 function TimelineTrail() {
+  const convexEvents = useQuery(api.careerTimeline.getAllEvents);
+
+  // Fallback to static data if convex data is loading or empty
+  const events = convexEvents && convexEvents.length > 0
+    ? convexEvents.map(event => {
+        const IconComponent = iconMap[event.iconName] || iconMap["Star"];
+        return {
+          year: event.year,
+          title: event.title,
+          description: event.description,
+          location: event.location,
+          icon: React.createElement(IconComponent, { className: "w-6 h-6" }),
+        };
+      })
+    : timelineEvents;
+
   return (
     <div className="mb-12">
       <h2 className="mb-8 text-center">Career Journey</h2>
@@ -52,7 +115,7 @@ function TimelineTrail() {
 
         {/* Timeline events */}
         <div className="relative">
-          {timelineEvents.map((event, index) => {
+          {events.map((event, index) => {
             const isLeftSide = index % 2 === 0;
 
             return (

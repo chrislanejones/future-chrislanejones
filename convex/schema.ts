@@ -70,4 +70,17 @@ export default defineSchema({
     .index("by_parent", ["parentId"])
     .index("by_approved", ["approved"])
     .index("by_created", ["createdAt"]),
+
+  careerTimeline: defineTable({
+    year: v.string(),
+    title: v.string(),
+    description: v.string(),
+    location: v.optional(v.string()),
+    iconName: v.string(), // Store icon name as string (e.g., "GradIcon", "VideoIcon")
+    order: v.number(), // For sorting events
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_order", ["order"])
+    .index("by_created", ["createdAt"]),
 });

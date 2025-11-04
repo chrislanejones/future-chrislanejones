@@ -40,9 +40,6 @@ export default function ConferenceSliderBox({
     >
       <IconSlider
         items={conferenceItems}
-        itemsPerGroup={6}
-        gridCols={3}
-        gridRows={2}
         title="Tech Conferences Attended"
         showNavigation={true}
         showPagination={true}

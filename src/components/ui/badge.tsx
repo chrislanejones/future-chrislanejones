@@ -1,34 +1,73 @@
-// src/components/ui/badge.tsx
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
+/**
+ * Accessible Badge component
+ * Neutral gray background, colored outline border only
+ * – High contrast text across both light/dark modes
+ * – Optional colored focus ring
+ */
+
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  // shared base styles
+  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+    "transition-colors select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
   {
     variants: {
       variant: {
-        // keep your base shadcn-like variants
-        default:
-          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground",
+        default: `
+          bg-gray-100 dark:bg-gray-800
+          text-[color:var(--color-ink)]
+          border border-[color:var(--color-border)]
+          focus-visible:ring-[color:var(--color-accent)]
+        `,
 
-        // SOLID, MODE-INDEPENDENT COLOR BADGES (same in light/dark)
-        blue: "bg-[#3b82f6] text-white border-[#3b82f6]",
-        red: "bg-[#ef4444] text-white border-[#ef4444]",
-        yellow: "bg-[#eab308] text-white border-[#eab308]",
-        green: "bg-[#22c55e] text-white border-[#22c55e]",
-        pink: "bg-[#ec4899] text-white border-[#ec4899]",
-        purple: "bg-[#a855f7] text-white border-[#a855f7]",
-        cyan: "bg-[#06b6d4] text-white border-[#06b6d4]",
-        orange: "bg-[#f97316] text-white border-[#f97316]",
-
-        // Optional neutral pill for overlays where you want a single look
-        dark: "bg-[#0f172a] text-white border-[#0f172a]", // slate-900
+        blue: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#3b82f6]
+          focus-visible:ring-[#3b82f6]
+        `,
+        red: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#ef4444]
+          focus-visible:ring-[#ef4444]
+        `,
+        yellow: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#eab308]
+          focus-visible:ring-[#eab308]
+        `,
+        green: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#22c55e]
+          focus-visible:ring-[#22c55e]
+        `,
+        pink: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#ec4899]
+          focus-visible:ring-[#ec4899]
+        `,
+        purple: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#a855f7]
+          focus-visible:ring-[#a855f7]
+        `,
+        cyan: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#06b6d4]
+          focus-visible:ring-[#06b6d4]
+        `,
+        orange: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#f97316]
+          focus-visible:ring-[#f97316]
+        `,
+        dark: `
+          bg-gray-100 dark:bg-gray-800 text-[color:var(--color-ink)]
+          border border-[#0f172a]
+          focus-visible:ring-[#0f172a]
+        `,
       },
     },
     defaultVariants: {
@@ -38,13 +77,22 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, ...props }: BadgeProps) {
+/**
+ * High‑contrast accessible badge
+ */
+export function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <span
+      className={cn(
+        badgeVariants({ variant }),
+        "font-medium leading-none tracking-tight"
+      )}
+      {...props}
+    />
   );
 }
 
-export { Badge, badgeVariants };
+export { badgeVariants };

@@ -32,6 +32,16 @@
   --weight-demibold: 600;
   --weight-bold: 700;
   --weight-black: 900;
+
+  /* Sidebar variables */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #111827;
+  --sidebar-primary: #374151;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f4f6;
+  --sidebar-accent-foreground: #374151;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #9ca3af;
 }
 
 html.dark {
@@ -49,6 +59,16 @@ html.dark {
   --color-on-accent: #0b0d10; /* dark text on accent */
 
   --color-border: #1f242b;
+
+  /* Sidebar variables - dark mode */
+  --sidebar: #111418;
+  --sidebar-foreground: #f3f4f6;
+  --sidebar-primary: #4ade80;
+  --sidebar-primary-foreground: #0b0d10;
+  --sidebar-accent: #1a1e24;
+  --sidebar-accent-foreground: #f3f4f6;
+  --sidebar-border: #1f242b;
+  --sidebar-ring: #6b7280;
 }
 
 .dark {
@@ -66,6 +86,16 @@ html.dark {
   --color-on-accent: #0b0d10; /* dark text on accent */
 
   --color-border: #1f242b;
+
+  /* Sidebar variables - dark mode */
+  --sidebar: #111418;
+  --sidebar-foreground: #f3f4f6;
+  --sidebar-primary: #4ade80;
+  --sidebar-primary-foreground: #0b0d10;
+  --sidebar-accent: #1a1e24;
+  --sidebar-accent-foreground: #f3f4f6;
+  --sidebar-border: #1f242b;
+  --sidebar-ring: #6b7280;
 }
 
 html,
@@ -489,4 +519,40 @@ html.dark .speech-bubble--compact {
   border-right: 13px solid transparent;
   border-top: 13px solid #2f7d32;
   z-index: -1;
+}
+
+
+
+@layer base {
+  :root {
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
