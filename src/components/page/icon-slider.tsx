@@ -37,7 +37,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
   ({ items, direction }, ref) => {
     const getImageClasses = () => `
       object-contain
-      w-auto h-20 sm:h-24 lg:h-28
+      w-auto h-32 sm:h-40 lg:h-48
       opacity-90 hover:opacity-100
       transition-all duration-300
       grayscale contrast-110 brightness-[0.95]
@@ -73,7 +73,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center rounded-lg bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] p-4 transition-all duration-300 border border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow"
+              className="group flex items-center justify-center rounded-lg bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] p-2 transition-all duration-300 border border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 1, scale: 0.95 }}
               animate={{
@@ -84,8 +84,8 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
               <Image
                 src={item.logo}
                 alt={`${item.name} logo`}
-                width={200}
-                height={120}
+                width={300}
+                height={200}
                 className={getImageClasses()}
                 sizes="(max-width: 640px) 100vw,
                        (max-width: 1024px) 50vw,

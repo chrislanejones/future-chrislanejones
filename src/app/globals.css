@@ -521,7 +521,13 @@ html.dark .speech-bubble--compact {
   z-index: -1;
 }
 
-
+.image-overlay-text {
+  color: #ffffff; /* pure white readable on light images */
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); /* soft dark halo for contrast */
+  font-weight: 500;
+  border: none !important; /* remove borders/rings universally */
+  outline: none !important;
+}
 
 @layer base {
   :root {
@@ -545,8 +551,6 @@ html.dark .speech-bubble--compact {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
-
-
 
 @layer base {
   * {

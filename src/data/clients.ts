@@ -13,13 +13,13 @@ export const clients: Client[] = [
     url: "https://www.allianztravelinsurance.com/",
   },
   {
-    name: "BlueTriangle",
-    logo: "/client-icons/BlueTriangle-Logo-1.webp",
+    name: "Blue Triangle",
+    logo: "/client-icons/Blue-Triangle-Logo.webp",
     url: "https://bluetriangle.com/",
   },
   {
-    name: "Virginia IT Agency VITA",
-    logo: "/client-icons/Virginia-IT-Agency-VITA-Logo.webp",
+    name: "VITA",
+    logo: "/client-icons/VITA-Logo.webp",
     url: "https://www.vita.virginia.gov/",
   },
   {
@@ -43,13 +43,13 @@ export const clients: Client[] = [
     url: "https://asponte.com/",
   },
   {
-    name: "FDOT",
-    logo: "/client-icons/FDOT-Logo.webp",
+    name: "Florida Dept of Transportation",
+    logo: "/client-icons/Florida-Dept-of-Transportation-Logo.webp",
     url: "https://www.fdot.gov/",
   },
   {
     name: "AIS Network",
-    logo: "/client-icons/AIS-Network-Logo-V2.webp",
+    logo: "/client-icons/AIS-Network-Logo.webp",
     url: "https://aisn.net/",
   },
   {
@@ -63,13 +63,13 @@ export const clients: Client[] = [
     url: "https://transportation.gov/",
   },
   {
-    name: "Stubhub",
-    logo: "/client-icons/Stubhub-Logo.webp",
+    name: "StubHub",
+    logo: "/client-icons/StubHub-Logo.webp",
     url: "https://www.stubhub.com/",
   },
   {
-    name: "Governor of Virginia",
-    logo: "/client-icons/Governor-of-Virginia-Logo.webp",
+    name: "Gov of Virginia - Abigail Spanberger",
+    logo: "/client-icons/Gov-of-Virginia-Abigail Spanberger-Logo.webp",
     url: "https://www.governor.virginia.gov/",
   },
   {
@@ -79,7 +79,7 @@ export const clients: Client[] = [
   },
   {
     name: "Engage Marketing",
-    logo: "/client-icons/Engage-Marketing.webp",
+    logo: "/client-icons/Engage-Marketing-Logo.webp",
     url: "https://engagemarketing.biz/",
   },
   {
@@ -89,12 +89,22 @@ export const clients: Client[] = [
   },
   {
     name: "WorldStrides",
-    logo: "/client-icons/WorldStrides-Logo-1.webp",
+    logo: "/client-icons/WorldStrides-Logo.webp",
     url: "https://worldstrides.com/",
   },
   {
     name: "Azzly",
-    logo: "/client-icons/Azzly-Logo.webp",
+    logo: "/client-icons/AZZLY-Logo.webp",
     url: "https://azzly.com/",
+  },
+  {
+    name: "Alembic",
+    logo: "/client-icons/Alembic-Logo.webp",
+    url: "https://www.alembicllc.com/",
+  },
+  {
+    name: "Provision Partners",
+    logo: "/client-icons/Provision-Partners-Logo.webp",
+    url: "https://www.provisionpartners.com/",
   },
 ];
