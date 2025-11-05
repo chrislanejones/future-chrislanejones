@@ -192,7 +192,7 @@ const PhotoGallery = ({
     });
 
     return (
-      <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden touch-pan-y">
+      <div className="relative w-full h-[60vh] flex items-center justify-center overflow-hidden touch-pan-y">
         <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={photos[currentIndex].src}
@@ -269,7 +269,7 @@ const PhotoGallery = ({
 
   // Desktop scattered polaroid layout
   return (
-    <div className="relative flex h-[500px] w-full items-center justify-center">
+    <div className="relative flex h-[550px] w-full items-center justify-center">
       <motion.div
         className="relative mx-auto flex w-full max-w-7xl justify-center"
         initial={{ opacity: 0 }}
@@ -372,9 +372,9 @@ export default function GalleryDrawer({
         </Button>
       </DrawerTrigger>
 
-      <DrawerContent className="h-[60vh]">
+      <DrawerContent className="h-[67vh]">
         <div className="mx-auto w-full max-w-7xl">
-          <DrawerHeader>
+          <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center">
               <h3>{title}</h3>
             </DrawerTitle>
@@ -383,7 +383,7 @@ export default function GalleryDrawer({
             </DrawerDescription>
           </DrawerHeader>
 
-          <div className="px-4 pb-4 flex-1 overflow-hidden">
+          <div className="px-4 pb-4 pt-0 flex-1 overflow-hidden">
             <PhotoGallery photos={photos} animationDelay={animationDelay} />
           </div>
         </div>

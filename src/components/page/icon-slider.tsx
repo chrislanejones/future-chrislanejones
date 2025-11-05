@@ -35,15 +35,6 @@ interface IconSliderProps {
 
 const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
   ({ items, direction }, ref) => {
-    const getImageClasses = () => `
-      object-contain
-      w-auto h-32 sm:h-40 lg:h-48
-      opacity-90 hover:opacity-100
-      transition-all duration-300
-      grayscale contrast-110 brightness-[0.95]
-      dark:invert
-    `;
-
     return (
       <motion.div
         ref={ref}
@@ -86,7 +77,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
                 alt={`${item.name} logo`}
                 width={300}
                 height={200}
-                className={getImageClasses()}
+                className="client-logo object-contain w-auto h-32 sm:h-40 lg:h-48 opacity-90 group-hover:opacity-100 transition-all duration-300"
                 sizes="(max-width: 640px) 100vw,
                        (max-width: 1024px) 50vw,
                        25vw"
