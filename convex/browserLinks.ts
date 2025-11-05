@@ -2,6 +2,7 @@
 import { query, mutation, action, internalAction } from "./_generated/server";
 import { api } from "./_generated/api";
 import { v } from "convex/values";
+import { linkSeed } from "../src/data/linkSeed";
 
 /**
  * Query: get all saved browser links
@@ -20,7 +21,7 @@ export const upsertScreenshot = mutation({
   },
   handler: async (ctx, { id, screenshotUrl }) => {
     await ctx.db.patch(id, {
-      screenshotUrl: screenshotUrl,
+      screenshotUrl,
       screenshotUpdatedAt: Date.now(),
     });
   },
@@ -31,17 +32,12 @@ export const deleteAllScreenshots = mutation({
   args: {},
   handler: async (ctx) => {
     const links = await ctx.db.query("browserLinks").collect();
-
     for (const link of links) {
       await ctx.db.patch(link._id, {
         screenshotUrl: undefined,
         screenshotUpdatedAt: undefined,
-        // Also clear legacy fields
-        UPLOADTHINGUrl: undefined,
-        UPLOADTHINGUpdatedAt: undefined,
       });
     }
-
     return { deleted: links.length };
   },
 });
@@ -62,16 +58,12 @@ export const getByCategory = query({
 export const getCategories = query({
   handler: async (ctx) => {
     const links = await ctx.db.query("browserLinks").collect();
-
-    // Create a map of unique categories with their colors
     const categoriesMap = new Map<string, string>();
     links.forEach((link) => {
       if (!categoriesMap.has(link.category)) {
         categoriesMap.set(link.category, link.color);
       }
     });
-
-    // Convert to array of objects
     return Array.from(categoriesMap.entries()).map(([category, color]) => ({
       category,
       color,
@@ -91,18 +83,11 @@ export const create = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
-    const linkId = await ctx.db.insert("browserLinks", {
-      href: args.href,
-      label: args.label,
-      domain: args.domain,
-      favicon: args.favicon,
-      category: args.category,
-      color: args.color,
-      order: args.order,
+    return await ctx.db.insert("browserLinks", {
+      ...args,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
-    return linkId;
   },
 });
 
@@ -120,18 +105,13 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updateData } = args;
-    await ctx.db.patch(id, {
-      ...updateData,
-      updatedAt: Date.now(),
-    });
+    await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
   },
 });
 
 // Mutation to delete a link
 export const deleteLink = mutation({
-  args: {
-    id: v.id("browserLinks"),
-  },
+  args: { id: v.id("browserLinks") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
   },
@@ -139,278 +119,27 @@ export const deleteLink = mutation({
 
 // Mutation to bulk delete links by category
 export const deleteCategory = mutation({
-  args: {
-    category: v.string(),
-  },
+  args: { category: v.string() },
   handler: async (ctx, args) => {
     const linksInCategory = await ctx.db
       .query("browserLinks")
       .withIndex("by_category", (q) => q.eq("category", args.category))
       .collect();
-
     for (const link of linksInCategory) {
       await ctx.db.delete(link._id);
     }
-
     return linksInCategory.length;
   },
 });
 
-// Mutation to seed initial data from BrowserTabs component
+/**
+ * Seed initial data (now sourced from src/data/linkSeed.ts)
+ */
 export const seedLinks = mutation({
   handler: async (ctx) => {
-    const linkCategories = [
-      {
-        title: "Development Tools",
-        color: "orange",
-        links: [
-          {
-            href: "https://effect.website/",
-            label: "Effect - TypeScript Library",
-            domain: "effect.website",
-            favicon: "https://effect.website/favicon.ico",
-          },
-          {
-            href: "https://effect.website/docs/getting-started/using-generators/",
-            label: "Effect Generators Guide",
-            domain: "effect.website",
-            favicon: "https://effect.website/favicon.ico",
-          },
-          {
-            href: "https://github.com/aulianza/aulianza.id",
-            label: "aulianza.id",
-            domain: "github.com",
-            favicon: "https://github.com/favicon.ico",
-          },
-          {
-            href: "https://www.augmentcode.com/",
-            label: "Augment Code",
-            domain: "augmentcode.com",
-            favicon: "https://www.augmentcode.com/favicon.ico",
-          },
-          {
-            href: "https://bun.sh/docs",
-            label: "Bun Documentation",
-            domain: "bun.sh",
-            favicon: "https://bun.sh/favicon.ico",
-          },
-        ],
-      },
-      {
-        title: "Design & UI Resources",
-        color: "cyan",
-        links: [
-          {
-            href: "https://www.chakra-ui.com/playground",
-            label: "Chakra UI Playground",
-            domain: "chakra-ui.com",
-            favicon: "https://www.chakra-ui.com/favicon.ico",
-          },
-          {
-            href: "https://pro.aceternity.com/products/navbars",
-            label: "Aceternity UI Components",
-            domain: "aceternity.com",
-            favicon: "https://pro.aceternity.com/favicon.ico",
-          },
-          {
-            href: "https://www.heroui.com/docs/components/number-input",
-            label: "Hero UI Components",
-            domain: "heroui.com",
-            favicon: "https://www.heroui.com/favicon.ico",
-          },
-          {
-            href: "https://www.radix-ui.com/",
-            label: "Radix UI",
-            domain: "radix-ui.com",
-            favicon: "https://www.radix-ui.com/favicon.ico",
-          },
-          {
-            href: "https://www.framer.com/motion/",
-            label: "Framer Motion",
-            domain: "framer.com",
-            favicon: "https://www.framer.com/favicon.ico",
-          },
-        ],
-      },
-      {
-        title: "Learning & Tutorials",
-        color: "purple",
-        links: [
-          {
-            href: "https://www.joshwcomeau.com/svg/friendly-introduction-to-svg/",
-            label: "Josh Comeau - SVG Guide",
-            domain: "joshwcomeau.com",
-            favicon: "https://www.joshwcomeau.com/favicon.ico",
-          },
-          {
-            href: "https://blog.maximeheckel.com/posts/the-study-of-shaders-with-react-three-fiber/",
-            label: "Shaders with R3F",
-            domain: "blog.maximeheckel.com",
-            favicon: "https://blog.maximeheckel.com/favicon.ico",
-          },
-          {
-            href: "https://learnxinyminutes.com/zig/",
-            label: "Learn X in Y minutes",
-            domain: "learnxinyminutes.com",
-            favicon: "https://learnxinyminutes.com/favicon.ico",
-          },
-          {
-            href: "https://developer.mozilla.org/",
-            label: "MDN Web Docs",
-            domain: "developer.mozilla.org",
-            favicon: "https://developer.mozilla.org/favicon.ico",
-          },
-          {
-            href: "https://samwho.dev/load-balancing/",
-            label: "Load Balancing Guide",
-            domain: "samwho.dev",
-            favicon: "https://samwho.dev/favicon.ico",
-          },
-        ],
-      },
-      {
-        title: "Layout & Design Patterns",
-        color: "green",
-        links: [
-          {
-            href: "https://blog.openreplay.com/bento-box--a-refreshing-layout-approach-for-websites/",
-            label: "Bento Box Layouts",
-            domain: "blog.openreplay.com",
-            favicon: "https://blog.openreplay.com/favicon.ico",
-          },
-          {
-            href: "https://iamsteve.me/blog/bento-layout-css-grid",
-            label: "Bento Layout CSS Grid",
-            domain: "iamsteve.me",
-            favicon: "https://iamsteve.me/favicon.ico",
-          },
-          {
-            href: "https://bentogrids.com/",
-            label: "Bento Grids",
-            domain: "bentogrids.com",
-            favicon: "https://bentogrids.com/favicon.ico",
-          },
-          {
-            href: "https://dev.to/terenvelan/creating-variants-of-react-component-2b8m",
-            label: "React Component Variants",
-            domain: "dev.to",
-            favicon: "https://dev.to/favicon.ico",
-          },
-          {
-            href: "https://icograms.com/designer",
-            label: "Icograms Designer",
-            domain: "icograms.com",
-            favicon: "https://icograms.com/favicon.ico",
-          },
-        ],
-      },
-      {
-        title: "Icon Libraries",
-        color: "blue",
-        links: [
-          {
-            href: "https://lucide.dev/icons/",
-            label: "Lucide Icons",
-            domain: "lucide.dev",
-            favicon: "https://lucide.dev/favicon.ico",
-          },
-          {
-            href: "https://react-icons.github.io/react-icons/",
-            label: "React Icons",
-            domain: "react-icons.github.io",
-            favicon: "https://react-icons.github.io/favicon.ico",
-          },
-          {
-            href: "https://simpleicons.org/",
-            label: "Simple Icons",
-            domain: "simpleicons.org",
-            favicon: "https://simpleicons.org/favicon.ico",
-          },
-          {
-            href: "https://feathericons.com/",
-            label: "Feather Icons",
-            domain: "feathericons.com",
-            favicon: "https://feathericons.com/favicon.ico",
-          },
-          {
-            href: "https://flowbite.com/icons/",
-            label: "Flowbite Icons",
-            domain: "flowbite.com",
-            favicon: "https://flowbite.com/favicon.ico",
-          },
-        ],
-      },
-      {
-        title: "Developer Portfolios",
-        color: "pink",
-        links: [
-          {
-            href: "https://www.ericwu.me/",
-            label: "Eric Wu",
-            domain: "ericwu.me",
-            favicon: "https://www.ericwu.me/favicon.ico",
-          },
-          {
-            href: "https://www.braydoncoyer.dev/",
-            label: "Braydon Coyer",
-            domain: "braydoncoyer.dev",
-            favicon: "https://www.braydoncoyer.dev/favicon.ico",
-          },
-          {
-            href: "https://www.rachelhow.com/",
-            label: "Rachel How",
-            domain: "rachelhow.com",
-            favicon: "https://www.rachelhow.com/favicon.ico",
-          },
-          {
-            href: "https://kentcdodds.com/",
-            label: "Kent C. Dodds",
-            domain: "kentcdodds.com",
-            favicon: "https://kentcdodds.com/favicon.ico",
-          },
-          {
-            href: "https://azumbrunnen.me/",
-            label: "Adrian Zumbrunnen",
-            domain: "azumbrunnen.me",
-            favicon: "https://azumbrunnen.me/favicon.ico",
-          },
-        ],
-      },
-      {
-        title: "FOSS",
-        color: "red",
-        links: [
-          {
-            href: "https://github.com/immich-app/immich",
-            label: "Immich - Photo Backup",
-            domain: "github.com",
-            favicon: "https://github.com/favicon.ico",
-          },
-          {
-            href: "https://omarchy.org/",
-            label: "Omarchy Linux",
-            domain: "omarchy.org",
-            favicon: "https://omarchy.org/favicon.ico",
-          },
-          {
-            href: "https://jellyfin.org/",
-            label: "Jellyfin - Media Server",
-            domain: "jellyfin.org",
-            favicon: "https://jellyfin.org/favicon.ico",
-          },
-          {
-            href: "https://github.com/meichthys/foss_photo_libraries",
-            label: "FOSS Photo Software",
-            domain: "github.com",
-            favicon: "https://github.com/favicon.ico",
-          },
-        ],
-      },
-    ];
-
     let inserted = 0;
 
-    for (const category of linkCategories) {
+    for (const category of linkSeed) {
       for (let i = 0; i < category.links.length; i++) {
         const link = category.links[i];
         await ctx.db.insert("browserLinks", {
@@ -431,139 +160,203 @@ export const seedLinks = mutation({
     return {
       success: true,
       inserted,
-      message: `Seeded ${inserted} links across ${linkCategories.length} categories`,
+      message: `Seeded ${inserted} links across ${linkSeed.length} categories`,
     };
   },
 });
 
+// Helper to build screenshot request URL
+function buildScreenshotRequest(href: string) {
+  // 1) Validate the target URL
+  let target: URL;
+  try {
+    target = new URL(href);
+    if (!/^https?:$/.test(target.protocol)) {
+      throw new Error("Only http(s) URLs are allowed");
+    }
+  } catch {
+    throw new Error(`Invalid href passed to screenshot: "${href}"`);
+  }
+
+  // 2) Provider base
+  const base = process.env.SCREENSHOT_API_URL;
+  if (!base) throw new Error("SCREENSHOT_API_URL missing");
+
+  // 3) Make a proper URL and add params
+  const u = new URL(base);
+
+  // allow custom param name (defaults to "url")
+  const urlParam = process.env.SCREENSHOT_API_URL_PARAM || "url";
+  u.searchParams.set(urlParam, target.toString());
+
+  // optional common params (configure in Convex env if your provider needs them)
+  if (process.env.SCREENSHOT_WIDTH) {
+    u.searchParams.set("width", process.env.SCREENSHOT_WIDTH);
+  }
+  if (process.env.SCREENSHOT_HEIGHT) {
+    u.searchParams.set("height", process.env.SCREENSHOT_HEIGHT);
+  }
+  if (process.env.SCREENSHOT_FULLPAGE) {
+    u.searchParams.set("fullPage", process.env.SCREENSHOT_FULLPAGE);
+  }
+  if (process.env.SCREENSHOT_DPR) {
+    u.searchParams.set("deviceScaleFactor", process.env.SCREENSHOT_DPR);
+  }
+
+  return u.toString();
+}
+
 /**
- * Action: generate a screenshot for a given link
- * Env:
- *   SCREENSHOT_API_URL (e.g. https://api.screenshotone.com/take?access_key=KEY&url=)
- *   UPLOADTHING_SECRET (for uploading to UploadThing)
- *   UPLOADTHING_APP_ID (for uploading to UploadThing)
- *
- * Flow: Screenshot API → UploadThing Storage → Save URL to database
+ * Action: generate a screenshot for a given link and upload to UploadThing
  */
 export const generateScreenshot = action({
-  args: {
-    id: v.id("browserLinks"),
-    href: v.string(),
-  },
+  args: { id: v.id("browserLinks"), href: v.string() },
   handler: async (ctx, { id, href }) => {
-    const screenshotApiUrl = process.env.SCREENSHOT_API_URL;
     const uploadThingSecret = process.env.UPLOADTHING_SECRET;
-    const uploadThingAppId = process.env.UPLOADTHING_APP_ID;
 
-    // Check for UploadThing credentials
-    if (!uploadThingSecret || !uploadThingAppId) {
+    if (!uploadThingSecret) {
+      throw new Error("UPLOADTHING_SECRET not configured in Convex environment");
+    }
+
+    // Step 1: Generate screenshot
+    const url = buildScreenshotRequest(href);
+    const headers: Record<string, string> = {};
+    if (process.env.SCREENSHOT_API_KEY) {
+      headers.Authorization = `Bearer ${process.env.SCREENSHOT_API_KEY}`;
+    }
+
+    const res = await fetch(url, { headers });
+
+    if (!res.ok) {
+      let body = "";
+      try {
+        body = await res.text();
+      } catch {}
       throw new Error(
-        "UploadThing not configured. Set UPLOADTHING_SECRET and UPLOADTHING_APP_ID in Convex env"
+        `Screenshot fetch failed ${res.status} ${res.statusText} – ${body?.slice(0, 300) || "no body"}`
       );
     }
-    console.log("UploadThing Secret (masked):", uploadThingSecret.substring(0, 5) + "...");
-    console.log("UploadThing App ID:", uploadThingAppId);
 
-    // Check for screenshot API
-    if (!screenshotApiUrl) {
-      throw new Error(
-        "SCREENSHOT_API_URL not configured. Run: npx convex env set SCREENSHOT_API_URL \"https://your-api.com/screenshot?url=\" - See SCREENSHOT_API_SETUP.md"
-      );
+    const contentType = res.headers.get("content-type") || "";
+
+    // If API returns JSON with URL, use that directly
+    if (contentType.includes("application/json")) {
+      const json = await res.json();
+      const screenshotUrl = json?.url;
+      if (!screenshotUrl || typeof screenshotUrl !== "string") {
+        throw new Error(
+          `Screenshot API JSON missing "url": ${JSON.stringify(json).slice(0, 300)}`
+        );
+      }
+      await ctx.runMutation(api.browserLinks.upsertScreenshot, {
+        id,
+        screenshotUrl,
+      });
+      return screenshotUrl;
     }
 
-    // Step 1: Generate screenshot using screenshot API
-    // Note: Thum.io and some other services need the URL NOT encoded, just appended
-    const url = `${screenshotApiUrl}${href}`;
-    const screenshotRes = await fetch(url);
+    // Step 2: Upload image to UploadThing
+    if (contentType.startsWith("image/")) {
+      const imageBuffer = await res.arrayBuffer();
+      const fileName = `screenshot-${Date.now()}.${contentType.includes('png') ? 'png' : 'jpg'}`;
 
-    if (!screenshotRes.ok) {
-      throw new Error(`Screenshot API failed: ${screenshotRes.status} ${screenshotRes.statusText}`);
-    }
-
-    // Get screenshot image bytes
-    const imageBuffer = await screenshotRes.arrayBuffer();
-    const contentType = screenshotRes.headers.get("content-type") || "image/png";
-
-    // Step 2: Upload to UploadThing
-    const uploadRes = await fetch(`https://api.uploadthing.com/v6/uploadFiles`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Uploadthing-Api-Key": uploadThingSecret,
-        "X-Uploadthing-Version": "6.4.0",
-      },
-      body: JSON.stringify({
-        files: [{
-          name: `screenshot-${Date.now()}.${contentType.includes('png') ? 'png' : 'jpg'}`,
-          size: imageBuffer.byteLength,
-          type: contentType,
-        }],
-        metadata: {
-          linkId: id,
-          url: href,
+      // Get presigned URL from UploadThing (v6 API - v7 doesn't exist yet)
+      const uploadRes = await fetch(`https://api.uploadthing.com/v6/uploadFiles`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Uploadthing-Api-Key": uploadThingSecret,
+          "X-Uploadthing-Version": "6.13.0",
         },
-      }),
-    });
+        body: JSON.stringify({
+          files: [{
+            name: fileName,
+            size: imageBuffer.byteLength,
+            type: contentType,
+          }],
+          metadata: {
+            linkId: id,
+            url: href,
+          },
+        }),
+      });
 
-    if (!uploadRes.ok) {
-      throw new Error(`UploadThing API failed: ${uploadRes.status}`);
+      if (!uploadRes.ok) {
+        const errorText = await uploadRes.text();
+        throw new Error(`UploadThing API failed: ${uploadRes.status} - ${errorText}`);
+      }
+
+      const uploadData = await uploadRes.json();
+      const presignedPost = uploadData.data?.[0];
+      const fileKey = presignedPost?.key;
+      const uploadUrl = presignedPost?.url;
+      const fields = presignedPost?.fields;
+
+      if (!uploadUrl || !fileKey) {
+        throw new Error(`No presigned URL from UploadThing: ${JSON.stringify(uploadData)}`);
+      }
+
+      // UploadThing v6 requires multipart/form-data with fields
+      const formData = new FormData();
+
+      // Add all the fields returned by UploadThing
+      if (fields) {
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+      }
+
+      // Add the file itself
+      const blob = new Blob([imageBuffer], { type: contentType });
+      formData.append("file", blob, fileName);
+
+      // Upload using POST with multipart/form-data
+      const fileUploadRes = await fetch(uploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!fileUploadRes.ok) {
+        const errorText = await fileUploadRes.text();
+        throw new Error(`File upload to UploadThing failed: ${fileUploadRes.status} - ${errorText}`);
+      }
+
+      // Construct the final URL
+      const screenshotUrl = `https://utfs.io/f/${fileKey}`;
+
+      // Save to database
+      await ctx.runMutation(api.browserLinks.upsertScreenshot, {
+        id,
+        screenshotUrl,
+      });
+
+      return screenshotUrl;
     }
 
-    const uploadData = await uploadRes.json();
-
-    // Get the presigned URL for upload
-    const presignedUrl = uploadData.data?.[0]?.url;
-    if (!presignedUrl) {
-      throw new Error("No presigned URL from UploadThing");
-    }
-
-    // Upload the actual file
-    const fileUploadRes = await fetch(presignedUrl, {
-      method: "PUT",
-      body: imageBuffer,
-      headers: {
-        "Content-Type": "image/png",
-      },
-    });
-
-    if (!fileUploadRes.ok) {
-      throw new Error(`File upload failed: ${fileUploadRes.status}`);
-    }
-
-    // Get the final file URL
-    const fileKey = uploadData.data?.[0]?.key;
-    const screenshotUrl = `https://utfs.io/f/${fileKey}`;
-
-    // Step 3: Save to database
-    await ctx.runMutation(api.browserLinks.upsertScreenshot, {
-      id,
-      screenshotUrl,
-    });
-
-    return screenshotUrl;
+    const preview = (await res.text()).slice(0, 300);
+    throw new Error(
+      `Unexpected content-type from screenshot API: "${contentType}". First 300 chars: ${preview}`
+    );
   },
 });
 
-// Legacy action name for backward compatibility
+// Legacy alias
 export const generateUPLOADTHING = generateScreenshot;
 
 /**
- * Action: refresh all screenshots (public, can be called from UI)
+ * Public action to refresh all screenshots
  */
 export const refreshAllScreenshots = action({
   args: {},
   handler: async (ctx) => {
     const links = await ctx.runQuery(api.browserLinks.getAll);
-
-    // For large datasets, consider chunking / retries / rate limiting
     for (const link of links) {
       try {
         await ctx.runAction(api.browserLinks.generateScreenshot, {
           id: link._id,
           href: link.href,
         });
-        // Add a 1-second delay to avoid rate-limiting
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((r) => setTimeout(r, 1000)); // simple throttle
       } catch (err) {
         console.error("Screenshot generation failed:", link.href, err);
       }
@@ -572,17 +365,15 @@ export const refreshAllScreenshots = action({
 });
 
 /**
- * Internal Action: refresh all screenshots (for monthly cron)
- * Cron should call this (see convex/crons.ts)
+ * Internal (cron) wrapper
  */
 export const refreshAllScreenshotsInternal = internalAction({
   args: {},
   handler: async (ctx) => {
-    // Just call the public action
     await ctx.runAction(api.browserLinks.refreshAllScreenshots);
   },
 });
 
-// Legacy names for backward compatibility
+// Legacy aliases
 export const refreshAllUPLOADTHINGs = refreshAllScreenshots;
 export const refreshAllUPLOADTHINGsInternal = refreshAllScreenshotsInternal;

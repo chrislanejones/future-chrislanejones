@@ -1,21 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api"; // ✅ ensure correct path
-import {
-  TooltipProvider, // ✅ provider only (tooltip UI will live inside BrowserCard)
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { api } from "../../../convex/_generated/api";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import Banner from "@/components/page/banner";
 import BrowserCard from "@/components/page/browser-card";
-
-function ThumbSkeleton() {
-  return <div className="h-32 w-56 rounded-md bg-muted/40 animate-pulse" />;
-}
 
 // Strong typing for what BrowserCard receives per link (now includes screenshotUrl)
 export type BrowserLinkItem = {
@@ -32,7 +21,7 @@ export default function BrowserTabs() {
 
   // Helper to bridge old/new field names while you migrate schema/types
   const getScreenshotUrl = (link: any) =>
-    link?.screenshotUrl ?? link?.UPLOADTHINGUrl ?? undefined;
+    link?.screenshotUrl ?? undefined;
 
   const linkCategories = categories.map((cat) => ({
     title: cat.category,
@@ -84,50 +73,19 @@ export default function BrowserTabs() {
         description="A curated collection of useful resources, tools, and inspiration that I keep coming back to."
       />
 
-      {/* Keep your original layout — just provide TooltipProvider context */}
+      {/* Provide TooltipProvider context for individual link tooltips */}
       <TooltipProvider delayDuration={100}>
-        {/* Grid of BrowserCards (no top row of badges) */}
+        {/* Grid of BrowserCards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-          {linkCategories.map((category, categoryIndex) => {
-            // pick the first available screenshot in this category (if any)
-            const firstScreenshot = category.links.find(
-              (l) => !!l.screenshotUrl
-            )?.screenshotUrl;
-
-            return (
-              <Tooltip key={category.title}>
-                <TooltipTrigger asChild>
-                  <div>
-                    <BrowserCard
-                      title={category.title}
-                      color={category.color}
-                      links={category.links} // <-- unchanged, includes screenshotUrl
-                      delay={0.05 + categoryIndex * 0.05}
-                    />
-                  </div>
-                </TooltipTrigger>
-
-                {/* Tooltip content – small preview; no page style changes */}
-                <TooltipContent side="top" className="p-2">
-                  {firstScreenshot ? (
-                    <Image
-                      src={firstScreenshot}
-                      alt={`${category.title} preview`}
-                      width={560}
-                      height={320}
-                      className="h-40 w-[22rem] rounded-md object-cover"
-                      unoptimized // avoid next/image host configuration
-                    />
-                  ) : (
-                    <div className="flex w-[22rem] items-center justify-center rounded-md bg-muted/40 p-3 text-sm">
-                      <ThumbSkeleton />
-                      <span className="ml-2">No previews yet</span>
-                    </div>
-                  )}
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
+          {linkCategories.map((category, categoryIndex) => (
+            <BrowserCard
+              key={category.title}
+              title={category.title}
+              color={category.color}
+              links={category.links} // includes screenshotUrl for each link
+              delay={0.05 + categoryIndex * 0.05}
+            />
+          ))}
         </div>
       </TooltipProvider>
     </main>

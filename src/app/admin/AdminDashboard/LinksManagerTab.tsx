@@ -50,8 +50,7 @@ interface LinkFormData {
 
 /** Works with new `screenshotUrl` or legacy `UPLOADTHINGUrl` */
 const getScreenshotUrl = (link: any) =>
-  link?.screenshotUrl ?? link?.UPLOADTHINGUrl ?? undefined;
-
+      link?.screenshotUrl ?? undefined;
 /** Modal extracted for clarity */
 const LinkModal = ({
   show,
@@ -254,8 +253,12 @@ const LinksManagerTab = () => {
   const deleteCategory = useMutation(api.browserLinks.deleteCategory);
   const seedLinks = useMutation(api.browserLinks.seedLinks);
   const generateScreenshot = useAction(api.browserLinks.generateScreenshot);
-  const refreshAllScreenshots = useAction(api.browserLinks.refreshAllScreenshots);
-  const deleteAllScreenshots = useMutation(api.browserLinks.deleteAllScreenshots);
+  const refreshAllScreenshots = useAction(
+    api.browserLinks.refreshAllScreenshots
+  );
+  const deleteAllScreenshots = useMutation(
+    api.browserLinks.deleteAllScreenshots
+  );
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -269,11 +272,13 @@ const LinksManagerTab = () => {
   const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
     null
   );
-  const [generatingScreenshot, setGeneratingScreenshot] = useState<string | null>(
-    null
-  );
-  const [refreshingAllScreenshots, setRefreshingAllScreenshots] = useState(false);
-  const [showDeleteScreenshotsConfirm, setShowDeleteScreenshotsConfirm] = useState(false);
+  const [generatingScreenshot, setGeneratingScreenshot] = useState<
+    string | null
+  >(null);
+  const [refreshingAllScreenshots, setRefreshingAllScreenshots] =
+    useState(false);
+  const [showDeleteScreenshotsConfirm, setShowDeleteScreenshotsConfirm] =
+    useState(false);
   const [formData, setFormData] = useState<LinkFormData>({
     href: "",
     label: "",
@@ -416,7 +421,10 @@ const LinksManagerTab = () => {
     }
   };
 
-  const handleGenerateScreenshot = async (linkId: Id<"browserLinks">, href: string) => {
+  const handleGenerateScreenshot = async (
+    linkId: Id<"browserLinks">,
+    href: string
+  ) => {
     setGeneratingScreenshot(linkId);
     try {
       await generateScreenshot({ id: linkId, href });
@@ -643,25 +651,14 @@ const LinksManagerTab = () => {
                               {link.href}
                             </p>
 
-                            {/* Screenshot thumbnail + tooltip (uses global CSS) */}
+                            {/* Screenshot display */}
                             {getScreenshotUrl(link) && (
                               <div className="mt-3">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <img
-                                      src={getScreenshotUrl(link)!}
-                                      alt={`${link.label} preview`}
-                                      className="w-full h-28 rounded-lg object-cover border hover:shadow-passive transition"
-                                    />
-                                  </TooltipTrigger>
-                                  <TooltipContent side="top" className="p-2">
-                                    <img
-                                      src={getScreenshotUrl(link)!}
-                                      alt={`${link.label} large preview`}
-                                      className="h-40 w-[22rem] rounded-md object-cover"
-                                    />
-                                  </TooltipContent>
-                                </Tooltip>
+                                <img
+                                  src={getScreenshotUrl(link)!}
+                                  alt={`${link.label} screenshot`}
+                                  className="w-full h-40 rounded-lg object-cover border"
+                                />
                               </div>
                             )}
                           </div>
@@ -671,7 +668,9 @@ const LinksManagerTab = () => {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <button
-                                onClick={() => handleGenerateScreenshot(link._id, link.href)}
+                                onClick={() =>
+                                  handleGenerateScreenshot(link._id, link.href)
+                                }
                                 disabled={generatingScreenshot === link._id}
                                 className="p-2 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 rounded transition disabled:opacity-50"
                               >
@@ -687,9 +686,7 @@ const LinksManagerTab = () => {
                             </TooltipContent>
                           </Tooltip>
                           <button
-                            onClick={() =>
-                              setShowEditModal(true) || handleEditLink(link)
-                            }
+                            onClick={() => handleEditLink(link)}
                             className="p-2 text-muted hover:text-ink hover:shadow-passive rounded transition"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -790,7 +787,9 @@ const LinksManagerTab = () => {
               <h3 className="text-ink font-bold">Delete All Screenshots?</h3>
             </div>
             <p className="text-muted mb-6">
-              This will remove screenshots from all {allLinks.length} links. The links themselves won't be deleted, only the screenshot images. This action cannot be undone.
+              This will remove screenshots from all {allLinks.length} links. The
+              links themselves won't be deleted, only the screenshot images.
+              This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
