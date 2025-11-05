@@ -8,18 +8,20 @@
  * @module
  */
 
+import type * as blogPosts from "../blogPosts.js";
+import type * as browserLinks from "../browserLinks.js";
+import type * as careerTimeline from "../careerTimeline.js";
+import type * as contactMessages from "../contactMessages.js";
+import type * as crons from "../crons.js";
+import type * as http from "../http.js";
+import type * as seedBlogPosts from "../seedBlogPosts.js";
+import type * as seo from "../seo.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as blogPosts from "../blogPosts.js";
-import type * as browserLinks from "../browserLinks.js";
-import type * as careerTimeline from "../careerTimeline.js";
-import type * as contactMessages from "../contactMessages.js";
-import type * as http from "../http.js";
-import type * as seedBlogPosts from "../seedBlogPosts.js";
-import type * as seo from "../seo.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -34,15 +36,20 @@ declare const fullApi: ApiFromModules<{
   browserLinks: typeof browserLinks;
   careerTimeline: typeof careerTimeline;
   contactMessages: typeof contactMessages;
+  crons: typeof crons;
   http: typeof http;
   seedBlogPosts: typeof seedBlogPosts;
   seo: typeof seo;
 }>;
+declare const fullApiWithMounts: typeof fullApi;
+
 export declare const api: FilterApi<
-  typeof fullApi,
+  typeof fullApiWithMounts,
   FunctionReference<any, "public">
 >;
 export declare const internal: FilterApi<
-  typeof fullApi,
+  typeof fullApiWithMounts,
   FunctionReference<any, "internal">
 >;
+
+export declare const components: {};

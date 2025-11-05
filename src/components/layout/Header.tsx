@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
 import { SimpleModeToggle } from "../simple-mode-toggle";
@@ -18,9 +19,19 @@ import {
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+  // Check if a link or any of its children are active
+  const isActive = (item: typeof headerNavItems[0]) => {
+    if (item.href && pathname === item.href) return true;
+    if (item.children) {
+      return item.children.some((child) => pathname === child.href);
+    }
+    return false;
+  };
 
   return (
     <>
@@ -85,7 +96,9 @@ export default function Header() {
                                   <NavigationMenuLink asChild>
                                     <Link
                                       href={child.href}
-                                      className="block w-full rounded-md px-3 py-2 text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring"
+                                      className={`block w-full rounded-md px-3 py-2 text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring ${
+                                        pathname === child.href ? "bg-[color:var(--color-surface-hover)]" : ""
+                                      }`}
                                     >
                                       {child.label}
                                     </Link>
@@ -100,7 +113,9 @@ export default function Header() {
                       <NavigationMenuLink asChild>
                         <Link
                           href={item.href!}
-                          className="h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg"
+                          className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg ${
+                            isActive(item) ? "bg-[color:var(--color-surface-hover)]" : ""
+                          }`}
                         >
                           {item.label}
                         </Link>
@@ -217,7 +232,9 @@ export default function Header() {
                               <Link
                                 key={child.href}
                                 href={child.href}
-                                className="block nav-link text-md py-2 px-4"
+                                className={`block nav-link text-md py-2 px-4 rounded-lg ${
+                                  pathname === child.href ? "bg-[color:var(--color-surface-hover)]" : ""
+                                }`}
                                 onClick={closeMobileMenu}
                               >
                                 {child.label}
@@ -228,7 +245,9 @@ export default function Header() {
                       ) : (
                         <Link
                           href={item.href!}
-                          className="block nav-link py-3 px-4"
+                          className={`block nav-link py-3 px-4 rounded-lg ${
+                            isActive(item) ? "bg-[color:var(--color-surface-hover)]" : ""
+                          }`}
                           onClick={closeMobileMenu}
                         >
                           {item.label}

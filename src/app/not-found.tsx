@@ -9,7 +9,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-base">
       <Header />
-      <main className="max-w-6xl mx-auto px-5 py-12">
+      <main className="site-container py-12">
         <Banner
           title="404 Music Lounge"
           breadcrumbPage="404"

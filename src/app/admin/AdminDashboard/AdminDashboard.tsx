@@ -439,6 +439,7 @@ const AdminDashboard = () => {
     { id: "links", label: "Links", icon: LinkIcon },
     { id: "career-timeline", label: "Career Timeline", icon: Calendar },
     { id: "messages", label: "Messages", icon: MessageSquare },
+    { id: "blog-posts", label: "Blog Posts", icon: FileText },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -464,10 +465,11 @@ const AdminDashboard = () => {
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
-                  <SidebarMenuItem key={tab.id}>
+                  <SidebarMenuItem key={tab.id} className="px-2">
                     <SidebarMenuButton
                       onClick={() => setActiveTab(tab.id)}
                       isActive={activeTab === tab.id}
+                      className={`${activeTab === tab.id ? "bg-[#111418] text-[#4ade80] border border-[#4ade80]" : "text-[#f3f4f6] hover:text-[#4ade80] hover:bg-[#111418]/50"} group-data-[state=collapsed]/sidebar-wrapper:justify-center`}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
@@ -481,15 +483,19 @@ const AdminDashboard = () => {
           </SidebarContent>
 
           <SidebarFooter>
-            <button
-              onClick={handleSignOut}
-              className="w-full flex items-center gap-2 px-4 py-2 rounded-md text-[#9ca3af] hover:bg-[#1a1e24] hover:text-[#f3f4f6] transition-colors"
-            >
-              <LogOut className="w-4 h-4 flex-shrink-0" />
-              <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
-                Sign Out
-              </span>
-            </button>
+            <SidebarMenu>
+              <SidebarMenuItem className="px-2">
+                <SidebarMenuButton
+                  onClick={handleSignOut}
+                  className="text-[#f3f4f6] hover:text-[#4ade80] hover:bg-[#111418]/50 group-data-[state=collapsed]/sidebar-wrapper:justify-center"
+                >
+                  <LogOut className="w-5 h-5 flex-shrink-0" />
+                  <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                    Sign Out
+                  </span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
 
@@ -507,6 +513,7 @@ const AdminDashboard = () => {
             {activeTab === "links" && <LinksManagerTab />}
             {activeTab === "career-timeline" && <CareerTimelineTab />}
             {activeTab === "messages" && <ContactMessagesTab />}
+            {activeTab === "blog-posts" && <ComingSoonTab title="Blog Posts" />}
             {activeTab === "settings" && <ComingSoonTab title="Settings" />}
           </div>
         </SidebarInset>
