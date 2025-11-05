@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 const QUOTES: ReactNode[] = [
@@ -85,14 +86,24 @@ export default function Quotegeneratorcard({
 
       {/* Bottom: footer bar (avatar, title, circular neutral icon button) */}
       <div className="p-6 grid grid-cols-[auto_1fr_auto] items-center gap-4">
-        <Image
-          alt="avatar"
-          className="h-20 w-20 rounded-full ring-2 ring-white/5 object-cover"
-          src="/Professional-Photo-of-Chris-Lane-Jones.webp"
-          width={80}
-          height={80}
-          priority
-        />
+        <Button
+          asChild
+          variant="neutral"
+          size="icon"
+          className="rounded-full h-11 w-11 p-0 overflow-hidden ring-2 ring-white/5 hover:shadow-glow transition-all hover:scale-105"
+          aria-label="View About page"
+        >
+          <Link href="/about">
+            <Image
+              alt="Chris Lane Jones profile photo"
+              className="h-full w-full object-cover"
+              src="/Professional-Photo-of-Chris-Lane-Jones.webp"
+              width={44}
+              height={44}
+              priority
+            />
+          </Link>
+        </Button>
 
         <h3 className="text-ink text-center">My Ramblings</h3>
 

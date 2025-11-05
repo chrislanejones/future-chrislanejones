@@ -6,18 +6,16 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 
 ## 🚀 Tech Stack
 
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **Animations:** Framer Motion
-- **Database:** Convex (real-time backend)
-- **Authentication:** Clerk
-- **Analytics:** PostHog (product analytics & session recording)
-- **Email:** Resend (transactional emails)
-- **UI Components:** Radix UI, shadcn/ui
-- **Icons:** Lucide React, React Icons, Simple Icons
-- **Package Manager:** Bun
-- **Blog:** Next.js MDX Blog
+- **Framework:** [Next.js](https://nextjs.org/) 14 (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **Database:** [Convex](https://www.convex.dev/) (real-time backend)
+- **Authentication:** [Clerk](https://clerk.com/)
+- **Analytics:** [PostHog](https://posthog.com/) (product analytics & session recording)
+- **UI Components:** [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
+- **Icons:** [Lucide React](https://lucide.dev/guide/packages/lucide-react), [React Icons](https://react-icons.github.io/react-icons/), [Simple Icons](https://simpleicons.org/)
+- **Package Manager:** [Bun](https://bun.sh/)
 
 ## ✨ Features
 
@@ -28,7 +26,6 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - 🔐 Admin dashboard with Clerk authentication
 - 📝 SEO manager for metadata optimization
 - 📊 PostHog analytics with session recording
-- 📧 Contact form with email notifications
 - 🎵 Interactive music player
 - 🖼️ Photo gallery with Polaroid-style drawer
 - 📊 Project showcase with carousel
@@ -39,19 +36,18 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 
 ### Prerequisites
 
-- Node.js 18+ or Bun
-- Clerk account
-- Convex account
-- PostHog account (for analytics)
-- Resend account (for email)
+- [Node.js](https://nodejs.org/en/) 18+ or [Bun](https://bun.sh/)
+- [Clerk](https://clerk.com/) account
+- [Convex](https://www.convex.dev/) account
+- [PostHog](https://posthog.com/) account (for analytics)
 
 ### Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/chrislanejones/your-repo.git
-cd your-repo
+git clone https://github.com/chrislanejones/future-chrislanejones.git
+cd future-chrislanejones
 ```
 
 2. Install dependencies:
@@ -77,10 +73,6 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 # PostHog Analytics
 NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_api_key
 NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
-
-# Resend Email
-RESEND_API_KEY=your_resend_api_key
-NEXT_PUBLIC_CONTACT_EMAIL=your@email.com
 ```
 
 4. Initialize Convex:
@@ -92,7 +84,7 @@ npx convex dev
 5. Seed the database:
 
 ```bash
-npx convex run seo:seedSEOData
+npx convex run seed-seo
 ```
 
 6. Run the development server:
@@ -105,260 +97,22 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-## 🔐 Admin Dashboard
-
-Access the admin dashboard at `/admin` to manage:
-
-- **SEO Metadata:** Edit page titles and descriptions with character count validation
-- **Browser Links:** Manage curated developer resource links with categories
-- **Media Manager:** (Coming soon)
-- **Settings:** (Coming soon)
-
-### Admin Features:
-
-- Real-time character counters for SEO optimization
-- Google search preview
-- Page search and filtering
-- Add new pages
-- Automatic save with success/error feedback
-
-## 🔗 Browser Links Management
-
-The `/browser-tabs` page displays curated developer resources organized by category. Links are stored in Convex with full CRUD operations.
-
-### Browser Links Features:
-
-- **Categorized Links:** Organized by development areas (Development Tools, Design & UI, etc.)
-- **Color-coded Categories:** Each category has a distinct color for visual organization
-- **Favicon Support:** Automatic favicon fetching for visual recognition
-- **Ordering System:** Links can be ordered within categories
-- **Domain Extraction:** Automatic domain parsing from URLs
-
-### Browser Links CRUD Operations:
-
-#### Convex Functions (`convex/browserLinks.ts`):
-
-**Queries:**
-- `getAll()` - Retrieve all browser links ordered by creation
-- `getByCategory(category)` - Get links filtered by category, ordered by position
-- `getCategories()` - Get unique categories with their colors
-
-**Mutations:**
-- `create(data)` - Add new link with href, label, domain, favicon, category, color, order
-- `update(id, data)` - Update existing link properties
-- `deleteLink(id)` - Remove single link by ID
-- `deleteCategory(category)` - Remove all links in a category
-- `seedLinks()` - Populate database with initial curated links
-
-#### Data Structure:
-
-```typescript
-{
-  href: string;           // Full URL
-  label: string;          // Display name
-  domain: string;         // Extracted domain
-  favicon?: string;       // Icon URL (optional)
-  category: string;       // Group name
-  color: string;          // Category color
-  order: number;          // Position in category
-  createdAt: number;      // Timestamp
-  updatedAt: number;      // Last modified
-}
-```
-
-#### Seeding Browser Links:
-
-```bash
-# Via Convex dashboard
-npx convex run browserLinks:seedLinks
-
-# Or create custom script
-npm run seed-browserlinks
-```
-
-### Browser Links Categories:
-
-- **Development Tools** (orange) - Effect, Bun, dev tools
-- **Design & UI Resources** (cyan) - Chakra UI, Radix, Framer Motion
-- **Learning & Tutorials** (purple) - Josh Comeau, MDN, guides
-- **Layout & Design Patterns** (green) - Bento grids, CSS patterns
-- **Icon Libraries** (blue) - Lucide, React Icons, Simple Icons
-- **Developer Portfolios** (pink) - Inspiration and examples
-- **FOSS** (red) - Open source software and tools
-
-## 📊 Analytics & Monitoring
-
-### PostHog Integration
-
-The site uses PostHog for:
-
-- **Product Analytics:** Track page views, button clicks, and user behavior
-- **Session Recording:** Visual playback of user sessions
-- **Feature Flags:** A/B testing and feature rollouts
-- **User Identification:** Track authenticated users via Clerk integration
-
-#### Testing PostHog:
-
-1. Open browser console and type `posthog` to verify initialization
-2. Check Network tab for requests to `app.posthog.com`
-3. View events in PostHog dashboard within 1-2 minutes
-4. Use the debug component (in development mode) to test events
-
-#### Custom Event Tracking:
-
-```typescript
-import { usePostHog } from "posthog-js/react";
-
-const posthog = usePostHog();
-posthog.capture("button_clicked", {
-  button_name: "Download Resume",
-  location: "career_page",
-});
-```
-
-## 📧 Contact Form
-
-The contact form uses Resend for email delivery with:
-
-- Server-side validation
-- Rate limiting
-- Email templates with React Email
-- Success/error notifications
-- Form state management
-
-### Setting up Resend:
-
-1. Sign up at [resend.com](https://resend.com)
-2. Verify your domain (or use their sandbox for testing)
-3. Get your API key from the dashboard
-4. Add `RESEND_API_KEY` to `.env.local`
-
-### Contact Form Features:
-
-- Client-side validation
-- Server action for secure submission
-- Automatic email notifications
-- Spam protection with rate limiting
-- Responsive design with accessible forms
-
 ## 📦 Key Dependencies
 
 ```json
 {
-  "next": "14.0.4",
+  "next": "14.1.4",
   "react": "^18",
   "typescript": "^5",
   "tailwindcss": "^3.4.17",
   "framer-motion": "^10.16.16",
-  "convex": "latest",
-  "@clerk/nextjs": "latest",
+  "convex": "^1.27.5",
+  "@clerk/nextjs": "5.7.4",
   "@radix-ui/react-*": "latest",
-  "lucide-react": "^0.541.0",
-  "posthog-js": "latest",
-  "resend": "latest"
+  "lucide-react": "^0.552.0",
+  "posthog-js": "^1.275.1"
 }
 ```
-
-## 🎨 Design System
-
-### Colors
-
-```css
-/* Light Mode */
---color-base: #f9fafb;
---color-panel: #ffffff;
---color-ink: #111827;
---color-accent: #22c55e;
-
-/* Dark Mode */
---color-base: #0b0d10;
---color-panel: #111418;
---color-ink: #f3f4f6;
---color-accent: #4ade80;
-```
-
-### Typography
-
-- **Font:** TT Interphases Pro
-- **Weights:** Regular (400), Bold (700), Black (900)
-
-## 📄 Pages
-
-- `/` - Homepage with bento grid layout
-- `/about` - Personal journey and background
-- `/projects` - Portfolio of web projects
-- `/career` - Professional timeline and experience
-- `/conferences` - Tech conferences attended
-- `/browser-tabs` - Curated developer resources
-- `/link-page` - Social media and contact links
-- `/logo-page` - Brand identity and logo variations
-- `/site-history` - Portfolio evolution over 18 years
-- `/admin` - Content management dashboard
-- `/contact` - Contact form with email integration
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Import project to Vercel
-3. Add environment variables
-4. Deploy
-
-### Environment Variables for Production
-
-```bash
-# Convex
-NEXT_PUBLIC_CONVEX_URL=your_production_convex_url
-
-# Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_live_key
-CLERK_SECRET_KEY=your_clerk_live_secret
-
-# PostHog
-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_live_key
-NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
-
-# Resend
-RESEND_API_KEY=your_resend_live_key
-NEXT_PUBLIC_CONTACT_EMAIL=your@email.com
-```
-
-## 📝 SEO Optimization
-
-All pages include:
-
-- Optimized meta titles (50-60 characters)
-- Meta descriptions (150-160 characters)
-- Open Graph tags
-- Structured data (JSON-LD)
-- Sitemap generation
-
-## 🔒 Privacy & Security
-
-- PostHog data is anonymized by default
-- Contact form includes rate limiting
-- Admin routes protected by Clerk authentication
-- Environment variables for sensitive data
-- CORS policies configured
-- No localStorage usage in artifacts (Claude.ai compatible)
-
-## 🧪 Testing
-
-### PostHog Testing:
-
-```bash
-# In browser console
-posthog.capture('test_event', { test: true })
-```
-
-### Email Testing:
-
-Use Resend sandbox domain for development testing before verifying your domain.
-
-## 🤝 Contributing
-
-This is a personal portfolio project, but suggestions are welcome! Feel free to open an issue.
 
 ## 📄 License
 
@@ -372,18 +126,3 @@ This project is open source and available under the [MIT License](LICENSE).
 - GitHub: [@chrislanejones](https://github.com/chrislanejones)
 - LinkedIn: [/in/chrislanejones](https://linkedin.com/in/chrislanejones)
 - Twitter: [@cljwebdev](https://twitter.com/cljwebdev)
-
-## 🙏 Acknowledgments
-
-- [Next.js](https://nextjs.org/) - React framework
-- [Convex](https://convex.dev/) - Backend platform
-- [Clerk](https://clerk.com/) - Authentication
-- [PostHog](https://posthog.com/) - Product analytics
-- [Resend](https://resend.com/) - Email delivery
-- [Vercel](https://vercel.com/) - Hosting platform
-- [shadcn/ui](https://ui.shadcn.com/) - UI components
-- [Framer Motion](https://www.framer.com/motion/) - Animation library
-
----
-
-Built with ❤️ and ☕ from a Florida boy living in Virginia

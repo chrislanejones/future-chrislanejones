@@ -1,14 +1,48 @@
+// convex/browserLinks.ts
+import { query, mutation, action, internalAction } from "./_generated/server";
+import { api } from "./_generated/api";
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
 
-// Query to get all browser links
+/**
+ * Query: get all saved browser links
+ */
 export const getAll = query({
+  args: {},
   handler: async (ctx) => {
-    const links = await ctx.db
-      .query("browserLinks")
-      .order("asc")
-      .collect();
-    return links;
+    return await ctx.db.query("browserLinks").order("desc").collect();
+  },
+});
+
+export const upsertScreenshot = mutation({
+  args: {
+    id: v.id("browserLinks"),
+    screenshotUrl: v.string(),
+  },
+  handler: async (ctx, { id, screenshotUrl }) => {
+    await ctx.db.patch(id, {
+      screenshotUrl: screenshotUrl,
+      screenshotUpdatedAt: Date.now(),
+    });
+  },
+});
+
+// Mutation to delete all screenshots
+export const deleteAllScreenshots = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const links = await ctx.db.query("browserLinks").collect();
+
+    for (const link of links) {
+      await ctx.db.patch(link._id, {
+        screenshotUrl: undefined,
+        screenshotUpdatedAt: undefined,
+        // Also clear legacy fields
+        UPLOADTHINGUrl: undefined,
+        UPLOADTHINGUpdatedAt: undefined,
+      });
+    }
+
+    return { deleted: links.length };
   },
 });
 
@@ -28,7 +62,7 @@ export const getByCategory = query({
 export const getCategories = query({
   handler: async (ctx) => {
     const links = await ctx.db.query("browserLinks").collect();
-    
+
     // Create a map of unique categories with their colors
     const categoriesMap = new Map<string, string>();
     links.forEach((link) => {
@@ -36,7 +70,7 @@ export const getCategories = query({
         categoriesMap.set(link.category, link.color);
       }
     });
-    
+
     // Convert to array of objects
     return Array.from(categoriesMap.entries()).map(([category, color]) => ({
       category,
@@ -375,7 +409,7 @@ export const seedLinks = mutation({
     ];
 
     let inserted = 0;
-    
+
     for (const category of linkCategories) {
       for (let i = 0; i < category.links.length; i++) {
         const link = category.links[i];
@@ -401,3 +435,154 @@ export const seedLinks = mutation({
     };
   },
 });
+
+/**
+ * Action: generate a screenshot for a given link
+ * Env:
+ *   SCREENSHOT_API_URL (e.g. https://api.screenshotone.com/take?access_key=KEY&url=)
+ *   UPLOADTHING_SECRET (for uploading to UploadThing)
+ *   UPLOADTHING_APP_ID (for uploading to UploadThing)
+ *
+ * Flow: Screenshot API → UploadThing Storage → Save URL to database
+ */
+export const generateScreenshot = action({
+  args: {
+    id: v.id("browserLinks"),
+    href: v.string(),
+  },
+  handler: async (ctx, { id, href }) => {
+    const screenshotApiUrl = process.env.SCREENSHOT_API_URL;
+    const uploadThingSecret = process.env.UPLOADTHING_SECRET;
+    const uploadThingAppId = process.env.UPLOADTHING_APP_ID;
+
+    // Check for UploadThing credentials
+    if (!uploadThingSecret || !uploadThingAppId) {
+      throw new Error(
+        "UploadThing not configured. Set UPLOADTHING_SECRET and UPLOADTHING_APP_ID in Convex env"
+      );
+    }
+    console.log("UploadThing Secret (masked):", uploadThingSecret.substring(0, 5) + "...");
+    console.log("UploadThing App ID:", uploadThingAppId);
+
+    // Check for screenshot API
+    if (!screenshotApiUrl) {
+      throw new Error(
+        "SCREENSHOT_API_URL not configured. Run: npx convex env set SCREENSHOT_API_URL \"https://your-api.com/screenshot?url=\" - See SCREENSHOT_API_SETUP.md"
+      );
+    }
+
+    // Step 1: Generate screenshot using screenshot API
+    // Note: Thum.io and some other services need the URL NOT encoded, just appended
+    const url = `${screenshotApiUrl}${href}`;
+    const screenshotRes = await fetch(url);
+
+    if (!screenshotRes.ok) {
+      throw new Error(`Screenshot API failed: ${screenshotRes.status} ${screenshotRes.statusText}`);
+    }
+
+    // Get screenshot image bytes
+    const imageBuffer = await screenshotRes.arrayBuffer();
+    const contentType = screenshotRes.headers.get("content-type") || "image/png";
+
+    // Step 2: Upload to UploadThing
+    const uploadRes = await fetch(`https://api.uploadthing.com/v6/uploadFiles`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Uploadthing-Api-Key": uploadThingSecret,
+        "X-Uploadthing-Version": "6.4.0",
+      },
+      body: JSON.stringify({
+        files: [{
+          name: `screenshot-${Date.now()}.${contentType.includes('png') ? 'png' : 'jpg'}`,
+          size: imageBuffer.byteLength,
+          type: contentType,
+        }],
+        metadata: {
+          linkId: id,
+          url: href,
+        },
+      }),
+    });
+
+    if (!uploadRes.ok) {
+      throw new Error(`UploadThing API failed: ${uploadRes.status}`);
+    }
+
+    const uploadData = await uploadRes.json();
+
+    // Get the presigned URL for upload
+    const presignedUrl = uploadData.data?.[0]?.url;
+    if (!presignedUrl) {
+      throw new Error("No presigned URL from UploadThing");
+    }
+
+    // Upload the actual file
+    const fileUploadRes = await fetch(presignedUrl, {
+      method: "PUT",
+      body: imageBuffer,
+      headers: {
+        "Content-Type": "image/png",
+      },
+    });
+
+    if (!fileUploadRes.ok) {
+      throw new Error(`File upload failed: ${fileUploadRes.status}`);
+    }
+
+    // Get the final file URL
+    const fileKey = uploadData.data?.[0]?.key;
+    const screenshotUrl = `https://utfs.io/f/${fileKey}`;
+
+    // Step 3: Save to database
+    await ctx.runMutation(api.browserLinks.upsertScreenshot, {
+      id,
+      screenshotUrl,
+    });
+
+    return screenshotUrl;
+  },
+});
+
+// Legacy action name for backward compatibility
+export const generateUPLOADTHING = generateScreenshot;
+
+/**
+ * Action: refresh all screenshots (public, can be called from UI)
+ */
+export const refreshAllScreenshots = action({
+  args: {},
+  handler: async (ctx) => {
+    const links = await ctx.runQuery(api.browserLinks.getAll);
+
+    // For large datasets, consider chunking / retries / rate limiting
+    for (const link of links) {
+      try {
+        await ctx.runAction(api.browserLinks.generateScreenshot, {
+          id: link._id,
+          href: link.href,
+        });
+        // Add a 1-second delay to avoid rate-limiting
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } catch (err) {
+        console.error("Screenshot generation failed:", link.href, err);
+      }
+    }
+  },
+});
+
+/**
+ * Internal Action: refresh all screenshots (for monthly cron)
+ * Cron should call this (see convex/crons.ts)
+ */
+export const refreshAllScreenshotsInternal = internalAction({
+  args: {},
+  handler: async (ctx) => {
+    // Just call the public action
+    await ctx.runAction(api.browserLinks.refreshAllScreenshots);
+  },
+});
+
+// Legacy names for backward compatibility
+export const refreshAllUPLOADTHINGs = refreshAllScreenshots;
+export const refreshAllUPLOADTHINGsInternal = refreshAllScreenshotsInternal;
