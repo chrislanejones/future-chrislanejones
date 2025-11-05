@@ -1,8 +1,8 @@
-# Screenshot Setup - Ready to Use! ✅
+# Screenshot Setup with UploadThing Storage ✅
 
 ## ✅ Everything is Configured!
 
-Your screenshot system is ready to use:
+Your screenshot system is ready to use with UploadThing storage:
 
 ### Current Setup:
 - ✅ **Screenshot API:** Thum.io (free, no signup needed)
@@ -48,7 +48,7 @@ Thum.io → Generates Screenshot → UploadThing → Stores File → Your Site
 ### Admin Panel (Links Manager):
 - 📷 **Camera icon** - Generate screenshot for single link
 - 🔄 **Refresh All** - Bulk regenerate all screenshots
-- 🗑️ **Delete All** - Remove screenshot URLs from database
+- 🗑️ **Delete All** - Remove screenshot URLs from database (files stay in UploadThing)
 - 👁️ **Hover tooltip** - See larger preview
 
 ### Public Page (Browser Tabs):
@@ -103,8 +103,8 @@ npx convex env list
 
 ## ⏱️ **Performance:**
 
-- **Per screenshot:** ~10-15 seconds (generation + upload)
-- **All screenshots:** ~5-10 minutes for 30 links (sequential processing with a 1-second delay between each screenshot to avoid rate-limiting issues)
+- **Per screenshot:** ~10-15 seconds (generation + upload to UploadThing)
+- **All screenshots:** ~5-10 minutes for 30 links (sequential with 1-second delay)
 - **Cron job:** Runs once per month automatically
 
 ---
@@ -122,7 +122,10 @@ If you want:
 2. Get API key (100 free/month, then $9/mo for 1000)
 3. Run:
 ```bash
-npx convex env set SCREENSHOT_API_URL "https://api.screenshotone.com/take?access_key=YOUR_KEY&url=&response_type=image&image_quality=80&viewport_width=1280&viewport_height=800"
+npx convex env set SCREENSHOT_API_URL "https://api.screenshotone.com/take"
+npx convex env set SCREENSHOT_API_URL_PARAM "url"
+npx convex env set SCREENSHOT_WIDTH "1280"
+npx convex env set SCREENSHOT_API_KEY "YOUR_KEY"
 ```
 
 ---
@@ -134,7 +137,10 @@ npx convex env set SCREENSHOT_API_URL "https://api.screenshotone.com/take?access
 npx convex logs --success
 ```
 
-### Check if screenshots were generated:
+### Check if screenshots were uploaded:
+Go to: https://uploadthing.com/dashboard/chrislanejones-personal-team/nwjl277km1
+
+### Check database:
 ```bash
 npx convex data
 ```
@@ -142,9 +148,8 @@ Select: `browserLinks` → Look for `screenshotUrl` containing `utfs.io` URLs
 
 ### Common issues:
 - **"No preview yet"** → Click Camera icon to generate
-- **400 Bad Request** → This error comes from the screenshot API (Thum.io or ScreenshotOne). It usually means the URL you are trying to screenshot is invalid or inaccessible. Check the URL and try to open it in your browser. If the error persists, it might be a rate-limiting issue. A 1-second delay has been added to the `refreshAllScreenshots` action to help with this.
-- **403 Forbidden** → This error occurs when uploading the screenshot to UploadThing. It usually means there is a mismatch between the `Content-Type` of the image and what UploadThing expects, or an issue with your UploadThing API key. The `Content-Type` has been explicitly set to `image/png` to help resolve this. **Please verify your `UPLOADTHING_SECRET` and `UPLOADTHING_APP_ID` environment variables in Convex by running `npx convex env list`.** Also, check your Convex logs for debugging output related to these variables.
-- **401 error** → Fixed! Using free Thum.io service
+- **400 Bad Request** → URL validation issue, check the link
+- **"UPLOADTHING_SECRET not configured"** → Fixed! Already set
 - **Slow generation** → Normal, takes 10-15 seconds per screenshot
 
 ---
@@ -155,7 +160,6 @@ Everything is configured and ready. Just:
 1. Open your Admin Dashboard
 2. Click the Camera icon on any link
 3. Wait and refresh
-4. Enjoy your screenshots! 🎉
+4. Check UploadThing dashboard to see uploaded files! 🎉
 
-Check your UploadThing dashboard to see uploaded files:
-**https://uploadthing.com/dashboard**
+**UploadThing Dashboard:** https://uploadthing.com/dashboard

@@ -28,11 +28,8 @@ export default defineSchema({
     order: v.number(), // For sorting within category
     createdAt: v.number(),
     updatedAt: v.number(),
-    screenshotUrl: v.optional(v.string()), // public URL to screenshot image
-    screenshotUpdatedAt: v.optional(v.number()), // ms since epoch
-    // Legacy fields (deprecated, kept for migration)
-    UPLOADTHINGUrl: v.optional(v.string()),
-    UPLOADTHINGUpdatedAt: v.optional(v.number()),
+    screenshotUrl: v.optional(v.string()),
+    screenshotUpdatedAt: v.optional(v.number()),
   })
     .index("by_category", ["category"])
     .index("by_order", ["order"]),
