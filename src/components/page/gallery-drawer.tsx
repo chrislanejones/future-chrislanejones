@@ -168,7 +168,7 @@ const PhotoGallery = ({
   /* -------------------------------------------------------------------------- */
 
   if (isMobile) {
-    // Mobile slider with finger swipe gesture
+    // Mobile slider with finger swipe gesture and polaroid styling
     const swipeConfidenceThreshold = 80; // minimum drag px before it switches
     const swipePower = (offset: number, velocity: number) =>
       Math.abs(offset) * velocity;
@@ -185,35 +185,60 @@ const PhotoGallery = ({
       }
     };
 
+    // Generate random angles for each photo (consistent per photo)
+    const mobileAngles = photos.map((_, i) => {
+      const angles = [-8, 5, -3, 7, -5, -6, 4, -4, 6, -7];
+      return angles[i % angles.length];
+    });
+
     return (
       <div className="relative w-full h-[55vh] flex items-center justify-center overflow-hidden touch-pan-y">
         <AnimatePresence initial={false} mode="wait">
           <motion.div
             key={photos[currentIndex].src}
             className="absolute inset-0 flex items-center justify-center p-3"
-            initial={{ opacity: 0, x: 70 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -70 }}
+            initial={{ opacity: 0, x: 70, rotate: 0 }}
+            animate={{ opacity: 1, x: 0, rotate: mobileAngles[currentIndex] }}
+            exit={{ opacity: 0, x: -70, rotate: 0 }}
             transition={{ duration: 0.35 }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.8}
             onDragEnd={handleDragEnd}
           >
-            <Image
-              src={photos[currentIndex].src}
-              alt={photos[currentIndex].alt}
-              width={600}
-              height={600}
-              className="object-contain rounded-lg w-full h-auto max-h-[50vh] shadow-lg"
-            />
+            <motion.button
+              className="relative bg-white shadow-xl cursor-grab active:cursor-grabbing transform-gpu focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+              style={{
+                width: 260,
+                height: 320,
+              }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              aria-label={`View ${photos[currentIndex].description}`}
+            >
+              <div className="p-2.5 pb-0">
+                <div
+                  className="relative overflow-hidden"
+                  style={{ width: 245, height: 245 }}
+                >
+                  <Image
+                    src={photos[currentIndex].src}
+                    alt={photos[currentIndex].alt}
+                    width={250}
+                    height={250}
+                    className="object-cover rounded-sm"
+                    sizes="250px"
+                  />
+                </div>
+              </div>
+              <div className="px-2.5 py-2 h-16 flex items-center justify-center">
+                <p className="text-gray-800 text-center leading-tight text-sm">
+                  {photos[currentIndex].description}
+                </p>
+              </div>
+            </motion.button>
           </motion.div>
         </AnimatePresence>
-
-        {/* Description */}
-        <p className="absolute bottom-16 text-center text-sm px-4 text-[color:var(--color-ink)] w-full">
-          {photos[currentIndex].description}
-        </p>
 
         {/* (Keep navigation buttons for accessibility) */}
         <div className="absolute bottom-3 flex justify-center gap-6">

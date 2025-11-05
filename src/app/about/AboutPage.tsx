@@ -140,7 +140,7 @@ function AboutCard({
             sizes="(max-width: 768px) 100vw, 50vw"
             priority={index === 0}
           />
-          <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-base/80 backdrop-blur-sm border border-[color:var(--color-border)]">
+          <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-base/40 backdrop-blur-sm image-overlay-text">
             {section.imageDescription}
           </div>
         </div>
