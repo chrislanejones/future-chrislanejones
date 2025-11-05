@@ -44,33 +44,6 @@
   --sidebar-ring: #9ca3af;
 }
 
-html.dark {
-  --color-base: #0b0d10;
-  --color-panel: #111418;
-  --color-ink: #f3f4f6; /* light gray for body */
-  --color-foreground: #d1d5db; /* gray-300 for icons/headings */
-  --color-muted: #9ca3af; /* gray-400 muted */
-  --color-muted-accent: rgba(255, 255, 255, 0.05);
-
-  --color-surface-hover: #1a1e24;
-
-  --color-accent: #4ade80; /* Tailwind green-400, softer neon */
-  --color-accent-alt: #60a5fa; /* Tailwind blue-400 */
-  --color-on-accent: #0b0d10; /* dark text on accent */
-
-  --color-border: #1f242b;
-
-  /* Sidebar variables - dark mode */
-  --sidebar: #111418;
-  --sidebar-foreground: #f3f4f6;
-  --sidebar-primary: #4ade80;
-  --sidebar-primary-foreground: #0b0d10;
-  --sidebar-accent: #1a1e24;
-  --sidebar-accent-foreground: #f3f4f6;
-  --sidebar-border: #1f242b;
-  --sidebar-ring: #6b7280;
-}
-
 .dark {
   --color-base: #0b0d10;
   --color-panel: #111418;
@@ -559,4 +532,14 @@ html.dark .speech-bubble--compact {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Client logo filters - dark in light mode, white in dark mode */
+.client-logo {
+  filter: grayscale(1) brightness(0.3) contrast(1.25);
+}
+
+html.dark .client-logo,
+.dark .client-logo {
+  filter: brightness(0) invert(1);
 }

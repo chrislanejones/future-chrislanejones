@@ -27,8 +27,8 @@ const badgeVariants = cva(
         blue: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
           dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#3b82f6]
-          focus-visible:ring-[#3b82f6]
+          border border-[color:var(--color-accent-alt)]
+          focus-visible:ring-[color:var(--color-accent-alt)]
         `,
         red: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
@@ -45,8 +45,8 @@ const badgeVariants = cva(
         green: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
           dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#22c55e]
-          focus-visible:ring-[#22c55e]
+          border border-[color:var(--color-accent)]
+          focus-visible:ring-[color:var(--color-accent)]
         `,
         pink: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]

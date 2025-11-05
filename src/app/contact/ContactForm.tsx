@@ -119,7 +119,6 @@ export default function ContactForm() {
           padding="large"
           shadow="soft"
           border="thin"
-          className="max-w-2xl mx-auto"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
