@@ -10,6 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { ReactNode } from "react";
+import WireframeTerrain from "./wireframe-terrain";
 
 interface BannerProps {
   title: string;
@@ -25,22 +26,21 @@ export default function Banner({
   children,
 }: BannerProps) {
   return (
-    <motion.div className="py-8">
-      <div className="flex flex-col lg:flex-row items-start lg:justify-between gap-6">
+    <motion.div className="relative py-10 lg:py-12">
+      <WireframeTerrain />
+
+      <div className="relative z-10 flex flex-col lg:flex-row items-start lg:justify-between gap-6 px-3">
         <div className="text-left flex-1">
           <h1 className="h1 tracking-tight text-ink pb-4">{title}</h1>
 
-          {/* Mobile: Description comes after title, before breadcrumbs */}
           {description && (
             <p className="p text-ink max-w-md text-left lg:hidden pb-6">
               {description}
             </p>
           )}
 
-          {/* Mobile: Children (badges/pills) come after description, before breadcrumbs */}
           <div className="lg:hidden pb-6">{children}</div>
 
-          {/* Breadcrumbs */}
           <Breadcrumb className="pb-6">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -53,11 +53,9 @@ export default function Banner({
             </BreadcrumbList>
           </Breadcrumb>
 
-          {/* Desktop: Children appear after breadcrumbs */}
           <div className="hidden lg:block">{children}</div>
         </div>
 
-        {/* Desktop: Description on the right */}
         {description && (
           <p className="p text-ink max-w-md text-right hidden lg:block">
             {description}
