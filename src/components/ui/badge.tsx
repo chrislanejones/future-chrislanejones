@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
   // shared base styles
-  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium " +
+  "inline-flex items-center rounded-full px-2.5 py-0.5 font-medium " +
     "transition-colors select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
-    "[background-color:var(--badge-bg)] [color:var(--badge-text)]",
+    "[background-color:var(--badge-bg)] [color:var(--badge-text)] [font-size:var(--step-0)] [line-height:1.5]",
   {
     variants: {
       variant: {
