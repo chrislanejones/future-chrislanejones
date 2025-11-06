@@ -118,56 +118,58 @@ export default function ConferenceDetailPage({
         shadow="soft"
         className="overflow-hidden"
       >
-        {/* Image */}
-        {conf.coverImage && (
-          <div className="relative w-full aspect-[16/9] bg-white/5">
-            <Image
-              src={conf.coverImage}
-              alt={`${conf.name} ${conf.year}`}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 100vw, 1200px"
-              priority
-            />
+        <div className="grid md:grid-cols-2 gap-0 h-full">
+          {/* Image - Left side on desktop */}
+          {conf.coverImage && (
+            <div className="relative min-h-[300px] md:min-h-full bg-white/5">
+              <Image
+                src={conf.coverImage}
+                alt={`${conf.name} ${conf.year}`}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+            </div>
+          )}
+
+          {/* Content - Right side on desktop */}
+          <div className="flex flex-col justify-center p-6 sm:p-8">
+            {/* About Section */}
+            {conf.summary && (
+              <>
+                <h2 className="mb-4">About</h2>
+                <p className="leading-relaxed whitespace-pre-line mb-6">
+                  {conf.summary}
+                </p>
+              </>
+            )}
+
+            {/* Website Link */}
+            {conf.url && (
+              <div className="mb-6">
+                <Button variant="accent" showExternalIcon asChild>
+                  <a href={conf.url} target="_blank" rel="noopener noreferrer">
+                    Visit Official Website
+                  </a>
+                </Button>
+              </div>
+            )}
+
+            {/* Topics pills */}
+            {conf.topics && conf.topics.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-[color:var(--color-border)]">
+                {conf.topics.map((topic) => (
+                  <span
+                    key={topic}
+                    className="inline-block rounded-full border border-[color:var(--color-border)] px-3 py-1"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-
-        {/* Content */}
-        <div className="p-6 sm:p-8">
-          {/* Website Link */}
-          {conf.url && (
-            <div className="mb-6">
-              <Button variant="accent" showExternalIcon asChild>
-                <a href={conf.url} target="_blank" rel="noopener noreferrer">
-                  Visit Official Website
-                </a>
-              </Button>
-            </div>
-          )}
-
-          {/* About Section */}
-          {conf.summary && (
-            <>
-              <h2 className="mb-4">About</h2>
-              <p className="leading-relaxed whitespace-pre-line mb-6">
-                {conf.summary}
-              </p>
-            </>
-          )}
-
-          {/* Topics pills */}
-          {conf.topics && conf.topics.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-4 border-t border-[color:var(--color-border)]">
-              {conf.topics.map((topic) => (
-                <span
-                  key={topic}
-                  className="inline-block rounded-full border border-[color:var(--color-border)] px-3 py-1"
-                >
-                  {topic}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </Card>
 

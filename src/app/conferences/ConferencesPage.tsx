@@ -93,9 +93,11 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
 
             {/* Conference Info */}
             <div className="flex-1 p-5 flex flex-col">
-              <h2 className="text-ink tracking-tight group-hover:text-accent transition-colors">
-                {c.name} {c.year}
-              </h2>
+              <Link href={`/conferences/${c.year}/${c.slug}`} className="nav-link inline-block text-left">
+                <h2 className="text-ink tracking-tight text-left">
+                  {c.name} {c.year}
+                </h2>
+              </Link>
               <p className="text-ink mt-1">
                 {[c.city, c.venue].filter(Boolean).join(" • ")}
               </p>

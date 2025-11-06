@@ -1,0 +1,11 @@
+Model Information:
+* title:	Bighorn (Demo Free Download)
+* source:	https://sketchfab.com/3d-models/bighorn-demo-free-download-c0a977c9a6bf4a6893af98877a9ac12a
+* author:	WildMesh 3D (https://sketchfab.com/WildMesh_3D)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bighorn (Demo Free Download)" (https://sketchfab.com/3d-models/bighorn-demo-free-download-c0a977c9a6bf4a6893af98877a9ac12a) by WildMesh 3D (https://sketchfab.com/WildMesh_3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
