@@ -80,34 +80,49 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
             {/* Conference Logo */}
             <div className="relative w-full aspect-[16/9] bg-white/5">
               {c.coverImage && (
-                <Image
-                  src={c.coverImage}
-                  alt={`${c.name} ${c.year}`}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  priority={i < 3}
-                />
+                <Link
+                  href={`/conferences/${c.year}/${c.slug}`}
+                  className="block"
+                >
+                  <div className="relative w-full aspect-[16/9] bg-white/5">
+                    <Image
+                      src={c.coverImage}
+                      alt={`${c.name} ${c.year}`}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      priority={i < 3}
+                    />
+                  </div>
+                </Link>
               )}
             </div>
 
             {/* Conference Info */}
             <div className="flex-1 p-5 flex flex-col">
-              <Link href={`/conferences/${c.year}/${c.slug}`} className="nav-link inline-block text-left">
+              {/* Title with bottom margin */}
+              <Link
+                href={`/conferences/${c.year}/${c.slug}`}
+                className="nav-link inline-block mb-2"
+              >
                 <h2 className="text-ink tracking-tight text-left">
                   {c.name} {c.year}
                 </h2>
               </Link>
-              <p className="text-ink mt-1">
+
+              {/* Location with increased top margin */}
+              <p className="text-ink mt-2">
                 {[c.city, c.venue].filter(Boolean).join(" • ")}
               </p>
+
+              {/* Description with more top margin */}
               {c.summary && (
-                <p className="text-ink mt-3 line-clamp-3">{c.summary}</p>
+                <p className="text-ink mt-4 line-clamp-3">{c.summary}</p>
               )}
 
               {/* Button at bottom */}
-              <div className="mt-auto pt-4">
-                <Button variant="outline" asChild className="w-full">
+              <div className="mt-auto pt-6">
+                <Button variant="ghost" asChild className="w-full">
                   <Link href={`/conferences/${c.year}/${c.slug}`}>
                     View Details
                   </Link>
