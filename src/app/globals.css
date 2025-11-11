@@ -375,7 +375,6 @@ html.dark .footer-hills .hill-fore {
   .nav-link {
     color: var(--color-ink);
     text-decoration: none;
-    padding: 0.25rem 0.375rem; /* small hit area for focus outline */
     border-radius: 6px;
     transition:
       color 150ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -542,4 +541,21 @@ html.dark .speech-bubble--compact {
 html.dark .client-logo,
 .dark .client-logo {
   filter: brightness(0) invert(1);
+}
+
+/* Dark mode card shadow enhancement */
+html.dark .card {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent),
+    /* subtle accent border */ 0 6px 24px rgba(0, 0, 0, 0.4),
+    /* stronger drop shadow */ 0 2px 8px
+      color-mix(in srgb, var(--color-accent) 5%, transparent); /* faint glow */
+}
+
+/* Optional: intensify on hover */
+html.dark .card:hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 15%, transparent),
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 3px 12px color-mix(in srgb, var(--color-accent) 8%, transparent);
 }

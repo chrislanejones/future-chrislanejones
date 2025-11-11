@@ -58,7 +58,7 @@ export const headerNavItems: DropdownNavItem[] = [
     label: "Work",
     children: [
       { href: "/projects", label: "Projects" },
-      { href: "/career", label: "Career" },
+      { href: "/career", label: "Career & Resume" },
       { href: "/conferences", label: "Conferences" },
       { href: "/react-maintenance", label: "React Services" },
       { href: "/wordpress-maintenance", label: "WordPress Services" },
@@ -94,7 +94,7 @@ export const footerNavLinks: FooterSection[] = [
     title: "Work",
     links: [
       { href: "/projects", label: "Projects" },
-      { href: "/career", label: "Career" },
+      { href: "/career", label: "Career & Resume" },
       { href: "/blog", label: "Blog" },
       { href: "/react-maintenance", label: "React Services" },
       { href: "/wordpress-maintenance", label: "WordPress Services" },
