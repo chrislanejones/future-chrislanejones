@@ -14,7 +14,6 @@ import type * as careerTimeline from "../careerTimeline.js";
 import type * as contactMessages from "../contactMessages.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
-import type * as seedBlogPosts from "../seedBlogPosts.js";
 import type * as seo from "../seo.js";
 
 import type {
@@ -38,7 +37,6 @@ declare const fullApi: ApiFromModules<{
   contactMessages: typeof contactMessages;
   crons: typeof crons;
   http: typeof http;
-  seedBlogPosts: typeof seedBlogPosts;
   seo: typeof seo;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

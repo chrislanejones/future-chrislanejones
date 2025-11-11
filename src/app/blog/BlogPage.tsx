@@ -52,27 +52,34 @@ export default function BlogPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post, index) => (
               <Card
-                key={post._id}
                 size="page-third"
+                padding="none" // <-- CHANGE: Remove card padding
                 delay={0.1 + index * 0.05}
                 className="overflow-hidden flex flex-col"
               >
                 {post.coverImage && (
-                  <div className="relative w-full aspect-[16/9]">
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
+                  <Link href={`/blog/${post.slug}`} className="block">
+                    <div className="relative w-full aspect-[16/9] bg-white/5">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                  </Link>
                 )}
 
                 <div className="flex-1 p-6 flex flex-col">
-                  <h3 className="text-ink tracking-tight mb-2 line-clamp-2">
-                    {post.title}
-                  </h3>
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="nav-link inline-block mb-2"
+                  >
+                    <h3 className="text-ink tracking-tight line-clamp-2">
+                      {post.title}
+                    </h3>
+                  </Link>
 
                   <div className="flex items-center gap-4 text-ink mb-3">
                     <div className="flex items-center gap-1">

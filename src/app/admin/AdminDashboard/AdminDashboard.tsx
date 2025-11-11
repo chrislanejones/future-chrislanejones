@@ -15,6 +15,7 @@ import {
   Calendar,
   PanelLeft,
   Plus,
+  Heart,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -24,6 +25,9 @@ import { useRouter } from "next/navigation";
 import ContactMessagesTab from "./ContactMessagesTab";
 import LinksManagerTab from "./LinksManagerTab";
 import CareerTimelineTab from "./CareerTimelineTab";
+import BlogPostsTab from "./BlogPostsTab";
+import BlogEngagementTab from "./BlogEngagementTab";
+import SettingsTab from "./SettingsTab";
 import {
   Sidebar,
   SidebarContent,
@@ -93,7 +97,6 @@ const SEOTab = () => {
   const pages = useQuery(api.seo.getAllSEO) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
   const addNewPage = useMutation(api.seo.updateSEO);
-  const seedSEOData = useMutation(api.seo.seedSEOData);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPagePath, setNewPagePath] = useState("");
@@ -171,17 +174,6 @@ const SEOTab = () => {
     (editedTitle !== selectedPage.title ||
       editedDescription !== selectedPage.description);
 
-  const handleSeedData = async () => {
-    try {
-      await seedSEOData();
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      console.error("Failed to seed SEO data:", error);
-      setSaveStatus("error");
-    }
-  };
-
   // Show empty state
   if (!pages.length) {
     return (
@@ -189,13 +181,7 @@ const SEOTab = () => {
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-[#9ca3af] mx-auto mb-4" />
           <p className="text-[#9ca3af] mb-4">No SEO pages yet.</p>
-          <button
-            onClick={handleSeedData}
-            className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium mx-auto"
-          >
-            <Plus className="w-4 h-4" />
-            Seed Initial Data
-          </button>
+          <p className="text-[#6b7280]">Use the Settings tab to seed initial data</p>
         </div>
       </div>
     );
@@ -209,7 +195,7 @@ const SEOTab = () => {
     <div className="flex gap-6 h-full">
       {/* Page List */}
       <div className="w-80 bg-[#111418] border border-[#1f242b] rounded-2xl p-4 flex flex-col">
-        <div className="mb-4 space-y-2">
+        <div className="mb-4">
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" />
@@ -228,13 +214,6 @@ const SEOTab = () => {
               + Add
             </button>
           </div>
-          <button
-            onClick={handleSeedData}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium"
-          >
-            <Plus className="w-4 h-4" />
-            {pages.length === 0 ? "Seed Initial Data" : "Reseed Data"}
-          </button>
         </div>
 
         {/* Add Page Modal */}
@@ -440,6 +419,7 @@ const AdminDashboard = () => {
     { id: "career-timeline", label: "Career Timeline", icon: Calendar },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "blog-posts", label: "Blog Posts", icon: FileText },
+    { id: "blog-engagement", label: "Comments & Likes", icon: Heart },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -513,8 +493,9 @@ const AdminDashboard = () => {
             {activeTab === "links" && <LinksManagerTab />}
             {activeTab === "career-timeline" && <CareerTimelineTab />}
             {activeTab === "messages" && <ContactMessagesTab />}
-            {activeTab === "blog-posts" && <ComingSoonTab title="Blog Posts" />}
-            {activeTab === "settings" && <ComingSoonTab title="Settings" />}
+            {activeTab === "blog-posts" && <BlogPostsTab />}
+            {activeTab === "blog-engagement" && <BlogEngagementTab />}
+            {activeTab === "settings" && <SettingsTab />}
           </div>
         </SidebarInset>
       </div>
