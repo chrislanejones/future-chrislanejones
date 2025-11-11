@@ -251,7 +251,6 @@ const LinksManagerTab = () => {
   const updateLink = useMutation(api.browserLinks.update);
   const deleteLink = useMutation(api.browserLinks.deleteLink);
   const deleteCategory = useMutation(api.browserLinks.deleteCategory);
-  const seedLinks = useMutation(api.browserLinks.seedLinks);
   const generateScreenshot = useAction(api.browserLinks.generateScreenshot);
   const refreshAllScreenshots = useAction(
     api.browserLinks.refreshAllScreenshots
@@ -396,17 +395,6 @@ const LinksManagerTab = () => {
     }
   };
 
-  const handleSeedData = async () => {
-    try {
-      await seedLinks();
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      console.error("Failed to seed data:", error);
-      setSaveStatus("error");
-    }
-  };
-
   const handleAutoFill = () => {
     try {
       const url = new URL(formData.href);
@@ -510,13 +498,6 @@ const LinksManagerTab = () => {
                   <p>Remove all screenshots from all {allLinks.length} links</p>
                 </TooltipContent>
               </Tooltip>
-              <button
-                onClick={handleSeedData}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-accent)] text-[var(--color-on-accent)] hover:shadow-glow transition font-medium"
-              >
-                <Plus className="w-4 h-4" />
-                {allLinks.length === 0 ? "Seed Initial Data" : "Reseed Data"}
-              </button>
             </div>
           </div>
 

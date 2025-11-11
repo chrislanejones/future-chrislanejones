@@ -559,3 +559,13 @@ html.dark .card:hover {
     0 8px 32px rgba(0, 0, 0, 0.5),
     0 3px 12px color-mix(in srgb, var(--color-accent) 8%, transparent);
 }
+
+/* Client logo filters - dark in light mode, white in dark mode */
+.client-logo {
+  filter: grayscale(1) brightness(0.3) contrast(1.25);
+}
+
+html.dark .client-logo,
+.dark .client-logo {
+  filter: brightness(0) invert(1);
+}

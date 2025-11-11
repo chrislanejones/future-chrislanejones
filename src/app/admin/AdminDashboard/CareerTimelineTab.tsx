@@ -81,7 +81,6 @@ const CareerTimelineTab = () => {
   const addEvent = useMutation(api.careerTimeline.addEvent);
   const updateEvent = useMutation(api.careerTimeline.updateEvent);
   const deleteEvent = useMutation(api.careerTimeline.deleteEvent);
-  const seedTimeline = useMutation(api.careerTimeline.seedTimeline);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState<TimelineEvent | null>(null);
@@ -182,17 +181,6 @@ const CareerTimelineTab = () => {
     setShowAddModal(true);
   };
 
-  const handleSeedTimeline = async () => {
-    try {
-      await seedTimeline();
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      console.error("Failed to seed timeline:", error);
-      setSaveStatus("error");
-    }
-  };
-
   return (
     <div className="h-full">
       {/* Header */}
@@ -239,19 +227,13 @@ const CareerTimelineTab = () => {
             </p>
             <div className="flex gap-3 justify-center">
               <button
-                onClick={handleSeedTimeline}
+                onClick={() => setShowAddModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium"
               >
                 <Plus className="w-4 h-4" />
-                Seed Initial Data
+                Add Event
               </button>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-[#1a1e24] text-[#f3f4f6] rounded-lg hover:bg-[#1f242b] transition-colors font-medium"
-              >
-                <Plus className="w-4 h-4" />
-                Add Manually
-              </button>
+              <p className="text-[#6b7280] self-center">or use Settings tab to seed data</p>
             </div>
           </div>
         ) : (
