@@ -132,8 +132,8 @@ const PhotoGallery = ({
   const positions = [...Array(Math.min(photos.length, 5)).keys()].map((i) => ({
     id: i + 1,
     order: i,
-    x: ["-400px", "-200px", "0px", "200px", "400px"][i] || "0px",
-    y: ["15px", "32px", "8px", "22px", "44px"][i] || "0px",
+    x: ["-380px", "-190px", "0px", "190px", "380px"][i] || "0px",
+    y: ["-10px", "5px", "-15px", "0px", "15px"][i] || "0px",
     rotate: [-8, 5, -3, 7, -5][i] || 0,
     zIndex: 50 - i * 10,
     direction: (i % 2 === 0 ? "left" : "right") as Direction,
@@ -269,7 +269,7 @@ const PhotoGallery = ({
 
   // Desktop scattered polaroid layout
   return (
-    <div className="relative flex h-[550px] w-full items-center justify-center">
+    <div className="relative flex h-[450px] w-full items-center justify-center">
       <motion.div
         className="relative mx-auto flex w-full max-w-7xl justify-center"
         initial={{ opacity: 0 }}
@@ -282,7 +282,7 @@ const PhotoGallery = ({
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
         >
-          <div className="relative h-[360px] w-[320px]">
+          <div className="relative h-[300px] w-[280px]">
             {[...positions].reverse().map((position, index) => {
               const photoIndex = positions.length - 1 - index;
               const photo = photos[photoIndex];
@@ -318,8 +318,8 @@ const PhotoGallery = ({
                   }
                 >
                   <Photo
-                    width={300}
-                    height={300}
+                    width={240}
+                    height={240}
                     src={photo?.src || ""}
                     alt={photo?.alt || ""}
                     direction={position.direction}
@@ -372,7 +372,7 @@ export default function GalleryDrawer({
         </Button>
       </DrawerTrigger>
 
-      <DrawerContent className="h-[67vh]">
+      <DrawerContent className="h-[72vh]">
         <div className="mx-auto w-full max-w-7xl">
           <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center">
