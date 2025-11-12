@@ -1,20 +1,32 @@
+// src/components/page/wireframe-terrain.tsx
 "use client";
 
 import { useLayoutEffect, useRef, useState, useCallback } from "react";
 
+interface WireframeTerrainProps {
+  variant?: "left" | "right";
+}
+
 const GRID = 40;
 const HEIGHT_MULT = 0.9;
-const ROTATE_DEG = -12;
 const PERSPECTIVE = 0.75;
 const OPACITY = 0.22;
 const MIN_HEIGHT = 300;
 const MAX_HEIGHT = 440;
 
-export default function WireframeTerrain() {
+export default function WireframeTerrain({
+  variant = "right",
+}: WireframeTerrainProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heightMapRef = useRef<number[][]>([]);
-  const [hoveredCell, setHoveredCell] = useState<{ x: number; y: number } | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
+
+  // Dynamic rotation based on variant
+  const ROTATE_DEG = variant === "left" ? 12 : -12;
 
   const generateTerrain = (grid: number) => {
     const hm: number[][] = new Array(grid);
@@ -75,20 +87,16 @@ export default function WireframeTerrain() {
       return [rx + cx, ry + cy];
     }
 
-    // Draw hovered cell fill (if on desktop and cell is hovered)
     if (isDesktop && hoveredCell) {
       const { x: hx, y: hy } = hoveredCell;
       if (hx >= 0 && hx < grid - 1 && hy >= 0 && hy < grid - 1) {
         ctx.beginPath();
-
-        // Get the 4 corners of the grid cell
         const corners = [
           [hx, hy],
           [hx + 1, hy],
           [hx + 1, hy + 1],
           [hx, hy + 1],
         ];
-
         corners.forEach(([x, y], idx) => {
           const hVal = hm[y][x] * HEIGHT_MULT;
           let sx = x * cellX;
@@ -97,7 +105,6 @@ export default function WireframeTerrain() {
           if (idx === 0) ctx.moveTo(sx, sy);
           else ctx.lineTo(sx, sy);
         });
-
         ctx.closePath();
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.3)`;
         ctx.fill();
@@ -155,51 +162,51 @@ export default function WireframeTerrain() {
     if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDesktop) return;
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isDesktop) return;
 
-    const canvas = canvasRef.current;
-    const hm = heightMapRef.current;
-    if (!canvas || hm.length === 0) return;
+      const canvas = canvasRef.current;
+      const hm = heightMapRef.current;
+      if (!canvas || hm.length === 0) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
-    const { width, height } = canvas;
-    const grid = hm.length;
-    const cellX = width / (grid - 1);
-    const cellY = height / (grid - 1);
+      const { width, height } = canvas;
+      const grid = hm.length;
+      const cellX = width / (grid - 1);
+      const cellY = height / (grid - 1);
 
-    const theta = (ROTATE_DEG * Math.PI) / 180;
-    const cx = width / 2;
-    const cy = height / 2;
+      const theta = (ROTATE_DEG * Math.PI) / 180;
+      const cx = width / 2;
+      const cy = height / 2;
 
-    // Inverse rotation to map mouse position back to grid coordinates
-    const dx = mouseX - cx;
-    const dy = mouseY - cy;
-    const cosTheta = Math.cos(-theta);
-    const sinTheta = Math.sin(-theta);
-    const unrotatedX = dx * cosTheta - dy * sinTheta + cx;
-    const unrotatedY = dx * sinTheta + dy * cosTheta + cy;
+      const dx = mouseX - cx;
+      const dy = mouseY - cy;
+      const cosTheta = Math.cos(-theta);
+      const sinTheta = Math.sin(-theta);
+      const unrotatedX = dx * cosTheta - dy * sinTheta + cx;
+      const unrotatedY = dx * sinTheta + dy * cosTheta + cy;
 
-    // Approximate grid cell (simplified - doesn't account for height perspective perfectly)
-    const gridX = Math.floor(unrotatedX / cellX);
-    const gridY = Math.floor(unrotatedY / cellY);
+      const gridX = Math.floor(unrotatedX / cellX);
+      const gridY = Math.floor(unrotatedY / cellY);
 
-    if (gridX >= 0 && gridX < grid - 1 && gridY >= 0 && gridY < grid - 1) {
-      setHoveredCell({ x: gridX, y: gridY });
-    } else {
-      setHoveredCell(null);
-    }
-  }, [isDesktop]);
+      if (gridX >= 0 && gridX < grid - 1 && gridY >= 0 && gridY < grid - 1) {
+        setHoveredCell({ x: gridX, y: gridY });
+      } else {
+        setHoveredCell(null);
+      }
+    },
+    [isDesktop, ROTATE_DEG]
+  );
 
   const handleMouseLeave = useCallback(() => {
     setHoveredCell(null);
   }, []);
 
   useLayoutEffect(() => {
-    // Check if desktop (min-width: 768px for md breakpoint)
     const checkDesktop = () => {
       setIsDesktop(window.innerWidth >= 768);
     };
@@ -224,7 +231,6 @@ export default function WireframeTerrain() {
       attributeFilter: ["class"],
     });
 
-    // Add mouse event listeners for desktop hover
     const canvas = canvasRef.current;
     if (canvas) {
       canvas.addEventListener("mousemove", handleMouseMove as any);
@@ -241,10 +247,9 @@ export default function WireframeTerrain() {
     };
   }, [handleMouseMove, handleMouseLeave]);
 
-  // Redraw when hovered cell changes
   useLayoutEffect(() => {
     draw();
-  }, [hoveredCell]);
+  }, [hoveredCell, ROTATE_DEG]);
 
   return (
     <div
@@ -259,7 +264,7 @@ export default function WireframeTerrain() {
       <canvas
         ref={canvasRef}
         className="block w-full"
-        style={{ pointerEvents: isDesktop ? 'auto' : 'none' }}
+        style={{ pointerEvents: isDesktop ? "auto" : "none" }}
       />
     </div>
   );

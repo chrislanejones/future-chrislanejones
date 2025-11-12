@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 const QUOTES: ReactNode[] = [
   "My rambling 1",
   "My rambling 2",
-  "My rambling 3",
+  "I spent way too many hours building this site, let's bring back Geosites",
   "When I tried SQL for the first time I hit DROP TABLE attempting to download.",
   "Locked my fridge with a CAPTCHA to stop my midnight snacking.",
   'In 2017, three people called on the same day asking me "How can I learn to code?"',
@@ -20,7 +20,7 @@ const QUOTES: ReactNode[] = [
   "I lock my computer at night to prevent my cats from online shopping",
   "Powered by coffee and deprecated APIs since 2015",
   "I tried to explain `git blame` to my wife. I'm now sleeping on the couch.",
-  "My code reviews have been described as 'thorough' and 'why are you like this?'",
+  "I'm at the age where I avoid Starbuck's wooden chairs with square backrest at all costs",
 ];
 
 interface QuotegeneratorcardProps {

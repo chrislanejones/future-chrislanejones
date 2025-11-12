@@ -10,6 +10,7 @@ import {
   NavLinkComponent,
 } from "../page/links";
 import dynamic from "next/dynamic";
+import WireframeTerrain from "../page/wireframe-terrain";
 
 // Dynamically import the 3D component (client-side only)
 const Bighorn3D = dynamic(() => import("./Bighorn3D"), {
@@ -21,11 +22,7 @@ export default function Footer() {
   return (
     <>
       <motion.footer className="relative site-container pt-5 pb-10 overflow-hidden">
-        <div className="footer-hills">
-          <div className="hill-mid"></div>
-          <div className="hill-fore"></div>
-          <div className="hill-fore right"></div>
-        </div>
+        <WireframeTerrain variant="left" />
 
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
           {/* Branding */}
@@ -43,7 +40,10 @@ export default function Footer() {
 
             <p
               className="text-foreground"
-              style={{ fontSize: 'var(--step-0)', fontWeight: 'var(--weight-regular)' }}
+              style={{
+                fontSize: "var(--step-0)",
+                fontWeight: "var(--weight-regular)",
+              }}
             >
               I Consult, Design, and Develop Web Interfaces for Businesses and
               Government Agencies.
@@ -75,7 +75,10 @@ export default function Footer() {
           {/* Footer Sections */}
           <div
             className="grid grid-cols-2 gap-8 text-foreground md:col-span-3 md:grid-cols-3"
-            style={{ fontSize: 'var(--step--1)', fontWeight: 'var(--weight-regular)' }}
+            style={{
+              fontSize: "var(--step--1)",
+              fontWeight: "var(--weight-regular)",
+            }}
           >
             {footerNavLinks.map((section, index) => (
               <div
@@ -104,7 +107,10 @@ export default function Footer() {
         <div className="mt-8 pt-6 text-center relative z-10">
           <p
             className="text-foreground"
-            style={{ fontSize: 'var(--step--1)', fontWeight: 'var(--weight-regular)' }}
+            style={{
+              fontSize: "var(--step--1)",
+              fontWeight: "var(--weight-regular)",
+            }}
           >
             © {new Date().getFullYear()} Chris Lane Jones. All rights reserved.
           </p>
