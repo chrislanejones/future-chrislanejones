@@ -6,12 +6,19 @@ import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Heart, MessageCircle, ArrowRight } from "lucide-react";
 import { FoldedImage } from "@/components/page/folded-image";
+
+// Helper function to get badge color variant based on index
+const getBadgeVariant = (index: number) => {
+  const variants = ["blue", "green", "purple", "orange", "pink", "cyan", "yellow", "red"] as const;
+  return variants[index % variants.length];
+};
 
 export default function BlogPage() {
   const posts = useQuery(api.blogPosts.getAllPosts);
@@ -105,13 +112,13 @@ export default function BlogPage() {
 
                   {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {post.tags.slice(0, 3).map((tag) => (
-                        <span
+                      {post.tags.slice(0, 3).map((tag, index) => (
+                        <Badge
                           key={tag}
-                          className="inline-flex items-center px-2 py-1 rounded-full bg-accent/10 text-accent"
+                          variant={getBadgeVariant(index)}
                         >
                           {tag}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
                   )}
