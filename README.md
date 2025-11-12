@@ -126,19 +126,19 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 ```json
 {
   "next": "14.1.4",
-  "react": "^18",
-  "typescript": "^5",
-  "tailwindcss": "^3.4.17",
-  "framer-motion": "^10.16.16",
-  "convex": "^1.27.5",
+  "react": "^18.3.1",
+  "typescript": "^5.9.3",
+  "tailwindcss": "^3.4.18",
+  "framer-motion": "^10.18.0",
+  "convex": "^1.28.2",
   "@clerk/nextjs": "5.7.4",
   "uploadthing": "^7.7.4",
-  "@uploadthing/react": "^7.7.4",
+  "@uploadthing/react": "^7.3.3",
   "@dnd-kit/core": "^6.3.1",
-  "@dnd-kit/sortable": "^9.0.0",
+  "@dnd-kit/sortable": "^10.0.0",
   "@radix-ui/react-*": "latest",
   "lucide-react": "^0.552.0",
-  "posthog-js": "^1.275.1"
+  "posthog-js": "^1.285.1"
 }
 ```
 
