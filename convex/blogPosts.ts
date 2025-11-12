@@ -6,7 +6,7 @@ import { Id } from "./_generated/dataModel";
 async function getPostMedia(ctx: any, postId: string) {
   const media = await ctx.db
     .query("media")
-    .withIndex("by_assigned_id", (q) => q.eq("assignedToId", postId))
+    .withIndex("by_assigned_id", (q: any) => q.eq("assignedToId", postId))
     .filter((q: any) => q.eq(q.field("assignedToType"), "blogPost"))
     .collect();
   return media[0]?.url; // Return first image URL
