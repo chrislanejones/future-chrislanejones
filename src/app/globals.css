@@ -565,7 +565,92 @@ html.dark .card:hover {
   filter: grayscale(1) brightness(0.3) contrast(1.25);
 }
 
-html.dark .client-logo,
-.dark .client-logo {
+html.dark .client-logo {
   filter: brightness(0) invert(1);
+}
+
+/* Folded Map Effect for Card Images */
+
+/* Folded Map Card Styles */
+.folded-card {
+  background: var(--color-panel);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.folded-card:hover {
+  transform: translateY(-5px);
+}
+
+.folded-card-image-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+html.dark .folded-card-image-container {
+  background: linear-gradient(135deg, #1a1e24 0%, #2d3748 100%);
+}
+
+.folded-card-content {
+  padding: 24px;
+}
+
+.folded-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 12px;
+}
+
+.folded-card-description {
+  font-size: 14px;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.folded-card-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    var(--color-accent-alt) 100%
+  );
+  color: var(--color-on-accent);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px
+    color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+.folded-card-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px
+    color-mix(in srgb, var(--color-accent) 60%, transparent);
+}
+
+.folded-card-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+html.dark .folded-card-badge {
+  background: rgba(17, 20, 24, 0.95);
+  color: var(--color-accent);
 }

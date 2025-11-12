@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const getAllPosts = query({
   args: {},
@@ -236,11 +237,13 @@ export const getAllLikesAdmin = query({
     // Get post info
     const postsWithLikes = await Promise.all(
       Array.from(postLikesMap.entries()).map(async ([postId, count]) => {
-        const post = await ctx.db.get(postId as any);
+        const post = await ctx.db.get(postId as Id<"blogPosts">);
+        // Type guard: check if post has blogPost properties
+        const blogPost = post && 'title' in post && 'slug' in post ? post : null;
         return {
           postId,
-          postTitle: post?.title || "Unknown Post",
-          postSlug: post?.slug || "",
+          postTitle: blogPost?.title || "Unknown Post",
+          postSlug: blogPost?.slug || "",
           likesCount: count,
         };
       })

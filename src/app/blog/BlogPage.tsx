@@ -11,6 +11,7 @@ import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Heart, MessageCircle, ArrowRight } from "lucide-react";
+import { FoldedImage } from "@/components/page/folded-image";
 
 export default function BlogPage() {
   const posts = useQuery(api.blogPosts.getAllPosts);
@@ -60,12 +61,12 @@ export default function BlogPage() {
                 {post.coverImage && (
                   <Link href={`/blog/${post.slug}`} className="block">
                     <div className="relative w-full aspect-[16/9] bg-white/5">
-                      <Image
+                      <FoldedImage
                         src={post.coverImage}
                         alt={post.title}
                         fill
-                        className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        showHorizontalFold={true}
                       />
                     </div>
                   </Link>
