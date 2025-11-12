@@ -6,29 +6,29 @@ import GalleryDrawer, { GalleryPhoto } from "../page/gallery-drawer";
 
 const photos: GalleryPhoto[] = [
   {
-    src: "/gallery/Theo-and-I.webp",
+    src: "/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp",
     alt: "Theo Browne and Chris at Render 2024",
     description: "Theo Browne and I at Render 2024",
   },
   {
-    src: "/gallery/FCC-2017-Bold-Bean.webp",
-    alt: "Coding at Bold Bean Jacksonville 2017",
-    description: "Coding with Friends in Bold Bean Jax 2017",
+    src: "/gallery/fan-gallery/Jason-Lengstorf-and-I.webp",
+    alt: "Jason Lengstorf and I at Epic Web Conf 2025",
+    description: "Jason Lengstorf and I at Epic Web Conf 2025",
   },
   {
-    src: "/gallery/Kent-C-Dodds-Friends-and-I-at-Epic-Web.webp",
-    alt: "Kent C. Dodds and friends at THAT Conference",
-    description: "Kent C. Dodds, Friends, and I at the last THAT Conference",
+    src: "/gallery/fan-gallery/Group-Photo-With-Kent-C-Dodds-at-THAT-Conf.webp",
+    alt: "Group Photo with Kent C. Dodds at THAT Conf WI 2024",
+    description: "Group Photo with Kent C. Dodds at THAT Conf WI 2024",
   },
   {
-    src: "/gallery/Pandemic-Office-Setup-2021.webp",
-    alt: "Home office setup during pandemic",
-    description: "Pandemic Office Setup 2021",
+    src: "/gallery/fan-gallery/Kevin-Powell-And-I-THAT-Conf.webp",
+    alt: "Kevin Powell And I THAT Conference WI 2025",
+    description: "Kevin Powell And I THAT Conf WI 2025",
   },
   {
-    src: "/gallery/Chris-Hiking.webp",
-    alt: "Hiking in Shenandoah Valley",
-    description: "Hiking in the Shanahdoah Valley",
+    src: "/gallery/fan-gallery/ChrisSev-Avindra-and-I-ATO-2024.webp",
+    alt: "Chris Sev, Avindra Fernando, and I at ATO 2024",
+    description: "Chris Sev, Avindra Fernando, and I at ATO 2024",
   },
 ];
 
@@ -62,7 +62,7 @@ export default function ImageGalleryBox({
       <div className="relative flex-1 min-h-[200px]">
         <Image
           alt="hiking"
-          src="/gallery/Chris-Hiking.webp"
+          src="/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp"
           className="absolute inset-0 w-full h-full object-cover opacity-70"
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
@@ -79,7 +79,7 @@ export default function ImageGalleryBox({
       </div>
 
       <div className="p-6">
-        <h3 className="text-ink tracking-tight">Photo Gallery</h3>
+        <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
       </div>
     </Card>
   );
