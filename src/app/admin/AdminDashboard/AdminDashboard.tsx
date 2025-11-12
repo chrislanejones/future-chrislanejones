@@ -21,8 +21,9 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useUser, SignOutButton } from "@clerk/nextjs";
 import { useClerk } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ContactMessagesTab from "./ContactMessagesTab";
+import MediaTab from "./MediaTab";
 import LinksManagerTab from "./LinksManagerTab";
 import CareerTimelineTab from "./CareerTimelineTab";
 import BlogPostsTab from "./BlogPostsTab";
@@ -85,7 +86,7 @@ const CharacterCounter = ({
       </div>
       <div className="h-2 bg-[#0b0d10] rounded-full overflow-hidden">
         <div
-          className={`h-full transition-all ${ percentage > 100 ? "bg-red-500" : percentage > 90 ? "bg-yellow-500" : "bg-green-500" }`}
+          className={`h-full transition-all ${percentage > 100 ? "bg-red-500" : percentage > 90 ? "bg-yellow-500" : "bg-green-500"}`}
           style={{ width: `${Math.min(percentage, 100)}%` }}
         />
       </div>
@@ -181,7 +182,9 @@ const SEOTab = () => {
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-[#9ca3af] mx-auto mb-4" />
           <p className="text-[#9ca3af] mb-4">No SEO pages yet.</p>
-          <p className="text-[#6b7280]">Use the Settings tab to seed initial data</p>
+          <p className="text-[#6b7280]">
+            Use the Settings tab to seed initial data
+          </p>
         </div>
       </div>
     );
@@ -220,9 +223,7 @@ const SEOTab = () => {
         {showAddModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6 max-w-md w-full mx-4">
-              <h3 className="mb-4 text-[#f3f4f6] font-bold">
-                Add New Page
-              </h3>
+              <h3 className="mb-4 text-[#f3f4f6] font-bold">Add New Page</h3>
               <input
                 type="text"
                 value={newPagePath}
@@ -256,14 +257,10 @@ const SEOTab = () => {
             <button
               key={page._id}
               onClick={() => handlePageSelect(page)}
-              className={`w-full text-left px-3 py-2 rounded-lg transition-all ${ selectedPage._id === page._id ? "bg-[#1a1e24] border border-[#4ade80]" : "bg-[#0b0d10] border border-[#1f242b] hover:border-[#4ade80]" }`}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-all ${selectedPage._id === page._id ? "bg-[#1a1e24] border border-[#4ade80]" : "bg-[#0b0d10] border border-[#1f242b] hover:border-[#4ade80]"}`}
             >
-              <div className="mb-1 text-[#4ade80] font-medium">
-                {page.path}
-              </div>
-              <div className="truncate text-[#f3f4f6]">
-                {page.title}
-              </div>
+              <div className="mb-1 text-[#4ade80] font-medium">{page.path}</div>
+              <div className="truncate text-[#f3f4f6]">{page.title}</div>
             </button>
           ))}
         </div>
@@ -272,11 +269,12 @@ const SEOTab = () => {
       {/* Editor */}
       <div className="flex-1 bg-[#111418] border border-[#1f242b] rounded-2xl p-6 flex flex-col">
         <div className="mb-6">
-          <h2 className="mb-2 text-[#f3f4f6] font-bold">
-            Edit SEO Metadata
-          </h2>
+          <h2 className="mb-2 text-[#f3f4f6] font-bold">Edit SEO Metadata</h2>
           <p className="text-[#9ca3af]">
-            Page: <span className="text-[#4ade80] font-medium">{selectedPage.path}</span>
+            Page:{" "}
+            <span className="text-[#4ade80] font-medium">
+              {selectedPage.path}
+            </span>
           </p>
         </div>
 
@@ -327,9 +325,7 @@ const SEOTab = () => {
             </div>
             <div className="mt-3 p-3 bg-[#0b0d10] rounded-lg border border-[#1f242b]">
               <p className="mb-1 text-[#9ca3af] font-medium">Google Preview:</p>
-              <p className="line-clamp-2 text-[#f3f4f6]">
-                {editedDescription}
-              </p>
+              <p className="line-clamp-2 text-[#f3f4f6]">{editedDescription}</p>
             </div>
           </div>
 
@@ -341,19 +337,27 @@ const SEOTab = () => {
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
-                <span className="text-[#9ca3af]">Title: 30-60 characters (optimal: 50-60)</span>
+                <span className="text-[#9ca3af]">
+                  Title: 30-60 characters (optimal: 50-60)
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
-                <span className="text-[#9ca3af]">Description: 120-160 characters (optimal: 150-160)</span>
+                <span className="text-[#9ca3af]">
+                  Description: 120-160 characters (optimal: 150-160)
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
-                <span className="text-[#9ca3af]">Include primary keyword near the beginning</span>
+                <span className="text-[#9ca3af]">
+                  Include primary keyword near the beginning
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#4ade80]" />
-                <span className="text-[#9ca3af]">Make it compelling - this is your search result ad</span>
+                <span className="text-[#9ca3af]">
+                  Make it compelling - this is your search result ad
+                </span>
               </li>
             </ul>
           </div>
@@ -364,7 +368,7 @@ const SEOTab = () => {
           <button
             onClick={handleSave}
             disabled={!hasChanges}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-medium ${ hasChanges ? "bg-[#4ade80] text-[#0b0d10] hover:bg-[#22c55e]" : "bg-[#1a1e24] text-[#6b7280] cursor-not-allowed" }`}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all font-medium ${hasChanges ? "bg-[#4ade80] text-[#0b0d10] hover:bg-[#22c55e]" : "bg-[#1a1e24] text-[#6b7280] cursor-not-allowed"}`}
           >
             <Save className="w-4 h-4" />
             Save Changes
@@ -405,16 +409,23 @@ const AdminDashboard = () => {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("seo");
+  const searchParams = useSearchParams();
+
+  // Get active tab from URL search params, default to "seo"
+  const activeTab = searchParams.get("tab") || "seo";
 
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
   };
 
+  const handleTabChange = (tabId: string) => {
+    router.push(`/admin?tab=${tabId}`);
+  };
+
   const tabs = [
     { id: "seo", label: "SEO Manager", icon: FileText },
-    { id: "media", label: "Media", icon: Image },
+    { id: "media", label: "Media", icon: Image }, // Add this
     { id: "links", label: "Links", icon: LinkIcon },
     { id: "career-timeline", label: "Career Timeline", icon: Calendar },
     { id: "messages", label: "Messages", icon: MessageSquare },
@@ -447,7 +458,7 @@ const AdminDashboard = () => {
                 return (
                   <SidebarMenuItem key={tab.id} className="px-2">
                     <SidebarMenuButton
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => handleTabChange(tab.id)}
                       isActive={activeTab === tab.id}
                       className={`${activeTab === tab.id ? "bg-[#111418] text-[#4ade80] border border-[#4ade80]" : "text-[#f3f4f6] hover:text-[#4ade80] hover:bg-[#111418]/50"} group-data-[state=collapsed]/sidebar-wrapper:justify-center`}
                     >
@@ -489,7 +500,7 @@ const AdminDashboard = () => {
           </div>
           <div className="flex-1 p-6 overflow-auto">
             {activeTab === "seo" && <SEOTab />}
-            {activeTab === "media" && <ComingSoonTab title="Media Manager" />}
+            {activeTab === "media" && <MediaTab />}
             {activeTab === "links" && <LinksManagerTab />}
             {activeTab === "career-timeline" && <CareerTimelineTab />}
             {activeTab === "messages" && <ContactMessagesTab />}

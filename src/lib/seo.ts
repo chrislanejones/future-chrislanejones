@@ -36,6 +36,16 @@ function getDefaultSEO(path: string): Metadata {
       description:
         "From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and life in Virginia's Shenandoah Mountains.",
     },
+    "/blog": {
+      title: "Blog | Web Development, React & WordPress Insights",
+      description:
+        "Articles and tutorials about web development, React, Next.js, WordPress, and building modern web applications. Tips, tricks, and lessons learned from the field.",
+    },
+    "/contact": {
+      title: "Contact Chris Lane Jones | Web Development Services",
+      description:
+        "Get in touch for web development projects, WordPress maintenance, React consulting, or speaking opportunities. Available for freelance work and collaborations.",
+    },
     "/projects": {
       title: "Web Development Projects | Next.js, React & WordPress Sites",
       description:
@@ -70,6 +80,11 @@ function getDefaultSEO(path: string): Metadata {
       title: "Portfolio Evolution | From WordPress 2.1 to Next.js React App",
       description:
         "18 years of website evolution: from the Kubrick WordPress theme in 2007 to modern Next.js. See how my portfolio transformed alongside web technology.",
+    },
+    "/site-map": {
+      title: "Site Map | Chris Lane Jones Portfolio Navigation",
+      description:
+        "Complete site map of my web development portfolio. Browse all pages including projects, blog posts, services, conference notes, and developer resources.",
     },
     "/wordpress-maintenance": {
       title: "WordPress Maintenance Services | Monthly Action Plan",

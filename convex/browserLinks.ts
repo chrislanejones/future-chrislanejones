@@ -215,7 +215,9 @@ export const generateScreenshot = action({
     const uploadThingSecret = process.env.UPLOADTHING_SECRET;
 
     if (!uploadThingSecret) {
-      throw new Error("UPLOADTHING_SECRET not configured in Convex environment");
+      throw new Error(
+        "UPLOADTHING_SECRET not configured in Convex environment"
+      );
     }
 
     // Step 1: Generate screenshot
@@ -258,32 +260,39 @@ export const generateScreenshot = action({
     // Step 2: Upload image to UploadThing
     if (contentType.startsWith("image/")) {
       const imageBuffer = await res.arrayBuffer();
-      const fileName = `screenshot-${Date.now()}.${contentType.includes('png') ? 'png' : 'jpg'}`;
+      const fileName = `screenshot-${Date.now()}.${contentType.includes("png") ? "png" : "jpg"}`;
 
       // Get presigned URL from UploadThing (v6 API - v7 doesn't exist yet)
-      const uploadRes = await fetch(`https://api.uploadthing.com/v6/uploadFiles`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Uploadthing-Api-Key": uploadThingSecret,
-          "X-Uploadthing-Version": "6.13.0",
-        },
-        body: JSON.stringify({
-          files: [{
-            name: fileName,
-            size: imageBuffer.byteLength,
-            type: contentType,
-          }],
-          metadata: {
-            linkId: id,
-            url: href,
+      const uploadRes = await fetch(
+        `https://api.uploadthing.com/v6/uploadFiles`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Uploadthing-Api-Key": uploadThingSecret,
+            "X-Uploadthing-Version": "6.13.0",
           },
-        }),
-      });
+          body: JSON.stringify({
+            files: [
+              {
+                name: fileName,
+                size: imageBuffer.byteLength,
+                type: contentType,
+              },
+            ],
+            metadata: {
+              linkId: id,
+              url: href,
+            },
+          }),
+        }
+      );
 
       if (!uploadRes.ok) {
         const errorText = await uploadRes.text();
-        throw new Error(`UploadThing API failed: ${uploadRes.status} - ${errorText}`);
+        throw new Error(
+          `UploadThing API failed: ${uploadRes.status} - ${errorText}`
+        );
       }
 
       const uploadData = await uploadRes.json();
@@ -293,7 +302,9 @@ export const generateScreenshot = action({
       const fields = presignedPost?.fields;
 
       if (!uploadUrl || !fileKey) {
-        throw new Error(`No presigned URL from UploadThing: ${JSON.stringify(uploadData)}`);
+        throw new Error(
+          `No presigned URL from UploadThing: ${JSON.stringify(uploadData)}`
+        );
       }
 
       // UploadThing v6 requires multipart/form-data with fields
@@ -318,7 +329,9 @@ export const generateScreenshot = action({
 
       if (!fileUploadRes.ok) {
         const errorText = await fileUploadRes.text();
-        throw new Error(`File upload to UploadThing failed: ${fileUploadRes.status} - ${errorText}`);
+        throw new Error(
+          `File upload to UploadThing failed: ${fileUploadRes.status} - ${errorText}`
+        );
       }
 
       // Construct the final URL
@@ -371,6 +384,54 @@ export const refreshAllScreenshotsInternal = internalAction({
   args: {},
   handler: async (ctx) => {
     await ctx.runAction(api.browserLinks.refreshAllScreenshots);
+  },
+});
+
+// Query to get all images/screenshots grouped by category
+export const getImagesByCategory = query({
+  args: {},
+  handler: async (ctx) => {
+    const links = await ctx.db.query("browserLinks").collect();
+
+    // Group by category
+    const imagesByCategory: Record<
+      string,
+      {
+        category: string;
+        color: string;
+        images: {
+          id: Id<"browserLinks">;
+          href: string;
+          label: string;
+          domain: string;
+          screenshotUrl?: string;
+          screenshotUpdatedAt?: number;
+        }[];
+      }
+    > = {};
+
+    for (const link of links) {
+      if (link.screenshotUrl) {
+        if (!imagesByCategory[link.category]) {
+          imagesByCategory[link.category] = {
+            category: link.category,
+            color: link.color,
+            images: [],
+          };
+        }
+
+        imagesByCategory[link.category].images.push({
+          id: link._id,
+          href: link.href,
+          label: link.label,
+          domain: link.domain,
+          screenshotUrl: link.screenshotUrl,
+          screenshotUpdatedAt: link.screenshotUpdatedAt,
+        });
+      }
+    }
+
+    return Object.values(imagesByCategory);
   },
 });
 

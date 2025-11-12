@@ -258,7 +258,12 @@ export default function Header() {
 
                   {/* Mobile Social Links */}
                   <div className="pt-6 border-t border-white/10 space-y-3">
-                    <h2 className="text-muted px-4 mb-3">Social Links</h2>
+                    <h2
+                      className="text-foreground px-4 mb-3"
+                      style={{ fontSize: 'var(--step--1)', fontWeight: 'var(--weight-demibold)' }}
+                    >
+                      Social Links
+                    </h2>
                     {socialLinks.map((social) => (
                       <Button
                         key={social.href}
