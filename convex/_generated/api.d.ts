@@ -12,8 +12,8 @@ import type * as blogPosts from "../blogPosts.js";
 import type * as browserLinks from "../browserLinks.js";
 import type * as careerTimeline from "../careerTimeline.js";
 import type * as contactMessages from "../contactMessages.js";
-import type * as crons from "../crons.js";
 import type * as http from "../http.js";
+import type * as media from "../media.js";
 import type * as seo from "../seo.js";
 
 import type {
@@ -35,8 +35,8 @@ declare const fullApi: ApiFromModules<{
   browserLinks: typeof browserLinks;
   careerTimeline: typeof careerTimeline;
   contactMessages: typeof contactMessages;
-  crons: typeof crons;
   http: typeof http;
+  media: typeof media;
   seo: typeof seo;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

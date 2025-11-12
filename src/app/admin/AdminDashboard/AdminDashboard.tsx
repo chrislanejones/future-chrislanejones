@@ -414,6 +414,13 @@ const AdminDashboard = () => {
   // Get active tab from URL search params, default to "seo"
   const activeTab = searchParams.get("tab") || "seo";
 
+  // Query data for tab info
+  const allLinks = useQuery(api.browserLinks.getAll) ?? [];
+  const categories = useQuery(api.browserLinks.getCategories) ?? [];
+  const blogPosts = useQuery(api.blogPosts.getAllPostsAdmin) ?? [];
+  const allMedia = useQuery(api.media.getAll) ?? [];
+  const totalImages = allMedia.length;
+
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
@@ -425,14 +432,28 @@ const AdminDashboard = () => {
 
   const tabs = [
     { id: "seo", label: "SEO Manager", icon: FileText },
-    { id: "media", label: "Media", icon: Image }, // Add this
-    { id: "links", label: "Links", icon: LinkIcon },
-    { id: "career-timeline", label: "Career Timeline", icon: Calendar },
+    { id: "media", label: "Media Manager", icon: Image },
+    { id: "links", label: "Links Manager", icon: LinkIcon },
+    { id: "career-timeline", label: "Career Timeline Manager", icon: Calendar },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "blog-posts", label: "Blog Posts", icon: FileText },
     { id: "blog-engagement", label: "Comments & Likes", icon: Heart },
     { id: "settings", label: "Settings", icon: Settings },
   ];
+
+  // Get tab subtitle info
+  const getTabSubtitle = () => {
+    switch (activeTab) {
+      case "media":
+        return `${totalImages} total images • Drag & drop to assign to pages or posts`;
+      case "links":
+        return `${allLinks.length} total links • ${categories.length} categories`;
+      case "career-timeline":
+        return "Manage your career timeline events displayed on the career page";
+      default:
+        return null;
+    }
+  };
 
   return (
     <SidebarProvider defaultOpen={true}>
@@ -492,11 +513,18 @@ const AdminDashboard = () => {
 
         {/* Main Content */}
         <SidebarInset className="flex-1">
-          <div className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b border-[#1f242b] bg-[#111418] px-4">
+          <div className="sticky top-0 z-10 flex min-h-14 items-center gap-2 border-b border-[#1f242b] bg-[#111418] px-4 py-3">
             <SidebarTrigger className="text-[#f3f4f6]" />
-            <h2 className="font-semibold text-[#f3f4f6]">
-              {tabs.find((t) => t.id === activeTab)?.label}
-            </h2>
+            <div className="flex-1">
+              <h2 className="font-semibold text-[#f3f4f6]">
+                {tabs.find((t) => t.id === activeTab)?.label}
+              </h2>
+              {getTabSubtitle() && (
+                <p className="text-[#9ca3af] text-sm">
+                  {getTabSubtitle()}
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex-1 p-6 overflow-auto">
             {activeTab === "seo" && <SEOTab />}

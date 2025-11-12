@@ -12,10 +12,8 @@ import {
   ExternalLink,
   AlertCircle,
   CheckCircle,
-  Camera,
-  RefreshCw,
 } from "lucide-react";
-import { useQuery, useMutation, useAction } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import {
@@ -48,9 +46,6 @@ interface LinkFormData {
   order: number;
 }
 
-/** Works with new `screenshotUrl` or legacy `UPLOADTHINGUrl` */
-const getScreenshotUrl = (link: any) =>
-      link?.screenshotUrl ?? undefined;
 /** Modal extracted for clarity */
 const LinkModal = ({
   show,
@@ -251,13 +246,6 @@ const LinksManagerTab = () => {
   const updateLink = useMutation(api.browserLinks.update);
   const deleteLink = useMutation(api.browserLinks.deleteLink);
   const deleteCategory = useMutation(api.browserLinks.deleteCategory);
-  const generateScreenshot = useAction(api.browserLinks.generateScreenshot);
-  const refreshAllScreenshots = useAction(
-    api.browserLinks.refreshAllScreenshots
-  );
-  const deleteAllScreenshots = useMutation(
-    api.browserLinks.deleteAllScreenshots
-  );
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -271,13 +259,6 @@ const LinksManagerTab = () => {
   const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
     null
   );
-  const [generatingScreenshot, setGeneratingScreenshot] = useState<
-    string | null
-  >(null);
-  const [refreshingAllScreenshots, setRefreshingAllScreenshots] =
-    useState(false);
-  const [showDeleteScreenshotsConfirm, setShowDeleteScreenshotsConfirm] =
-    useState(false);
   const [formData, setFormData] = useState<LinkFormData>({
     href: "",
     label: "",
@@ -409,111 +390,9 @@ const LinksManagerTab = () => {
     }
   };
 
-  const handleGenerateScreenshot = async (
-    linkId: Id<"browserLinks">,
-    href: string
-  ) => {
-    setGeneratingScreenshot(linkId);
-    try {
-      await generateScreenshot({ id: linkId, href });
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      console.error("Failed to generate screenshot:", error);
-      setSaveStatus("error");
-    } finally {
-      setGeneratingScreenshot(null);
-    }
-  };
-
-  const handleRefreshAllScreenshots = async () => {
-    setRefreshingAllScreenshots(true);
-    try {
-      await refreshAllScreenshots();
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      console.error("Failed to refresh all screenshots:", error);
-      setSaveStatus("error");
-    } finally {
-      setRefreshingAllScreenshots(false);
-    }
-  };
-
-  const handleDeleteAllScreenshots = async () => {
-    try {
-      await deleteAllScreenshots();
-      setShowDeleteScreenshotsConfirm(false);
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      console.error("Failed to delete all screenshots:", error);
-      setSaveStatus("error");
-    }
-  };
-
   return (
-    <div className="h-full flex flex-col rounded-2xl overflow-hidden card bg-panel">
+    <div className="h-full flex rounded-2xl overflow-hidden card bg-panel">
       <TooltipProvider delayDuration={100}>
-        {/* Header */}
-        <div className="border-b p-6 bg-panel">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-ink font-bold">Links Manager</h1>
-              <p className="text-muted mt-1">
-                {allLinks.length} total links • {categories.length} categories
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={handleRefreshAllScreenshots}
-                    disabled={refreshingAllScreenshots}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--color-surface-hover)] text-ink hover:shadow-passive transition font-medium disabled:opacity-50"
-                  >
-                    {refreshingAllScreenshots ? (
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Camera className="w-4 h-4" />
-                    )}
-                    Refresh All Screenshots
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Regenerate screenshots for all {allLinks.length} links</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setShowDeleteScreenshotsConfirm(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition font-medium"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete All Screenshots
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Remove all screenshots from all {allLinks.length} links</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </div>
-
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
-            <input
-              type="text"
-              placeholder="Search links..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-lg text-ink bg-[var(--color-panel)] border focus-ring"
-            />
-          </div>
-        </div>
-
         <div className="flex flex-1 overflow-hidden">
           {/* Categories Sidebar */}
           <div className="w-64 border-r p-4 overflow-y-auto bg-panel">
@@ -554,8 +433,9 @@ const LinksManagerTab = () => {
           {/* Links List */}
           <div className="flex-1 overflow-y-auto">
             {selectedCategory && (
-              <div className="p-4 border-b bg-panel">
-                <div className="flex items-center justify-between">
+              <div className="p-4 border-b bg-panel space-y-4">
+                {/* Action Buttons and Search */}
+                <div className="flex items-center justify-between gap-4">
                   <h2 className="text-ink font-semibold">{selectedCategory}</h2>
                   <div className="flex gap-2">
                     <button
@@ -572,6 +452,18 @@ const LinksManagerTab = () => {
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
+                </div>
+
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Search links..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 rounded-lg text-ink bg-[var(--color-panel)] border focus-ring"
+                  />
                 </div>
               </div>
             )}
@@ -631,41 +523,10 @@ const LinksManagerTab = () => {
                             <p className="mt-1 truncate text-muted">
                               {link.href}
                             </p>
-
-                            {/* Screenshot display */}
-                            {getScreenshotUrl(link) && (
-                              <div className="mt-3">
-                                <img
-                                  src={getScreenshotUrl(link)!}
-                                  alt={`${link.label} screenshot`}
-                                  className="w-full h-40 rounded-lg object-cover border"
-                                />
-                              </div>
-                            )}
                           </div>
                         </div>
 
                         <div className="flex gap-2 ml-4">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() =>
-                                  handleGenerateScreenshot(link._id, link.href)
-                                }
-                                disabled={generatingScreenshot === link._id}
-                                className="p-2 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 rounded transition disabled:opacity-50"
-                              >
-                                {generatingScreenshot === link._id ? (
-                                  <RefreshCw className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  <Camera className="w-4 h-4" />
-                                )}
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Generate Screenshot</p>
-                            </TooltipContent>
-                          </Tooltip>
                           <button
                             onClick={() => handleEditLink(link)}
                             className="p-2 text-muted hover:text-ink hover:shadow-passive rounded transition"
@@ -750,37 +611,6 @@ const LinksManagerTab = () => {
               </button>
               <button
                 onClick={() => setShowCategoryDeleteConfirm(false)}
-                className="flex-1 px-4 py-2 rounded-lg bg-[var(--color-surface-hover)] text-ink hover:shadow-passive transition"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete All Screenshots Confirmation */}
-      {showDeleteScreenshotsConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="card rounded-2xl p-6 max-w-md w-full mx-4 bg-panel">
-            <div className="flex items-center gap-3 mb-4">
-              <AlertCircle className="w-6 h-6 text-red-500" />
-              <h3 className="text-ink font-bold">Delete All Screenshots?</h3>
-            </div>
-            <p className="text-muted mb-6">
-              This will remove screenshots from all {allLinks.length} links. The
-              links themselves won't be deleted, only the screenshot images.
-              This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleDeleteAllScreenshots}
-                className="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white hover:shadow-passive transition font-medium"
-              >
-                Delete All Screenshots
-              </button>
-              <button
-                onClick={() => setShowDeleteScreenshotsConfirm(false)}
                 className="flex-1 px-4 py-2 rounded-lg bg-[var(--color-surface-hover)] text-ink hover:shadow-passive transition"
               >
                 Cancel
