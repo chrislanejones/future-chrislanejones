@@ -68,17 +68,14 @@ export default function ImageGalleryBox({
           sizes="(max-width: 768px) 100vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
-
-        <div className="absolute top-4 right-4 z-10">
-          <GalleryDrawer
-            photos={photos}
-            title="Gallery Drawer"
-            animationDelay={0.2}
-          />
-        </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 grid grid-cols-[auto_1fr] items-center gap-4">
+        <GalleryDrawer
+          photos={photos}
+          title="Gallery Drawer"
+          animationDelay={0.2}
+        />
         <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
       </div>
     </Card>

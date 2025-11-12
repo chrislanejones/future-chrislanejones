@@ -573,6 +573,29 @@ html.dark .client-logo {
 .folded-map-effect {
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #f4e8d8 0%, #e8dcc8 100%);
+}
+
+/* Sepia and vintage filter on images */
+.folded-map-effect img {
+  filter: sepia(0.4) contrast(1.15) brightness(0.92) saturate(0.85) hue-rotate(-5deg);
+  transition: filter 0.3s ease;
+}
+
+/* Clear image on hover - remove sepia */
+.folded-map-effect:hover img {
+  filter: sepia(0) contrast(1) brightness(1) saturate(1) hue-rotate(0deg);
+}
+
+/* Paper hole styling */
+.paper-hole {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+/* Fade holes slightly on hover to see image better */
+.folded-map-effect:hover .paper-hole {
+  opacity: 0.4;
 }
 
 /* Vertical fold lines at 25% and 75% */
@@ -591,88 +614,123 @@ html.dark .client-logo {
   left: 25%;
   background: linear-gradient(
     to right,
-    rgba(255, 255, 255, 0.3) 0%,
+    rgba(244, 232, 216, 0.4) 0%,
     transparent 50%,
-    rgba(0, 0, 0, 0.2) 100%
+    rgba(101, 67, 33, 0.25) 100%
   );
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 0 8px rgba(101, 67, 33, 0.2);
 }
 
 .folded-map-effect::after {
   left: 75%;
   background: linear-gradient(
     to right,
-    rgba(255, 255, 255, 0.3) 0%,
+    rgba(244, 232, 216, 0.4) 0%,
     transparent 50%,
-    rgba(0, 0, 0, 0.2) 100%
+    rgba(101, 67, 33, 0.25) 100%
   );
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 0 8px rgba(101, 67, 33, 0.2);
 }
 
-/* Overlay for subtle fold shadows */
+/* Overlay for subtle fold shadows + paper texture */
 .fold-overlay {
   position: absolute;
   inset: 0;
   background:
+    /* Paper grain texture */
+    repeating-linear-gradient(0deg, rgba(139, 107, 76, 0.02) 0px, transparent 1px, transparent 2px, rgba(139, 107, 76, 0.02) 3px),
+    repeating-linear-gradient(90deg, rgba(139, 107, 76, 0.02) 0px, transparent 1px, transparent 2px, rgba(139, 107, 76, 0.02) 3px),
+    /* Fold shadow lines */
     linear-gradient(
       90deg,
       transparent 24.5%,
-      rgba(0, 0, 0, 0.1) 24.5%,
-      rgba(0, 0, 0, 0.1) 25%,
+      rgba(101, 67, 33, 0.15) 24.5%,
+      rgba(101, 67, 33, 0.15) 25%,
       transparent 25%
     ),
     linear-gradient(
       90deg,
       transparent 49.5%,
-      rgba(0, 0, 0, 0.15) 49.5%,
-      rgba(0, 0, 0, 0.15) 50%,
+      rgba(101, 67, 33, 0.2) 49.5%,
+      rgba(101, 67, 33, 0.2) 50%,
       transparent 50%
     ),
     linear-gradient(
       90deg,
       transparent 74.5%,
-      rgba(0, 0, 0, 0.1) 74.5%,
-      rgba(0, 0, 0, 0.1) 75%,
+      rgba(101, 67, 33, 0.15) 74.5%,
+      rgba(101, 67, 33, 0.15) 75%,
       transparent 75%
-    );
+    ),
+    /* Overall warm paper tint */
+    linear-gradient(135deg, rgba(244, 232, 216, 0.15) 0%, rgba(232, 220, 200, 0.1) 100%);
   pointer-events: none;
   z-index: 2;
+  mix-blend-mode: multiply;
 }
 
-/* Dark mode vertical folds */
+/* Dark mode - vintage paper with darker sepia */
+html.dark .folded-map-effect {
+  background: linear-gradient(135deg, #2a1f16 0%, #1f1610 100%);
+}
+
+html.dark .folded-map-effect img {
+  filter: sepia(0.5) contrast(1.1) brightness(0.75) saturate(0.7) hue-rotate(-8deg);
+  transition: filter 0.3s ease;
+}
+
+/* Clear image on hover in dark mode - remove sepia */
+html.dark .folded-map-effect:hover img {
+  filter: sepia(0) contrast(1) brightness(1) saturate(1) hue-rotate(0deg);
+}
+
+/* Paper holes in dark mode - lighter worn spots */
+html.dark .paper-hole {
+  opacity: 0.8;
+  filter: brightness(1.2);
+}
+
 html.dark .folded-map-effect::before,
 html.dark .folded-map-effect::after {
   background: linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.3) 0%,
+    rgba(244, 232, 216, 0.08) 0%,
     transparent 50%,
-    rgba(255, 255, 255, 0.1) 100%
+    rgba(0, 0, 0, 0.4) 100%
   );
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
 }
 
 html.dark .fold-overlay {
   background:
+    /* Paper grain texture - darker */
+    repeating-linear-gradient(0deg, rgba(244, 232, 216, 0.01) 0px, transparent 1px, transparent 2px, rgba(244, 232, 216, 0.01) 3px),
+    repeating-linear-gradient(90deg, rgba(244, 232, 216, 0.01) 0px, transparent 1px, transparent 2px, rgba(244, 232, 216, 0.01) 3px),
+    /* Fold shadow lines - warm tones */
     linear-gradient(
       90deg,
       transparent 24.5%,
-      rgba(255, 255, 255, 0.04) 24.5%,
-      rgba(255, 255, 255, 0.04) 25%,
+      rgba(101, 67, 33, 0.2) 24.5%,
+      rgba(101, 67, 33, 0.2) 25%,
       transparent 25%
     ),
     linear-gradient(
       90deg,
       transparent 49.5%,
-      rgba(255, 255, 255, 0.06) 49.5%,
-      rgba(255, 255, 255, 0.06) 50%,
+      rgba(101, 67, 33, 0.25) 49.5%,
+      rgba(101, 67, 33, 0.25) 50%,
       transparent 50%
     ),
     linear-gradient(
       90deg,
       transparent 74.5%,
-      rgba(255, 255, 255, 0.04) 74.5%,
-      rgba(255, 255, 255, 0.04) 75%,
+      rgba(101, 67, 33, 0.2) 74.5%,
+      rgba(101, 67, 33, 0.2) 75%,
       transparent 75%
-    );
+    ),
+    /* Overall aged paper tint */
+    linear-gradient(135deg, rgba(42, 31, 22, 0.3) 0%, rgba(31, 22, 16, 0.2) 100%);
+  mix-blend-mode: overlay;
 }
 
 /* Folded Map Card Styles */

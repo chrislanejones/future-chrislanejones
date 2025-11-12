@@ -159,39 +159,29 @@ export default function Musicplayerbox({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
 
-        <div className="absolute top-4 left-4 flex items-center gap-2 bg-base/80 hover:bg-base/90 backdrop-blur-sm rounded-lg px-3 py-2 transition-colors">
-          <Volume2 size={16} className="text-ink" />
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer slider"
-          />
+        {/* Volume control - top left */}
+        <div className="absolute top-4 left-4">
+          <div className="flex items-center gap-2 bg-panel/95 backdrop-blur-sm rounded-full px-4 py-3 shadow-sm transition-all hover:shadow-md">
+            <Volume2 size={16} className="text-ink" />
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer slider"
+            />
+          </div>
         </div>
 
-        <div className="absolute top-4 right-4 flex items-center gap-2">
-          <Button
-            onClick={togglePlayPause}
-            variant="neutral"
-            size="icon"
-            round={true}
-            disabled={!isLoaded}
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? (
-              <Pause size={20} className="text-ink" fill="currentColor" />
-            ) : (
-              <Play size={20} className="text-ink ml-0.5" fill="currentColor" />
-            )}
-          </Button>
+        {/* Next button - top right */}
+        <div className="absolute top-4 right-4">
           <Button
             onClick={nextTrack}
             variant="neutral"
             size="icon"
-            round={true}
+            className="rounded-full h-11 w-11 shadow-sm transition hover:scale-105"
             disabled={!isLoaded}
             aria-label="Next track"
           >
@@ -200,10 +190,25 @@ export default function Musicplayerbox({
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 grid grid-cols-[1fr_auto] items-center gap-4">
         <h3 className="text-ink">
           {currentTrack.artist} – {currentTrack.title}
         </h3>
+
+        <Button
+          onClick={togglePlayPause}
+          variant="neutral"
+          size="icon"
+          className="rounded-full h-11 w-11 shadow-sm transition hover:scale-105"
+          disabled={!isLoaded}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? (
+            <Pause size={20} className="text-ink" fill="currentColor" />
+          ) : (
+            <Play size={20} className="text-ink ml-0.5" fill="currentColor" />
+          )}
+        </Button>
       </div>
     </Card>
   );

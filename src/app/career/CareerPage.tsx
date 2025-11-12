@@ -271,21 +271,19 @@ function PhotoGalleryCard() {
           sizes="(max-width: 768px) 100vw, 50vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
-
-        {/* Gallery Button - Top Right */}
-        <div className="absolute top-4 right-4 z-10">
-          <GalleryDrawer
-            photos={photos}
-            title="Gallery"
-            description="Photos of Various Setups."
-            animationDelay={0.2}
-          />
-        </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="">Setup Photo Gallery</h3>
-        <p className="text-muted">Desk Setups Throughout the Years</p>
+      <div className="p-6 grid grid-cols-[auto_1fr] items-start gap-4">
+        <GalleryDrawer
+          photos={photos}
+          title="Gallery"
+          description="Photos of Various Setups."
+          animationDelay={0.2}
+        />
+        <div>
+          <h3 className="">Setup Photo Gallery</h3>
+          <p className="text-muted">Desk Setups Throughout the Years</p>
+        </div>
       </div>
     </Card>
   );

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
-import { StickyNote } from "lucide-react";
+import { Newspaper } from "lucide-react";
 
 interface BlogboxProps {
   size?:
@@ -76,7 +76,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
           asChild
         >
           <Link href="/blog">
-            <StickyNote size={20} className="text-ink" />
+            <Newspaper size={20} className="text-ink" />
           </Link>
         </Button>
       </div>
