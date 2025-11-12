@@ -85,4 +85,22 @@ export default defineSchema({
   })
     .index("by_order", ["order"])
     .index("by_created", ["createdAt"]),
+
+  media: defineTable({
+    url: v.string(), // UploadThing URL
+    filename: v.string(), // Original filename
+    altText: v.optional(v.string()), // Alt text for accessibility
+    size: v.optional(v.number()), // File size in bytes
+    mimeType: v.optional(v.string()), // image/jpeg, image/png, etc.
+    // Assignment tracking
+    assignedToType: v.optional(v.string()), // "blogPost", "page", "gallery", "project", null/undefined = unassigned
+    assignedToId: v.optional(v.string()), // blogPost _id, or page name like "home", "about"
+    assignedToTitle: v.optional(v.string()), // Display name for what it's assigned to
+    // Metadata
+    uploadedAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_assigned_type", ["assignedToType"])
+    .index("by_assigned_id", ["assignedToId"])
+    .index("by_uploaded", ["uploadedAt"]),
 });

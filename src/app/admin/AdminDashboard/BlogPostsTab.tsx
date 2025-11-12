@@ -13,10 +13,21 @@ import {
   AlertCircle,
   CheckCircle,
   Tag,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
+import { useUploadThing } from "@/utils/uploadthing";
+
+// Helper to get assigned media for a post
+function getPostCoverImage(postId: string, allMedia: any[]) {
+  const media = allMedia.find(
+    (m) => m.assignedToType === "blogPost" && m.assignedToId === postId
+  );
+  return media?.url;
+}
 
 interface BlogPost {
   _id: Id<"blogPosts">;
@@ -34,15 +45,50 @@ interface BlogPost {
 
 const BlogPostsTab = () => {
   const posts = useQuery(api.blogPosts.getAllPostsAdmin) ?? [];
+  const allMedia = useQuery(api.media.getAll) ?? [];
   const createPost = useMutation(api.blogPosts.createPost);
   const updatePost = useMutation(api.blogPosts.updatePost);
   const deletePost = useMutation(api.blogPosts.deletePost);
+  const createMedia = useMutation(api.media.create);
+  const assignMedia = useMutation(api.media.assign);
 
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const { startUpload } = useUploadThing("mediaUploader", {
+    onClientUploadComplete: async (res) => {
+      if (res && res[0]) {
+        // Create media entry and assign to current post
+        const mediaId = await createMedia({
+          url: res[0].url,
+          filename: res[0].name || "Blog cover image",
+          size: res[0].size,
+        });
+
+        // If editing existing post, assign immediately
+        if (selectedPost && !isCreating) {
+          await assignMedia({
+            mediaId: mediaId as Id<"media">,
+            assignedToType: "blogPost",
+            assignedToId: selectedPost._id,
+            assignedToTitle: selectedPost.title,
+          });
+        }
+
+        setFormData({ ...formData, coverImage: res[0].url });
+        setIsUploading(false);
+      }
+    },
+    onUploadError: (error: Error) => {
+      console.error("Upload error:", error);
+      setIsUploading(false);
+      alert("Upload failed: " + error.message);
+    },
+  });
 
   // Form state
   const [formData, setFormData] = useState({
@@ -66,18 +112,21 @@ const BlogPostsTab = () => {
   // Update form when post selection changes
   useEffect(() => {
     if (selectedPost && !isCreating) {
+      // Get cover image from media first, fallback to old field
+      const coverImage = getPostCoverImage(selectedPost._id, allMedia) || selectedPost.coverImage || "";
+
       setFormData({
         title: selectedPost.title,
         slug: selectedPost.slug,
         excerpt: selectedPost.excerpt,
         content: selectedPost.content,
-        coverImage: selectedPost.coverImage || "",
+        coverImage,
         tags: selectedPost.tags || [],
         published: selectedPost.published,
       });
       setIsEditing(false);
     }
-  }, [selectedPost, isCreating]);
+  }, [selectedPost, isCreating, allMedia]);
 
   const filteredPosts = posts.filter(
     (post) =>
@@ -191,6 +240,14 @@ const BlogPostsTab = () => {
       title,
       slug: isCreating || !formData.slug ? generateSlug(title) : formData.slug,
     });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    await startUpload([file]);
   };
 
   // Show empty state
@@ -382,16 +439,65 @@ const BlogPostsTab = () => {
           {/* Cover Image */}
           <div>
             <label className="block mb-2 text-[#f3f4f6] font-medium">
-              Cover Image URL
+              Cover Image
             </label>
-            <input
-              type="text"
-              value={formData.coverImage}
-              onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-              disabled={!isEditing && !isCreating}
-              className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80] disabled:opacity-50"
-              placeholder="/path/to/image.jpg"
-            />
+
+            {/* Image Preview */}
+            {formData.coverImage && (
+              <div className="mb-3 relative group">
+                <img
+                  src={formData.coverImage}
+                  alt="Cover preview"
+                  className="w-full h-48 object-cover rounded-lg border border-[#1f242b]"
+                />
+                {(isEditing || isCreating) && (
+                  <button
+                    onClick={() => setFormData({ ...formData, coverImage: "" })}
+                    className="absolute top-2 right-2 p-2 bg-red-500/90 text-white rounded-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Upload Button */}
+            {(isEditing || isCreating) && (
+              <div className="mb-3">
+                <label className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1a1e24] border border-[#1f242b] rounded-lg text-[#f3f4f6] hover:border-[#4ade80] hover:bg-[#1f242b] transition-colors cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploading}
+                    className="hidden"
+                  />
+                  {isUploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-[#4ade80] border-t-transparent rounded-full animate-spin" />
+                      <span>Uploading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4" />
+                      <span>Upload Image</span>
+                    </>
+                  )}
+                </label>
+              </div>
+            )}
+
+            {/* Manual URL Input */}
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.coverImage}
+                onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                disabled={!isEditing && !isCreating}
+                className="w-full px-4 py-3 bg-[#0b0d10] border border-[#1f242b] rounded-lg text-[#f3f4f6] placeholder:text-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#4ade80] disabled:opacity-50"
+                placeholder="Or paste image URL..."
+              />
+            </div>
           </div>
 
           {/* Tags */}

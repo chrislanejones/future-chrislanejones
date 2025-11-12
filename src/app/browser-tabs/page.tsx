@@ -8,7 +8,7 @@ export async function generateMetadata() {
   return await getPageSEO("/browser-tabs");
 }
 
-export default function ProjectsPage() {
+export default function BrowserTabsPage() {
   return (
     <div className="min-h-screen bg-base">
       <Header />

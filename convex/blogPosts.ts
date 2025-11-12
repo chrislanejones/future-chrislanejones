@@ -2,14 +2,35 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
+// Helper to get media for a blog post
+async function getPostMedia(ctx: any, postId: string) {
+  const media = await ctx.db
+    .query("media")
+    .withIndex("by_assigned_id", (q) => q.eq("assignedToId", postId))
+    .filter((q: any) => q.eq(q.field("assignedToType"), "blogPost"))
+    .collect();
+  return media[0]?.url; // Return first image URL
+}
+
 export const getAllPosts = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const posts = await ctx.db
       .query("blogPosts")
       .filter((q) => q.eq(q.field("published"), true))
       .order("desc")
       .collect();
+
+    // Enrich with media URLs
+    return await Promise.all(
+      posts.map(async (post) => {
+        const mediaUrl = await getPostMedia(ctx, post._id);
+        return {
+          ...post,
+          coverImage: mediaUrl || post.coverImage, // Use media first, fallback to old field
+        };
+      })
+    );
   },
 });
 
@@ -17,17 +38,28 @@ export const getAllPosts = query({
 export const getAllPostsAdmin = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db
+    const posts = await ctx.db
       .query("blogPosts")
       .order("desc")
       .collect();
+
+    // Enrich with media URLs
+    return await Promise.all(
+      posts.map(async (post) => {
+        const mediaUrl = await getPostMedia(ctx, post._id);
+        return {
+          ...post,
+          coverImage: mediaUrl || post.coverImage, // Use media first, fallback to old field
+        };
+      })
+    );
   },
 });
 
 export const getPostBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const post = await ctx.db
       .query("blogPosts")
       .filter((q) =>
         q.and(
@@ -36,6 +68,15 @@ export const getPostBySlug = query({
         )
       )
       .first();
+
+    if (!post) return null;
+
+    // Enrich with media URL
+    const mediaUrl = await getPostMedia(ctx, post._id);
+    return {
+      ...post,
+      coverImage: mediaUrl || post.coverImage,
+    };
   },
 });
 

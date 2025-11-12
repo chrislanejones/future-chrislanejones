@@ -6,22 +6,17 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Banner from "@/components/page/banner";
 import BrowserCard from "@/components/page/browser-card";
 
-// Strong typing for what BrowserCard receives per link (now includes screenshotUrl)
+// Strong typing for what BrowserCard receives per link
 export type BrowserLinkItem = {
   href: string;
   label: string;
   domain: string;
   favicon?: string;
-  screenshotUrl?: string; // 👈 used to show hover image tooltip
 };
 
 export default function BrowserTabs() {
   const allLinks = useQuery(api.browserLinks.getAll) ?? [];
   const categories = useQuery(api.browserLinks.getCategories) ?? [];
-
-  // Helper to bridge old/new field names while you migrate schema/types
-  const getScreenshotUrl = (link: any) =>
-    link?.screenshotUrl ?? undefined;
 
   const linkCategories = categories.map((cat) => ({
     title: cat.category,
@@ -42,8 +37,6 @@ export default function BrowserTabs() {
         label: link.label,
         domain: link.domain,
         favicon: link.favicon,
-        // ✅ pass screenshot URL forward so tooltip can show a photo
-        screenshotUrl: getScreenshotUrl(link),
       })),
   }));
 
@@ -82,7 +75,7 @@ export default function BrowserTabs() {
               key={category.title}
               title={category.title}
               color={category.color}
-              links={category.links} // includes screenshotUrl for each link
+              links={category.links}
               delay={0.05 + categoryIndex * 0.05}
             />
           ))}

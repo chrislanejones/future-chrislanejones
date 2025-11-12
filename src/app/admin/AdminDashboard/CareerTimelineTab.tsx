@@ -183,25 +183,6 @@ const CareerTimelineTab = () => {
 
   return (
     <div className="h-full">
-      {/* Header */}
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <h2 className="font-bold text-[#f3f4f6]">
-            Career Timeline Manager
-          </h2>
-          <p className="text-[#9ca3af] mt-1">
-            Manage your career timeline events displayed on the career page
-          </p>
-        </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium"
-        >
-          <Plus className="w-4 h-4" />
-          Add Event
-        </button>
-      </div>
-
       {/* Status Messages */}
       {saveStatus === "success" && (
         <div className="mb-4 flex items-center gap-2 px-4 py-3 bg-green-500/10 border border-green-500/20 rounded-lg">
@@ -219,6 +200,19 @@ const CareerTimelineTab = () => {
 
       {/* Events List */}
       <div className="bg-[#111418] border border-[#1f242b] rounded-2xl p-6">
+        {/* Add Event Button */}
+        {events.length > 0 && (
+          <div className="mb-4 flex justify-end">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-[#4ade80] text-[#0b0d10] rounded-lg hover:bg-[#22c55e] transition-colors font-medium"
+            >
+              <Plus className="w-4 h-4" />
+              Add Event
+            </button>
+          </div>
+        )}
+
         {events.length === 0 ? (
           <div className="text-center py-12">
             <AlertCircle className="w-12 h-12 text-[#9ca3af] mx-auto mb-4" />
