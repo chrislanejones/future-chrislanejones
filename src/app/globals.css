@@ -570,6 +570,110 @@ html.dark .client-logo {
 }
 
 /* Folded Map Effect for Card Images */
+.folded-map-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Vertical fold lines at 25% and 75% */
+.folded-map-effect::before,
+.folded-map-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.folded-map-effect::before {
+  left: 25%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.folded-map-effect::after {
+  left: 75%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Overlay for subtle fold shadows */
+.fold-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 24.5%,
+      rgba(0, 0, 0, 0.1) 24.5%,
+      rgba(0, 0, 0, 0.1) 25%,
+      transparent 25%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 49.5%,
+      rgba(0, 0, 0, 0.15) 49.5%,
+      rgba(0, 0, 0, 0.15) 50%,
+      transparent 50%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 74.5%,
+      rgba(0, 0, 0, 0.1) 74.5%,
+      rgba(0, 0, 0, 0.1) 75%,
+      transparent 75%
+    );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Dark mode vertical folds */
+html.dark .folded-map-effect::before,
+html.dark .folded-map-effect::after {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.3) 0%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+}
+
+html.dark .fold-overlay {
+  background:
+    linear-gradient(
+      90deg,
+      transparent 24.5%,
+      rgba(255, 255, 255, 0.04) 24.5%,
+      rgba(255, 255, 255, 0.04) 25%,
+      transparent 25%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 49.5%,
+      rgba(255, 255, 255, 0.06) 49.5%,
+      rgba(255, 255, 255, 0.06) 50%,
+      transparent 50%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 74.5%,
+      rgba(255, 255, 255, 0.04) 74.5%,
+      rgba(255, 255, 255, 0.04) 75%,
+      transparent 75%
+    );
+}
 
 /* Folded Map Card Styles */
 .folded-card {
