@@ -41,7 +41,10 @@ export default function Footer() {
               </Link>
             </div>
 
-            <p className="text-muted">
+            <p
+              className="text-foreground"
+              style={{ fontSize: 'var(--step-0)', fontWeight: 'var(--weight-regular)' }}
+            >
               I Consult, Design, and Develop Web Interfaces for Businesses and
               Government Agencies.
             </p>
@@ -70,7 +73,10 @@ export default function Footer() {
           </div>
 
           {/* Footer Sections */}
-          <div className="grid grid-cols-2 gap-8 text-muted md:col-span-3 md:grid-cols-3">
+          <div
+            className="grid grid-cols-2 gap-8 text-foreground md:col-span-3 md:grid-cols-3"
+            style={{ fontSize: 'var(--step--1)', fontWeight: 'var(--weight-regular)' }}
+          >
             {footerNavLinks.map((section, index) => (
               <div
                 key={section.title}
@@ -96,7 +102,10 @@ export default function Footer() {
 
         {/* Copyright Statement */}
         <div className="mt-8 pt-6 text-center relative z-10">
-          <p className="text-muted">
+          <p
+            className="text-foreground"
+            style={{ fontSize: 'var(--step--1)', fontWeight: 'var(--weight-regular)' }}
+          >
             © {new Date().getFullYear()} Chris Lane Jones. All rights reserved.
           </p>
         </div>

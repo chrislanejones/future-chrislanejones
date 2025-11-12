@@ -8,12 +8,19 @@ import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Heart, MessageCircle, ArrowLeft, User, Mail } from "lucide-react";
 import type { Id } from "../../../../convex/_generated/dataModel";
+
+// Helper function to get badge color variant based on index
+const getBadgeVariant = (index: number) => {
+  const variants = ["blue", "green", "purple", "orange", "pink", "cyan", "yellow", "red"] as const;
+  return variants[index % variants.length];
+};
 
 // Simple function to generate user identifier (could be improved with actual user system)
 function getUserIdentifier() {
@@ -178,13 +185,13 @@ export default function BlogPostPage({
             {post.tags && post.tags.length > 0 && (
               <div className="mb-8 pb-6 border-b border-[color:var(--color-border)]">
                 <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
+                  {post.tags.map((tag, index) => (
+                    <Badge
                       key={tag}
-                      className="inline-flex items-center px-3 py-1 rounded-full bg-accent/10 text-accent"
+                      variant={getBadgeVariant(index)}
                     >
                       {tag}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
               </div>

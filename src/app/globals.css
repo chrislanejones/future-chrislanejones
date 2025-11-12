@@ -411,7 +411,7 @@ html.dark .footer-hills .hill-fore {
     color: var(--color-muted);
   }
   .text-foreground {
-    color: var(--color-ink);
+    color: var(--color-foreground);
   }
 }
 
@@ -757,4 +757,45 @@ html.dark .folded-card-image-container {
 html.dark .folded-card-badge {
   background: rgba(17, 20, 24, 0.95);
   color: var(--color-accent);
+}
+
+/* Chrome Group Colors for Links Manager */
+.chrome-group-blue {
+  background-color: #4285f4;
+  color: white;
+}
+
+.chrome-group-red {
+  background-color: #ea4335;
+  color: white;
+}
+
+.chrome-group-yellow {
+  background-color: #fbbc04;
+  color: #111827;
+}
+
+.chrome-group-green {
+  background-color: #34a853;
+  color: white;
+}
+
+.chrome-group-pink {
+  background-color: #ff6d9e;
+  color: white;
+}
+
+.chrome-group-purple {
+  background-color: #a142f4;
+  color: white;
+}
+
+.chrome-group-cyan {
+  background-color: #00bcd4;
+  color: white;
+}
+
+.chrome-group-orange {
+  background-color: #ff9800;
+  color: white;
 }
