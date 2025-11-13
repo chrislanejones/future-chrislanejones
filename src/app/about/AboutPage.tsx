@@ -2,9 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
-import { FullWidthLayout } from "@/components/page/layout";
 import ConferenceSliderBox from "@/components/main/conference-slider-box";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
@@ -107,7 +105,7 @@ function AboutCard({
       hover="lift"
       border="standard"
       shadow="soft"
-      height="auto"
+      height="small"
       delay={0.05 + index * 0.05}
       className="overflow-hidden"
     >
@@ -166,17 +164,5 @@ function AboutGridSection({ sections }: { sections: AboutSection[] }) {
 }
 
 export default function AboutPage() {
-  return (
-    <main className="site-container py-12">
-      <Banner
-        title="About Me"
-        breadcrumbPage="About"
-        description="Life on the trails and the web, building modern React applications and leading the local WordPress community."
-      />
-
-      <FullWidthLayout>
-        <AboutGridSection sections={aboutSections} />
-      </FullWidthLayout>
-    </main>
-  );
+  return <AboutGridSection sections={aboutSections} />;
 }

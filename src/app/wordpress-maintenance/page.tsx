@@ -1,5 +1,6 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
 import WPMaintenanceContent from "./WP-MaintenanceContent";
 import { getPageSEO } from "@/lib/seo";
 
@@ -9,10 +10,17 @@ export async function generateMetadata() {
 
 export default function WordPressMaintenancePage() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
-      <WPMaintenanceContent />
+      <Banner
+        title="WordPress Site Maintenance"
+        breadcrumbPage="WordPress Services"
+        description="A Monthly Action Plan That Makes Sense - Comprehensive website maintenance, including regular updates, security scans, performance optimization, and technical support."
+      />
+      <main>
+        <WPMaintenanceContent />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }

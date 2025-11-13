@@ -50,7 +50,7 @@ export const headerNavItems: DropdownNavItem[] = [
     children: [
       { href: "/about", label: "About" },
       { href: "/browser-tabs", label: "Chrome Tabs I Left Open" },
-      { href: "/site-history", label: "History of this Site" },
+      { href: "/site-history", label: "History of This Site" },
       { href: "/link-page", label: "Link Page" },
     ],
   },
@@ -104,7 +104,7 @@ export const footerNavLinks: FooterSection[] = [
   {
     title: "Resources",
     links: [
-      { href: "/site-history", label: "History of this Site" },
+      { href: "/site-history", label: "History of This Site" },
       { href: "/logo-page", label: "About The Logo" },
       { href: "/site-map", label: "Change Log / Site Map" },
       { href: "/admin", label: "Admin" },

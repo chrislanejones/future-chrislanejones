@@ -2,9 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Banner from "@/components/page/banner";
+
 import Card from "@/components/page/card";
-import { FullWidthLayout } from "@/components/page/layout";
 import { Button } from "@/components/ui/button";
 import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
 import { timelineEvents } from "@/data/career-timeline";
@@ -91,18 +90,19 @@ function TimelineTrail() {
   const convexEvents = useQuery(api.careerTimeline.getAllEvents);
 
   // Fallback to static data if convex data is loading or empty
-  const events = convexEvents && convexEvents.length > 0
-    ? convexEvents.map(event => {
-        const IconComponent = iconMap[event.iconName] || iconMap["Star"];
-        return {
-          year: event.year,
-          title: event.title,
-          description: event.description,
-          location: event.location,
-          icon: React.createElement(IconComponent, { className: "w-6 h-6" }),
-        };
-      })
-    : timelineEvents;
+  const events =
+    convexEvents && convexEvents.length > 0
+      ? convexEvents.map((event) => {
+          const IconComponent = iconMap[event.iconName] || iconMap["Star"];
+          return {
+            year: event.year,
+            title: event.title,
+            description: event.description,
+            location: event.location,
+            icon: React.createElement(IconComponent, { className: "w-6 h-6" }),
+          };
+        })
+      : timelineEvents;
 
   return (
     <div className="mb-12">
@@ -125,7 +125,7 @@ function TimelineTrail() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
               >
                 {/* 3-column grid on desktop: [left card] [icon] [right card] */}
                 <div className="flex items-start md:grid md:grid-cols-[1fr_48px_1fr] md:gap-8">
@@ -149,9 +149,7 @@ function TimelineTrail() {
                         <time className="block text-green-500 mb-2">
                           {event.year}
                         </time>
-                        <h3 className="mb-2">
-                          {event.title}
-                        </h3>
+                        <h3 className="mb-2">{event.title}</h3>
                         <p className="text-muted leading-relaxed mb-3">
                           {event.description}
                         </p>
@@ -209,9 +207,7 @@ function TimelineTrail() {
                       <time className="block text-green-500 mb-2">
                         {event.year}
                       </time>
-                      <h3 className="mb-2">
-                        {event.title}
-                      </h3>
+                      <h3 className="mb-2">{event.title}</h3>
                       <p className="text-muted leading-relaxed mb-3">
                         {event.description}
                       </p>
@@ -259,7 +255,7 @@ function PhotoGalleryCard() {
       shadow="soft"
       border="thin"
       hover="lift"
-      delay={0.1}
+      delay={0.2}
       className="overflow-hidden flex flex-col"
     >
       <div className="relative flex-1 min-h-[200px]">
@@ -297,12 +293,10 @@ function ResumeDownloadCard() {
       shadow="soft"
       border="thin"
       hover="lift"
-      delay={0.2}
+      delay={0.3}
       className="flex flex-col justify-center"
     >
-      <h2 className="mb-4">
-        Resume & Portfolio
-      </h2>
+      <h2 className="mb-4">Resume & Portfolio</h2>
       <p className="text-muted mb-6">
         Download my resume and portfolio to learn more about my work experience,
         skills, and projects.
@@ -384,24 +378,15 @@ function ResumeDownloadCard() {
 
 const CareerPage: React.FC = () => {
   return (
-    <main className="site-container py-12">
-      <Banner
-        title="Career"
-        breadcrumbPage="Career"
-        description="Following the trail from video production to web development—navigating frameworks, communities, and mountain views along the way."
-      />
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <PhotoGalleryCard />
+        <ResumeDownloadCard />
+      </div>
 
-      <FullWidthLayout>
-        {/* Two Cards Side by Side - responsive grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <PhotoGalleryCard />
-          <ResumeDownloadCard />
-        </div>
-
-        {/* Timeline with individual cards */}
-        <TimelineTrail />
-      </FullWidthLayout>
-    </main>
+      {/* Timeline with individual cards */}
+      <TimelineTrail />
+    </>
   );
 };
 

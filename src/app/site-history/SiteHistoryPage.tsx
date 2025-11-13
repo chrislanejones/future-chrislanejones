@@ -3,11 +3,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Banner from "@/components/page/banner";
 import Card from "@/components/page/card";
-// REPLACE Badge import with the helper:
 import { ImagePill } from "@/components/ui/image-pill";
-import { FullWidthLayout } from "@/components/page/layout";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
@@ -245,16 +242,8 @@ function SiteHistoryGrid({ versions }: { versions: SiteVersion[] }) {
 
 export default function SiteHistoryPage() {
   return (
-    <main className="site-container py-12" id="main-content">
-      <Banner
-        title="Site History"
-        breadcrumbPage="Site History"
-        description="The evolution of chrislanejones.com through various technologies, frameworks, and design iterations—from WordPress 2.1 to modern Next.js."
-      />
-
-      <FullWidthLayout>
-        <SiteHistoryGrid versions={siteVersions} />
-      </FullWidthLayout>
-    </main>
+    <>
+      <SiteHistoryGrid versions={siteVersions} />
+    </>
   );
 }

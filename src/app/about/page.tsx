@@ -1,6 +1,7 @@
 import Header from "@/components/layout/Header";
-import AboutPage from "@/app/about/AboutPage";
 import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import AboutPage from "@/app/about/AboutPage";
 import { getPageSEO } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -9,10 +10,17 @@ export async function generateMetadata() {
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
-      <AboutPage />
+      <Banner
+        title="About Me"
+        breadcrumbPage="About"
+        description="Life on the trails and the web, building modern React applications and leading the local WordPress community."
+      />
+      <main>
+        <AboutPage />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }

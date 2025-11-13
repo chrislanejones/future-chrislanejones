@@ -26,7 +26,7 @@ export default function WireframeTerrain({
   const [isDesktop, setIsDesktop] = useState(false);
 
   // Dynamic rotation based on variant
-  const ROTATE_DEG = variant === "left" ? 12 : -12;
+  const ROTATE_DEG = variant === "left" ? -10 : -12;
 
   const generateTerrain = (grid: number) => {
     const hm: number[][] = new Array(grid);

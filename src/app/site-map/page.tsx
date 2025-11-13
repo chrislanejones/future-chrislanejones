@@ -1,5 +1,6 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
 import SiteMapPage from "./SiteMapPage";
 import { getPageSEO } from "@/lib/seo";
 
@@ -9,10 +10,17 @@ export async function generateMetadata() {
 
 export default function SiteMap() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
-      <SiteMapPage />
+      <Banner
+        title="Site Map & Changelog"
+        breadcrumbPage="Changelog"
+        description="Explore all available pages on chrislanejones.com and Track site updates"
+      />
+      <main>
+        <SiteMapPage />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }

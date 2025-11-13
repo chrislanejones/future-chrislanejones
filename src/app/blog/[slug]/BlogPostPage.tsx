@@ -13,12 +13,28 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar, Heart, MessageCircle, ArrowLeft, User, Mail } from "lucide-react";
+import {
+  Calendar,
+  Heart,
+  MessageCircle,
+  ArrowLeft,
+  User,
+  Mail,
+} from "lucide-react";
 import type { Id } from "../../../../convex/_generated/dataModel";
 
 // Helper function to get badge color variant based on index
 const getBadgeVariant = (index: number) => {
-  const variants = ["blue", "green", "purple", "orange", "pink", "cyan", "yellow", "red"] as const;
+  const variants = [
+    "blue",
+    "green",
+    "purple",
+    "orange",
+    "pink",
+    "cyan",
+    "yellow",
+    "red",
+  ] as const;
   return variants[index % variants.length];
 };
 
@@ -34,11 +50,7 @@ function getUserIdentifier() {
   return identifier;
 }
 
-export default function BlogPostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const [userIdentifier, setUserIdentifier] = useState<string>("");
   const [commentForm, setCommentForm] = useState({
     authorName: "",
@@ -70,7 +82,7 @@ export default function BlogPostPage({
 
   if (!post || !userIdentifier) {
     return (
-      <div className="min-h-screen bg-base">
+      <>
         <Header />
         <main className="site-container py-12">
           <div className="flex justify-center items-center py-12">
@@ -78,7 +90,7 @@ export default function BlogPostPage({
           </div>
         </main>
         <Footer />
-      </div>
+      </>
     );
   }
 
@@ -89,7 +101,13 @@ export default function BlogPostPage({
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!post?._id || !commentForm.authorName || !commentForm.authorEmail || !commentForm.content) return;
+    if (
+      !post?._id ||
+      !commentForm.authorName ||
+      !commentForm.authorEmail ||
+      !commentForm.content
+    )
+      return;
 
     await addComment({
       postId: post._id,
@@ -104,28 +122,48 @@ export default function BlogPostPage({
 
   // Simple markdown-like content rendering
   const renderContent = (content: string) => {
-    return content.split('\n').map((line, index) => {
-      if (line.startsWith('# ')) {
-        return <h1 key={index} className="mb-4 mt-8">{line.substring(2)}</h1>;
+    return content.split("\n").map((line, index) => {
+      if (line.startsWith("# ")) {
+        return (
+          <h1 key={index} className="mb-4 mt-8">
+            {line.substring(2)}
+          </h1>
+        );
       }
-      if (line.startsWith('## ')) {
-        return <h2 key={index} className="mb-3 mt-6">{line.substring(3)}</h2>;
+      if (line.startsWith("## ")) {
+        return (
+          <h2 key={index} className="mb-3 mt-6">
+            {line.substring(3)}
+          </h2>
+        );
       }
-      if (line.startsWith('### ')) {
-        return <h3 key={index} className="mb-2 mt-4">{line.substring(4)}</h3>;
+      if (line.startsWith("### ")) {
+        return (
+          <h3 key={index} className="mb-2 mt-4">
+            {line.substring(4)}
+          </h3>
+        );
       }
-      if (line.startsWith('- ')) {
-        return <li key={index} className="ml-4 mb-1">{line.substring(2)}</li>;
+      if (line.startsWith("- ")) {
+        return (
+          <li key={index} className="ml-4 mb-1">
+            {line.substring(2)}
+          </li>
+        );
       }
-      if (line.trim() === '') {
+      if (line.trim() === "") {
         return <br key={index} />;
       }
-      return <p key={index} className="mb-4 leading-relaxed">{line}</p>;
+      return (
+        <p key={index} className="mb-4 leading-relaxed">
+          {line}
+        </p>
+      );
     });
   };
 
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
       <main className="site-container py-12">
         {/* Back to Blog */}
@@ -167,7 +205,9 @@ export default function BlogPostPage({
                 </time>
               </div>
               <div className="flex items-center gap-2">
-                <Heart className={`w-4 h-4 ${userLikeStatus?.liked ? 'fill-current text-red-500' : ''}`} />
+                <Heart
+                  className={`w-4 h-4 ${userLikeStatus?.liked ? "fill-current text-red-500" : ""}`}
+                />
                 <span>{post.likesCount || 0} likes</span>
               </div>
               <div className="flex items-center gap-2">
@@ -186,10 +226,7 @@ export default function BlogPostPage({
               <div className="mb-8 pb-6 border-b border-[color:var(--color-border)]">
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag, index) => (
-                    <Badge
-                      key={tag}
-                      variant={getBadgeVariant(index)}
-                    >
+                    <Badge key={tag} variant={getBadgeVariant(index)}>
                       {tag}
                     </Badge>
                   ))}
@@ -205,8 +242,10 @@ export default function BlogPostPage({
                 size="lg"
                 className="gap-2"
               >
-                <Heart className={`w-5 h-5 ${userLikeStatus?.liked ? 'fill-current' : ''}`} />
-                {userLikeStatus?.liked ? 'Liked' : 'Like this post'}
+                <Heart
+                  className={`w-5 h-5 ${userLikeStatus?.liked ? "fill-current" : ""}`}
+                />
+                {userLikeStatus?.liked ? "Liked" : "Like this post"}
               </Button>
             </div>
 
@@ -239,7 +278,12 @@ export default function BlogPostPage({
                             id="name"
                             required
                             value={commentForm.authorName}
-                            onChange={(e) => setCommentForm(prev => ({ ...prev, authorName: e.target.value }))}
+                            onChange={(e) =>
+                              setCommentForm((prev) => ({
+                                ...prev,
+                                authorName: e.target.value,
+                              }))
+                            }
                             className="w-full pl-10 pr-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] focus:outline-none focus:ring-2 focus:ring-accent"
                             placeholder="Your name"
                           />
@@ -256,7 +300,12 @@ export default function BlogPostPage({
                             id="email"
                             required
                             value={commentForm.authorEmail}
-                            onChange={(e) => setCommentForm(prev => ({ ...prev, authorEmail: e.target.value }))}
+                            onChange={(e) =>
+                              setCommentForm((prev) => ({
+                                ...prev,
+                                authorEmail: e.target.value,
+                              }))
+                            }
                             className="w-full pl-10 pr-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] focus:outline-none focus:ring-2 focus:ring-accent"
                             placeholder="your@email.com"
                           />
@@ -272,7 +321,12 @@ export default function BlogPostPage({
                         required
                         rows={4}
                         value={commentForm.content}
-                        onChange={(e) => setCommentForm(prev => ({ ...prev, content: e.target.value }))}
+                        onChange={(e) =>
+                          setCommentForm((prev) => ({
+                            ...prev,
+                            content: e.target.value,
+                          }))
+                        }
                         className="w-full px-4 py-2 border border-[color:var(--color-border)] rounded-lg bg-[color:var(--color-panel)] focus:outline-none focus:ring-2 focus:ring-accent resize-none"
                         placeholder="Share your thoughts..."
                       />
@@ -313,9 +367,7 @@ export default function BlogPostPage({
                               {new Date(comment.createdAt).toLocaleDateString()}
                             </span>
                           </div>
-                          <p className="leading-relaxed">
-                            {comment.content}
-                          </p>
+                          <p className="leading-relaxed">{comment.content}</p>
                         </div>
                       </div>
                     </Card>
@@ -323,7 +375,9 @@ export default function BlogPostPage({
                 </div>
               ) : (
                 <Card className="p-6 text-center">
-                  <p className="text-muted">No comments yet. Be the first to share your thoughts!</p>
+                  <p className="text-muted">
+                    No comments yet. Be the first to share your thoughts!
+                  </p>
                 </Card>
               )}
             </div>
@@ -331,6 +385,6 @@ export default function BlogPostPage({
         </Card>
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

@@ -11,10 +11,10 @@ export async function generateMetadata() {
 
 export default function ProjectsPage() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
       <ProjectGrid />
       <Footer />
-    </div>
+    </>
   );
 }

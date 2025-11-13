@@ -19,11 +19,11 @@ export async function generateMetadata() {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
 
       {/* Bento Grid - directly in page.tsx */}
-      <main className="site-container pb-24">
+      <main>
         <section className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-5 auto-rows-min">
           <HeroBox size="hero" delay={0.1} />
           <QuoteGeneratorCard size="large" delay={0.2} />
@@ -37,6 +37,6 @@ export default function Home() {
       </main>
 
       <Footer />
-    </div>
+    </>
   );
 }

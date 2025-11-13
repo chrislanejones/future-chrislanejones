@@ -3,7 +3,6 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Banner from "@/components/page/banner";
 import BrowserCard from "@/components/page/browser-card";
 
 // Strong typing for what BrowserCard receives per link
@@ -42,30 +41,19 @@ export default function BrowserTabs() {
 
   if (!allLinks.length) {
     return (
-      <main className="site-container py-12">
-        <Banner
-          title="Chrome Tabs I Left Open"
-          breadcrumbPage="Links"
-          description="A curated collection of useful resources, tools, and inspiration."
-        />
+      <>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="w-16 h-16 border-4 border-[#4ade80] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p>Loading links...</p>
           </div>
         </div>
-      </main>
+      </>
     );
   }
 
   return (
-    <main className="site-container py-12">
-      <Banner
-        title="Chrome Tabs I Left Open"
-        breadcrumbPage="Links"
-        description="A curated collection of useful resources, tools, and inspiration that I keep coming back to."
-      />
-
+    <>
       {/* Provide TooltipProvider context for individual link tooltips */}
       <TooltipProvider delayDuration={100}>
         {/* Grid of BrowserCards */}
@@ -81,6 +69,6 @@ export default function BrowserTabs() {
           ))}
         </div>
       </TooltipProvider>
-    </main>
+    </>
   );
 }

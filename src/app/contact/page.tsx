@@ -1,5 +1,6 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
 import ContactForm from "./ContactForm";
 import { getPageSEO } from "@/lib/seo";
 
@@ -9,10 +10,17 @@ export async function generateMetadata() {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
-      <ContactForm />
+      <Banner
+        title="Contact"
+        breadcrumbPage="Contact"
+        description="Get in touch with me for collaborations, inquiries, or just to say hello. I'll get back to you as soon as possible."
+      />
+      <main>
+        <ContactForm />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }

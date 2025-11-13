@@ -77,6 +77,50 @@ body {
   font-family: var(--font-interphases), ui-sans-serif, system-ui;
 }
 
+/* Typography scale utilities */
+.site-title {
+  font-size: var(--step-2);
+  line-height: 1.2;
+  font-weight: var(--weight-semibold);
+}
+
+h1 {
+  font-size: var(--step-4);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-weight: var(--weight-semibold);
+}
+
+h2 {
+  font-size: var(--step-3);
+  line-height: 1.15;
+  font-weight: var(--weight-semibold);
+}
+
+h3 {
+  font-size: var(--step-2);
+  line-height: 1.2;
+  font-weight: var(--weight-semibold);
+}
+
+h4 {
+  font-size: var(--step-1);
+  line-height: 1.3;
+  font-weight: var(--weight-regular);
+}
+
+p {
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-weight: var(--weight-regular);
+}
+
+.text-sm {
+  font-size: var(--step--1);
+  line-height: 1.5;
+  font-weight: var(--weight-regular);
+}
+
 .glass {
   backdrop-filter: blur(8px);
   background: linear-gradient(
@@ -100,319 +144,89 @@ body {
     0 12px 40px rgba(141, 227, 107, 0.15);
 }
 
-.ring-acc {
-  box-shadow: 0 0 0 2px rgba(141, 227, 107, 0.35) inset;
-}
-
-/* ================================
-   FOOTER MOUNTAINS – ENHANCED VERSION
-   ================================ */
-
-.footer-hills {
-  position: absolute;
-  inset: 0;
-  bottom: 0;
-  height: 75%;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* BACK RANGE – distant blue haze */
-.footer-hills::before {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 60%;
-  background:
-    linear-gradient(
-      to top,
-      color-mix(in srgb, var(--color-accent-alt) 12%, transparent),
-      transparent 55%
-    ),
-    linear-gradient(180deg, rgba(59, 130, 246, 0.12), rgba(59, 130, 246, 0.08));
-  clip-path: polygon(
-    0% 100%,
-    0% 70%,
-    5% 68%,
-    10% 72%,
-    18% 65%,
-    26% 70%,
-    34% 64%,
-    45% 68%,
-    54% 63%,
-    62% 69%,
-    72% 64%,
-    80% 68%,
-    88% 63%,
-    94% 67%,
-    100% 64%,
-    100% 100%
-  );
-  transform: translateY(10px);
-  filter: blur(0.3px);
-  opacity: 0.9;
-}
-
-/* MID RANGE – green ridges with subtle snow */
-.footer-hills .hill-mid {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 65%;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-accent) 85%, white 5%) 0%,
-    color-mix(in srgb, var(--color-accent) 60%, black 15%) 100%
-  );
-  clip-path: polygon(
-    0% 100%,
-    0% 75%,
-    6% 68%,
-    14% 74%,
-    20% 63%,
-    30% 72%,
-    38% 62%,
-    46% 70%,
-    55% 61%,
-    64% 69%,
-    74% 63%,
-    82% 68%,
-    90% 64%,
-    96% 67%,
-    100% 65%,
-    100% 100%
-  );
-  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.05) inset;
-  transform: translateY(6px);
-}
-.footer-hills .hill-mid::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      18px 10px at 22% 47%,
-      rgba(255, 255, 255, 0.7),
-      transparent 60%
-    ),
-    radial-gradient(
-      20px 12px at 42% 44%,
-      rgba(255, 255, 255, 0.7),
-      transparent 60%
-    ),
-    radial-gradient(
-      18px 10px at 68% 40%,
-      rgba(255, 255, 255, 0.7),
-      transparent 60%
-    ),
-    radial-gradient(
-      16px 9px at 85% 43%,
-      rgba(255, 255, 255, 0.7),
-      transparent 60%
-    );
-  mix-blend-mode: screen;
-  opacity: 0.7;
-}
-
-/* FOREGROUND – soft foothills wrapping bottom */
-.footer-hills .hill-fore {
-  position: absolute;
-  bottom: -6px;
-  left: 10%;
-  width: 420px;
-  height: 160px;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--color-accent) 90%, white 8%) 0%,
-    color-mix(in srgb, var(--color-accent) 50%, black 10%) 75%
-  );
+/* Subtle, accent-tinted passive shadow (no green background) */
+.shadow-passive {
+  /* mirrors your exact numbers, but uses --color-accent via color-mix */
   box-shadow:
-    0 -12px 30px rgba(0, 0, 0, 0.05) inset,
-    0 6px 20px rgba(0, 0, 0, 0.08);
-}
-.footer-hills .hill-fore.right {
-  left: auto;
-  right: 8%;
-  width: 360px;
-  height: 140px;
+    0 0 0 0 rgba(0, 0, 0, 0),
+    0 0 0 0 rgba(0, 0, 0, 0),
+    0 0 0 0.340185px color-mix(in srgb, var(--color-accent) 4.3%, transparent),
+    0 2.04111px 6.80371px 0
+      color-mix(in srgb, var(--color-accent) 2.4%, transparent);
 }
 
-/* DARK MODE – cooler tint & subtle dimming */
-html.dark .footer-hills::before {
-  background:
-    linear-gradient(
-      to top,
-      color-mix(in srgb, var(--color-accent-alt) 8%, transparent),
-      transparent 55%
-    ),
-    linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.05));
-}
-html.dark .footer-hills .hill-mid,
-html.dark .footer-hills .hill-fore {
-  filter: brightness(0.92) saturate(0.95);
+/* Your hover glow, driven by --color-accent (green glow only on hover) */
+.hover\:shadow-glow:hover {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
+    0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
 }
 
-/* --- Utilities & components (no :root edits) --- */
-@layer utilities {
-  /* Single source of truth for site width & horizontal padding */
-  .site-container {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 80rem; /* 1280px ~ tailwind's max-w-7xl */
-    padding-left: 1rem; /* px-4 */
-    padding-right: 1rem;
-  }
+/* Focus-visible ring uses the same recipe as hover glow */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
+    0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
 
-  @media (min-width: 640px) {
-    .site-container {
-      padding-left: 1.5rem; /* sm:px-6 */
-      padding-right: 1.5rem;
-    }
-  }
+/* Your transition utility */
+.transition {
+  transition-property:
+    color, background-color, border-color, text-decoration-color, fill, stroke,
+    opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
 
-  @media (min-width: 1024px) {
-    .site-container {
-      padding-left: 2rem; /* lg:px-8 */
-      padding-right: 2rem;
-    }
-  }
+/* Helpers you're already using */
+.bg-panel {
+  background-color: var(--color-panel);
+}
+.rounded-lg {
+  border-radius: var(--radius, 12px);
+}
 
-  /* Typography scale utilities */
-  .site-title {
-    font-size: var(--step-2);
-    line-height: 1.2;
-    font-weight: var(--weight-semibold);
-  }
+/* Nav links: muted → ink on hover, dotted green underline, subtle glow */
+.nav-link {
+  color: var(--color-ink);
+  text-decoration: none;
+  border-radius: 6px;
+  transition:
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    text-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-link:hover {
+  color: var(--color-ink);
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--color-accent);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 28%, transparent);
+}
+.nav-link:focus-visible {
+  outline: 2px dotted var(--color-accent);
+  outline-offset: 2px;
+  color: var(--color-ink);
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--color-accent);
+}
 
-  h1,
-  .h1 {
-    font-size: var(--step-4);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    font-weight: var(--weight-semibold);
-  }
-
-  h2,
-  .h2 {
-    font-size: var(--step-3);
-    line-height: 1.15;
-    font-weight: var(--weight-semibold);
-  }
-
-  h3,
-  h3 {
-    font-size: var(--step-2);
-    line-height: 1.2;
-    font-weight: var(--weight-semibold);
-  }
-
-  h4,
-  .h4 {
-    font-size: var(--step-1);
-    line-height: 1.3;
-    font-weight: var(--weight-regular);
-  }
-
-  p,
-  .p {
-    font-size: var(--step-0);
-    line-height: 1.6;
-    font-weight: var(--weight-regular);
-  }
-
-  text-sm {
-    font-size: var(--step--1);
-    line-height: 1.5;
-    font-weight: var(--weight-regular);
-  }
-  /* Subtle, accent-tinted passive shadow (no green background) */
-  .shadow-passive {
-    /* mirrors your exact numbers, but uses --color-accent via color-mix */
-    box-shadow:
-      0 0 0 0 rgba(0, 0, 0, 0),
-      0 0 0 0 rgba(0, 0, 0, 0),
-      0 0 0 0.340185px color-mix(in srgb, var(--color-accent) 4.3%, transparent),
-      0 2.04111px 6.80371px 0
-        color-mix(in srgb, var(--color-accent) 2.4%, transparent);
-  }
-
-  /* Your hover glow, driven by --color-accent (green glow only on hover) */
-  .hover\:shadow-glow:hover {
-    box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
-      0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
-  }
-
-  /* Focus-visible ring uses the same recipe as hover glow */
-  .focus-ring:focus-visible {
-    outline: none;
-    box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
-      0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
-  }
-
-  /* Your transition utility */
-  .transition {
-    transition-property:
-      color, background-color, border-color, text-decoration-color, fill,
-      stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-  }
-
-  /* Helpers you're already using */
-  .bg-panel {
-    background-color: var(--color-panel);
-  }
-  .rounded-lg {
-    border-radius: var(--radius, 12px);
-  }
-
-  /* Nav links: muted → ink on hover, dotted green underline, subtle glow */
-  .nav-link {
-    color: var(--color-ink);
-    text-decoration: none;
-    border-radius: 6px;
-    transition:
-      color 150ms cubic-bezier(0.4, 0, 0.2, 1),
-      text-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .nav-link:hover {
-    color: var(--color-ink);
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-accent);
-    text-shadow: 0 0 10px
-      color-mix(in srgb, var(--color-accent) 28%, transparent);
-  }
-  .nav-link:focus-visible {
-    outline: 2px dotted var(--color-accent);
-    outline-offset: 2px;
-    color: var(--color-ink);
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--color-accent);
-  }
-
-  .bg-base {
-    background-color: var(--color-base);
-  }
-  .text-ink {
-    color: var(--color-ink);
-  }
-  .text-muted {
-    color: var(--color-muted);
-  }
-  .text-foreground {
-    color: var(--color-foreground);
-  }
+.bg-base {
+  background-color: var(--color-base);
+}
+.text-ink {
+  color: var(--color-ink);
+}
+.text-muted {
+  color: var(--color-muted);
+}
+.text-foreground {
+  color: var(--color-foreground);
 }
 
 @layer components {
@@ -578,7 +392,8 @@ html.dark .client-logo {
 
 /* Sepia and vintage filter on images */
 .folded-map-effect img {
-  filter: sepia(0.4) contrast(1.15) brightness(0.92) saturate(0.85) hue-rotate(-5deg);
+  filter: sepia(0.4) contrast(1.15) brightness(0.92) saturate(0.85)
+    hue-rotate(-5deg);
   transition: filter 0.3s ease;
 }
 
@@ -638,16 +453,28 @@ html.dark .client-logo {
   inset: 0;
   background:
     /* Paper grain texture */
-    repeating-linear-gradient(0deg, rgba(139, 107, 76, 0.02) 0px, transparent 1px, transparent 2px, rgba(139, 107, 76, 0.02) 3px),
-    repeating-linear-gradient(90deg, rgba(139, 107, 76, 0.02) 0px, transparent 1px, transparent 2px, rgba(139, 107, 76, 0.02) 3px),
-    /* Fold shadow lines */
-    linear-gradient(
-      90deg,
-      transparent 24.5%,
-      rgba(101, 67, 33, 0.15) 24.5%,
-      rgba(101, 67, 33, 0.15) 25%,
-      transparent 25%
+    repeating-linear-gradient(
+      0deg,
+      rgba(139, 107, 76, 0.02) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(139, 107, 76, 0.02) 3px
     ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(139, 107, 76, 0.02) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(139, 107, 76, 0.02) 3px
+    ),
+    /* Fold shadow lines */
+      linear-gradient(
+        90deg,
+        transparent 24.5%,
+        rgba(101, 67, 33, 0.15) 24.5%,
+        rgba(101, 67, 33, 0.15) 25%,
+        transparent 25%
+      ),
     linear-gradient(
       90deg,
       transparent 49.5%,
@@ -663,7 +490,11 @@ html.dark .client-logo {
       transparent 75%
     ),
     /* Overall warm paper tint */
-    linear-gradient(135deg, rgba(244, 232, 216, 0.15) 0%, rgba(232, 220, 200, 0.1) 100%);
+      linear-gradient(
+        135deg,
+        rgba(244, 232, 216, 0.15) 0%,
+        rgba(232, 220, 200, 0.1) 100%
+      );
   pointer-events: none;
   z-index: 2;
   mix-blend-mode: multiply;
@@ -675,7 +506,8 @@ html.dark .folded-map-effect {
 }
 
 html.dark .folded-map-effect img {
-  filter: sepia(0.5) contrast(1.1) brightness(0.75) saturate(0.7) hue-rotate(-8deg);
+  filter: sepia(0.5) contrast(1.1) brightness(0.75) saturate(0.7)
+    hue-rotate(-8deg);
   transition: filter 0.3s ease;
 }
 
@@ -704,16 +536,28 @@ html.dark .folded-map-effect::after {
 html.dark .fold-overlay {
   background:
     /* Paper grain texture - darker */
-    repeating-linear-gradient(0deg, rgba(244, 232, 216, 0.01) 0px, transparent 1px, transparent 2px, rgba(244, 232, 216, 0.01) 3px),
-    repeating-linear-gradient(90deg, rgba(244, 232, 216, 0.01) 0px, transparent 1px, transparent 2px, rgba(244, 232, 216, 0.01) 3px),
-    /* Fold shadow lines - warm tones */
-    linear-gradient(
-      90deg,
-      transparent 24.5%,
-      rgba(101, 67, 33, 0.2) 24.5%,
-      rgba(101, 67, 33, 0.2) 25%,
-      transparent 25%
+    repeating-linear-gradient(
+      0deg,
+      rgba(244, 232, 216, 0.01) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(244, 232, 216, 0.01) 3px
     ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(244, 232, 216, 0.01) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(244, 232, 216, 0.01) 3px
+    ),
+    /* Fold shadow lines - warm tones */
+      linear-gradient(
+        90deg,
+        transparent 24.5%,
+        rgba(101, 67, 33, 0.2) 24.5%,
+        rgba(101, 67, 33, 0.2) 25%,
+        transparent 25%
+      ),
     linear-gradient(
       90deg,
       transparent 49.5%,
@@ -729,7 +573,11 @@ html.dark .fold-overlay {
       transparent 75%
     ),
     /* Overall aged paper tint */
-    linear-gradient(135deg, rgba(42, 31, 22, 0.3) 0%, rgba(31, 22, 16, 0.2) 100%);
+      linear-gradient(
+        135deg,
+        rgba(42, 31, 22, 0.3) 0%,
+        rgba(31, 22, 16, 0.2) 100%
+      );
   mix-blend-mode: overlay;
 }
 

@@ -57,6 +57,7 @@ export default function ImageGalleryBox({
       shadow="soft"
       border="thin"
       delay={delay}
+      height="large"
       className="overflow-hidden flex flex-col"
     >
       <div className="relative flex-1 min-h-[200px]">
@@ -70,13 +71,13 @@ export default function ImageGalleryBox({
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
       </div>
 
-      <div className="p-6 grid grid-cols-[auto_1fr] items-center gap-4">
+      <div className="p-6 grid grid-cols-[1fr_auto] items-center gap-4">
+        <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
         <GalleryDrawer
           photos={photos}
           title="Gallery Drawer"
           animationDelay={0.2}
         />
-        <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
       </div>
     </Card>
   );
