@@ -34,6 +34,7 @@ const interphases = localFont({
   variable: "--font-interphases",
 });
 
+// src/app/layout.tsx
 export default function RootLayout({
   children,
 }: {
@@ -65,7 +66,11 @@ export default function RootLayout({
               <Suspense fallback={null}>
                 <PostHogPageView />
               </Suspense>
-              {children}
+
+              {/* 👇 Global page container */}
+              <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+                {children}
+              </div>
             </ConvexClientProvider>
           </PHProvider>
         </body>

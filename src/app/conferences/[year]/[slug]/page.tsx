@@ -52,10 +52,10 @@ export default function ConferenceDetailRoute({ params }: { params: Params }) {
   if (!conf) notFound();
 
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
       <ConferenceDetailPage conference={conf} />
       <Footer />
-    </div>
+    </>
   );
 }

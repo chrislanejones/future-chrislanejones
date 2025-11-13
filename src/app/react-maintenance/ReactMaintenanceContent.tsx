@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import Banner from "@/components/page/banner";
+
 import Card from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import ClientSliderBox from "@/components/main/client-slider-box";
@@ -60,13 +60,7 @@ const actionPlanItems = [
 
 export default function WordPressServicesPage() {
   return (
-    <main className="site-container py-12">
-      <Banner
-        title="WordPress Site Maintenance"
-        breadcrumbPage="WordPress Services"
-        description="A Monthly Action Plan That Makes Sense - Comprehensive website maintenance, including regular updates, security scans, performance optimization, and technical support."
-      />
-
+    <>
       {/* Hero Image Section */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -125,12 +119,8 @@ export default function WordPressServicesPage() {
                 <div className="flex-shrink-0">{item.icon}</div>
                 <div>
                   <h3 className="mb-2">{item.title}</h3>
-                  <p className="mb-2">
-                    {item.description}
-                  </p>
-                  <p className="opacity-80">
-                    {item.details}
-                  </p>
+                  <p className="mb-2">{item.description}</p>
+                  <p className="opacity-80">{item.details}</p>
                 </div>
               </div>
             </Card>
@@ -146,9 +136,7 @@ export default function WordPressServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-center mb-12">
-          Monthly Costs
-        </h2>
+        <h2 className="text-center mb-12">Monthly Costs</h2>
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Basic Plan Card */}
@@ -200,9 +188,7 @@ export default function WordPressServicesPage() {
             </ul>
 
             <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
-              <div className="text-accent mb-6">
-                $200 / month
-              </div>
+              <div className="text-accent mb-6">$200 / month</div>
               <Button asChild variant="accent" size="lg" className="w-full">
                 <Link href="#contact">Start the Action Plan</Link>
               </Button>
@@ -217,9 +203,7 @@ export default function WordPressServicesPage() {
             border="thin"
             className="flex flex-col"
           >
-            <h3 className="mb-6">
-              The Action Plan (With SEO)
-            </h3>
+            <h3 className="mb-6">The Action Plan (With SEO)</h3>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
@@ -239,9 +223,7 @@ export default function WordPressServicesPage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">
-                  Keyword research and implementation
-                </span>
+                <span className="">Keyword research and implementation</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
@@ -258,9 +240,7 @@ export default function WordPressServicesPage() {
             </ul>
 
             <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
-              <div className="text-accent mb-6">
-                $250 / month
-              </div>
+              <div className="text-accent mb-6">$250 / month</div>
               <Button asChild variant="accent" size="lg" className="w-full">
                 <Link href="#contact">Start the Action Plan</Link>
               </Button>
@@ -292,9 +272,7 @@ export default function WordPressServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-center mb-12">
-          Contact Us to Get Started
-        </h2>
+        <h2 className="text-center mb-12">Contact Us to Get Started</h2>
 
         <Card
           size="page-full"
@@ -306,9 +284,7 @@ export default function WordPressServicesPage() {
           <form className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-2">
-                  First Name *
-                </label>
+                <label className="block mb-2">First Name *</label>
                 <input
                   type="text"
                   required
@@ -316,9 +292,7 @@ export default function WordPressServicesPage() {
                 />
               </div>
               <div>
-                <label className="block mb-2">
-                  Last Name *
-                </label>
+                <label className="block mb-2">Last Name *</label>
                 <input
                   type="text"
                   required
@@ -337,9 +311,7 @@ export default function WordPressServicesPage() {
             </div>
 
             <div>
-              <label className="block mb-2">
-                Phone Number
-              </label>
+              <label className="block mb-2">Phone Number</label>
               <input
                 type="tel"
                 className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
@@ -347,9 +319,7 @@ export default function WordPressServicesPage() {
             </div>
 
             <div>
-              <label className="block mb-2">
-                Choose An Action Plan
-              </label>
+              <label className="block mb-2">Choose An Action Plan</label>
               <div className="space-y-2">
                 <label className="flex items-center gap-2">
                   <input
@@ -381,9 +351,7 @@ export default function WordPressServicesPage() {
             </div>
 
             <div>
-              <label className="block mb-2">
-                Additional Info
-              </label>
+              <label className="block mb-2">Additional Info</label>
               <textarea
                 rows={4}
                 className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] resize-none"
@@ -396,6 +364,6 @@ export default function WordPressServicesPage() {
           </form>
         </Card>
       </motion.section>
-    </main>
+    </>
   );
 }

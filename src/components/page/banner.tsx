@@ -26,7 +26,7 @@ export default function Banner({
   children,
 }: BannerProps) {
   return (
-    <motion.div className="relative py-10 lg:py-12">
+    <motion.div className="relative py-1 lg:py-12">
       <WireframeTerrain variant="right" />
 
       <div className="relative z-10 flex flex-col lg:flex-row items-start lg:justify-between gap-6 px-3">

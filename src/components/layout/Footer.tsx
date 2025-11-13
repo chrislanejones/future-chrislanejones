@@ -23,7 +23,6 @@ export default function Footer() {
     <>
       <motion.footer className="relative site-container pt-5 pb-10 overflow-hidden">
         <WireframeTerrain variant="left" />
-
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
           {/* Branding */}
           <div className="flex flex-col gap-4 max-w-sm md:col-span-2 md:h-full md:justify-between">
@@ -118,9 +117,9 @@ export default function Footer() {
       </motion.footer>
 
       {/* 3D Bighorn Sheep - Full width below copyright */}
-      <div className="w-screen h-[20vh] relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
+      {/* <div className="w-screen h-[20vh] relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
         <Bighorn3D />
-      </div>
+      </div> */}
     </>
   );
 }

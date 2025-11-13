@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
       <main className="site-container py-12">
         <Banner
@@ -48,6 +48,6 @@ export default function NotFound() {
         </Card>
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

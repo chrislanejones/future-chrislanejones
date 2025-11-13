@@ -11,11 +11,11 @@ import type { ReactNode } from "react";
 
 const QUOTES: ReactNode[] = [
   "My rambling 1",
-  "My rambling 2",
+  "My  ",
   "I spent way too many hours building this site, let's bring back Geosites",
   "When I tried SQL for the first time I hit DROP TABLE attempting to download.",
   "Locked my fridge with a CAPTCHA to stop my midnight snacking.",
-  'In 2017, three people called on the same day asking me "How can I learn to code?"',
+  'In 2017, three people called on the same day asking me "How can I learn to code tonight?"',
   'I didn\'t code as a child because this "<!--[if !(IE 6)]>" scared me.',
   "I lock my computer at night to prevent my cats from online shopping",
   "Powered by coffee and deprecated APIs since 2015",

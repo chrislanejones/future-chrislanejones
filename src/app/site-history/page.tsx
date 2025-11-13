@@ -1,7 +1,8 @@
 // src/app/site-history/page.tsx
 import Header from "@/components/layout/Header";
-import SiteHistoryPage from "@/app/site-history/SiteHistoryPage";
 import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import SiteHistoryPage from "@/app/site-history/SiteHistoryPage";
 import { getPageSEO } from "@/lib/seo";
 
 export async function generateMetadata() {
@@ -10,10 +11,17 @@ export async function generateMetadata() {
 
 export default function SiteHistory() {
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
-      <SiteHistoryPage />
+      <Banner
+        title="Site History"
+        breadcrumbPage="Site History"
+        description="The evolution of chrislanejones.com through various technologies, frameworks, and design iterations—from WordPress 2.1 to modern Next.js."
+      />
+      <main>
+        <SiteHistoryPage />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }

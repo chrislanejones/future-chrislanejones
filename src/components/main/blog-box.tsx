@@ -35,6 +35,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
       shadow="soft"
       border="thin"
       delay={delay}
+      height="large"
       className="overflow-hidden flex flex-col"
     >
       <div className="relative flex-1 min-h-[200px]">

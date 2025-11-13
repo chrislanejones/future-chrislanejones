@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import Banner from "@/components/page/banner";
+
 import Card from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,32 +101,18 @@ export default function ContactForm() {
   };
 
   return (
-    <main className="site-container py-12">
-      <Banner
-        title="Contact"
-        breadcrumbPage="Contact"
-        description="Get in touch with me for collaborations, inquiries, or just to say hello. I'll get back to you as soon as possible."
-      />
-
+    <>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         className="mt-8"
       >
-        <Card
-          size="page-full"
-          padding="large"
-          shadow="soft"
-          border="thin"
-        >
+        <Card size="page-full" padding="large" shadow="soft" border="thin">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}
             <div>
-              <label
-                htmlFor="name"
-                className="block mb-2"
-              >
+              <label htmlFor="name" className="block mb-2">
                 Name *
               </label>
               <Input
@@ -145,10 +131,7 @@ export default function ContactForm() {
 
             {/* Email Field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block mb-2"
-              >
+              <label htmlFor="email" className="block mb-2">
                 Email *
               </label>
               <Input
@@ -167,14 +150,8 @@ export default function ContactForm() {
 
             {/* Phone Field */}
             <div>
-              <label
-                htmlFor="phone"
-                className="block mb-2"
-              >
-                Phone Number{" "}
-                <span className="">
-                  (Optional)
-                </span>
+              <label htmlFor="phone" className="block mb-2">
+                Phone Number <span className="">(Optional)</span>
               </label>
               <Input
                 type="tel"
@@ -192,10 +169,7 @@ export default function ContactForm() {
 
             {/* Message Field */}
             <div>
-              <label
-                htmlFor="message"
-                className="block mb-2"
-              >
+              <label htmlFor="message" className="block mb-2">
                 Message *
               </label>
               <Textarea
@@ -210,9 +184,7 @@ export default function ContactForm() {
               {errors.message && (
                 <p className="mt-1 text-red-500">{errors.message}</p>
               )}
-              <p className="mt-1">
-                {formData.message.length} characters
-              </p>
+              <p className="mt-1">{formData.message.length} characters</p>
             </div>
 
             {/* Submit Button */}
@@ -278,6 +250,6 @@ export default function ContactForm() {
           I typically respond within 24-48 hours during business days.
         </p>
       </motion.div>
-    </main>
+    </>
   );
 }

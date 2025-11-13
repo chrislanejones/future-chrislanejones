@@ -35,10 +35,10 @@ export default function ConferencesByYearRoute({ params }: { params: Params }) {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="min-h-screen bg-base">
+    <>
       <Header />
       <ConferenceYearPage conferences={items} year={params.year} />
       <Footer />
-    </div>
+    </>
   );
 }

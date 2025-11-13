@@ -8,19 +8,15 @@ import { cva, type VariantProps } from "class-variance-authority";
 const cardVariants = cva("card rounded-3xl bg-panel", {
   variants: {
     size: {
-      small: "col-span-1 row-span-1 min-h-[25px] md:min-h-[25px]",
-      medium:
-        "col-span-1 md:col-span-2 row-span-1 min-h-[200px] md:min-h-[210px]",
-      large:
-        "col-span-1 md:col-span-2 row-span-1 md:row-span-2 min-h-[400px] md:min-h-[420px]",
-      wide: "col-span-1 md:col-span-4 row-span-1 min-h-[200px] md:min-h-[210px]",
-      hero: "col-span-1 md:col-span-4 row-span-1 md:row-span-2 min-h-[400px] md:min-h-[420px]",
-      full: "col-span-1 md:col-span-6 row-span-1 md:row-span-2 min-h-[400px] md:min-h-[420px]",
-      "page-full": "col-span-1 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
-      "page-half":
-        "col-span-1 md:col-span-1 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
-      "page-third":
-        "col-span-1 lg:col-span-1 min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
+      small: "col-span-1 row-span-1",
+      medium: "col-span-1 md:col-span-2 row-span-1 ",
+      large: "col-span-1 md:col-span-2",
+      wide: "col-span-1 md:col-span-4 row-span-1",
+      hero: "col-span-1 md:col-span-4 row-span-1",
+      full: "col-span-1 md:col-span-6 row-span-1",
+      "page-full": "col-span-1",
+      "page-half": "col-span-1 md:col-span-1",
+      "page-third": "col-span-1 lg:col-span-1",
     },
     padding: {
       none: "p-0",
@@ -33,9 +29,10 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
       false: "",
     },
     height: {
-      auto: "h-auto",
-      full: "h-full",
-      fit: "h-fit",
+      small: "min-h-[25px] md:min-h-[25px]",
+      medium: "min-h-[200px] md:min-h-[210px]",
+      large: " md:row-span-2 min-h-[400px] md:min-h-[420px]",
+      xl: "min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
     },
     border: {
       none: "border-0",
@@ -59,7 +56,7 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
     size: "medium",
     padding: "medium",
     glass: false,
-    height: "full",
+    height: "medium",
     border: "standard",
     shadow: "soft",
     hover: "none",
@@ -91,7 +88,7 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({ size, padding, glass, height, border, shadow, hover, })} ${className}`}
+      className={`${cardVariants({ size, padding, glass, height, border, shadow, hover })} ${className}`}
       style={{
         ...style,
         // Force visibility with inline styles

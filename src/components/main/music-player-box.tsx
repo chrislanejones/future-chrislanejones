@@ -139,6 +139,7 @@ export default function Musicplayerbox({
       shadow="soft"
       border="thin"
       delay={delay}
+      height="large"
       className="overflow-hidden flex flex-col"
     >
       <audio

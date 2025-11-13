@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -15,13 +14,7 @@ export default function ConferencesPage() {
   );
 
   return (
-    <main className="site-container py-12">
-      <Banner
-        title="Conferences"
-        breadcrumbPage="Conferences"
-        description="Highlights and notes from events I've attended—open source, web, and community conferences across the years."
-      />
-
+    <>
       {/* Year Filter Tabs */}
       <Tabs defaultValue="all" className="mb-8">
         <TabsList variant="pills">
@@ -53,7 +46,7 @@ export default function ConferencesPage() {
           </TabsContent>
         ))}
       </Tabs>
-    </main>
+    </>
   );
 }
 
@@ -67,7 +60,7 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
       {conferences.map((c, i) => (
         <Card
           key={`${c.year}-${c.slug}`}
-          size="page-third"
+          size="small"
           padding="none"
           hover="lift"
           border="standard"
