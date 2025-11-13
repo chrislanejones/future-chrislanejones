@@ -314,13 +314,14 @@ const PhotoGallery = ({
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <motion.div
-          className="relative left-1/2 -translate-x-1/2 overflow-visible"
+          className="relative left-1/2 overflow-visible"
           variants={containerVariants}
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
           style={{
             height: `${containerHeight}px`,
             width: `${containerWidth}px`,
+            transform: 'translateX(-60%)',
           }}
         >
           {[...positions].reverse().map((position, index) => {
@@ -329,8 +330,10 @@ const PhotoGallery = ({
             return (
               <motion.div
                 key={position.id}
-                className="absolute left-1/2 top-1/2" // Start from center
+                className="absolute" // Removed left-1/2 top-1/2
                 style={{
+                  left: "45%",
+                  top: "0%",
                   zIndex:
                     clickedPhotoId === position.id ? 100 : position.zIndex,
                 }}

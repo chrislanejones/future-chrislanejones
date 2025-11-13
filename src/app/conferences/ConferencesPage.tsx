@@ -65,7 +65,7 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
           hover="lift"
           border="standard"
           shadow="soft"
-          height="full"
+          height="large"
           delay={0.05 + i * 0.05}
           className="overflow-hidden"
         >

@@ -10,8 +10,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 const QUOTES: ReactNode[] = [
-  "My rambling 1",
-  "My  ",
+  "Note: Better Ramblings Coming Soon",
+  "Note: Better Ramblings Coming Soon",
+  "Note: Better Ramblings Coming Soon",
+  "<marquee>Under Construction 'cone.gif' <marquee>",
+  "2010: I was learning After Effects 2025: I am learning Effect.ts",
   "I spent way too many hours building this site, let's bring back Geosites",
   "When I tried SQL for the first time I hit DROP TABLE attempting to download.",
   "Locked my fridge with a CAPTCHA to stop my midnight snacking.",
@@ -74,11 +77,13 @@ export default function Quotegeneratorcard({
             <motion.blockquote
               key={index}
               exit={{ opacity: 0, y: -8 }}
-              className="text-center h4 leading-relaxed m-0"
+              className="text-center leading-relaxed m-0"
             >
-              {typeof QUOTES[index] === "string"
-                ? `"${QUOTES[index]}"`
-                : QUOTES[index]}
+              <h4>
+                {typeof QUOTES[index] === "string"
+                  ? `"${QUOTES[index]}"`
+                  : QUOTES[index]}
+              </h4>
             </motion.blockquote>
           </AnimatePresence>
         </div>

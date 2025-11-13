@@ -9,5 +9,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   // Let middleware handle the auth protection
-  return <>{children}</>;
+  // Remove parent container constraints for full-width admin
+  return (
+    <div className="fixed inset-0 overflow-hidden">
+      {children}
+    </div>
+  );
 }

@@ -35,6 +35,7 @@ export default function Clientsliderbox({
       shadow="soft"
       border="thin"
       delay={delay}
+      height="medium"
     >
       <IconSlider
         items={clientItems}

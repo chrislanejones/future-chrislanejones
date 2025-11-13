@@ -41,7 +41,7 @@ const appProjects: Project[] = [
       "Performance optimized with Web Workers",
       "Real-time image processing pipeline",
     ],
-    image: "/projects/multi-image-compress-and-edit-app.webp",
+    image: "/projects/Image-Horse-App.webp",
     githubUrl: "https://github.com/chrislanejones",
     vercelUrl: "",
     customUrl: "https://example.com/docs",
@@ -49,15 +49,15 @@ const appProjects: Project[] = [
   {
     title: "Go Web Crawler",
     description:
-      "High-performance web crawler built with Go featuring concurrent processing, intelligent rate limiting, and comprehensive data extraction.",
+      "This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content, while detecting connectivity issues, network errors, and anti-bot protections.",
     features: [
-      "Concurrent crawling with goroutines",
-      "Intelligent rate limiting and politeness policies",
-      "Structured data extraction with custom parsers",
-      "Distributed crawling architecture",
-      "Real-time monitoring and analytics dashboard",
+      "Built in Go (Golang) for high concurrency and efficient network operations.",
+      "Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
+      "Features bot protection detection for systems like Cloudflare, Incapsula, and Sucuri",
+      "Provides real-time progress tracking and detailed error categorization",
+      "Supports multi-target, multi-site scanning with summarized CSV reporting per job",
     ],
-    image: "/projects/Go-Tool.webp",
+    image: "/projects/Web-Crawler-Golang-App.webp",
     githubUrl: "https://github.com/chrislanejones/go-crawler",
     vercelUrl: "",
     customUrl: "",
@@ -73,7 +73,7 @@ const appProjects: Project[] = [
       "Practice mode with typing challenges",
       "Plugin compatibility checker",
     ],
-    image: "/projects/mpc-vim-filter-tool.webp",
+    image: "/projects/MPC-Vim-Filter-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/vim-shortcuts",
     vercelUrl: "https://vim-shortcuts.vercel.app",
     customUrl: "https://vim-shortcuts.vercel.app/guide",
@@ -143,23 +143,18 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
   return (
     <Card
-      size="page-full"
+      size="small"
       padding="none"
       hover="lift"
       border="standard"
       shadow="soft"
-      height="auto"
+      height="medium"
       delay={0.05 + index * 0.05}
       className="overflow-hidden"
     >
-      <div className="grid md:grid-cols-2 gap-0 h-full">
+      <div className="grid ">
         {/* Text Content */}
-        <div
-          className={cn(
-            "flex flex-col justify-center p-6 sm:p-8",
-            isImageLeft ? "md:order-2" : "md:order-1"
-          )}
-        >
+        <div>
           <h3 className=" text-ink tracking-tight mb-3">{project.title}</h3>
 
           <p className="p text-ink leading-relaxed mb-4">

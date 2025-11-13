@@ -20,9 +20,7 @@ export default function ConferenceYearPage({
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Banner */}
       <div className="mb-16">
-        <h1 className="mb-4">
-          Conferences in {year}
-        </h1>
+        <h1 className="mb-4">Conferences in {year}</h1>
         <div className="flex items-center gap-2 text-muted">
           <Link href="/" className="hover:text-foreground">
             Home
@@ -49,7 +47,7 @@ export default function ConferenceYearPage({
             hover="lift"
             border="standard"
             shadow="soft"
-            height="full"
+            height="large"
             delay={0.05 + i * 0.05}
             className="overflow-hidden"
           >
@@ -79,11 +77,7 @@ export default function ConferenceYearPage({
                     .join(" • ")}
                 </p>
 
-                {c.summary && (
-                  <p className="mt-3 line-clamp-3">
-                    {c.summary}
-                  </p>
-                )}
+                {c.summary && <p className="mt-3 line-clamp-3">{c.summary}</p>}
 
                 {/* Topics */}
                 {c.topics && c.topics.length > 0 && (
