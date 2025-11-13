@@ -25,18 +25,18 @@ const projects: Project[] = [
       "Undo/redo, rotation/flip, pagination",
       "Bulk crop mirroring across selected images",
     ],
-    image: "/projects/multi-image-compress-and-edit-app.webp",
+    image: "/projects/Image-Horse-App.webp",
     githubUrl: "https://github.com/chrislanejones",
     vercelUrl: "",
   },
   {
     title: "Golang Web Crawler",
     description:
-      "High-performance web crawler built with Go featuring concurrent processing, intelligent rate limiting, and comprehensive data extraction.",
+      "This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content, while detecting connectivity issues, network errors, and anti-bot protections.",
     features: [
-      "Concurrent crawling with goroutines",
-      "Intelligent rate limiting and politeness policies",
-      "Structured data extraction with custom parsers",
+      "Built in Go (Golang) for high concurrency and efficient network operations.",
+      "Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
+      "Features bot protection detection for systems like Cloudflare, Incapsula, and Sucuri",
     ],
     image: "/projects/Go-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/go-crawler",
@@ -51,7 +51,7 @@ const projects: Project[] = [
       "Context-aware command suggestions",
       "Custom shortcut collection builder",
     ],
-    image: "/projects/mpc-vim-filter-tool.webp",
+    image: "/projects/MPC-Vim-Filter-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/vim-shortcuts",
     vercelUrl: "https://vim-shortcuts.vercel.app",
   },
@@ -71,10 +71,7 @@ interface ProjectsboxProps {
   delay?: number;
 }
 
-export default function Projectsbox({
-  size = "large",
-  delay = 0.3,
-}: ProjectsboxProps) {
+export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
@@ -101,8 +98,9 @@ export default function Projectsbox({
   return (
     <Card
       id="projects"
-      size={size}
+      height="large"
       padding="medium"
+      size="full"
       shadow="soft"
       border="thin"
       delay={delay}

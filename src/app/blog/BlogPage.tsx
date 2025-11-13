@@ -41,7 +41,7 @@ export default function BlogPage() {
   return (
     <div className="site-container py-12">
       {posts.length === 0 ? (
-        <Card size="page-full" className="text-center py-12">
+        <Card size="page-full" className="text-center">
           <p className="p text-ink">No blog posts yet. Check back soon!</p>
         </Card>
       ) : (
