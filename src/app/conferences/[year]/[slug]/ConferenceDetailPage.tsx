@@ -43,9 +43,7 @@ export default function ConferenceDetailPage({
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">
           {/* Left: Title and Breadcrumb */}
           <div className="flex-1">
-            <h1 className="mb-4">
-              {conf.name}
-            </h1>
+            <h1 className="mb-4">{conf.name}</h1>
             <div className="flex items-center gap-2 text-muted">
               <Link href="/" className="hover:text-foreground">
                 Home
@@ -69,12 +67,8 @@ export default function ConferenceDetailPage({
             {dateRange && (
               <Badge variant="blue" className="px-4 py-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-muted uppercase">
-                    Dates
-                  </span>
-                  <span className="">
-                    {dateRange}
-                  </span>
+                  <span className="text-muted uppercase">Dates</span>
+                  <span className="">{dateRange}</span>
                 </div>
               </Badge>
             )}
@@ -83,12 +77,8 @@ export default function ConferenceDetailPage({
               {conf.city && (
                 <Badge variant="green" className="px-4 py-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-muted uppercase">
-                      City
-                    </span>
-                    <span className="">
-                      {conf.city}
-                    </span>
+                    <span className="text-muted uppercase">City</span>
+                    <span className="">{conf.city}</span>
                   </div>
                 </Badge>
               )}
@@ -96,12 +86,8 @@ export default function ConferenceDetailPage({
               {conf.venue && (
                 <Badge variant="purple" className="px-4 py-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-muted uppercase">
-                      Venue
-                    </span>
-                    <span className="">
-                      {conf.venue}
-                    </span>
+                    <span className="text-muted uppercase">Venue</span>
+                    <span className="">{conf.venue}</span>
                   </div>
                 </Badge>
               )}
@@ -113,7 +99,6 @@ export default function ConferenceDetailPage({
       {/* Single Card with all content */}
       <Card
         size="page-full"
-        padding="none"
         border="standard"
         shadow="soft"
         className="overflow-hidden"
@@ -175,18 +160,12 @@ export default function ConferenceDetailPage({
 
       {/* Talks & Resources section */}
       {conf.talkLinks && conf.talkLinks.length > 0 && (
-        <Card
-          size="page-full"
-          padding="large"
-          border="standard"
-          shadow="soft"
-          className="mt-6"
-        >
+        <Card size="page-full" border="standard" shadow="soft" className="mt-6">
           <h2 className="mb-4">Talks & Resources</h2>
           <ul className="space-y-3">
             {conf.talkLinks.map((talk, i) => (
               <li key={i}>
-                <Button variant="outline" showExternalIcon asChild>
+                <Button variant="base" showExternalIcon asChild>
                   <a href={talk.url} target="_blank" rel="noopener noreferrer">
                     {talk.label}
                   </a>

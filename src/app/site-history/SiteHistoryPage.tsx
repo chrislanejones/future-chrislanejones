@@ -146,7 +146,6 @@ function SiteVersionCard({
   return (
     <Card
       size="page-full"
-      padding="large"
       shadow="soft"
       border="thin"
       className="grid md:grid-cols-5 gap-8"

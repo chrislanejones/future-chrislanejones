@@ -42,7 +42,6 @@ export default function BrowserCard({
   return (
     <Card
       size="page-third"
-      padding="medium"
       hover="lift"
       border="thin"
       shadow="soft"
@@ -51,9 +50,7 @@ export default function BrowserCard({
       <div className="space-y-4">
         {/* Chrome Tab Group Badge */}
         <Badge variant={color} className="px-4 py-2">
-          <h4 className="">
-            {title}
-          </h4>
+          <h4 className="">{title}</h4>
         </Badge>
 
         {/* Links Container */}

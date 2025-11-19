@@ -25,7 +25,7 @@ export default function Header() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   // Check if a link or any of its children are active
-  const isActive = (item: typeof headerNavItems[0]) => {
+  const isActive = (item: (typeof headerNavItems)[0]) => {
     if (item.href && pathname === item.href) return true;
     if (item.children) {
       return item.children.some((child) => pathname === child.href);
@@ -39,13 +39,13 @@ export default function Header() {
       <div className="sr-only focus-within:not-sr-only">
         <a
           href="#main-content"
-          className="absolute top-0 left-0 z-[9999] bg-accent text-white px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-accent-alt"
+          className="absolute top-0 left-1 z-[9999] bg-accent text-white px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-accent-alt"
         >
           Skip to main content
         </a>
         <a
           href="#main-navigation"
-          className="absolute top-0 left-32 z-[9999] bg-accent text-white px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-accent-alt"
+          className="absolute top-0 left-33 z-[9999] bg-accent text-white px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-accent-alt"
         >
           Skip to navigation
         </a>
@@ -97,7 +97,9 @@ export default function Header() {
                                     <Link
                                       href={child.href}
                                       className={`block w-full rounded-md px-3 py-2 text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring ${
-                                        pathname === child.href ? "bg-[color:var(--color-surface-hover)]" : ""
+                                        pathname === child.href
+                                          ? "bg-[color:var(--color-surface-hover)]"
+                                          : ""
                                       }`}
                                     >
                                       {child.label}
@@ -114,7 +116,9 @@ export default function Header() {
                         <Link
                           href={item.href!}
                           className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg ${
-                            isActive(item) ? "bg-[color:var(--color-surface-hover)]" : ""
+                            isActive(item)
+                              ? "bg-[color:var(--color-surface-hover)]"
+                              : ""
                           }`}
                         >
                           {item.label}
@@ -233,7 +237,9 @@ export default function Header() {
                                 key={child.href}
                                 href={child.href}
                                 className={`block nav-link text-md py-2 px-4 rounded-lg ${
-                                  pathname === child.href ? "bg-[color:var(--color-surface-hover)]" : ""
+                                  pathname === child.href
+                                    ? "bg-[color:var(--color-surface-hover)]"
+                                    : ""
                                 }`}
                                 onClick={closeMobileMenu}
                               >
@@ -246,7 +252,9 @@ export default function Header() {
                         <Link
                           href={item.href!}
                           className={`block nav-link py-3 px-4 rounded-lg ${
-                            isActive(item) ? "bg-[color:var(--color-surface-hover)]" : ""
+                            isActive(item)
+                              ? "bg-[color:var(--color-surface-hover)]"
+                              : ""
                           }`}
                           onClick={closeMobileMenu}
                         >
@@ -260,7 +268,10 @@ export default function Header() {
                   <div className="pt-6 border-t border-white/10 space-y-3">
                     <h2
                       className="text-foreground px-4 mb-3"
-                      style={{ fontSize: 'var(--step--1)', fontWeight: 'var(--weight-demibold)' }}
+                      style={{
+                        fontSize: "var(--step--1)",
+                        fontWeight: "var(--weight-demibold)",
+                      }}
                     >
                       Social Links
                     </h2>

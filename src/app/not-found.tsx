@@ -18,7 +18,6 @@ export default function NotFound() {
 
         <Card
           size="page-full"
-          padding="large"
           shadow="soft"
           border="thin"
           delay={0.1}

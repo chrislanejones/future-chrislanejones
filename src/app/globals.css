@@ -131,7 +131,49 @@ p {
 }
 
 .card {
-  border: 1px solid var(--color-border);
+  padding: 1rem; /* p-4 */
+}
+
+/* In src/app/globals.css */
+
+/* Remove padding from cards that contain a top image */
+.card:has(> .image-container) {
+  padding: 0 !important;
+}
+
+/* Style the image container (first child) */
+.card > .image-container {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.card > .image-container img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+
+/* Add the gradient overlay */
+.card > .image-container::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--color-base) / 80 0%,
+    var(--color-base) / 20 50%,
+    transparent 100%
+  );
+}
+
+/* Ensure content below has padding */
+.card > .image-container + * {
+  padding: 1.5rem; /* p-6 */
 }
 
 .shadow-soft {

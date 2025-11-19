@@ -29,14 +29,7 @@ export default function Clientsliderbox({
   delay = 0.3,
 }: ClientsliderboxProps) {
   return (
-    <Card
-      size={size}
-      padding="medium"
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      height="medium"
-    >
+    <Card size={size} shadow="soft" border="thin" delay={delay} height="medium">
       <IconSlider
         items={clientItems}
         title="Past and Present Clients"

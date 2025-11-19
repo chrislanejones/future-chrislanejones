@@ -49,7 +49,6 @@ export default function BlogPage() {
           {posts.map((post, index) => (
             <Card
               size="page-third"
-              padding="none" // <-- CHANGE: Remove card padding
               delay={0.1 + index * 0.05}
               className="overflow-hidden flex flex-col"
             >

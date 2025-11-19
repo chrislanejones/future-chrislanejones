@@ -135,7 +135,6 @@ export default function Musicplayerbox({
   return (
     <Card
       size={size}
-      padding="none"
       shadow="soft"
       border="thin"
       delay={delay}
@@ -149,7 +148,7 @@ export default function Musicplayerbox({
         crossOrigin="anonymous"
       />
 
-      <div className="relative flex-1 min-h-[200px]">
+      <div className="image-container relative flex-1 min-h-[200px]">
         <Image
           src={currentTrack.albumArt}
           alt="album art"
@@ -191,7 +190,7 @@ export default function Musicplayerbox({
         </div>
       </div>
 
-      <div className="p-6 grid grid-cols-[1fr_auto] items-center gap-4">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-4">
         <h3 className="text-ink">
           {currentTrack.artist} – {currentTrack.title}
         </h3>
@@ -200,7 +199,7 @@ export default function Musicplayerbox({
           onClick={togglePlayPause}
           variant="neutral"
           size="icon"
-          className="rounded-full h-11 w-11 shadow-sm transition hover:scale-105"
+          className="rounded-full  shadow-sm transition hover:scale-105"
           disabled={!isLoaded}
           aria-label={isPlaying ? "Pause" : "Play"}
         >

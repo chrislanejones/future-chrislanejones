@@ -40,9 +40,10 @@ const appProjects: Project[] = [
       "Real-time image processing pipeline",
     ],
     image: "/projects/Image-Horse-App.webp",
-    githubUrl: "https://github.com/chrislanejones",
+    githubUrl:
+      "https://github.com/chrislanejones/multi-image-compress-and-edit",
     vercelUrl: "",
-    customUrl: "https://example.com/docs",
+    customUrl: "",
   },
   {
     title: "Go Web Crawler",
@@ -56,7 +57,7 @@ const appProjects: Project[] = [
       "Supports multi-target, multi-site scanning with summarized CSV reporting per job",
     ],
     image: "/projects/Web-Crawler-Golang-App.webp",
-    githubUrl: "https://github.com/chrislanejones/go-crawler",
+    githubUrl: "https://github.com/chrislanejones/webcrawler-go",
     vercelUrl: "",
     customUrl: "",
   },
@@ -72,9 +73,9 @@ const appProjects: Project[] = [
       "Plugin compatibility checker",
     ],
     image: "/projects/MPC-Vim-Filter-Tool.webp",
-    githubUrl: "https://github.com/chrislanejones/vim-shortcuts",
-    vercelUrl: "https://vim-shortcuts.vercel.app",
-    customUrl: "https://vim-shortcuts.vercel.app/guide",
+    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
+    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
+    customUrl: "",
   },
 ];
 
@@ -136,34 +137,71 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const hasVercelUrl = isValidUrl(project.vercelUrl);
   const hasCustomUrl = isValidUrl(project.customUrl);
 
+  // Determine the primary link (prefer GitHub, then custom, then Vercel)
+  const primaryLink =
+    project.githubUrl || project.customUrl || project.vercelUrl;
+  const hasPrimaryLink = isValidUrl(primaryLink);
+
   return (
     <Card
       size="small"
-      padding="none"
       hover="lift"
       border="standard"
       shadow="soft"
-      height="large"
+      height="xl"
       delay={0.05 + index * 0.05}
       className="overflow-hidden"
     >
       <div className="group flex h-full flex-col">
         {/* Project Image */}
         <div className="relative w-full aspect-[16/9] bg-white/5">
-          <Image
-            src={project.image}
-            alt={`${project.title} preview`}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={index < 3}
-          />
+          {hasPrimaryLink ? (
+            <Link
+              href={primaryLink!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <div className="relative w-full aspect-[16/9] bg-white/5">
+                <Image
+                  src={project.image}
+                  alt={`${project.title} preview`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  priority={index < 3}
+                />
+              </div>
+            </Link>
+          ) : (
+            <Image
+              src={project.image}
+              alt={`${project.title} preview`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              priority={index < 3}
+            />
+          )}
         </div>
 
         {/* Project Info */}
         <div className="flex-1 p-5 flex flex-col">
           {/* Title */}
-          <h3 className="text-ink tracking-tight mb-2">{project.title}</h3>
+          {hasPrimaryLink ? (
+            <Link
+              href={primaryLink!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link inline-block mb-2"
+            >
+              <h3 className="text-ink tracking-tight text-left">
+                {project.title}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="text-ink tracking-tight mb-2">{project.title}</h3>
+          )}
 
           {/* Description */}
           <p className="text-ink mt-2 line-clamp-3">{project.description}</p>
@@ -288,7 +326,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 function ProjectGridSection({ projects }: { projects: Project[] }) {
   return (
-    <section className="grid grid-cols-1 gap-6" aria-label="Projects grid">
+    <section
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      aria-label="Projects grid"
+    >
       {projects.map((project, index) => (
         <ProjectCard key={project.title} project={project} index={index} />
       ))}

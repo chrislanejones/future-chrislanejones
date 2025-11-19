@@ -61,7 +61,6 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
         <Card
           key={`${c.year}-${c.slug}`}
           size="small"
-          padding="none"
           hover="lift"
           border="standard"
           shadow="soft"
@@ -115,7 +114,7 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
 
               {/* Button at bottom */}
               <div className="mt-auto pt-6">
-                <Button variant="ghost" asChild className="w-full">
+                <Button variant="base" asChild className="w-full">
                   <Link href={`/conferences/${c.year}/${c.slug}`}>
                     View Details
                   </Link>

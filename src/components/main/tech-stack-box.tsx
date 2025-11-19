@@ -115,7 +115,6 @@ export default function Techstackbox({
   return (
     <Card
       size={size}
-      padding="small"
       shadow="soft"
       border="thin"
       delay={delay}

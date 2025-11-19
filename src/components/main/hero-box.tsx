@@ -37,7 +37,6 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
   return (
     <Card
       size={size}
-      padding="medium"
       shadow="soft"
       border="thin"
       delay={delay}
@@ -89,12 +88,12 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
 
         {/* Buttons pinned to bottom-left */}
         <div className="mt-auto flex items-center gap-3">
-          <Button asChild variant="base">
+          <Button asChild variant="neutral">
             <a href="/contact">Contact Me</a>
           </Button>
 
           <Button
-            variant="base"
+            variant="neutral"
             size="icon"
             round={true}
             onClick={replayAnimation}

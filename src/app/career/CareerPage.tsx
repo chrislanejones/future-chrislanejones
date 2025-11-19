@@ -125,7 +125,7 @@ function TimelineTrail() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+                transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
               >
                 {/* 3-column grid on desktop: [left card] [icon] [right card] */}
                 <div className="flex items-start md:grid md:grid-cols-[1fr_48px_1fr] md:gap-8">
@@ -139,7 +139,6 @@ function TimelineTrail() {
                     {isLeftSide && (
                       <Card
                         size="page-full"
-                        padding="medium"
                         shadow="soft"
                         border="thin"
                         hover="lift"
@@ -182,7 +181,7 @@ function TimelineTrail() {
                   </div>
 
                   {/* CENTER ICON (always visible) */}
-                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-green-500 border-4 border-white dark:border-[#111418] shadow-lg flex items-center justify-center text-white md:mx-auto">
+                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-green-500 dark:border-[#111418] shadow-lg flex items-center justify-center text-white md:mx-auto">
                     {event.icon}
                   </div>
 
@@ -197,7 +196,6 @@ function TimelineTrail() {
                   >
                     <Card
                       size="page-full"
-                      padding="medium"
                       shadow="soft"
                       border="thin"
                       hover="lift"
@@ -251,14 +249,13 @@ function PhotoGalleryCard() {
   return (
     <Card
       size="page-half"
-      padding="none"
       shadow="soft"
       border="thin"
       hover="lift"
       delay={0.2}
       className="overflow-hidden flex flex-col"
     >
-      <div className="relative flex-1 min-h-[200px]">
+      <div className="image-container relative flex-1 min-h-[200px]">
         <Image
           alt="Samsung 49-inch Odyssey G9 setup"
           src="/setups/Samsung-49-inch-Odyssey-G9.webp"
@@ -269,7 +266,7 @@ function PhotoGalleryCard() {
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
       </div>
 
-      <div className="p-6 grid grid-cols-[auto_1fr] items-start gap-4">
+      <div className="grid grid-cols-[auto_1fr] items-start gap-4">
         <GalleryDrawer
           photos={photos}
           title="Gallery"
@@ -289,7 +286,6 @@ function ResumeDownloadCard() {
   return (
     <Card
       size="page-half"
-      padding="large"
       shadow="soft"
       border="thin"
       hover="lift"

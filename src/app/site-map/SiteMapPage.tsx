@@ -78,7 +78,6 @@ export default function SiteMapPage() {
         {/* Changelog Card */}
         <Card
           size="page-half"
-          padding="large"
           shadow="soft"
           border="thin"
           delay={0.1}
@@ -107,7 +106,6 @@ export default function SiteMapPage() {
         {/* Sitemap Card */}
         <Card
           size="page-half"
-          padding="large"
           shadow="soft"
           border="thin"
           delay={0.2}
@@ -166,7 +164,6 @@ export default function SiteMapPage() {
       {/* Full Width Card - Tech Stack */}
       <Card
         size="page-full"
-        padding="large"
         shadow="soft"
         border="thin"
         delay={0.3}

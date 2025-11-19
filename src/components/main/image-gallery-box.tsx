@@ -53,25 +53,24 @@ export default function ImageGalleryBox({
   return (
     <Card
       size={size}
-      padding="none"
       shadow="soft"
       border="thin"
       delay={delay}
       height="large"
       className="overflow-hidden flex flex-col"
     >
-      <div className="relative flex-1 min-h-[200px]">
+      <div className="image-container relative flex-1 min-h-[200px]">
         <Image
-          alt="hiking"
+          alt="Theo and I"
           src="/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp"
           className="absolute inset-0 w-full h-full object-cover opacity-70"
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/10 to-transparent"></div>
       </div>
 
-      <div className="p-6 grid grid-cols-[1fr_auto] items-center gap-4">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-4">
         <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
         <GalleryDrawer
           photos={photos}
