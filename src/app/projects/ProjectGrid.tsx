@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-const cn = (...classes: Array<string | undefined | null | false>) =>
-  classes.filter(Boolean).join(" ");
 
 /* ---------------------------------- Types --------------------------------- */
 
@@ -138,9 +136,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const hasVercelUrl = isValidUrl(project.vercelUrl);
   const hasCustomUrl = isValidUrl(project.customUrl);
 
-  // Determine if this card should have image on the left (even indices) or right (odd indices)
-  const isImageLeft = index % 2 === 0;
-
   return (
     <Card
       size="small"
@@ -148,22 +143,34 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       hover="lift"
       border="standard"
       shadow="soft"
-      height="medium"
+      height="large"
       delay={0.05 + index * 0.05}
       className="overflow-hidden"
     >
-      <div className="grid ">
-        {/* Text Content */}
-        <div>
-          <h3 className=" text-ink tracking-tight mb-3">{project.title}</h3>
+      <div className="group flex h-full flex-col">
+        {/* Project Image */}
+        <div className="relative w-full aspect-[16/9] bg-white/5">
+          <Image
+            src={project.image}
+            alt={`${project.title} preview`}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            priority={index < 3}
+          />
+        </div>
 
-          <p className="p text-ink leading-relaxed mb-4">
-            {project.description}
-          </p>
+        {/* Project Info */}
+        <div className="flex-1 p-5 flex flex-col">
+          {/* Title */}
+          <h3 className="text-ink tracking-tight mb-2">{project.title}</h3>
+
+          {/* Description */}
+          <p className="text-ink mt-2 line-clamp-3">{project.description}</p>
 
           {/* Features */}
-          <ul className="space-y-2 mb-6 flex-1">
-            {project.features.map((feature, i) => (
+          <ul className="space-y-2 mt-4 flex-1">
+            {project.features.slice(0, 3).map((feature, i) => (
               <li key={i} className="flex items-start gap-2">
                 <svg
                   className="w-4 h-4 text-accent flex-shrink-0 mt-0.5"
@@ -179,13 +186,15 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <span className="text-ink leading-relaxed">{feature}</span>
+                <span className="text-ink text-sm leading-relaxed">
+                  {feature}
+                </span>
               </li>
             ))}
           </ul>
 
           {/* Action Buttons */}
-          <div className="flex gap-2 mt-auto">
+          <div className="flex gap-2 mt-auto pt-6">
             {hasGithubUrl && (
               <Button
                 asChild
@@ -271,23 +280,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               </Button>
             )}
           </div>
-        </div>
-
-        {/* Image */}
-        <div
-          className={cn(
-            "relative min-h-[300px] md:min-h-full",
-            isImageLeft ? "md:order-1" : "md:order-2"
-          )}
-        >
-          <Image
-            src={project.image}
-            alt={`${project.title} preview`}
-            className="object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority={index === 0}
-          />
         </div>
       </div>
     </Card>
