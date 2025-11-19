@@ -31,14 +31,13 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
   return (
     <Card
       size={size}
-      padding="none"
       shadow="soft"
       border="thin"
       delay={delay}
       height="large"
       className="overflow-hidden flex flex-col"
     >
-      <div className="relative flex-1 min-h-[200px]">
+      <div className="relative flex-1 min-h-[100px]">
         {/* Blog posts with space-evenly */}
         <div className="absolute inset-0 flex flex-col items-center justify-evenly gap-4 p-3">
           {!posts ? (
@@ -67,7 +66,7 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
       </div>
 
       {/* Bottom section - same height as Photo Gallery */}
-      <div className="p-6 flex items-center justify-between">
+      <div className="p-2 flex items-center justify-between">
         <h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
         <Button
           variant="neutral"

@@ -63,14 +63,13 @@ export default function Quotegeneratorcard({
   return (
     <Card
       size={size}
-      padding="none"
       shadow="soft"
       border="thin"
       delay={delay}
       className="relative overflow-hidden flex flex-col"
     >
       {/* Top: quote area — bubble centered, no forced stretch */}
-      <div className="relative flex-1 min-h-[200px] grid place-items-center px-4 py-6">
+      <div className="relative flex-1 min-h-[200px] grid place-items-center">
         {/* Important: no h-full here so the row doesn't stretch */}
         <div className="speech-bubble-container speech-bubble--compact w-full max-w-[min(720px,92%)] mx-auto">
           <AnimatePresence mode="wait">
@@ -90,7 +89,7 @@ export default function Quotegeneratorcard({
       </div>
 
       {/* Bottom: footer bar (avatar, title, circular neutral icon button) */}
-      <div className="p-6 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+      <div className="pt-6 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         <Button
           asChild
           variant="neutral"

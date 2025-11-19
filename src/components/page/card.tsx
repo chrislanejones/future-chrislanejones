@@ -18,12 +18,6 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
       "page-half": "col-span-1 md:col-span-1",
       "page-third": "col-span-1 lg:col-span-1",
     },
-    padding: {
-      none: "p-0",
-      small: "p-3 sm:p-4",
-      medium: "p-4 sm:p-6",
-      large: "p-6 sm:p-8",
-    },
     glass: {
       true: "glass",
       false: "",
@@ -54,7 +48,6 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
   },
   defaultVariants: {
     size: "medium",
-    padding: "medium",
     glass: false,
     height: "medium",
     border: "standard",
@@ -74,7 +67,6 @@ interface UnifiedCardProps extends VariantProps<typeof cardVariants> {
 export function Card({
   children,
   size,
-  padding,
   glass,
   height,
   border,
@@ -88,7 +80,7 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({ size, padding, glass, height, border, shadow, hover })} ${className}`}
+      className={`${cardVariants({ size, glass, height, border, shadow, hover })} ${className}`}
       style={{
         ...style,
         // Force visibility with inline styles

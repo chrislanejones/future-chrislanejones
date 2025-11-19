@@ -26,7 +26,8 @@ const projects: Project[] = [
       "Bulk crop mirroring across selected images",
     ],
     image: "/projects/Image-Horse-App.webp",
-    githubUrl: "https://github.com/chrislanejones",
+    githubUrl:
+      "https://github.com/chrislanejones/multi-image-compress-and-edit",
     vercelUrl: "",
   },
   {
@@ -38,8 +39,8 @@ const projects: Project[] = [
       "Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
       "Features bot protection detection for systems like Cloudflare, Incapsula, and Sucuri",
     ],
-    image: "/projects/Go-Tool.webp",
-    githubUrl: "https://github.com/chrislanejones/go-crawler",
+    image: "/projects/Web-Crawler-Golang-App.webp",
+    githubUrl: "git@github.com:chrislanejones/webcrawler-go.git",
     vercelUrl: "",
   },
   {
@@ -52,8 +53,8 @@ const projects: Project[] = [
       "Custom shortcut collection builder",
     ],
     image: "/projects/MPC-Vim-Filter-Tool.webp",
-    githubUrl: "https://github.com/chrislanejones/vim-shortcuts",
-    vercelUrl: "https://vim-shortcuts.vercel.app",
+    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
+    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
   },
 ];
 
@@ -99,7 +100,6 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
     <Card
       id="projects"
       height="large"
-      padding="medium"
       size="full"
       shadow="soft"
       border="thin"
@@ -143,12 +143,12 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
         </AnimatePresence>
 
         <div className="flex items-center gap-3 mt-6">
-          <Button asChild variant="base">
+          <Button asChild variant="neutral">
             <a href="/projects">More Projects</a>
           </Button>
           <Button
             onClick={previousProject}
-            variant="base"
+            variant="neutral"
             size="icon"
             round
             aria-label="Previous project"
@@ -160,7 +160,7 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
             onClick={() =>
               hasGithubUrl && window.open(currentProject.githubUrl, "_blank")
             }
-            variant="base"
+            variant="neutral"
             size="icon"
             round
             aria-label={
@@ -187,7 +187,7 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
             onClick={() =>
               hasVercelUrl && window.open(currentProject.vercelUrl, "_blank")
             }
-            variant="base"
+            variant="neutral"
             size="icon"
             round
             aria-label={
@@ -208,7 +208,7 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
 
           <Button
             onClick={nextProject}
-            variant="base"
+            variant="neutral"
             size="icon"
             round
             aria-label="Next project"

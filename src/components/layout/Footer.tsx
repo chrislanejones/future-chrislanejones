@@ -21,7 +21,7 @@ const Bighorn3D = dynamic(() => import("./Bighorn3D"), {
 export default function Footer() {
   return (
     <>
-      <motion.footer className="relative site-container pt-5 pb-10 overflow-hidden">
+      <motion.footer className="relative site-container py-10 overflow-hidden">
         <WireframeTerrain variant="left" />
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
           {/* Branding */}

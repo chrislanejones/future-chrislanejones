@@ -101,7 +101,6 @@ function AboutCard({
   return (
     <Card
       size="page-full"
-      padding="none"
       hover="lift"
       border="standard"
       shadow="soft"

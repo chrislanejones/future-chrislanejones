@@ -107,7 +107,6 @@ export default function WordPressServicesPage() {
             <Card
               key={index}
               size="page-full"
-              padding="medium"
               shadow="soft"
               border="thin"
               hover="lift"
@@ -141,7 +140,6 @@ export default function WordPressServicesPage() {
           {/* Basic Plan Card */}
           <Card
             size="page-half"
-            padding="large"
             shadow="soft"
             border="thin"
             className="flex flex-col"
@@ -188,7 +186,7 @@ export default function WordPressServicesPage() {
 
             <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
               <div className="text-accent mb-6">$200 / month</div>
-              <Button asChild variant="accent" size="lg" className="w-full">
+              <Button asChild variant="base" size="lg" className="w-full">
                 <Link href="#contact">Start the Action Plan</Link>
               </Button>
             </div>
@@ -197,7 +195,6 @@ export default function WordPressServicesPage() {
           {/* SEO Plan Card */}
           <Card
             size="page-half"
-            padding="large"
             shadow="soft"
             border="thin"
             className="flex flex-col"
@@ -240,7 +237,7 @@ export default function WordPressServicesPage() {
 
             <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
               <div className="text-accent mb-6">$250 / month</div>
-              <Button asChild variant="accent" size="lg" className="w-full">
+              <Button asChild variant="base" size="lg" className="w-full">
                 <Link href="#contact">Start the Action Plan</Link>
               </Button>
             </div>
@@ -273,13 +270,7 @@ export default function WordPressServicesPage() {
       >
         <h2 className="text-center mb-12">Contact Us to Get Started</h2>
 
-        <Card
-          size="page-full"
-          padding="large"
-          shadow="soft"
-          border="thin"
-          className="max-w-2xl mx-auto"
-        >
+        <Card size="page-full" shadow="soft" border="thin">
           <form className="space-y-6">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
@@ -357,7 +348,7 @@ export default function WordPressServicesPage() {
               ></textarea>
             </div>
 
-            <Button type="submit" variant="accent" size="lg" className="w-full">
+            <Button type="submit" variant="base" size="lg" className="w-full">
               Submit
             </Button>
           </form>

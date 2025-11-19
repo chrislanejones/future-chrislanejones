@@ -28,6 +28,12 @@ export default function WireframeTerrain({
   // Dynamic rotation based on variant
   const ROTATE_DEG = variant === "left" ? -10 : -12;
 
+  // Conditional mask image for left variant
+  const maskImage =
+    variant === "left"
+      ? "linear-gradient(to bottom, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.92) 30%, rgba(0,0,0,0.00) 100%)"
+      : "linear-gradient(to bottom, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.85) 18%, rgba(0,0,0,0.92) 65%, rgba(0,0,0,0.00) 100%)";
+
   const generateTerrain = (grid: number) => {
     const hm: number[][] = new Array(grid);
     for (let y = 0; y < grid; y++) {
@@ -255,10 +261,8 @@ export default function WireframeTerrain({
     <div
       className="absolute inset-x-0 -top-2 bottom-0 pointer-events-none"
       style={{
-        maskImage:
-          "linear-gradient(to bottom, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.85) 18%, rgba(0,0,0,0.92) 65%, rgba(0,0,0,0.00) 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to bottom, rgba(0,0,0,0.00) 0%, rgba(0,0,0,0.85) 18%, rgba(0,0,0,0.92) 65%, rgba(0,0,0,0.00) 100%)",
+        maskImage,
+        WebkitMaskImage: maskImage,
       }}
     >
       <canvas

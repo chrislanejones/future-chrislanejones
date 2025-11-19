@@ -43,7 +43,6 @@ export default function ConferenceYearPage({
           <Card
             key={`${c.year}-${c.slug}`}
             size="page-third"
-            padding="none"
             hover="lift"
             border="standard"
             shadow="soft"
@@ -114,7 +113,7 @@ export default function ConferenceYearPage({
 
       {/* Empty State */}
       {conferences.length === 0 && (
-        <Card size="page-full" padding="large" className="text-center">
+        <Card size="page-full" className="text-center">
           <p className="text-muted">No conferences found for {year}</p>
           <Link
             href="/conferences"

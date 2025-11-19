@@ -13,9 +13,9 @@ export default function ReactMaintenancePage() {
     <>
       <Header />
       <Banner
-        title="WordPress Site Maintenance"
-        breadcrumbPage="WordPress Services"
-        description="A Monthly Action Plan That Makes Sense - Comprehensive website maintenance, including regular updates, security scans, performance optimization, and technical support."
+        title="React Site Maintenance"
+        breadcrumbPage="React Services"
+        description="A Monthly Action Plan That Makes Sense - Comprehensive React application maintenance, including regular updates, performance optimization, dependency management, and technical support."
       />
       <main>
         <ReactMaintenanceContent />

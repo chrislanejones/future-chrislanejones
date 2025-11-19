@@ -31,13 +31,7 @@ export default function ConferenceSliderBox({
   delay = 0.3,
 }: ConferenceSliderBoxProps) {
   return (
-    <Card
-      size={size}
-      padding="medium"
-      shadow="soft"
-      border="thin"
-      delay={delay}
-    >
+    <Card size={size} shadow="soft" border="thin" delay={delay}>
       <IconSlider
         items={conferenceItems}
         title="Tech Conferences Attended"

@@ -321,7 +321,7 @@ const PhotoGallery = ({
           style={{
             height: `${containerHeight}px`,
             width: `${containerWidth}px`,
-            transform: 'translateX(-60%)',
+            transform: "translateX(-60%)",
           }}
         >
           {[...positions].reverse().map((position, index) => {

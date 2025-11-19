@@ -40,7 +40,6 @@ export default function LinkGrid() {
         {/* Card 1: Main Avatar and Info - Top Left (grid-area: 1 / 1 / 2 / 2) */}
         <Card
           size="small"
-          padding="medium"
           shadow="soft"
           border="thin"
           delay={0.1}
@@ -65,7 +64,6 @@ export default function LinkGrid() {
         {/* Card 2: Social Links - Top Right (grid-area: 1 / 2 / 2 / 3) */}
         <Card
           size="small"
-          padding="medium"
           shadow="soft"
           border="thin"
           delay={0.2}
@@ -253,13 +251,7 @@ export default function LinkGrid() {
         </Card>
 
         {/* Card 3: Current Chrome Tabs - Bottom (spans both columns, grid-area: 2 / 1 / 3 / 3) */}
-        <Card
-          size="large"
-          padding="medium"
-          shadow="soft"
-          border="thin"
-          delay={0.3}
-        >
+        <Card size="large" shadow="soft" border="thin" delay={0.3}>
           <h3 className="mb-6 text-center flex items-center justify-center space-x-2">
             <FaChrome className="w-6 h-6" />
             <span>Chrome Tabs I Left Open...</span>

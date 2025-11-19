@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 // ✅ Exported now so NavigationMenu can import it
 export const buttonVariants = cva(
   [
-    "inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg",
+    "inline-flex items-center justify-center gap-2 p-4 rounded-lg",
     "transition shadow-passive focus-ring hover:shadow-glow",
     "select-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:shadow-none",
     "disabled:opacity-40 disabled:saturate-50",
@@ -18,7 +18,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         neutral: [
-          "bg-panel card",
+          "bg-panel border border-[color:var(--color-border)]",
           "text-foreground",
           "hover:bg-[color:var(--color-surface-hover)]",
         ].join(" "),
