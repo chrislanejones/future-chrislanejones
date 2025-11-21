@@ -80,7 +80,7 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({ size, glass, height, border, shadow, hover })} ${className}`}
+      className={`${cardVariants({ size, glass, height, border, shadow, hover })} ${className} pointer-events-auto`}
       style={{
         ...style,
         // Force visibility with inline styles
