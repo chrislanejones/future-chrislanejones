@@ -1,168 +1,111 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Card from "../page/card";
-import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-interface MusicplayerboxProps {
-  size?:
-    | "small"
-    | "medium"
-    | "large"
-    | "wide"
-    | "hero"
-    | "full"
-    | "page-full"
-    | "page-half"
-    | "page-third";
-  delay?: number;
-}
+type Track = {
+  title: string;
+  artist: string;
+  album: string;
+  src: string;
+  artwork: string;
+};
 
-const playlist = [
+const tracks: Track[] = [
   {
     title: "Afterlife",
     artist: "Sharon Van Etten",
     album: "Sharon Van Etten & The Attachment Theory",
-    albumArt: "/music/art/Attachment-Theory.webp",
-    audioSrc: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
+    artwork: "/music/art/Attachment-Theory.webp",
+    src: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
   },
   {
     title: "Praise",
     artist: "Panda Bear",
     album: "Sinister Grift",
-    albumArt: "/music/art/Panda-Bear-Sinister-Grift.webp",
-    audioSrc: "/music/audio/Panda-Bear-Praise.mp3",
+    artwork: "/music/art/Panda-Bear-Sinister-Grift.webp",
+    src: "/music/audio/Panda-Bear-Praise.mp3",
   },
   {
     title: "After The Earthquake",
     artist: "Alvvays",
     album: "Blue Rev",
-    albumArt: "/music/art/Alvvays-Blue-Rev-Album-Art.webp",
-    audioSrc: "/music/audio/alvvays-after-the-earthquake.mp3",
+    artwork: "/music/art/Alvvays-Blue-Rev-Album-Art.webp",
+    src: "/music/audio/alvvays-after-the-earthquake.mp3",
   },
 ];
 
-export default function Musicplayerbox({
-  size = "large",
-  delay = 0.3,
-}: MusicplayerboxProps) {
+export default function MusicPlayerBox() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const currentTrack = playlist[currentTrackIndex];
+  const currentTrack = tracks[currentTrackIndex];
+
+  const handlePlayPause = () => {
+    if (audioRef.current) {
+      if (isPlaying) audioRef.current.pause();
+      else audioRef.current.play();
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleNext = () => {
+    const nextIndex = (currentTrackIndex + 1) % tracks.length;
+    setCurrentTrackIndex(nextIndex);
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.load();
+      if (isPlaying) audioRef.current.play();
+    }
+  };
+
+  const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(event.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) audioRef.current.volume = newVolume;
+  };
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.volume = volume;
-
-    const handleCanPlayThrough = () => {
-      setIsLoaded(true);
-    };
-
-    const handleEnded = () => {
-      nextTrack();
-    };
-
-    const handlePlay = () => {
-      setIsPlaying(true);
-    };
-
-    const handlePause = () => {
-      setIsPlaying(false);
-    };
-
-    const handleError = (e: Event) => {
-      console.error("Audio error:", e);
-      setIsPlaying(false);
-    };
-
-    audio.addEventListener("canplaythrough", handleCanPlayThrough);
-    audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("play", handlePlay);
-    audio.addEventListener("pause", handlePause);
-    audio.addEventListener("error", handleError);
-
-    audio.load();
-
-    return () => {
-      audio.removeEventListener("canplaythrough", handleCanPlayThrough);
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("play", handlePlay);
-      audio.removeEventListener("pause", handlePause);
-      audio.removeEventListener("error", handleError);
-    };
-  }, [currentTrackIndex]);
-
-  const togglePlayPause = async () => {
-    const audio = audioRef.current;
-    if (!audio || !isLoaded) return;
-
-    try {
-      if (isPlaying) {
-        audio.pause();
-        setIsPlaying(false);
-      } else {
-        await audio.play();
-        setIsPlaying(true);
-      }
-    } catch (error) {
-      console.error("Playback error:", error);
-      setIsPlaying(false);
-    }
-  };
-
-  const nextTrack = () => {
-    setCurrentTrackIndex((prev) => (prev + 1) % playlist.length);
-    setIsPlaying(false);
-    setIsLoaded(false);
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-  };
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume]);
 
   return (
-    <Card
-      size={size}
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      height="large"
-      className="overflow-hidden flex flex-col"
+    <motion.div
+      className="card rounded-3xl bg-panel col-span-1 md:col-span-2 md:row-span-2 min-h-[400px] md:min-h-[420px] border border-[color:var(--color-border)] border-opacity-30 shadow-passive overflow-hidden flex flex-col"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <audio
         ref={audioRef}
-        src={currentTrack.audioSrc}
+        src={currentTrack.src}
         preload="metadata"
         crossOrigin="anonymous"
       />
 
       <div className="image-container relative flex-1 min-h-[200px]">
-        <Image
-          src={currentTrack.albumArt}
-          alt="album art"
-          className="absolute inset-0 w-full h-full object-cover"
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentTrack.artwork}
+            src={currentTrack.artwork}
+            alt={`${currentTrack.album} artwork`}
+            className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+          />
+        </AnimatePresence>
 
-        {/* Volume control - top left */}
-        <div className="absolute top-4 left-4">
+        <div className="absolute top-4 left-4 z-20 pointer-events-auto">
           <div className="flex items-center gap-2 bg-panel/95 backdrop-blur-sm rounded-full px-4 py-3 shadow-sm transition-all hover:shadow-md">
-            <Volume2 size={16} className="text-ink" />
+            <Volume2 className="w-4 h-4 text-ink" />
+
             <input
               type="range"
               min="0"
@@ -170,46 +113,63 @@ export default function Musicplayerbox({
               step="0.1"
               value={volume}
               onChange={handleVolumeChange}
-              className="w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer slider"
+              className="w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer"
             />
           </div>
         </div>
 
-        {/* Next button - top right */}
-        <div className="absolute top-4 right-4">
-          <Button
-            onClick={nextTrack}
-            variant="neutral"
-            size="icon"
-            className="rounded-full h-11 w-11 shadow-sm transition hover:scale-105"
-            disabled={!isLoaded}
+        <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+          <button
+            onClick={handleNext}
+            className="inline-flex items-center justify-center gap-2 shadow-passive focus-ring hover:shadow-glow bg-panel/95 backdrop-blur-sm border border-[color:var(--color-border)] text-foreground p-0 rounded-full h-11 w-11 shadow-sm transition hover:scale-105 active:scale-95"
             aria-label="Next track"
           >
-            <SkipForward size={18} className="text-ink" />
-          </Button>
+            <SkipForward className="w-5 h-5 text-ink" />
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-[1fr_auto] items-center gap-4">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
         <h3 className="text-ink">
           {currentTrack.artist} – {currentTrack.title}
         </h3>
 
-        <Button
-          onClick={togglePlayPause}
-          variant="neutral"
-          size="icon"
-          className="rounded-full  shadow-sm transition hover:scale-105"
-          disabled={!isLoaded}
+        <button
+          onClick={handlePlayPause}
+          className="inline-flex items-center justify-center gap-2 shadow-passive focus-ring hover:shadow-glow bg-panel border border-[color:var(--color-border)] text-foreground h-10 w-10 p-0 rounded-full shadow-sm transition hover:scale-105"
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
-            <Pause size={20} className="text-ink" fill="currentColor" />
+            <Pause className="w-5 h-5 text-ink" />
           ) : (
-            <Play size={20} className="text-ink ml-0.5" fill="currentColor" />
+            <Play className="w-5 h-5 text-ink" />
           )}
-        </Button>
+        </button>
       </div>
-    </Card>
+
+      <style>{`
+        input[type="range"] {
+          -webkit-appearance: none;
+          height: 4px;
+          border-radius: 5px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 12px;
+          height: 12px;
+          background: var(--color-accent);
+          border-radius: 50%;
+          cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          background: var(--color-accent);
+          border-radius: 50%;
+          cursor: pointer;
+          border: none;
+        }
+      `}</style>
+    </motion.div>
   );
 }

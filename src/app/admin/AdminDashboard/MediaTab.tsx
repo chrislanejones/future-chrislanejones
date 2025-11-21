@@ -1,7 +1,7 @@
 // src/app/admin/AdminDashboard/MediaTab.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Image as ImageIcon,
@@ -15,6 +15,14 @@ import {
   User,
   Briefcase,
   Chrome,
+  LayoutGrid,
+  Users,
+  Calendar,
+  Link2,
+  Wrench,
+  Code2,
+  History,
+  Award,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -34,13 +42,21 @@ import {
 } from "@dnd-kit/core";
 import { useUploadThing } from "@/utils/uploadthing";
 
-// Page icons map
+// Page icons map - ALL pages included
 const PAGE_ICONS: Record<string, any> = {
   home: Home,
   about: User,
-  gallery: ImageIcon,
-  projects: Briefcase,
+  career: Briefcase,
+  projects: Code2,
+  contact: Users,
+  "wordpress-maintenance": Wrench,
+  "react-maintenance": Code2,
   "browser-tabs": Chrome,
+  conferences: Calendar,
+  "site-history": History,
+  "about-the-logo": Award,
+  "link-page": Link2,
+  gallery: ImageIcon, // Fallback for any other pages
 };
 
 const MediaTab = () => {
@@ -58,13 +74,13 @@ const MediaTab = () => {
   const [expandedBlogPosts, setExpandedBlogPosts] = useState<Set<string>>(
     new Set()
   );
+  const [galleryDrawerOpen, setGalleryDrawerOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
       if (res) {
-        // Save each uploaded file to the media table
         for (const file of res) {
           await createMedia({
             url: file.url,
@@ -81,6 +97,12 @@ const MediaTab = () => {
       alert("Upload failed: " + error.message);
     },
   });
+
+  useEffect(() => {
+    if (organizedMedia?.pages.length && !selectedView) {
+      setSelectedView(`page-${organizedMedia.pages[0].id}`);
+    }
+  }, [organizedMedia, selectedView]);
 
   const togglePage = (pageId: string) => {
     const newExpanded = new Set(expandedPages);
@@ -121,8 +143,19 @@ const MediaTab = () => {
     const mediaId = active.id as string;
     const dropTarget = over.id as string;
 
-    // Parse drop target: format is "page-{id}" or "post-{id}"
-    if (dropTarget.startsWith("page-")) {
+    // Handle gallery drawer slots
+    if (dropTarget.startsWith("home-gallery-")) {
+      const slotIndex = parseInt(dropTarget.replace("home-gallery-", ""));
+      const homePage = organizedMedia?.pages.find((p) => p.id === "home");
+      if (homePage) {
+        await assignMedia({
+          mediaId: mediaId as Id<"media">,
+          assignedToType: "galleryDrawer",
+          assignedToId: `home-slot-${slotIndex}`,
+          assignedToTitle: `Gallery Drawer Slot ${slotIndex + 1}`,
+        });
+      }
+    } else if (dropTarget.startsWith("page-")) {
       const pageId = dropTarget.replace("page-", "");
       const page = organizedMedia?.pages.find((p) => p.id === pageId);
       if (page) {
@@ -165,7 +198,6 @@ const MediaTab = () => {
     );
   }
 
-  // Get current view images
   const getCurrentImages = () => {
     if (selectedView === "all") {
       const allImages = [
@@ -206,21 +238,20 @@ const MediaTab = () => {
       <DndContext onDragEnd={handleDragEnd}>
         <div className="h-full flex overflow-hidden">
           {/* Sidebar */}
-          <div className="w-64 border-r p-4 overflow-y-auto bg-panel border-border">
-          <div className="space-y-1">
-            {/* All Images */}
-            <button
-              onClick={() => setSelectedView("all")}
-              className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
-                selectedView === "all"
-                  ? "bg-surface-hover ring-2 ring-accent"
-                  : "hover:bg-surface-hover"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-ink font-medium">All Images</span>
-                <span className="text-muted text-xs">
-                  (
+          <div className="w-64 border-r overflow-y-auto bg-panel border-border">
+            <div className="py-2 space-y-1">
+              {/* All Images */}
+              <button
+                onClick={() => setSelectedView("all")}
+                className={`w-full text-left px-4 py-3 rounded-none transition text-sm flex items-center gap-3 ${
+                  selectedView === "all"
+                    ? "bg-accent text-on-accent"
+                    : "text-ink hover:bg-surface-hover"
+                }`}
+              >
+                <ImageIcon className="w-4 h-4 flex-shrink-0" />
+                <span className="flex-1">All Images</span>
+                <span className="text-xs opacity-70">
                   {organizedMedia.pages.reduce(
                     (sum, p) => sum + p.images.length,
                     0
@@ -230,309 +261,378 @@ const MediaTab = () => {
                       0
                     ) +
                     organizedMedia.unassigned.length}
-                  )
                 </span>
-              </div>
-            </button>
+              </button>
 
-            {/* Unassigned */}
-            <DroppableArea id="unassigned">
-              <button
-                onClick={() => setSelectedView("unassigned")}
-                className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
-                  selectedView === "unassigned"
-                    ? "bg-surface-hover ring-2 ring-accent"
-                    : "hover:bg-surface-hover"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-ink font-medium">Unassigned</span>
-                  <span className="text-muted text-xs">
+              {/* Unassigned */}
+              <DroppableArea id="unassigned">
+                <button
+                  onClick={() => setSelectedView("unassigned")}
+                  className={`w-full text-left px-4 py-3 rounded-none transition text-sm flex items-center gap-3 ${
+                    selectedView === "unassigned"
+                      ? "bg-accent text-on-accent"
+                      : "text-ink hover:bg-surface-hover"
+                  }`}
+                >
+                  <div className="w-4 h-4 flex-shrink-0 rounded-full border-2 border-dashed border-current" />
+                  <span className="flex-1">Unassigned</span>
+                  <span className="text-xs opacity-70">
                     ({organizedMedia.unassigned.length})
                   </span>
-                </div>
-              </button>
-            </DroppableArea>
+                </button>
+              </DroppableArea>
 
-            {/* Pages */}
-            <div className="mt-4">
-              <button
-                onClick={() => setPagesExpanded(!pagesExpanded)}
-                className="w-full px-3 py-2 flex items-center gap-2 hover:bg-surface-hover rounded-lg transition"
-              >
-                {pagesExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-muted flex-shrink-0" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-muted flex-shrink-0" />
-                )}
-                <span className="text-ink font-semibold text-sm">Pages</span>
-                <span className="text-muted text-xs ml-auto">
-                  (
-                  {organizedMedia.pages.reduce(
-                    (sum, p) => sum + p.images.length,
-                    0
+              {/* Pages Section */}
+              <div className="border-t border-border">
+                <button
+                  onClick={() => setPagesExpanded(!pagesExpanded)}
+                  className="w-full px-4 py-3 flex items-center gap-3 text-ink hover:bg-surface-hover transition"
+                >
+                  {pagesExpanded ? (
+                    <ChevronDown className="w-4 h-4 flex-shrink-0 text-muted" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 flex-shrink-0 text-muted" />
                   )}
-                  )
-                </span>
-              </button>
-              {pagesExpanded && (
-                <div className="space-y-1 ml-2">
-                  {organizedMedia.pages.map((page) => {
-                    const Icon = PAGE_ICONS[page.id] || FileText;
-                    return (
-                      <div key={page.id}>
-                        <button
-                          onClick={() => togglePage(page.id)}
-                          className="w-full text-left px-3 py-2 rounded-lg transition text-sm hover:bg-surface-hover flex items-center gap-2"
-                        >
-                          {expandedPages.has(page.id) ? (
-                            <ChevronDown className="w-3 h-3 text-muted flex-shrink-0" />
+                  <span className="flex-1 text-sm font-medium">Pages</span>
+                  <span className="text-xs text-muted">
+                    {organizedMedia.pages.reduce(
+                      (sum, p) => sum + p.images.length,
+                      0
+                    )}
+                  </span>
+                </button>
+                {pagesExpanded && (
+                  <div className="space-y-1">
+                    {organizedMedia.pages.map((page) => {
+                      const Icon = PAGE_ICONS[page.id] || FileText;
+
+                      return (
+                        <div key={page.id}>
+                          {page.id === "home" ? (
+                            <div>
+                              <button
+                                onClick={() => togglePage(page.id)}
+                                className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-surface-hover transition text-ink"
+                              >
+                                {expandedPages.has(page.id) ? (
+                                  <ChevronDown className="w-3 h-3 text-muted" />
+                                ) : (
+                                  <ChevronRight className="w-3 h-3 text-muted" />
+                                )}
+                                <Icon className="w-4 h-4 text-muted" />
+                                <span className="flex-1 truncate text-xs">
+                                  {page.title}
+                                </span>
+                                <span className="text-xs text-muted">
+                                  {page.images.length}
+                                </span>
+                              </button>
+                              {expandedPages.has(page.id) && (
+                                <button
+                                  onClick={() =>
+                                    setGalleryDrawerOpen(!galleryDrawerOpen)
+                                  }
+                                  className={`w-full text-left px-8 py-2 text-xs transition flex items-center gap-2 ${
+                                    galleryDrawerOpen
+                                      ? "bg-accent text-on-accent"
+                                      : "text-muted hover:bg-surface-hover"
+                                  }`}
+                                >
+                                  <LayoutGrid className="w-3 h-3" />
+                                  Image gallery drawer
+                                </button>
+                              )}
+                            </div>
                           ) : (
-                            <ChevronRight className="w-3 h-3 text-muted flex-shrink-0" />
+                            <div>
+                              <button
+                                onClick={() => togglePage(page.id)}
+                                className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-surface-hover transition text-ink"
+                              >
+                                {expandedPages.has(page.id) ? (
+                                  <ChevronDown className="w-3 h-3 text-muted" />
+                                ) : (
+                                  <ChevronRight className="w-3 h-3 text-muted" />
+                                )}
+                                <Icon className="w-4 h-4 text-muted" />
+                                <span className="flex-1 truncate text-xs">
+                                  {page.title}
+                                </span>
+                                <span className="text-xs text-muted">
+                                  {page.images.length}
+                                </span>
+                              </button>
+                              {expandedPages.has(page.id) && (
+                                <DroppableArea id={`page-${page.id}`}>
+                                  <button
+                                    onClick={() =>
+                                      setSelectedView(`page-${page.id}`)
+                                    }
+                                    className={`w-full text-left px-8 py-2 text-xs transition flex items-center gap-2 ${
+                                      selectedView === `page-${page.id}`
+                                        ? "bg-accent text-on-accent"
+                                        : "text-muted hover:bg-surface-hover"
+                                    }`}
+                                  >
+                                    <ImageIcon className="w-3 h-3" />
+                                    Images
+                                  </button>
+                                </DroppableArea>
+                              )}
+                            </div>
                           )}
-                          <Icon className="w-4 h-4 text-muted flex-shrink-0" />
-                          <span className="text-ink text-xs flex-1">
-                            {page.title}
-                          </span>
-                          <span className="text-muted text-xs">
-                            ({page.images.length})
-                          </span>
-                        </button>
-                        {expandedPages.has(page.id) && (
-                          <DroppableArea id={`page-${page.id}`}>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Blog Posts Section */}
+              <div className="border-t border-border">
+                <button
+                  onClick={() => setBlogPostsExpanded(!blogPostsExpanded)}
+                  className="w-full px-4 py-3 flex items-center gap-3 text-ink hover:bg-surface-hover transition"
+                >
+                  {blogPostsExpanded ? (
+                    <ChevronDown className="w-4 h-4 flex-shrink-0 text-muted" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 flex-shrink-0 text-muted" />
+                  )}
+                  <span className="flex-1 text-sm font-medium">Blog Posts</span>
+                  <span className="text-xs text-muted">
+                    {organizedMedia.blogPosts.reduce(
+                      (sum, p) => sum + p.images.length,
+                      0
+                    )}
+                  </span>
+                </button>
+                {blogPostsExpanded && (
+                  <div className="space-y-1">
+                    {organizedMedia.blogPosts.map((post) => (
+                      <div key={post.id}>
+                        <div className="flex items-center gap-1 px-4">
+                          <button
+                            onClick={() => toggleBlogPost(post.id)}
+                            className="flex-1 text-left px-0 py-2 text-sm hover:bg-surface-hover transition text-ink flex items-start gap-2"
+                          >
+                            {expandedBlogPosts.has(post.id) ? (
+                              <ChevronDown className="w-3 h-3 text-muted flex-shrink-0 mt-0.5" />
+                            ) : (
+                              <ChevronRight className="w-3 h-3 text-muted flex-shrink-0 mt-0.5" />
+                            )}
+                            <span className="flex-1 break-words text-xs leading-tight">
+                              {post.title}
+                            </span>
+                            <span className="text-xs text-muted flex-shrink-0">
+                              {post.images.length}
+                            </span>
+                          </button>
+                          {post.images.length === 0 && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <label className="p-1 text-accent hover:bg-accent/10 rounded cursor-pointer transition">
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (!file) return;
+                                      setIsUploading(true);
+                                      const uploaded = await startUpload([
+                                        file,
+                                      ]);
+                                      if (uploaded && uploaded[0]) {
+                                        const mediaId = await createMedia({
+                                          url: uploaded[0].url,
+                                          filename:
+                                            uploaded[0].name || post.title,
+                                          size: uploaded[0].size,
+                                        });
+                                        await assignMedia({
+                                          mediaId: mediaId as Id<"media">,
+                                          assignedToType: "blogPost",
+                                          assignedToId: post.id,
+                                          assignedToTitle: post.title,
+                                        });
+                                      }
+                                      e.target.value = "";
+                                    }}
+                                    className="hidden"
+                                  />
+                                  <Plus className="w-3 h-3" />
+                                </label>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Quick upload cover image</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                        {expandedBlogPosts.has(post.id) && (
+                          <DroppableArea id={`post-${post.id}`}>
                             <button
-                              onClick={() => setSelectedView(`page-${page.id}`)}
-                              className={`w-full text-left px-3 py-2 ml-4 rounded-lg transition text-sm ${
-                                selectedView === `page-${page.id}`
-                                  ? "bg-surface-hover ring-2 ring-accent"
-                                  : "hover:bg-surface-hover"
+                              onClick={() => setSelectedView(`post-${post.id}`)}
+                              className={`w-full text-left px-8 py-2 text-xs transition flex items-center gap-2 ${
+                                selectedView === `post-${post.id}`
+                                  ? "bg-accent text-on-accent"
+                                  : "text-muted hover:bg-surface-hover"
                               }`}
                             >
-                              <div className="flex items-center gap-2">
-                                <ImageIcon className="w-3 h-3 text-muted" />
-                                <span className="text-muted text-xs">
-                                  Images
-                                </span>
-                              </div>
+                              <ImageIcon className="w-3 h-3" />
+                              Cover Images
                             </button>
                           </DroppableArea>
                         )}
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 z-10 bg-panel border-b border-border p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted">
+                    {selectedView === "all" && "All Images"}
+                    {selectedView === "unassigned" && "Unassigned Images"}
+                    {selectedView.startsWith("page-") &&
+                      organizedMedia.pages.find(
+                        (p) => p.id === selectedView.replace("page-", "")
+                      )?.title}
+                    {selectedView.startsWith("post-") &&
+                      organizedMedia.blogPosts.find(
+                        (p) => p.id === selectedView.replace("post-", "")
+                      )?.title}
+                  </p>
                 </div>
-              )}
+
+                {/* Upload Button */}
+                <label className="flex items-center gap-2 px-4 py-2 bg-accent text-base-dark rounded-lg hover:bg-accent/90 transition-colors cursor-pointer font-medium">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    disabled={isUploading}
+                    className="hidden"
+                  />
+                  {isUploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-base-dark border-t-transparent rounded-full animate-spin" />
+                      <span>Uploading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4" />
+                      <span>Upload Images</span>
+                    </>
+                  )}
+                </label>
+              </div>
+
+              {/* Search Bar */}
+              <div className="mt-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
+                  <input
+                    type="text"
+                    placeholder="Search images..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg text-ink bg-panel border border-border focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Blog Posts */}
-            <div className="mt-4">
-              <button
-                onClick={() => setBlogPostsExpanded(!blogPostsExpanded)}
-                className="w-full px-3 py-2 flex items-center gap-2 hover:bg-surface-hover rounded-lg transition"
-              >
-                {blogPostsExpanded ? (
-                  <ChevronDown className="w-4 h-4 text-muted flex-shrink-0" />
-                ) : (
-                  <ChevronRight className="w-4 h-4 text-muted flex-shrink-0" />
-                )}
-                <span className="text-ink font-semibold text-sm">
-                  Blog Posts
-                </span>
-                <span className="text-muted text-xs ml-auto">
-                  (
-                  {organizedMedia.blogPosts.reduce(
-                    (sum, p) => sum + p.images.length,
-                    0
+            {/* Content */}
+            <div className="p-6 pb-96">
+              {/* Standard Image Grid */}
+              {filteredImages.length === 0 ? (
+                <div className="text-center py-12">
+                  <ImageIcon className="w-12 h-12 text-muted mx-auto mb-3 opacity-50" />
+                  <p className="text-muted mb-2">
+                    {searchQuery ? "No images found" : "No images yet"}
+                  </p>
+                  {!searchQuery && selectedView === "unassigned" && (
+                    <p className="text-muted text-sm">
+                      Upload images to get started
+                    </p>
                   )}
-                  )
-                </span>
-              </button>
-              {blogPostsExpanded && (
-                <div className="space-y-1 ml-2">
-                  {organizedMedia.blogPosts.map((post) => (
-                    <div key={post.id}>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => toggleBlogPost(post.id)}
-                          className="flex-1 text-left px-3 py-2 rounded-lg transition text-sm hover:bg-surface-hover flex items-center gap-2"
-                        >
-                          {expandedBlogPosts.has(post.id) ? (
-                            <ChevronDown className="w-3 h-3 text-muted flex-shrink-0" />
-                          ) : (
-                            <ChevronRight className="w-3 h-3 text-muted flex-shrink-0" />
-                          )}
-                          <span className="text-ink text-xs truncate flex-1">
-                            {post.title}
-                          </span>
-                          <span className="text-muted text-xs">
-                            ({post.images.length})
-                          </span>
-                        </button>
-                        {post.images.length === 0 && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <label className="p-1 text-accent hover:bg-accent/10 rounded cursor-pointer transition">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={async (e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    setIsUploading(true);
-                                    const uploaded = await startUpload([file]);
-                                    if (uploaded && uploaded[0]) {
-                                      const mediaId = await createMedia({
-                                        url: uploaded[0].url,
-                                        filename: uploaded[0].name || post.title,
-                                        size: uploaded[0].size,
-                                      });
-                                      await assignMedia({
-                                        mediaId: mediaId as Id<"media">,
-                                        assignedToType: "blogPost",
-                                        assignedToId: post.id,
-                                        assignedToTitle: post.title,
-                                      });
-                                    }
-                                    e.target.value = "";
-                                  }}
-                                  className="hidden"
-                                />
-                                <Plus className="w-3 h-3" />
-                              </label>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Quick upload cover image</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        )}
-                      </div>
-                      {expandedBlogPosts.has(post.id) && (
-                        <DroppableArea id={`post-${post.id}`}>
-                          <button
-                            onClick={() => setSelectedView(`post-${post.id}`)}
-                            className={`w-full text-left px-3 py-2 ml-4 rounded-lg transition text-sm ${
-                              selectedView === `post-${post.id}`
-                                ? "bg-surface-hover ring-2 ring-accent"
-                                : "hover:bg-surface-hover"
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <ImageIcon className="w-3 h-3 text-muted" />
-                              <span className="text-muted text-xs">
-                                Cover Images
-                              </span>
-                            </div>
-                          </button>
-                        </DroppableArea>
-                      )}
-                    </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  {filteredImages.map((image) => (
+                    <DraggableImage
+                      key={image._id}
+                      image={image}
+                      onDelete={() => handleDeleteImage(image._id)}
+                    />
                   ))}
                 </div>
               )}
+
+              {/* Gallery Drawer Grid - Appears at bottom when open */}
+              {selectedView === "page-home" && galleryDrawerOpen && (
+                <div className="mt-8 border-t border-border pt-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <LayoutGrid className="w-5 h-5 text-accent" />
+                    <h3 className="text-lg font-semibold text-ink">
+                      Gallery Drawer Images
+                    </h3>
+                    <span className="text-sm text-muted">
+                      (First image is preview, others appear in drawer)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-6 gap-4 mb-4">
+                    {[0, 1, 2, 3, 4, 5].map((slotIndex) => {
+                      const slotId = `home-gallery-${slotIndex}`;
+                      const isPreview = slotIndex === 0;
+
+                      return (
+                        <DroppableArea key={slotId} id={slotId}>
+                          <div className="group relative aspect-square rounded-lg border-2 border-dashed border-border bg-[var(--color-muted-accent)] hover:border-accent hover:bg-accent/5 transition flex flex-col items-center justify-center cursor-pointer">
+                            {/* Visual feedback for hover */}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                              <ImageIcon className="w-8 h-8 text-accent" />
+                            </div>
+
+                            {/* Placeholder content */}
+                            {isPreview ? (
+                              <p className="text-xs text-center text-muted">
+                                Preview Slot
+                              </p>
+                            ) : (
+                              <p className="text-xs text-center text-muted">
+                                Slot {slotIndex + 1}
+                              </p>
+                            )}
+                          </div>
+                        </DroppableArea>
+                      );
+                    })}
+                  </div>
+
+                  <div className="p-3 bg-[var(--color-muted-accent)] border border-border rounded-lg">
+                    <p className="text-xs text-muted">
+                      <strong className="text-ink">Tip:</strong> Drag images
+                      from above to these slots. The first slot will be the
+                      preview image.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-
-        {/* Main Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {/* Header with Upload */}
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold text-ink">
-                {selectedView === "all" && "All Images"}
-                {selectedView === "unassigned" && "Unassigned Images"}
-                {selectedView.startsWith("page-") &&
-                  organizedMedia.pages.find(
-                    (p) => p.id === selectedView.replace("page-", "")
-                  )?.title}
-                {selectedView.startsWith("post-") &&
-                  organizedMedia.blogPosts.find(
-                    (p) => p.id === selectedView.replace("post-", "")
-                  )?.title}
-              </h2>
-              <p className="text-muted text-sm">
-                {filteredImages.length} images
-              </p>
-            </div>
-
-            {/* Upload Button */}
-            <label className="flex items-center gap-2 px-4 py-2 bg-accent text-base-dark rounded-lg hover:bg-accent/90 transition-colors cursor-pointer font-medium">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-                disabled={isUploading}
-                className="hidden"
-              />
-              {isUploading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-base-dark border-t-transparent rounded-full animate-spin" />
-                  <span>Uploading...</span>
-                </>
-              ) : (
-                <>
-                  <Upload className="w-4 h-4" />
-                  <span>Upload Images</span>
-                </>
-              )}
-            </label>
-          </div>
-
-          {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" />
-              <input
-                type="text"
-                placeholder="Search images..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-lg text-ink bg-panel border border-border focus:outline-none focus:ring-2 focus:ring-accent"
-              />
-            </div>
-          </div>
-
-          {/* Image Grid */}
-          {filteredImages.length === 0 ? (
-            <div className="text-center py-12">
-              <ImageIcon className="w-12 h-12 text-muted mx-auto mb-3 opacity-50" />
-              <p className="text-muted mb-2">
-                {searchQuery ? "No images found" : "No images yet"}
-              </p>
-              {!searchQuery && selectedView === "unassigned" && (
-                <p className="text-muted text-sm">
-                  Upload images to get started
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {filteredImages.map((image) => (
-                <DraggableImage
-                  key={image._id}
-                  image={image}
-                  onDelete={() => handleDeleteImage(image._id)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Drag Overlay */}
-      <DragOverlay>
-        {activeId && draggedImage && (
-          <div className="w-40 h-40 rounded-lg overflow-hidden border-2 border-accent shadow-2xl opacity-80">
-            <img
-              src={draggedImage.url}
-              alt={draggedImage.filename}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-      </DragOverlay>
-    </DndContext>
+      </DndContext>
     </TooltipProvider>
   );
 };

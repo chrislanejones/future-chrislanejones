@@ -4,19 +4,22 @@ import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
 import BlogPage from "./BlogPage";
 import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
 
 export async function generateMetadata() {
   return await getPageSEO("/blog");
 }
 
 export default function Page() {
+  const headerData = getPageHeader("/blog");
+
   return (
     <>
       <Header />
       <Banner
-        title="Blog"
-        breadcrumbPage="Blog"
-        description="Thoughts on web development, React, WordPress, and building things on the internet."
+        title={headerData.title}
+        breadcrumbPage={headerData.breadcrumbPage}
+        description={headerData.description}
       />
       <main>
         <BlogPage />

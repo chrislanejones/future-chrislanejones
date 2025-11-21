@@ -3,19 +3,22 @@ import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
 import CareerPage from "@/app/career/CareerPage";
 import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
 
 export async function generateMetadata() {
   return await getPageSEO("/career");
 }
 
-export default function About() {
+export default function Career() {
+  const headerData = getPageHeader("/career");
+
   return (
     <>
       <Header />
       <Banner
-        title="Career"
-        breadcrumbPage="Career"
-        description="Following the trail from video production to web development—navigating frameworks, communities, and mountain views along the way."
+        title={headerData.title}
+        breadcrumbPage={headerData.breadcrumbPage}
+        description={headerData.description}
       />
       <main>
         <CareerPage />
