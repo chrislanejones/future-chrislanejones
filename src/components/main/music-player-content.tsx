@@ -36,7 +36,7 @@ const tracks: Track[] = [
   },
 ];
 
-export default function MusicPlayerBox() {
+export default function MusicPlayerContent() {
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.7);
@@ -74,13 +74,7 @@ export default function MusicPlayerBox() {
   }, [volume]);
 
   return (
-    <motion.div
-      className="card rounded-3xl bg-panel col-span-1 md:col-span-2 md:row-span-2 min-h-[400px] md:min-h-[420px] border border-[color:var(--color-border)] border-opacity-30 shadow-passive overflow-hidden flex flex-col"
-      initial={{ opacity: 0, scale: 0.98 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-    >
+    <>
       <audio
         ref={audioRef}
         src={currentTrack.src}
@@ -88,7 +82,8 @@ export default function MusicPlayerBox() {
         crossOrigin="anonymous"
       />
 
-      <div className="image-container relative flex-1 min-h-[200px]">
+      {/* Media section - flex-1 fills available space */}
+      <div className="relative flex-1">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentTrack.artwork}
@@ -102,10 +97,13 @@ export default function MusicPlayerBox() {
           />
         </AnimatePresence>
 
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent" />
+
+        {/* Volume control */}
         <div className="absolute top-4 left-4 z-20 pointer-events-auto">
           <div className="flex items-center gap-2 bg-panel/95 backdrop-blur-sm rounded-full px-4 py-3 shadow-sm transition-all hover:shadow-md">
             <Volume2 className="w-4 h-4 text-ink" />
-
             <input
               type="range"
               min="0"
@@ -113,11 +111,12 @@ export default function MusicPlayerBox() {
               step="0.1"
               value={volume}
               onChange={handleVolumeChange}
-              className="w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer"
+              className="volume-slider w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer"
             />
           </div>
         </div>
 
+        {/* Skip button */}
         <div className="absolute top-4 right-4 z-20 pointer-events-auto">
           <button
             onClick={handleNext}
@@ -129,9 +128,10 @@ export default function MusicPlayerBox() {
         </div>
       </div>
 
+      {/* Footer section */}
       <div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
         <h3 className="text-ink">
-          {currentTrack.artist} – {currentTrack.title}
+          {currentTrack.artist} — {currentTrack.title}
         </h3>
 
         <button
@@ -148,12 +148,12 @@ export default function MusicPlayerBox() {
       </div>
 
       <style>{`
-        input[type="range"] {
+        .volume-slider {
           -webkit-appearance: none;
           height: 4px;
           border-radius: 5px;
         }
-        input[type="range"]::-webkit-slider-thumb {
+        .volume-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
           width: 12px;
           height: 12px;
@@ -161,7 +161,7 @@ export default function MusicPlayerBox() {
           border-radius: 50%;
           cursor: pointer;
         }
-        input[type="range"]::-moz-range-thumb {
+        .volume-slider::-moz-range-thumb {
           width: 12px;
           height: 12px;
           background: var(--color-accent);
@@ -170,6 +170,6 @@ export default function MusicPlayerBox() {
           border: none;
         }
       `}</style>
-    </motion.div>
+    </>
   );
 }

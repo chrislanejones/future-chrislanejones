@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Card from "../page/card";
 import { AnimatePresence, motion } from "framer-motion";
 import { RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,24 +25,7 @@ const QUOTES: ReactNode[] = [
   "I'm at the age where I avoid Starbuck's wooden chairs with square backrest at all costs",
 ];
 
-interface QuotegeneratorcardProps {
-  size?:
-    | "small"
-    | "medium"
-    | "large"
-    | "wide"
-    | "hero"
-    | "full"
-    | "page-full"
-    | "page-half"
-    | "page-third";
-  delay?: number;
-}
-
-export default function Quotegeneratorcard({
-  size = "large",
-  delay = 0.3,
-}: QuotegeneratorcardProps) {
+export default function QuoteContent() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -61,16 +43,9 @@ export default function Quotegeneratorcard({
   };
 
   return (
-    <Card
-      size={size}
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      className="relative overflow-hidden flex flex-col"
-    >
-      {/* Top: quote area — bubble centered, no forced stretch */}
-      <div className="relative flex-1 min-h-[200px] grid place-items-center">
-        {/* Important: no h-full here so the row doesn't stretch */}
+    <div className="relative h-full overflow-hidden flex flex-col">
+      {/* Top: quote area */}
+      <div className="relative flex-1 grid place-items-center">
         <div className="speech-bubble-container speech-bubble--compact w-full max-w-[min(720px,92%)] mx-auto">
           <AnimatePresence mode="wait">
             <motion.blockquote
@@ -88,7 +63,7 @@ export default function Quotegeneratorcard({
         </div>
       </div>
 
-      {/* Bottom: footer bar (avatar, title, circular neutral icon button) */}
+      {/* Bottom: footer bar */}
       <div className="pt-6 grid grid-cols-[auto_1fr_auto] items-center gap-4">
         <Button
           asChild
@@ -122,6 +97,6 @@ export default function Quotegeneratorcard({
           <RefreshCcw className="h-5 w-5" aria-hidden="true" />
         </Button>
       </div>
-    </Card>
+    </div>
   );
 }

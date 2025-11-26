@@ -9,7 +9,7 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
   variants: {
     size: {
       small: "col-span-1 row-span-1",
-      medium: "col-span-1 md:col-span-2 row-span-1 ",
+      medium: "col-span-1 md:col-span-2 row-span-1",
       large: "col-span-1 md:col-span-2",
       wide: "col-span-1 md:col-span-4 row-span-1",
       hero: "col-span-1 md:col-span-4 row-span-1",
@@ -25,7 +25,7 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
     height: {
       small: "min-h-[25px] md:min-h-[25px]",
       medium: "min-h-[200px] md:min-h-[210px]",
-      large: " md:row-span-2 min-h-[400px] md:min-h-[420px]",
+      large: "md:row-span-2 min-h-[400px] md:min-h-[420px]",
       xl: "min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
     },
     border: {
@@ -45,6 +45,16 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
       glow: "transition hover:shadow-glow",
       border: "transition-colors hover:border-accent",
     },
+    // NEW: Layout variants for common patterns
+    layout: {
+      default: "p-4",
+      "media-top": "overflow-hidden flex flex-col", // Image fills top, content at bottom
+      "media-bottom": "overflow-hidden flex flex-col-reverse", // Content at top, image at bottom
+      "media-left": "overflow-hidden flex flex-row", // Image on left
+      "media-right": "overflow-hidden flex flex-row-reverse", // Image on right
+      split: "grid md:grid-cols-2 gap-6", // Two column split
+      stacked: "flex flex-col gap-4 p-4", // Stacked sections with gap
+    },
   },
   defaultVariants: {
     size: "medium",
@@ -53,6 +63,7 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
     border: "standard",
     shadow: "soft",
     hover: "none",
+    layout: "default",
   },
 });
 
@@ -72,6 +83,7 @@ export function Card({
   border,
   shadow,
   hover,
+  layout,
   className = "",
   delay = 0,
   id,
@@ -80,16 +92,15 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({ size, glass, height, border, shadow, hover })} ${className} pointer-events-auto`}
+      className={`${cardVariants({ size, glass, height, border, shadow, hover, layout })} ${className} pointer-events-auto`}
       style={{
         ...style,
-        // Force visibility with inline styles
         willChange: "transform, opacity",
       }}
       initial={{
         opacity: 0,
-        y: 20, // Reduced from 50 for more subtle motion
-        scale: 0.95, // Less dramatic scale change
+        y: 20,
+        scale: 0.95,
       }}
       animate={{
         opacity: 1,
@@ -97,18 +108,39 @@ export function Card({
         scale: 1,
       }}
       transition={{
-        duration: 0.4, // Shorter duration for subtler animation
+        duration: 0.4,
         delay,
         type: "spring",
-        stiffness: 300, // Higher stiffness for less bouncy feel
-        damping: 30, // More damping for smoother animation
+        stiffness: 300,
+        damping: 30,
       }}
-      // Add viewport animation trigger
       viewport={{ once: true }}
     >
       {children}
     </motion.article>
   );
+}
+
+// Helper component for media-top/media-bottom layouts
+export function CardMedia({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={`relative flex-1 ${className}`}>{children}</div>;
+}
+
+// Helper component for the footer/content area in media layouts
+export function CardFooter({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return <div className={`p-4 ${className}`}>{children}</div>;
 }
 
 // Define image styles that are consistent across all cards

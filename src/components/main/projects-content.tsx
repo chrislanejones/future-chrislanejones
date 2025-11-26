@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, SVGProps } from "react";
-import Card from "../page/card";
 import { motion, AnimatePresence, wrap } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -58,21 +57,7 @@ const projects: Project[] = [
   },
 ];
 
-interface ProjectsboxProps {
-  size?:
-    | "small"
-    | "medium"
-    | "large"
-    | "wide"
-    | "hero"
-    | "full"
-    | "page-full"
-    | "page-half"
-    | "page-third";
-  delay?: number;
-}
-
-export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
+export default function ProjectsContent() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
@@ -97,16 +82,9 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
     currentProject.vercelUrl !== "";
 
   return (
-    <Card
-      id="projects"
-      height="large"
-      size="full"
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      className="grid md:grid-cols-2 gap-6 relative"
-    >
-      <div className="order-2 md:order-1 flex flex-col">
+    <>
+      {/* Text content - order swaps on mobile */}
+      <div id="projects" className="order-2 md:order-1 flex flex-col">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
@@ -115,18 +93,12 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
             animate={{
               opacity: 1,
               x: 0,
-              transition: {
-                duration: 0.5,
-                ease: [0.4, 0, 0.2, 1],
-              },
+              transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
             }}
             exit={{
               opacity: 0,
               x: direction * -20,
-              transition: {
-                duration: 0.3,
-                ease: [0.4, 0, 0.2, 1],
-              },
+              transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
             }}
             className="flex flex-col h-full"
           >
@@ -144,7 +116,7 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
 
         <div className="flex items-center gap-3 mt-6">
           <Button asChild variant="neutral">
-            <a href="/projects">More Projects</a>
+            <a href="/projects">View All Projects</a>
           </Button>
           <Button
             onClick={previousProject}
@@ -168,19 +140,7 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
             }
             disabled={!hasGithubUrl}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
-              />
-            </svg>
+            <GithubIcon />
           </Button>
 
           <Button
@@ -195,15 +155,7 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
             }
             disabled={!hasVercelUrl}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              fill="currentColor"
-            >
-              <path d="m12 0 12 21H0z" />
-            </svg>
+            <VercelIcon />
           </Button>
 
           <Button
@@ -218,33 +170,23 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
         </div>
       </div>
 
-      <div className="order-1 md:order-2 relative rounded-2xl overflow-hidden ring-1 ring-white/10 min-h-[200px]">
+      <div className="order-1 md:order-2 relative rounded-2xl overflow-hidden ring-1 ring-white/10">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={`${currentIndex}-image`}
             custom={direction}
-            initial={{
-              opacity: 0,
-              scale: 0.95,
-              x: direction * 30,
-            }}
+            initial={{ opacity: 0, scale: 0.95, x: direction * 30 }}
             animate={{
               opacity: 1,
               scale: 1,
               x: 0,
-              transition: {
-                duration: 0.5,
-                ease: [0.4, 0, 0.2, 1],
-              },
+              transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
             }}
             exit={{
               opacity: 0,
               scale: 0.95,
               x: direction * -30,
-              transition: {
-                duration: 0.3,
-                ease: [0.4, 0, 0.2, 1],
-              },
+              transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
             }}
             className="absolute inset-0"
           >
@@ -261,10 +203,11 @@ export default function Projectsbox({ delay = 0.3 }: ProjectsboxProps) {
           {currentIndex + 1} of {projects.length}
         </div>
       </div>
-    </Card>
+    </>
   );
 }
 
+// Icons
 const iconsProps: SVGProps<SVGSVGElement> = {
   xmlns: "http://www.w3.org/2000/svg",
   width: "24",
@@ -291,6 +234,38 @@ function ArrowRight() {
     <svg {...iconsProps}>
       <path d="M5 12h14" />
       <path d="m12 5 7 7-7 7" />
+    </svg>
+  );
+}
+
+function GithubIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
+      />
+    </svg>
+  );
+}
+
+function VercelIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="currentColor"
+    >
+      <path d="m12 0 12 21H0z" />
     </svg>
   );
 }

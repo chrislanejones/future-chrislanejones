@@ -1,27 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { MountainSnow } from "lucide-react";
-import Card from "../page/card";
 
-interface HeroBoxProps {
-  size?:
-    | "small"
-    | "medium"
-    | "large"
-    | "wide"
-    | "hero"
-    | "full"
-    | "page-full"
-    | "page-half"
-    | "page-third";
-  delay?: number;
-}
-
-export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
+export default function HeroContent() {
   const [isAnimated, setIsAnimated] = useState(false);
-  const [animationKey, setAnimationKey] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsAnimated(true), 500);
@@ -30,19 +14,11 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
 
   const replayAnimation = () => {
     setIsAnimated(false);
-    setAnimationKey((prev) => prev + 1);
     setTimeout(() => setIsAnimated(true), 100);
   };
 
   return (
-    <Card
-      size={size}
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      className="relative overflow-hidden"
-      key={animationKey}
-    >
+    <div className="relative h-full">
       {/* Background Decoration */}
       <div className="absolute inset-0 pointer-events-none">
         <svg
@@ -80,18 +56,12 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>
-          {/* <p className="p text-ink max-w-prose">
-            Building digital experiences with React and WordPress – one summit
-            at a time. 🏔️
-          </p> */}
         </div>
 
-        {/* Buttons pinned to bottom-left */}
         <div className="mt-auto flex items-center gap-3">
           <Button asChild variant="neutral">
             <a href="/contact">Contact Me</a>
           </Button>
-
           <Button
             variant="neutral"
             size="icon"
@@ -103,6 +73,6 @@ export default function HeroBox({ size = "hero", delay = 0.1 }: HeroBoxProps) {
           </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
