@@ -1,48 +1,23 @@
 "use client";
 
-import Card from "../page/card";
-import MiniCard from "../page/mini-card";
+import MiniCard from "@/components/page/mini-card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { Newspaper } from "lucide-react";
 
-interface BlogboxProps {
-  size?:
-    | "small"
-    | "medium"
-    | "large"
-    | "wide"
-    | "hero"
-    | "full"
-    | "page-full"
-    | "page-half"
-    | "page-third";
-  delay?: number;
-}
-
-export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
+export default function BlogContent() {
   const posts = useQuery(api.blogPosts.getAllPosts);
-
-  // Get the last 3 posts
   const recentPosts = posts?.slice(0, 2) || [];
 
   return (
-    <Card
-      size={size}
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      height="large"
-      className="overflow-hidden flex flex-col"
-    >
+    <div className="flex flex-col h-full">
       <div className="relative flex-1 min-h-[100px]">
-        {/* Blog posts with space-evenly */}
         <div className="absolute inset-0 flex flex-col items-center justify-evenly gap-4 p-3">
           {!posts ? (
             <div className="flex justify-center py-8">
-              <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
             </div>
           ) : recentPosts.length === 0 ? (
             <p className="text-ink text-center py-8">
@@ -65,7 +40,6 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
         </div>
       </div>
 
-      {/* Bottom section - same height as Photo Gallery */}
       <div className="p-2 flex items-center justify-between">
         <h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
         <Button
@@ -80,6 +54,6 @@ export default function Blogbox({ size = "large", delay = 0.3 }: BlogboxProps) {
           </Link>
         </Button>
       </div>
-    </Card>
+    </div>
   );
 }

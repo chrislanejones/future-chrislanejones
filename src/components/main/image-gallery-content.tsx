@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Card from "../page/card";
-import GalleryDrawer, { GalleryPhoto } from "../page/gallery-drawer";
+import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
 
 const photos: GalleryPhoto[] = [
   {
@@ -32,34 +31,11 @@ const photos: GalleryPhoto[] = [
   },
 ];
 
-interface ImageGalleryBoxProps {
-  size?:
-    | "small"
-    | "medium"
-    | "large"
-    | "wide"
-    | "hero"
-    | "full"
-    | "page-full"
-    | "page-half"
-    | "page-third";
-  delay?: number;
-}
-
-export default function ImageGalleryBox({
-  size = "large",
-  delay = 0.6,
-}: ImageGalleryBoxProps) {
+export default function ImageGalleryContent() {
   return (
-    <Card
-      size={size}
-      shadow="soft"
-      border="thin"
-      delay={delay}
-      height="large"
-      className="overflow-hidden flex flex-col"
-    >
-      <div className="image-container relative flex-1 min-h-[200px]">
+    <>
+      {/* Media section - flex-1 fills available space */}
+      <div className="relative flex-1">
         <Image
           alt="Theo and I"
           src="/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp"
@@ -67,10 +43,11 @@ export default function ImageGalleryBox({
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/10 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/10 to-transparent" />
       </div>
 
-      <div className="grid grid-cols-[1fr_auto] items-center gap-4">
+      {/* Footer section */}
+      <div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
         <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
         <GalleryDrawer
           photos={photos}
@@ -78,6 +55,6 @@ export default function ImageGalleryBox({
           animationDelay={0.2}
         />
       </div>
-    </Card>
+    </>
   );
 }
