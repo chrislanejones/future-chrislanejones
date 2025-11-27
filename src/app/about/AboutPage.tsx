@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Card } from "@/components/page/card";
-import ConferenceSliderBox from "@/components/main/conference-slider-box";
+import ConferenceSliderContent from "@/components/main/conference-slider-content";
 
 const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
@@ -157,7 +157,15 @@ function AboutGridSection({ sections }: { sections: AboutSection[] }) {
       {sections.map((section, index) => (
         <AboutCard key={section.title} section={section} index={index} />
       ))}
-      <ConferenceSliderBox size="page-full" delay={0.05} />
+      <Card
+        size="page-full"
+        height="medium"
+        shadow="soft"
+        border="standard"
+        delay={0.05 + sections.length * 0.05}
+      >
+        <ConferenceSliderContent />
+      </Card>
     </motion.section>
   );
 }

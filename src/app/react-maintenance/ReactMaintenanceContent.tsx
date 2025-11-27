@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import Card from "@/components/page/card";
 import { Button } from "@/components/ui/button";
-import ClientSliderBox from "@/components/main/client-slider-box";
+import ClientSliderContent from "@/components/main/client-slider-content";
 
 const actionPlanItems = [
   {
@@ -259,8 +259,15 @@ export default function ReactServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-center mb-12">Present and Past React Clients</h2>
-        <ClientSliderBox size="page-full" delay={0} />
+        <Card
+          size="hero"
+          height="large"
+          shadow="soft"
+          border="thin"
+          delay={0.1}
+        >
+          <ClientSliderContent />
+        </Card>
       </motion.section>
 
       {/* Contact Section */}
