@@ -52,8 +52,24 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
       "media-bottom": "overflow-hidden flex flex-col-reverse", // Content at top, image at bottom
       "media-left": "overflow-hidden flex flex-row", // Image on left
       "media-right": "overflow-hidden flex flex-row-reverse", // Image on right
-      split: "grid md:grid-cols-2 gap-6", // Two column split
+      split: "grid md:grid-cols-2 gap-6 p-4", // Two column split
       stacked: "flex flex-col gap-4 p-4", // Stacked sections with gap
+    },
+    // NEW: Media/image rounding - targets first child in media layouts
+    mediaRadius: {
+      none: "",
+      sm: "[&>*:first-child]:rounded-sm",
+      md: "[&>*:first-child]:rounded-md",
+      lg: "[&>*:first-child]:rounded-lg",
+      xl: "[&>*:first-child]:rounded-xl",
+      "2xl": "[&>*:first-child]:rounded-2xl",
+      // For media-top: round top corners only
+      top: "[&>*:first-child]:rounded-t-2xl",
+      // For media-bottom: round bottom corners only
+      bottom: "[&>*:first-child]:rounded-b-2xl",
+      // Inset: rounds media with margin from card edge
+      inset:
+        "[&>*:first-child]:rounded-2xl [&>*:first-child]:m-4 [&>*:first-child]:overflow-hidden",
     },
   },
   defaultVariants: {
@@ -64,6 +80,7 @@ const cardVariants = cva("card rounded-3xl bg-panel", {
     shadow: "soft",
     hover: "none",
     layout: "default",
+    mediaRadius: "none",
   },
 });
 
@@ -84,6 +101,7 @@ export function Card({
   shadow,
   hover,
   layout,
+  mediaRadius,
   className = "",
   delay = 0,
   id,
@@ -92,7 +110,7 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({ size, glass, height, border, shadow, hover, layout })} ${className} pointer-events-auto`}
+      className={`${cardVariants({ size, glass, height, border, shadow, hover, layout, mediaRadius })} ${className} pointer-events-auto`}
       style={{
         ...style,
         willChange: "transform, opacity",

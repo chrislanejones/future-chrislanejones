@@ -195,7 +195,7 @@ export default function ProjectsContent() {
               alt={`${currentProject.title} preview`}
               className="w-full h-full object-cover"
               fill
-              sizes="(max-width: 768px) 100vw, 40vw"
+              sizes="(max-width: 768px) 100vw, 100vw"
             />
           </motion.div>
         </AnimatePresence>

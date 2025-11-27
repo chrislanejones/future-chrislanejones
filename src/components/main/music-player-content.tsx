@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CardFooter } from "@/components/page/card";
 
 type Track = {
   title: string;
@@ -82,7 +84,7 @@ export default function MusicPlayerContent() {
         crossOrigin="anonymous"
       />
 
-      {/* Media section - flex-1 fills available space */}
+      {/* Media section */}
       <div className="relative flex-1">
         <AnimatePresence mode="wait">
           <motion.img
@@ -97,7 +99,6 @@ export default function MusicPlayerContent() {
           />
         </AnimatePresence>
 
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent" />
 
         {/* Volume control */}
@@ -118,25 +119,29 @@ export default function MusicPlayerContent() {
 
         {/* Skip button */}
         <div className="absolute top-4 right-4 z-20 pointer-events-auto">
-          <button
+          <Button
             onClick={handleNext}
-            className="inline-flex items-center justify-center gap-2 shadow-passive focus-ring hover:shadow-glow bg-panel/95 backdrop-blur-sm border border-[color:var(--color-border)] text-foreground p-0 rounded-full h-11 w-11 shadow-sm transition hover:scale-105 active:scale-95"
+            variant="neutral"
+            size="icon"
+            round
+            className="bg-panel/95 backdrop-blur-sm"
             aria-label="Next track"
           >
             <SkipForward className="w-5 h-5 text-ink" />
-          </button>
+          </Button>
         </div>
       </div>
 
-      {/* Footer section */}
-      <div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
-        <h3 className="text-ink">
+      {/* Footer */}
+      <CardFooter className="grid grid-cols-[1fr_auto] items-center gap-4">
+        <p className="text-ink tracking-tight">
           {currentTrack.artist} — {currentTrack.title}
-        </h3>
-
-        <button
+        </p>
+        <Button
           onClick={handlePlayPause}
-          className="inline-flex items-center justify-center gap-2 shadow-passive focus-ring hover:shadow-glow bg-panel border border-[color:var(--color-border)] text-foreground h-10 w-10 p-0 rounded-full shadow-sm transition hover:scale-105"
+          variant="neutral"
+          size="icon"
+          round
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
@@ -144,8 +149,8 @@ export default function MusicPlayerContent() {
           ) : (
             <Play className="w-5 h-5 text-ink" />
           )}
-        </button>
-      </div>
+        </Button>
+      </CardFooter>
 
       <style>{`
         .volume-slider {
