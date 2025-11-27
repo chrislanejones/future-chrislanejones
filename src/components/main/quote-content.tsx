@@ -43,7 +43,7 @@ export default function QuoteContent() {
   };
 
   return (
-    <div className="relative h-full overflow-hidden flex flex-col">
+    <div className="relative h-full flex flex-col">
       {/* Top: quote area */}
       <div className="relative flex-1 grid place-items-center">
         <div className="speech-bubble-container speech-bubble--compact w-full max-w-[min(720px,92%)] mx-auto">

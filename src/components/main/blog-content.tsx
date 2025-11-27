@@ -13,7 +13,8 @@ export default function BlogContent() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="relative flex-1 min-h-[100px]">
+      {/* Content area */}
+      <div className="relative flex-1">
         <div className="absolute inset-0 flex flex-col items-center justify-evenly gap-4 p-3">
           {!posts ? (
             <div className="flex justify-center py-8">
@@ -40,7 +41,8 @@ export default function BlogContent() {
         </div>
       </div>
 
-      <div className="p-2 flex items-center justify-between">
+      {/* Footer - no extra padding, Card provides p-4 */}
+      <div className="grid grid-cols-[1fr_auto] items-center gap-4">
         <h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
         <Button
           variant="neutral"

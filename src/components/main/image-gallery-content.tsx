@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { CardFooter } from "@/components/page/card";
 import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
 
 const photos: GalleryPhoto[] = [
@@ -34,7 +36,7 @@ const photos: GalleryPhoto[] = [
 export default function ImageGalleryContent() {
   return (
     <>
-      {/* Media section - flex-1 fills available space */}
+      {/* Media section */}
       <div className="relative flex-1">
         <Image
           alt="Theo and I"
@@ -46,15 +48,15 @@ export default function ImageGalleryContent() {
         <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/10 to-transparent" />
       </div>
 
-      {/* Footer section */}
-      <div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+      {/* Footer */}
+      <CardFooter className="grid grid-cols-[1fr_auto] items-center gap-4">
         <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
         <GalleryDrawer
           photos={photos}
           title="Gallery Drawer"
           animationDelay={0.2}
         />
-      </div>
+      </CardFooter>
     </>
   );
 }
