@@ -8,7 +8,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { Calendar, Heart, ArrowRight } from "lucide-react";
-import { FoldedImage } from "@/components/page/folded-image";
+import Image from "next/image";
 
 // Helper function to get badge color variant based on index
 const getBadgeVariant = (index: number) => {
@@ -55,12 +55,12 @@ export default function BlogPage() {
               {post.coverImage && (
                 <Link href={`/blog/${post.slug}`} className="block">
                   <div className="relative w-full aspect-[16/9] bg-white/5">
-                    <FoldedImage
+                    <Image
                       src={post.coverImage}
                       alt={post.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      showHorizontalFold={true}
+                      className="object-cover"
                     />
                   </div>
                 </Link>
