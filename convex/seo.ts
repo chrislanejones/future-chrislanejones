@@ -2,14 +2,12 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
 
-// Get all SEO metadata
 export const getAllSEO = query({
   handler: async (ctx) => {
     return await ctx.db.query("seoMetadata").collect();
   },
 });
 
-// Get SEO for specific path
 export const getSEOByPath = query({
   args: { path: v.string() },
   handler: async (ctx, args) => {
@@ -17,17 +15,16 @@ export const getSEOByPath = query({
       .query("seoMetadata")
       .withIndex("by_path", (q) => q.eq("path", args.path))
       .first();
-
     return result;
   },
 });
 
-// Update or create SEO metadata
 export const updateSEO = mutation({
   args: {
     path: v.string(),
     title: v.string(),
     description: v.string(),
+    canonicalUrl: v.optional(v.string()), // Added canonicalUrl
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -35,10 +32,13 @@ export const updateSEO = mutation({
       .withIndex("by_path", (q) => q.eq("path", args.path))
       .first();
 
+    const canonical = args.canonicalUrl ?? args.path; // Use path as fallback canonical
+
     if (existing) {
       await ctx.db.patch(existing._id, {
         title: args.title,
         description: args.description,
+        canonicalUrl: canonical,
         updatedAt: Date.now(),
       });
       return existing._id;
@@ -47,13 +47,13 @@ export const updateSEO = mutation({
         path: args.path,
         title: args.title,
         description: args.description,
+        canonicalUrl: canonical,
         updatedAt: Date.now(),
       });
     }
   },
 });
 
-// Seed initial data with ALL pages
 export const seedSEOData = mutation({
   handler: async (ctx) => {
     const pages = [
@@ -62,72 +62,82 @@ export const seedSEOData = mutation({
         title: "Chris Lane Jones | React & WordPress Developer in Virginia",
         description:
           "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+        canonicalUrl: "https://chrislanejones.com", // Added canonicalUrl
       },
       {
         path: "/about",
         title: "About Chris Jones | Developer, Hiker & Community Leader",
         description:
           "From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and life in Virginia's Shenandoah Mountains.",
+        canonicalUrl: "https://chrislanejones.com/about", // Added canonicalUrl
       },
       {
         path: "/projects",
         title: "Web Development Projects | Next.js, React & WordPress Sites",
         description:
           "Full-stack projects featuring Next.js applications, WordPress plugins, image editors, and web tools. View my work with TypeScript, React, and modern frameworks.",
+        canonicalUrl: "https://chrislanejones.com/projects", // Added canonicalUrl
       },
       {
         path: "/career",
         title: "Career & Experience | Chris Lane Jones Web Developer",
         description:
           "10+ years from video editor to senior developer. Experience with React, Next.js, WordPress, and building solutions for Fortune 500 companies and government agencies.",
+        canonicalUrl: "https://chrislanejones.com/career", // Added canonicalUrl
       },
       {
         path: "/browser-tabs",
         title: "Developer Resources & Tools | Curated Web Dev Bookmarks",
         description:
           "My collection of essential web development resources: React libraries, design tools, icon sets, UI frameworks, and learning materials I reference daily.",
+        canonicalUrl: "https://chrislanejones.com/browser-tabs", // Added canonicalUrl
       },
       {
         path: "/conferences",
         title: "Tech Conferences Attended | All Things Open, RenderATL & More",
         description:
           "Notes from web development conferences including All Things Open, WordCamp US, THAT Conference, RenderATL, and RVAJS. Insights from the JavaScript community.",
+        canonicalUrl: "https://chrislanejones.com/conferences", // Added canonicalUrl
       },
       {
         path: "/link-page",
         title: "Connect With Chris Lane Jones | Social Media & Portfolio Links",
         description:
           "Find me on GitHub, LinkedIn, Twitter/X, and CodePen. Access my portfolio, blog posts, WordPress services, and web development resources all in one place.",
+        canonicalUrl: "https://chrislanejones.com/link-page", // Added canonicalUrl
       },
       {
         path: "/logo-page",
         title: "Mountain Logo Design Story | Chris Lane Jones Brand Identity",
         description:
           "The meaning behind my mountain logo design - representing the journey through code and trails. Explore different logo variations and design philosophy.",
+        canonicalUrl: "https://chrislanejones.com/logo-page", // Added canonicalUrl
       },
       {
         path: "/site-history",
         title: "Portfolio Evolution | From WordPress 2.1 to Next.js React App",
         description:
           "18 years of website evolution: from the Kubrick WordPress theme in 2007 to modern Next.js. See how my portfolio transformed alongside web technology.",
+        canonicalUrl: "https://chrislanejones.com/site-history", // Added canonicalUrl
       },
       {
         path: "/wordpress-maintenance",
         title: "WordPress Maintenance Services | Monthly Action Plan",
         description:
           "Comprehensive WordPress maintenance including security scans, plugin updates, performance optimization, and technical support. Three hours of site changes monthly with 99.9% uptime guarantee.",
+        canonicalUrl: "https://chrislanejones.com/wordpress-maintenance", // Added canonicalUrl
       },
       {
         path: "/react-maintenance",
         title: "React Application Maintenance | Monthly Support & Optimization",
         description:
           "Expert React app maintenance with dependency updates, security monitoring, performance optimization, and debugging. Three hours of consulting monthly for Next.js and React applications.",
+        canonicalUrl: "https://chrislanejones.com/react-maintenance", // Added canonicalUrl
       },
     ];
 
     let inserted = 0;
     let updated = 0;
-
     for (const page of pages) {
       const existing = await ctx.db
         .query("seoMetadata")
@@ -138,9 +148,12 @@ export const seedSEOData = mutation({
         await ctx.db.insert("seoMetadata", {
           ...page,
           updatedAt: Date.now(),
+          canonicalUrl: page.canonicalUrl || page.path, // Use path as fallback canonical
         });
         inserted++;
       } else {
+        // We are not updating existing seeded data to avoid accidental overwrites during subsequent seeds
+        // but can modify this logic if initial seed updates are desired.
         updated++;
       }
     }
