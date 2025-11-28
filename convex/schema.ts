@@ -8,7 +8,6 @@ export default defineSchema({
     description: v.string(),
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
-
   contactMessages: defineTable({
     name: v.string(),
     email: v.string(),
@@ -16,16 +15,16 @@ export default defineSchema({
     message: v.string(),
     createdAt: v.number(),
     read: v.boolean(),
+    source: v.string(), // New field to track form origin
   }).index("by_created", ["createdAt"]),
-
   browserLinks: defineTable({
     href: v.string(),
     label: v.string(),
     domain: v.string(),
     favicon: v.optional(v.string()),
     category: v.string(),
-    color: v.string(), // Chrome tab group color
-    order: v.number(), // For sorting within category
+    color: v.string(),
+    order: v.number(),
     createdAt: v.number(),
     updatedAt: v.number(),
     screenshotUrl: v.optional(v.string()),
@@ -33,7 +32,6 @@ export default defineSchema({
   })
     .index("by_category", ["category"])
     .index("by_order", ["order"]),
-
   blogPosts: defineTable({
     title: v.string(),
     slug: v.string(),
@@ -49,18 +47,16 @@ export default defineSchema({
     .index("by_slug", ["slug"])
     .index("by_published", ["published"])
     .index("by_created", ["createdAt"]),
-
   blogLikes: defineTable({
     postId: v.id("blogPosts"),
-    userIdentifier: v.string(), // Can be IP address or user ID
+    userIdentifier: v.string(),
     createdAt: v.number(),
   })
     .index("by_post", ["postId"])
     .index("by_user_post", ["userIdentifier", "postId"]),
-
   blogComments: defineTable({
     postId: v.id("blogPosts"),
-    parentId: v.optional(v.id("blogComments")), // For nested replies
+    parentId: v.optional(v.id("blogComments")),
     authorName: v.string(),
     authorEmail: v.string(),
     content: v.string(),
@@ -72,31 +68,27 @@ export default defineSchema({
     .index("by_parent", ["parentId"])
     .index("by_approved", ["approved"])
     .index("by_created", ["createdAt"]),
-
   careerTimeline: defineTable({
     year: v.string(),
     title: v.string(),
     description: v.string(),
     location: v.optional(v.string()),
-    iconName: v.string(), // Store icon name as string (e.g., "GradIcon", "VideoIcon")
-    order: v.number(), // For sorting events
+    iconName: v.string(),
+    order: v.number(),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
     .index("by_order", ["order"])
     .index("by_created", ["createdAt"]),
-
   media: defineTable({
-    url: v.string(), // UploadThing URL
-    filename: v.string(), // Original filename
-    altText: v.optional(v.string()), // Alt text for accessibility
-    size: v.optional(v.number()), // File size in bytes
-    mimeType: v.optional(v.string()), // image/jpeg, image/png, etc.
-    // Assignment tracking
-    assignedToType: v.optional(v.string()), // "blogPost", "page", "gallery", "project", null/undefined = unassigned
-    assignedToId: v.optional(v.string()), // blogPost _id, or page name like "home", "about"
-    assignedToTitle: v.optional(v.string()), // Display name for what it's assigned to
-    // Metadata
+    url: v.string(),
+    filename: v.string(),
+    altText: v.optional(v.string()),
+    size: v.optional(v.number()),
+    mimeType: v.optional(v.string()),
+    assignedToType: v.optional(v.string()),
+    assignedToId: v.optional(v.string()),
+    assignedToTitle: v.optional(v.string()),
     uploadedAt: v.number(),
     updatedAt: v.number(),
   })
