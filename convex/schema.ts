@@ -6,6 +6,7 @@ export default defineSchema({
     path: v.string(),
     title: v.string(),
     description: v.string(),
+    canonicalUrl: v.optional(v.string()), // Added canonicalUrl
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
   contactMessages: defineTable({
@@ -15,7 +16,7 @@ export default defineSchema({
     message: v.string(),
     createdAt: v.number(),
     read: v.boolean(),
-    source: v.string(), // New field to track form origin
+    source: v.string(),
   }).index("by_created", ["createdAt"]),
   browserLinks: defineTable({
     href: v.string(),
