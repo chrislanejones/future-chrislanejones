@@ -1,12 +1,14 @@
+// src/app/react-maintenance/ReactMaintenanceContent.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "next/link"; // Keep Link for internal navigation within the plan cards
 
 import Card from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import ClientSliderContent from "@/components/main/client-slider-content";
+import ContactForm from "@/components/page/contact-form"; // Import the consolidated ContactForm
 
 const actionPlanItems = [
   {
@@ -134,12 +136,14 @@ export default function ReactServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <h2 className="text-center mb-12">Monthly Costs</h2>
-
+        <h2 className="text-center mb-12">Choose Your Plan</h2>{" "}
+        {/* Updated Title */}
         <div className="grid md:grid-cols-2 gap-6">
+          {" "}
+          {/* This grid arranges the two plan cards */}
           {/* Basic Plan Card */}
           <Card
-            size="page-half"
+            size="page-full" // Changed from "page-half" to "page-full" to fill column
             shadow="soft"
             border="thin"
             className="flex flex-col"
@@ -193,15 +197,14 @@ export default function ReactServicesPage() {
               </Button>
             </div>
           </Card>
-
-          {/* Performance Plan Card */}
+          {/* Performance Plan Card (Added) */}
           <Card
-            size="page-half"
+            size="page-full" // Changed from "page-half" to "page-full" to fill column
             shadow="soft"
             border="thin"
             className="flex flex-col"
           >
-            <h3 className="mb-6">The Action Plan (With Performance)</h3>
+            <h3 className="mb-6">The Action Plan Plus (With Performance)</h3>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
@@ -270,9 +273,8 @@ export default function ReactServicesPage() {
         </Card>
       </motion.section>
 
-      {/* Contact Section */}
+      {/* Contact Section - Using the consolidated ContactForm */}
       <motion.section
-        id="contact"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -280,92 +282,14 @@ export default function ReactServicesPage() {
         className="mb-16"
       >
         <h2 className="text-center mb-12">Contact Us to Get Started</h2>
-
-        <Card size="hero" shadow="soft" border="thin">
-          <form className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-2">First Name *</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
-                />
-              </div>
-              <div>
-                <label className="block mb-2">Last Name *</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block mb-2">Email *</label>
-              <input
-                type="email"
-                required
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Phone Number</label>
-              <input
-                type="tel"
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Choose An Action Plan</label>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="plan"
-                    value="basic"
-                    className="text-accent"
-                  />
-                  <span className="">The Action Plan</span>
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="plan"
-                    value="performance"
-                    className="text-accent"
-                  />
-                  <span className="">The Action Plan (With Performance)</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label className="block mb-2">GitHub Repository</label>
-              <input
-                type="url"
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)]"
-                placeholder="https://github.com/username/repo"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2">Additional Info</label>
-              <textarea
-                rows={4}
-                className="w-full px-4 py-2 rounded-lg bg-[color:var(--color-base)] border border-[color:var(--color-border)] resize-none"
-                placeholder="Tell us about your React app, current stack, or specific challenges..."
-              ></textarea>
-            </div>
-
-            <Button type="submit" variant="base" size="lg" className="w-full">
-              Submit
-            </Button>
-          </form>
-        </Card>
+        {/* The ContactForm component itself renders a Card */}
+        <ContactForm
+          id="contact"
+          variant="maintenance"
+          serviceType="React"
+          plusPlanLabel="Performance"
+        />{" "}
+        {/* id prop correctly passed */}
       </motion.section>
     </>
   );
