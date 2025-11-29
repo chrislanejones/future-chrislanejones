@@ -33,13 +33,8 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  useDraggable,
-  useDroppable,
-} from "@dnd-kit/core";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { useUploadThing } from "@/utils/uploadthing";
 
 // Page icons map - ALL pages included
@@ -75,7 +70,6 @@ const MediaTab = () => {
     new Set()
   );
   const [galleryDrawerOpen, setGalleryDrawerOpen] = useState(false);
-  const [activeId, setActiveId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const { startUpload } = useUploadThing("mediaUploader", {
@@ -132,17 +126,7 @@ const MediaTab = () => {
     await startUpload(Array.from(files));
   };
 
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    if (!over) {
-      setActiveId(null);
-      return;
-    }
-
-    const mediaId = active.id as string;
-    const dropTarget = over.id as string;
-
+  const handleDrop = async (mediaId: string, dropTarget: string) => {
     // Handle gallery drawer slots
     if (dropTarget.startsWith("home-gallery-")) {
       const slotIndex = parseInt(dropTarget.replace("home-gallery-", ""));
@@ -180,8 +164,6 @@ const MediaTab = () => {
     } else if (dropTarget === "unassigned") {
       await unassignMedia({ mediaId: mediaId as Id<"media"> });
     }
-
-    setActiveId(null);
   };
 
   const handleDeleteImage = async (mediaId: Id<"media">) => {
@@ -231,11 +213,9 @@ const MediaTab = () => {
     );
   });
 
-  const draggedImage = currentImages.find((img) => img._id === activeId);
-
   return (
     <TooltipProvider>
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndProvider backend={HTML5Backend}>
         <div className="h-full flex overflow-hidden">
           {/* Sidebar */}
           <div className="w-64 border-r overflow-y-auto bg-panel border-border">
@@ -265,7 +245,7 @@ const MediaTab = () => {
               </button>
 
               {/* Unassigned */}
-              <DroppableArea id="unassigned">
+              <DroppableArea id="unassigned" onDrop={handleDrop}>
                 <button
                   onClick={() => setSelectedView("unassigned")}
                   className={`w-full text-left px-4 py-3 rounded-none transition text-sm flex items-center gap-3 ${
@@ -363,7 +343,7 @@ const MediaTab = () => {
                                 </span>
                               </button>
                               {expandedPages.has(page.id) && (
-                                <DroppableArea id={`page-${page.id}`}>
+                                <DroppableArea id={`page-${page.id}`} onDrop={handleDrop}>
                                   <button
                                     onClick={() =>
                                       setSelectedView(`page-${page.id}`)
@@ -470,7 +450,7 @@ const MediaTab = () => {
                           )}
                         </div>
                         {expandedBlogPosts.has(post.id) && (
-                          <DroppableArea id={`post-${post.id}`}>
+                          <DroppableArea id={`post-${post.id}`} onDrop={handleDrop}>
                             <button
                               onClick={() => setSelectedView(`post-${post.id}`)}
                               className={`w-full text-left px-8 py-2 text-xs transition flex items-center gap-2 ${
@@ -513,7 +493,7 @@ const MediaTab = () => {
                 </div>
 
                 {/* Upload Button */}
-                <label className="flex items-center gap-2 px-4 py-2 bg-accent text-base-dark rounded-lg hover:bg-accent/90 transition-colors cursor-pointer font-medium">
+                <label className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition shadow-passive hover:shadow-glow cursor-pointer font-medium bg-[color:var(--color-foreground)] hover:bg-[color:var(--color-muted)] text-[color:var(--color-on-accent)] border border-transparent">
                   <input
                     type="file"
                     accept="image/*"
@@ -524,7 +504,7 @@ const MediaTab = () => {
                   />
                   {isUploading ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-base-dark border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                       <span>Uploading...</span>
                     </>
                   ) : (
@@ -597,7 +577,7 @@ const MediaTab = () => {
                       const isPreview = slotIndex === 0;
 
                       return (
-                        <DroppableArea key={slotId} id={slotId}>
+                        <DroppableArea key={slotId} id={slotId} onDrop={handleDrop}>
                           <div className="group relative aspect-square rounded-lg border-2 border-dashed border-border bg-[var(--color-muted-accent)] hover:border-accent hover:bg-accent/5 transition flex flex-col items-center justify-center cursor-pointer">
                             {/* Visual feedback for hover */}
                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
@@ -632,9 +612,14 @@ const MediaTab = () => {
             </div>
           </div>
         </div>
-      </DndContext>
+      </DndProvider>
     </TooltipProvider>
   );
+};
+
+// Item type for react-dnd
+const ItemTypes = {
+  IMAGE: "image",
 };
 
 // Draggable Image Component
@@ -645,18 +630,20 @@ function DraggableImage({
   image: any;
   onDelete: () => void;
 }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: image._id,
-  });
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemTypes.IMAGE,
+    item: { id: image._id },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }), [image._id]);
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
           <div
-            ref={setNodeRef}
-            {...listeners}
-            {...attributes}
+            ref={drag as unknown as React.LegacyRef<HTMLDivElement>}
             className={`group relative overflow-hidden rounded-lg border border-border hover:border-accent transition cursor-grab active:cursor-grabbing ${
               isDragging ? "opacity-50" : ""
             }`}
@@ -716,15 +703,25 @@ function DraggableImage({
 function DroppableArea({
   id,
   children,
+  onDrop,
 }: {
   id: string;
   children: React.ReactNode;
+  onDrop: (mediaId: string, dropTarget: string) => void;
 }) {
-  const { setNodeRef, isOver } = useDroppable({ id });
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: ItemTypes.IMAGE,
+    drop: (item: { id: string }) => {
+      onDrop(item.id, id);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }), [id, onDrop]);
 
   return (
     <div
-      ref={setNodeRef}
+      ref={drop as unknown as React.LegacyRef<HTMLDivElement>}
       className={`transition-colors ${
         isOver ? "bg-accent/10 ring-2 ring-accent rounded-lg" : ""
       }`}

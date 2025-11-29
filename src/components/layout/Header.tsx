@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
 import { SimpleModeToggle } from "../simple-mode-toggle";
-import { headerNavItems, socialLinks, SiteLogo } from "../page/links";
+import { useHeaderNavItems, socialLinks, SiteLogo } from "../page/links"; // Changed this line
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -20,6 +20,7 @@ import {
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const headerNavItems = useHeaderNavItems(); // Use the hook instead of static import
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -39,13 +40,13 @@ export default function Header() {
       <div className="sr-only focus-within:not-sr-only">
         <a
           href="#main-content"
-          className="absolute top-0 left-1 z-[9999] bg-accent text-white px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-accent-alt"
+          className="absolute top-0 left-10 z-[9999] bg-[color:var(--color-accent)] text-[color:var(--color-on-accent)] px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent-alt)]"
         >
           Skip to main content
         </a>
         <a
           href="#main-navigation"
-          className="absolute top-0 left-33 z-[9999] bg-accent text-white px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-accent-alt"
+          className="absolute top-0 left-60 z-[9999] bg-[color:var(--color-accent)] text-[color:var(--color-on-accent)] px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent-alt)]"
         >
           Skip to navigation
         </a>
@@ -95,12 +96,20 @@ export default function Header() {
                                 <li key={child.href}>
                                   <NavigationMenuLink asChild>
                                     <Link
-                                      href={child.href}
+                                      href={child.href!}
                                       className={`block w-full rounded-md px-3 py-2 text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring ${
                                         pathname === child.href
                                           ? "bg-[color:var(--color-surface-hover)]"
                                           : ""
                                       }`}
+                                      target={
+                                        child.isExternal ? "_blank" : undefined
+                                      }
+                                      rel={
+                                        child.isExternal
+                                          ? "noopener noreferrer"
+                                          : undefined
+                                      }
                                     >
                                       {child.label}
                                     </Link>
@@ -120,6 +129,10 @@ export default function Header() {
                               ? "bg-[color:var(--color-surface-hover)]"
                               : ""
                           }`}
+                          target={item.isExternal ? "_blank" : undefined}
+                          rel={
+                            item.isExternal ? "noopener noreferrer" : undefined
+                          }
                         >
                           {item.label}
                         </Link>
@@ -235,13 +248,19 @@ export default function Header() {
                             {item.children.map((child) => (
                               <Link
                                 key={child.href}
-                                href={child.href}
+                                href={child.href!}
                                 className={`block nav-link text-md py-2 px-4 rounded-lg ${
                                   pathname === child.href
                                     ? "bg-[color:var(--color-surface-hover)]"
                                     : ""
                                 }`}
                                 onClick={closeMobileMenu}
+                                target={child.isExternal ? "_blank" : undefined}
+                                rel={
+                                  child.isExternal
+                                    ? "noopener noreferrer"
+                                    : undefined
+                                }
                               >
                                 {child.label}
                               </Link>
@@ -257,6 +276,10 @@ export default function Header() {
                               : ""
                           }`}
                           onClick={closeMobileMenu}
+                          target={item.isExternal ? "_blank" : undefined}
+                          rel={
+                            item.isExternal ? "noopener noreferrer" : undefined
+                          }
                         >
                           {item.label}
                         </Link>
