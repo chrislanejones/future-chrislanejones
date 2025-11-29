@@ -16,6 +16,7 @@ import {
   PanelLeft,
   Plus,
   Heart,
+  List,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -29,6 +30,7 @@ import CareerTimelineTab from "./CareerTimelineTab";
 import BlogPostsTab from "./BlogPostsTab";
 import BlogEngagementTab from "./BlogEngagementTab";
 import SettingsTab from "./SettingsTab";
+import PagesMenuTab from "./PagesMenuTab";
 import { SEOTitlesTab } from "./SEOTitlesTab";
 import {
   Sidebar,
@@ -62,7 +64,7 @@ const AdminDashboard = () => {
   const searchParams = useSearchParams();
 
   // Get active tab from URL search params, default to "seo"
-  const activeTab = searchParams.get("tab") || "seo";
+  const activeTab = searchParams.get("tab") || "pages-menu"; // Changed default tab to new "pages-menu"
 
   // Query data for tab info
   const allLinks = useQuery(api.browserLinks.getAll) ?? [];
@@ -81,6 +83,7 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
+    { id: "pages-menu", label: "Pages & Menu", icon: List },
     { id: "seo", label: "SEO Manager", icon: FileText },
     { id: "media", label: "Media Manager", icon: Image },
     { id: "links", label: "Links Manager", icon: LinkIcon },
@@ -112,8 +115,7 @@ const AdminDashboard = () => {
         <Sidebar collapsible="icon" className="border-r border-[#1f242b]">
           <SidebarHeader>
             <div className="px-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <h1 className="font-bold text-[#f3f4f6]">Admin</h1>
-              <p className="text-[#9ca3af] mt-1">Portfolio Manager</p>
+              <h2 className="font-bold text-[#f3f4f6]">Main Panel</h2>
               {user && (
                 <p className="text-[#9ca3af] mt-2 truncate">
                   {user.primaryEmailAddress?.emailAddress}
@@ -179,6 +181,7 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="flex-1 p-6 overflow-auto">
+            {activeTab === "pages-menu" && <PagesMenuTab />}
             {activeTab === "seo" && <SEOTitlesTab />}
             {activeTab === "media" && <MediaTab />}
             {activeTab === "links" && <LinksManagerTab />}

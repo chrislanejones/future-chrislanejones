@@ -6,9 +6,10 @@ export default defineSchema({
     path: v.string(),
     title: v.string(),
     description: v.string(),
-    canonicalUrl: v.optional(v.string()), // Added canonicalUrl
+    canonicalUrl: v.optional(v.string()),
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
+
   contactMessages: defineTable({
     name: v.string(),
     email: v.string(),
@@ -18,6 +19,7 @@ export default defineSchema({
     read: v.boolean(),
     source: v.string(),
   }).index("by_created", ["createdAt"]),
+
   browserLinks: defineTable({
     href: v.string(),
     label: v.string(),
@@ -33,6 +35,7 @@ export default defineSchema({
   })
     .index("by_category", ["category"])
     .index("by_order", ["order"]),
+
   blogPosts: defineTable({
     title: v.string(),
     slug: v.string(),
@@ -48,6 +51,7 @@ export default defineSchema({
     .index("by_slug", ["slug"])
     .index("by_published", ["published"])
     .index("by_created", ["createdAt"]),
+
   blogLikes: defineTable({
     postId: v.id("blogPosts"),
     userIdentifier: v.string(),
@@ -55,6 +59,7 @@ export default defineSchema({
   })
     .index("by_post", ["postId"])
     .index("by_user_post", ["userIdentifier", "postId"]),
+
   blogComments: defineTable({
     postId: v.id("blogPosts"),
     parentId: v.optional(v.id("blogComments")),
@@ -69,6 +74,7 @@ export default defineSchema({
     .index("by_parent", ["parentId"])
     .index("by_approved", ["approved"])
     .index("by_created", ["createdAt"]),
+
   careerTimeline: defineTable({
     year: v.string(),
     title: v.string(),
@@ -81,6 +87,7 @@ export default defineSchema({
   })
     .index("by_order", ["order"])
     .index("by_created", ["createdAt"]),
+
   media: defineTable({
     url: v.string(),
     filename: v.string(),
@@ -96,4 +103,34 @@ export default defineSchema({
     .index("by_assigned_type", ["assignedToType"])
     .index("by_assigned_id", ["assignedToId"])
     .index("by_uploaded", ["uploadedAt"]),
+
+  // New Tables for Navigation Management
+  headerNavItems: defineTable({
+    label: v.string(),
+    href: v.optional(v.string()), // Main link
+    isExternal: v.optional(v.boolean()),
+    order: v.number(),
+    parentId: v.optional(v.id("headerNavItems")), // For nested dropdowns
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_order", ["order"])
+    .index("by_parent_order", ["parentId", "order"]),
+
+  footerNavSections: defineTable({
+    title: v.string(),
+    order: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_order", ["order"]),
+
+  footerNavLinks: defineTable({
+    sectionId: v.id("footerNavSections"),
+    label: v.string(),
+    href: v.string(),
+    isExternal: v.optional(v.boolean()),
+    order: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_section_order", ["sectionId", "order"]),
 });

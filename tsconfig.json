@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next.config.mjs"
+    "convex/*.ts" // ADD THIS LINE: Explicitly include Convex files
   ],
   "exclude": ["node_modules"]
 }

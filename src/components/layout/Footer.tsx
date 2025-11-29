@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   footerSocialLinks,
   SiteLogo,
-  footerNavLinks,
+  useFooterNavSections, // Use the hook instead of static import
   NavLinkComponent,
 } from "../page/links";
 import dynamic from "next/dynamic";
@@ -19,6 +19,8 @@ const Bighorn3D = dynamic(() => import("./Bighorn3D"), {
 });
 
 export default function Footer() {
+  const footerNavSections = useFooterNavSections(); // Use the hook for dynamic data
+
   return (
     <>
       <motion.footer className="relative site-container py-10 overflow-hidden">
@@ -79,7 +81,7 @@ export default function Footer() {
               fontWeight: "var(--weight-regular)",
             }}
           >
-            {footerNavLinks.map((section, index) => (
+            {footerNavSections.map((section, index) => (
               <div
                 key={section.title}
                 className={`justify-self-end text-right ${index === 2 ? "col-span-2 md:col-span-1" : ""}`}
@@ -115,11 +117,6 @@ export default function Footer() {
           </p>
         </div>
       </motion.footer>
-
-      {/* 3D Bighorn Sheep - Full width below copyright */}
-      {/* <div className="w-screen h-[20vh] relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw]">
-        <Bighorn3D />
-      </div> */}
     </>
   );
 }
