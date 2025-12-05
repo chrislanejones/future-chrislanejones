@@ -145,9 +145,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <Card
       size="small"
-      hover="lift"
-      border="standard"
-      shadow="soft"
       height="xl"
       delay={0.05 + index * 0.05}
       className="overflow-hidden"

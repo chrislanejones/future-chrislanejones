@@ -61,9 +61,6 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
         <Card
           key={`${c.year}-${c.slug}`}
           size="small"
-          hover="lift"
-          border="standard"
-          shadow="soft"
           height="large"
           delay={0.05 + i * 0.05}
           className="overflow-hidden"

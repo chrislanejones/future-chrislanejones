@@ -1,8 +1,7 @@
+// src/components/main/image-gallery-content.tsx
 "use client";
-
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { CardFooter } from "@/components/page/card";
 import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
 
 const photos: GalleryPhoto[] = [
@@ -35,28 +34,26 @@ const photos: GalleryPhoto[] = [
 
 export default function ImageGalleryContent() {
   return (
-    <>
-      {/* Media section */}
-      <div className="relative flex-1">
+    <div className="relative w-full h-full flex flex-col overflow-hidden">
+      {/* Image */}
+      <div className="relative flex-1 min-h-0">
         <Image
-          alt="Theo and I"
-          src="/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp"
-          className="absolute inset-0 w-full h-full object-cover opacity-70"
+          src={photos[0].src}
+          alt={photos[0].alt}
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/10 to-transparent" />
       </div>
 
       {/* Footer */}
-      <CardFooter className="grid grid-cols-[1fr_auto] items-center gap-4">
-        <h3 className="text-ink tracking-tight">Conference Fan Shots</h3>
-        <GalleryDrawer
-          photos={photos}
-          title="Gallery Drawer"
-          animationDelay={0.2}
-        />
-      </CardFooter>
-    </>
+      <div className="p-4 flex-shrink-0 flex items-center justify-between gap-4 backdrop-blur-sm">
+        <h3 className="text-ink tracking-tight truncate">
+          Conference Fan Shots
+        </h3>
+        <GalleryDrawer photos={photos} title="Gallery" animationDelay={0.2} />
+      </div>
+    </div>
   );
 }

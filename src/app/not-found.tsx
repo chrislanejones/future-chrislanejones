@@ -16,13 +16,7 @@ export default function NotFound() {
           description="This page could not be found but you can play Japanese Breakfast"
         />
 
-        <Card
-          size="page-full"
-          shadow="soft"
-          border="thin"
-          delay={0.1}
-          className="text-center mt-10"
-        >
+        <Card size="full" delay={0.1} className="text-center mt-10">
           <div className="space-y-6">
             <h3 className="">
               Japanese Breakfast – Live on SNL – "Be Sweet" and "Paprika"

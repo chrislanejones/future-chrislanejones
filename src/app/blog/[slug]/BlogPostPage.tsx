@@ -178,7 +178,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
         <Banner title={post.title} breadcrumbPage="Blog" />
 
-        <Card size="page-full" className="overflow-hidden">
+        <Card size="full" className="overflow-hidden">
           {post.coverImage && (
             <div className="relative w-full aspect-[21/9]">
               <Image

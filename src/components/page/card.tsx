@@ -1,88 +1,57 @@
+// src/components/page/card.tsx
 "use client";
-
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
-// Unified card variants that standardize all styles
-const cardVariants = cva("card rounded-3xl bg-panel", {
-  variants: {
-    size: {
-      small: "col-span-1 row-span-1",
-      medium: "col-span-1 md:col-span-2 row-span-1",
-      large: "col-span-1 md:col-span-2",
-      wide: "col-span-1 md:col-span-4 row-span-1",
-      hero: "col-span-1 md:col-span-4 row-span-1",
-      full: "col-span-1 md:col-span-6 row-span-1",
-      "page-full": "col-span-1",
-      "page-half": "col-span-1 md:col-span-1",
-      "page-third": "col-span-1 lg:col-span-1",
+const cardVariants = cva(
+  "card rounded-3xl bg-panel border border-[color:var(--color-border)]",
+  {
+    variants: {
+      size: {
+        small: "col-span-1 row-span-1",
+        medium: "col-span-1 md:col-span-2 row-span-1",
+        large: "col-span-1 md:col-span-2",
+        wide: "col-span-1 md:col-span-4 row-span-1",
+        hero: "col-span-1 md:col-span-4 row-span-1",
+        full: "col-span-1 md:col-span-6 row-span-1",
+      },
+      height: {
+        small: "min-h-[25px] md:min-h-[25px]",
+        medium: "min-h-[200px] md:min-h-[210px]",
+        large: "md:row-span-2 min-h-[400px] md:min-h-[420px]",
+        xl: "min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
+      },
+      layout: {
+        default: "p-4",
+        "media-top": "overflow-hidden flex flex-col",
+        "media-bottom": "overflow-hidden flex flex-col-reverse",
+        "media-left": "overflow-hidden flex flex-row",
+        "media-right": "overflow-hidden flex flex-row-reverse",
+        split: "grid md:grid-cols-2 gap-6 p-4",
+        stacked: "flex flex-col gap-4 p-4",
+      },
+      mediaRadius: {
+        none: "",
+        sm: "[&>*:first-child]:rounded-sm",
+        md: "[&>*:first-child]:rounded-md",
+        lg: "[&>*:first-child]:rounded-lg",
+        xl: "[&>*:first-child]:rounded-xl",
+        "2xl": "[&>*:first-child]:rounded-2xl",
+        top: "[&>*:first-child]:rounded-t-2xl",
+        bottom: "[&>*:first-child]:rounded-b-2xl",
+        inset:
+          "[&>*:first-child]:rounded-2xl [&>*:first-child]:m-4 [&>*:first-child]:overflow-hidden",
+      },
     },
-    glass: {
-      true: "glass",
-      false: "",
+    defaultVariants: {
+      size: "medium",
+      height: "medium",
+      layout: "default",
+      mediaRadius: "none",
     },
-    height: {
-      small: "min-h-[25px] md:min-h-[25px]",
-      medium: "min-h-[200px] md:min-h-[210px]",
-      large: "md:row-span-2 min-h-[400px] md:min-h-[420px]",
-      xl: "min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
-    },
-    border: {
-      none: "border-0",
-      thin: "border border-[color:var(--color-border)] border-opacity-30",
-      standard: "border border-[color:var(--color-border)]",
-      accent: "border border-accent",
-    },
-    shadow: {
-      none: "shadow-none",
-      soft: "shadow-passive",
-      glow: "shadow-glow",
-    },
-    hover: {
-      none: "",
-      lift: "transition-transform hover:scale-[1.02]",
-      glow: "transition hover:shadow-glow",
-      border: "transition-colors hover:border-accent",
-    },
-    // NEW: Layout variants for common patterns
-    layout: {
-      default: "p-4",
-      "media-top": "overflow-hidden flex flex-col", // Image fills top, content at bottom
-      "media-bottom": "overflow-hidden flex flex-col-reverse", // Content at top, image at bottom
-      "media-left": "overflow-hidden flex flex-row", // Image on left
-      "media-right": "overflow-hidden flex flex-row-reverse", // Image on right
-      split: "grid md:grid-cols-2 gap-6 p-4", // Two column split
-      stacked: "flex flex-col gap-4 p-4", // Stacked sections with gap
-    },
-    // NEW: Media/image rounding - targets first child in media layouts
-    mediaRadius: {
-      none: "",
-      sm: "[&>*:first-child]:rounded-sm",
-      md: "[&>*:first-child]:rounded-md",
-      lg: "[&>*:first-child]:rounded-lg",
-      xl: "[&>*:first-child]:rounded-xl",
-      "2xl": "[&>*:first-child]:rounded-2xl",
-      // For media-top: round top corners only
-      top: "[&>*:first-child]:rounded-t-2xl",
-      // For media-bottom: round bottom corners only
-      bottom: "[&>*:first-child]:rounded-b-2xl",
-      // Inset: rounds media with margin from card edge
-      inset:
-        "[&>*:first-child]:rounded-2xl [&>*:first-child]:m-4 [&>*:first-child]:overflow-hidden",
-    },
-  },
-  defaultVariants: {
-    size: "medium",
-    glass: false,
-    height: "medium",
-    border: "standard",
-    shadow: "soft",
-    hover: "none",
-    layout: "default",
-    mediaRadius: "none",
-  },
-});
+  }
+);
 
 interface UnifiedCardProps extends VariantProps<typeof cardVariants> {
   children: ReactNode;
@@ -95,11 +64,7 @@ interface UnifiedCardProps extends VariantProps<typeof cardVariants> {
 export function Card({
   children,
   size,
-  glass,
   height,
-  border,
-  shadow,
-  hover,
   layout,
   mediaRadius,
   className = "",
@@ -110,7 +75,12 @@ export function Card({
   return (
     <motion.article
       id={id}
-      className={`${cardVariants({ size, glass, height, border, shadow, hover, layout, mediaRadius })} ${className} pointer-events-auto`}
+      className={`${cardVariants({
+        size,
+        height,
+        layout,
+        mediaRadius,
+      })} ${className} pointer-events-auto`}
       style={{
         ...style,
         willChange: "transform, opacity",
@@ -139,7 +109,6 @@ export function Card({
   );
 }
 
-// Helper component for media-top/media-bottom layouts
 export function CardMedia({
   children,
   className = "",
@@ -147,10 +116,11 @@ export function CardMedia({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={`relative flex-1 ${className}`}>{children}</div>;
+  return (
+    <div className={`relative flex-1 min-h-0 ${className}`}>{children}</div>
+  );
 }
 
-// Helper component for the footer/content area in media layouts
 export function CardFooter({
   children,
   className = "",
@@ -158,10 +128,9 @@ export function CardFooter({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={`p-4 ${className}`}>{children}</div>;
+  return <div className={`p-4 flex-shrink-0 ${className}`}>{children}</div>;
 }
 
-// Define image styles that are consistent across all cards
 export function CardImage({
   src,
   alt,
@@ -184,7 +153,7 @@ export function CardImage({
         <motion.img
           src={src}
           alt={alt}
-          className={`object-cover w-full h-full border border-[color:var(--color-border)] border-opacity-30 ${className}`}
+          className={`object-cover w-full h-full border border-[color:var(--color-border)] ${className}`}
           initial={{ scale: 1.1, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6 }}
@@ -194,7 +163,7 @@ export function CardImage({
         <motion.img
           src={src}
           alt={alt}
-          className={`object-cover w-full h-full border border-[color:var(--color-border)] border-opacity-30 ${className}`}
+          className={`object-cover w-full h-full border border-[color:var(--color-border)] ${className}`}
           initial={{ scale: 1.1, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6 }}

@@ -41,14 +41,14 @@ export default function BlogPage() {
   return (
     <div className="site-container py-12">
       {posts.length === 0 ? (
-        <Card size="page-full" className="text-center">
+        <Card size="full" className="text-center">
           <p className="p text-ink">No blog posts yet. Check back soon!</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post, index) => (
             <Card
-              size="page-third"
+              size="small"
               delay={0.1 + index * 0.05}
               className="overflow-hidden flex flex-col"
             >

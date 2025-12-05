@@ -9,11 +9,7 @@ const cn = (...classes: Array<string | undefined | null | false>) =>
 
 function LogoCard({ variant, index }: { variant: LogoVariant; index: number }) {
   return (
-    <Card
-      size="page-half"
-      className="overflow-hidden"
-      delay={0.1 + index * 0.1}
-    >
+    <Card size="small" className="overflow-hidden" delay={0.1 + index * 0.1}>
       <div className="flex flex-col h-full">
         {/* Logo Display Area */}
         <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl overflow-hidden min-h-[280px] flex items-center justify-center p-8">

@@ -105,16 +105,9 @@ export default function ReactServicesPage() {
           The Full Maintenance Action Plan 🎯
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-12 gap-4">
           {actionPlanItems.map((item, index) => (
-            <Card
-              key={index}
-              size="page-full"
-              shadow="soft"
-              border="thin"
-              hover="lift"
-              delay={index * 0.1}
-            >
+            <Card key={index} size="full" delay={index * 0.1}>
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">{item.icon}</div>
                 <div>
@@ -143,9 +136,7 @@ export default function ReactServicesPage() {
           {/* This grid arranges the two plan cards */}
           {/* Basic Plan Card */}
           <Card
-            size="page-full" // Changed from "page-half" to "page-full" to fill column
-            shadow="soft"
-            border="thin"
+            size="small" // Changed from "page-half" to "page-full" to fill column
             className="flex flex-col"
           >
             <h3 className="mb-6">The Action Plan</h3>
@@ -199,9 +190,7 @@ export default function ReactServicesPage() {
           </Card>
           {/* Performance Plan Card (Added) */}
           <Card
-            size="page-full" // Changed from "page-half" to "page-full" to fill column
-            shadow="soft"
-            border="thin"
+            size="small" // Changed from "page-half" to "page-full" to fill column
             className="flex flex-col"
           >
             <h3 className="mb-6">The Action Plan Plus (With Performance)</h3>
@@ -262,13 +251,7 @@ export default function ReactServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <Card
-          size="hero"
-          height="large"
-          shadow="soft"
-          border="thin"
-          delay={0.1}
-        >
+        <Card size="hero" height="large" delay={0.1}>
           <ClientSliderContent />
         </Card>
       </motion.section>

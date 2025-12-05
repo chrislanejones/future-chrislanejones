@@ -138,10 +138,7 @@ function TimelineTrail() {
                   >
                     {isLeftSide && (
                       <Card
-                        size="page-full"
-                        shadow="soft"
-                        border="thin"
-                        hover="lift"
+                        size="full"
                         style={{ minHeight: "auto" }}
                         className="text-right"
                       >
@@ -195,10 +192,7 @@ function TimelineTrail() {
                     )}
                   >
                     <Card
-                      size="page-full"
-                      shadow="soft"
-                      border="thin"
-                      hover="lift"
+                      size="full"
                       style={{ minHeight: "auto" }}
                       className="text-left"
                     >
@@ -247,14 +241,7 @@ function TimelineTrail() {
 
 function PhotoGalleryCard() {
   return (
-    <Card
-      size="page-half"
-      shadow="soft"
-      border="thin"
-      hover="lift"
-      delay={0.2}
-      className="overflow-hidden flex flex-col"
-    >
+    <Card size="small" delay={0.2} className="overflow-hidden flex flex-col">
       <div className="image-container relative flex-1 min-h-[200px]">
         <Image
           alt="Samsung 49-inch Odyssey G9 setup"
@@ -284,14 +271,7 @@ function PhotoGalleryCard() {
 
 function ResumeDownloadCard() {
   return (
-    <Card
-      size="page-half"
-      shadow="soft"
-      border="thin"
-      hover="lift"
-      delay={0.3}
-      className="flex flex-col justify-center"
-    >
+    <Card size="small" delay={0.3} className="flex flex-col justify-center">
       <h2 className="mb-4">Resume & Portfolio</h2>
       <p className="text-muted mb-6">
         Download my resume and portfolio to learn more about my work experience,
