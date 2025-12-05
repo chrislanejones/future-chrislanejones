@@ -169,7 +169,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
       transition={{ duration: 0.6, delay }}
       className={`${variant === "full" ? "mt-8" : ""} ${className || ""}`}
     >
-      <Card size="page-full" shadow="soft" border="thin">
+      <Card size="full">
         <form onSubmit={handleSubmitInternal} className="space-y-6">
           <div>
             <label htmlFor="name" className="block mb-2">
@@ -286,7 +286,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           </div>
           <Button
             type="submit"
-            variant="accent"
+            variant="base"
             size="lg"
             className="w-full"
             disabled={isSubmitting}

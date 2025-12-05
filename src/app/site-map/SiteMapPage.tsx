@@ -77,9 +77,7 @@ export default function SiteMapPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Changelog Card */}
         <Card
-          size="page-half"
-          shadow="soft"
-          border="thin"
+          size="small"
           delay={0.1}
           className="flex flex-col"
           style={{ minHeight: "auto" }}
@@ -105,9 +103,7 @@ export default function SiteMapPage() {
 
         {/* Sitemap Card */}
         <Card
-          size="page-half"
-          shadow="soft"
-          border="thin"
+          size="small"
           delay={0.2}
           className="flex flex-col"
           style={{ minHeight: "auto" }}
@@ -163,9 +159,7 @@ export default function SiteMapPage() {
 
       {/* Full Width Card - Tech Stack */}
       <Card
-        size="page-full"
-        shadow="soft"
-        border="thin"
+        size="full"
         delay={0.3}
         className="mt-6"
         style={{ minHeight: "auto" }}

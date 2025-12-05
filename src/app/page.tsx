@@ -26,86 +26,35 @@ export default function Home() {
 
       <main>
         <section className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-5 auto-rows-min">
-          <Card
-            size="hero"
-            height="large"
-            shadow="soft"
-            border="thin"
-            delay={0.1}
-          >
+          <Card size="hero" height="large" delay={0.1}>
             <HeroContent />
           </Card>
 
-          <Card
-            size="large"
-            height="large"
-            shadow="soft"
-            border="thin"
-            delay={0.2}
-          >
+          <Card size="large" height="large" delay={0.2}>
             <QuoteContent />
           </Card>
 
-          <Card
-            size="full"
-            height="large"
-            layout="split"
-            shadow="soft"
-            border="thin"
-            delay={0.3}
-          >
+          <Card size="full" height="large" layout="split" delay={0.3}>
             <ProjectsContent />
           </Card>
 
-          <Card
-            size="large"
-            height="large"
-            layout="media-top"
-            shadow="soft"
-            border="thin"
-            delay={0.4}
-          >
+          <Card size="large" height="large" layout="media-top" delay={0.4}>
             <MusicPlayerContent />
           </Card>
 
-          <Card
-            size="large"
-            height="large"
-            shadow="soft"
-            border="thin"
-            delay={0.5}
-          >
+          <Card size="large" height="large" delay={0.5}>
             <BlogContent />
           </Card>
 
-          <Card
-            size="large"
-            height="large"
-            layout="media-top"
-            shadow="soft"
-            border="thin"
-            delay={0.6}
-          >
+          <Card size="large" height="large" layout="media-top" delay={0.6}>
             <ImageGalleryContent />
           </Card>
 
-          <Card
-            size="full"
-            height="medium"
-            shadow="soft"
-            border="thin"
-            delay={0.7}
-          >
+          <Card size="full" height="medium" delay={0.7}>
             <ClientSliderContent />
           </Card>
 
-          <Card
-            size="full"
-            height="medium"
-            shadow="soft"
-            border="thin"
-            delay={0.8}
-          >
+          <Card size="full" height="medium" delay={0.8}>
             <TechStackContent />
           </Card>
         </section>

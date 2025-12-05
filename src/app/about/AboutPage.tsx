@@ -1,175 +1,72 @@
 "use client";
-
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { Card } from "@/components/page/card";
+import { TwoColumnCard } from "@/components/page/two-column-card";
 import ConferenceSliderContent from "@/components/main/conference-slider-content";
+import Card from "@/components/page/card";
+import { aboutSections } from "@/data/about-data";
 
-const cn = (...classes: Array<string | undefined | null | false>) =>
-  classes.filter(Boolean).join(" ");
+function renderDescriptionWithLinks(description: string) {
+  // Parse markdown links [text](url) and convert to HTML links
+  const parts = description.split(/(\[.*?\]\(.*?\))/g);
 
-// Simple function to parse markdown links and render them as JSX
-function parseMarkdownLinks(text: string): React.ReactNode {
-  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-  const parts: React.ReactNode[] = [];
-  let lastIndex = 0;
-  let match;
-
-  while ((match = linkRegex.exec(text)) !== null) {
-    // Add text before the link
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index));
+  return parts.map((part, index) => {
+    const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+    if (linkMatch) {
+      const [, text, url] = linkMatch;
+      return (
+        <a
+          key={index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-ink hover:text-accent transition-colors underline underline-offset-2"
+        >
+          {text}
+        </a>
+      );
     }
-
-    // Add the link with proper styling
-    parts.push(
-      <a
-        key={match.index}
-        href={match[2]}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline decoration-accent decoration-2 underline-offset-2 hover:text-accent transition-colors"
-      >
-        {match[1]}
-      </a>
-    );
-
-    lastIndex = linkRegex.lastIndex;
-  }
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    parts.push(text.slice(lastIndex));
-  }
-
-  return parts.length > 0 ? parts : text;
-}
-
-type AboutSection = {
-  title: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-  imageDescription: string;
-};
-
-const aboutSections: AboutSection[] = [
-  {
-    title: "From Video Production to Web Development",
-    description:
-      "I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry — never a dull moment in JavaScript, PHP, and their frameworks.\n\nIn 2013, I graduated after three communications internships at the University of North Florida. I started my career in video editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
-    image: "/gallery/Me-Recording-A-Video.webp",
-    imageAlt: "Chris recording a video",
-    imageDescription: "Recording a video in the field in 2013",
-  },
-  {
-    title: "Local Meetup Host & Community Leader",
-    description:
-      "I led Richmond's local WordPress meetup and hosted monthly meetups from January 2022 till January 2025. We discussed WordPress topics, general web knowledge, and provide support for developers in the Glen Allen area.\n\nPreviously served as Digital Director for The JOMM (Jacksonville Online Marketing Meetup), where I increased monthly attendance and website engagement.",
-    image: "/gallery/Richmond-WordPress-Meetup.webp",
-    imageAlt: "Richmond WordPress Meetup",
-    imageDescription: "WPRVA Event Banner",
-  },
-  {
-    title: "Living in the Shenandoah Mountains",
-    description:
-      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service — [Heaven's Rays Ministries](https://heavensraysministries.com/). In Louisa, I am close to several cities and the Shenandoah mountains.",
-    image: "/gallery/Me-on-a-Bike-Trail.webp",
-    imageAlt: "Me on my bike at the Bike Trails by Piney River",
-    imageDescription: "Exploring bike trails near the Piney River",
-  },
-  {
-    title: "Adventure & Travel",
-    description:
-      "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights.\n\nAfter this trip, we started looking for work in the towns adjacent to the Appalachian Mountains. We love hiking, biking, and exploring the outdoors. We ended up moving to Harrisonburg, Virginia in 2018 and then moved to Central Virginia in 2019.",
-    image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
-    imageAlt: "Glacier National Park",
-    imageDescription: "Adventures at Glacier National Park",
-  },
-];
-
-function AboutCard({
-  section,
-  index,
-}: {
-  section: AboutSection;
-  index: number;
-}) {
-  // Determine if this card should have image on the left (even indices) or right (odd indices)
-  const isImageLeft = index % 2 === 0;
-
-  return (
-    <Card
-      size="page-full"
-      hover="lift"
-      border="standard"
-      shadow="soft"
-      height="small"
-      delay={0.05 + index * 0.05}
-      className="overflow-hidden"
-    >
-      <div className="grid md:grid-cols-2 gap-0 h-full">
-        {/* Text Content */}
-        <div
-          className={cn(
-            "flex flex-col justify-center p-6 sm:p-8",
-            isImageLeft ? "md:order-2" : "md:order-1"
-          )}
-        >
-          <h2 className="h2 text-ink tracking-tight mb-4">{section.title}</h2>
-          <div className="p text-ink leading-relaxed whitespace-pre-line">
-            {parseMarkdownLinks(section.description)}
-          </div>
-        </div>
-
-        {/* Image */}
-        <div
-          className={cn(
-            "relative min-h-[300px] md:min-h-full",
-            isImageLeft ? "md:order-1" : "md:order-2"
-          )}
-        >
-          <Image
-            src={section.image}
-            alt={section.imageAlt}
-            className="object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            priority={index === 0}
-          />
-          <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-base/40 backdrop-blur-sm image-overlay-text">
-            {section.imageDescription}
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function AboutGridSection({ sections }: { sections: AboutSection[] }) {
-  return (
-    <motion.section
-      className="grid grid-cols-1 gap-6 auto-rows-auto"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-    >
-      {sections.map((section, index) => (
-        <AboutCard key={section.title} section={section} index={index} />
-      ))}
-      <Card
-        size="page-full"
-        height="medium"
-        shadow="soft"
-        border="standard"
-        delay={0.05 + sections.length * 0.05}
-      >
-        <ConferenceSliderContent />
-      </Card>
-    </motion.section>
-  );
+    return <span key={index}>{part}</span>;
+  });
 }
 
 export default function AboutPage() {
-  return <AboutGridSection sections={aboutSections} />;
+  return (
+    <div className="space-y-8">
+      {/* Dynamic sections from data */}
+      {aboutSections.map((section, index) => (
+        <TwoColumnCard
+          key={section.title}
+          imagePosition={section.imagePosition}
+          image={{
+            src: section.image,
+            alt: section.imageAlt,
+          }}
+          size="full"
+          height="medium"
+          delay={0.1 + index * 0.05}
+        >
+          <div className="flex flex-col gap-4">
+            <h2 className="text-ink tracking-tight">{section.title}</h2>
+            {section.description.split("\n\n").map((paragraph, i) => (
+              <p key={i} className="text-ink leading-relaxed">
+                {renderDescriptionWithLinks(paragraph)}
+              </p>
+            ))}
+          </div>
+        </TwoColumnCard>
+      ))}
+
+      {/* Tech Conferences Attended */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+        viewport={{ once: true, margin: "-100px" }}
+      >
+        <Card size="full">
+          <ConferenceSliderContent />
+        </Card>
+      </motion.div>
+    </div>
+  );
 }

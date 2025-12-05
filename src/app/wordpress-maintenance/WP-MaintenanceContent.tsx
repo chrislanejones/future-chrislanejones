@@ -105,14 +105,11 @@ export default function WordPressServicesPage() {
           The Full Maintenance Action Plan 🎯
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-12 gap-4">
           {WPactionPlanItems.map((item, index) => (
             <Card
               key={index}
-              size="page-full"
-              shadow="soft"
-              border="thin"
-              hover="lift"
+              size="full"
               delay={index * 0.1}
               style={{ minHeight: "auto" }}
             >
@@ -144,9 +141,7 @@ export default function WordPressServicesPage() {
           {/* This grid arranges the two plan cards */}
           {/* Basic Plan Card */}
           <Card
-            size="page-full" // Changed from "page-half" to "page-full" to fill column
-            shadow="soft"
-            border="thin"
+            size="small" // Changed from "page-half" to "page-full" to fill column
             className="flex flex-col"
           >
             <h3 className="mb-6">The Action Plan</h3>
@@ -198,9 +193,7 @@ export default function WordPressServicesPage() {
           </Card>
           {/* SEO Plan Card (Added) */}
           <Card
-            size="page-full" // Changed from "page-half" to "page-full" to fill column
-            shadow="soft"
-            border="thin"
+            size="small" // Changed from "page-half" to "page-full" to fill column
             className="flex flex-col"
           >
             <h3 className="mb-6">The Action Plan Plus (With SEO)</h3>
@@ -257,13 +250,7 @@ export default function WordPressServicesPage() {
         viewport={{ once: true }}
         className="mb-16"
       >
-        <Card
-          size="hero"
-          height="large"
-          shadow="soft"
-          border="thin"
-          delay={0.1}
-        >
+        <Card size="hero" height="large" delay={0.1}>
           <ClientSliderContent />
         </Card>
       </motion.section>

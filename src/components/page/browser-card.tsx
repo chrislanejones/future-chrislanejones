@@ -40,13 +40,7 @@ export default function BrowserCard({
   delay = 0,
 }: BrowserCardProps) {
   return (
-    <Card
-      size="page-third"
-      hover="lift"
-      border="thin"
-      shadow="soft"
-      delay={delay}
-    >
+    <Card size="medium" delay={delay}>
       <div className="space-y-4">
         {/* Chrome Tab Group Badge */}
         <Badge variant={color} className="px-4 py-2">

@@ -121,15 +121,6 @@ p {
   font-weight: var(--weight-regular);
 }
 
-.glass {
-  backdrop-filter: blur(8px);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.02)
-  );
-}
-
 .shadow-soft {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
 }
@@ -378,7 +369,6 @@ html.dark .card:hover {
 html.dark .client-logo {
   filter: brightness(0) invert(1);
 }
-
 
 /* Chrome Group Colors for Links Manager */
 .chrome-group-blue {

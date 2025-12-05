@@ -97,12 +97,7 @@ export default function ConferenceDetailPage({
       </div>
 
       {/* Single Card with all content */}
-      <Card
-        size="page-full"
-        border="standard"
-        shadow="soft"
-        className="overflow-hidden"
-      >
+      <Card size="full" className="overflow-hidden">
         <div className="grid md:grid-cols-2 gap-0 h-full">
           {/* Image - Left side on desktop */}
           {conf.coverImage && (
@@ -160,7 +155,7 @@ export default function ConferenceDetailPage({
 
       {/* Talks & Resources section */}
       {conf.talkLinks && conf.talkLinks.length > 0 && (
-        <Card size="page-full" border="standard" shadow="soft" className="mt-6">
+        <Card size="full" className="mt-6">
           <h2 className="mb-4">Talks & Resources</h2>
           <ul className="space-y-3">
             {conf.talkLinks.map((talk, i) => (

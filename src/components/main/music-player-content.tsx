@@ -1,10 +1,10 @@
+// src/components/main/music-player-content.tsx
 "use client";
-
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CardFooter } from "@/components/page/card";
+import { Card, CardMedia, CardFooter } from "@/components/page/card";
+import Image from "next/image";
 
 type Track = {
   title: string;
@@ -57,12 +57,7 @@ export default function MusicPlayerContent() {
   const handleNext = () => {
     const nextIndex = (currentTrackIndex + 1) % tracks.length;
     setCurrentTrackIndex(nextIndex);
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.load();
-      if (isPlaying) audioRef.current.play();
-    }
+    setIsPlaying(true);
   };
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +70,14 @@ export default function MusicPlayerContent() {
     if (audioRef.current) audioRef.current.volume = volume;
   }, [volume]);
 
+  useEffect(() => {
+    if (audioRef.current && isPlaying) {
+      audioRef.current.play().catch((err) => {
+        console.error("Playback error:", err);
+      });
+    }
+  }, [currentTrackIndex, isPlaying]);
+
   return (
     <>
       <audio
@@ -83,96 +86,147 @@ export default function MusicPlayerContent() {
         preload="metadata"
         crossOrigin="anonymous"
       />
-
-      {/* Media section */}
-      <div className="relative flex-1">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={currentTrack.artwork}
+      <Card
+        size="large"
+        height="large"
+        layout="media-top"
+        className="overflow-hidden flex flex-col"
+      >
+        <CardMedia>
+          <Image
             src={currentTrack.artwork}
             alt={`${currentTrack.album} artwork`}
-            className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-        </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/20 to-transparent" />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent" />
-
-        {/* Volume control */}
-        <div className="absolute top-4 left-4 z-20 pointer-events-auto">
-          <div className="flex items-center gap-2 bg-panel/95 backdrop-blur-sm rounded-full px-4 py-3 shadow-sm transition-all hover:shadow-md">
-            <Volume2 className="w-4 h-4 text-ink" />
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="volume-slider w-16 h-2 bg-ink/20 rounded-lg appearance-none cursor-pointer"
-            />
+          {/* Volume Control */}
+          <div className="absolute top-4 left-4 z-20">
+            <div className="flex items-center gap-2 bg-panel/95 backdrop-blur-sm rounded-full px-4 py-3 shadow-sm transition-all hover:shadow-md">
+              <Volume2
+                className="w-4 h-4 flex-shrink-0"
+                style={{ color: "var(--color-accent)" }}
+              />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                className="volume-slider w-16 h-2"
+                value={volume}
+                onChange={handleVolumeChange}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Skip button */}
-        <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+          {/* Skip Forward Button */}
+          <div className="absolute top-4 right-4 z-20">
+            <Button
+              onClick={handleNext}
+              variant="neutral"
+              size="icon"
+              round
+              aria-label="Next track"
+            >
+              <SkipForward className="w-5 h-5 text-ink" />
+            </Button>
+          </div>
+        </CardMedia>
+
+        {/* Player Controls */}
+        <CardFooter className="grid grid-cols-[1fr_auto] items-center gap-4">
+          <div className="min-w-0">
+            <p className="text-ink">
+              {currentTrack.artist} - {currentTrack.title}
+            </p>
+          </div>
           <Button
-            onClick={handleNext}
+            onClick={handlePlayPause}
             variant="neutral"
             size="icon"
             round
-            className="bg-panel/95 backdrop-blur-sm"
-            aria-label="Next track"
+            aria-label={isPlaying ? "Pause" : "Play"}
           >
-            <SkipForward className="w-5 h-5 text-ink" />
+            {isPlaying ? (
+              <Pause className="w-5 h-5 text-ink" />
+            ) : (
+              <Play className="w-5 h-5 text-ink" />
+            )}
           </Button>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
 
-      {/* Footer */}
-      <CardFooter className="grid grid-cols-[1fr_auto] items-center gap-4">
-        <p className="text-ink tracking-tight">
-          {currentTrack.artist} — {currentTrack.title}
-        </p>
-        <Button
-          onClick={handlePlayPause}
-          variant="neutral"
-          size="icon"
-          round
-          aria-label={isPlaying ? "Pause" : "Play"}
-        >
-          {isPlaying ? (
-            <Pause className="w-5 h-5 text-ink" />
-          ) : (
-            <Play className="w-5 h-5 text-ink" />
-          )}
-        </Button>
-      </CardFooter>
-
-      <style>{`
+      <style jsx>{`
         .volume-slider {
           -webkit-appearance: none;
+          appearance: none;
           height: 4px;
           border-radius: 5px;
+          background: linear-gradient(
+            to right,
+            var(--color-accent) 0%,
+            var(--color-accent) ${volume * 100}%,
+            rgba(107, 114, 128, 0.3) ${volume * 100}%,
+            rgba(107, 114, 128, 0.3) 100%
+          );
+          cursor: pointer;
+          outline: none;
         }
+
         .volume-slider::-webkit-slider-thumb {
           -webkit-appearance: none;
-          width: 12px;
-          height: 12px;
+          appearance: none;
+          width: 14px;
+          height: 14px;
           background: var(--color-accent);
+          border: 2px solid var(--color-panel);
           border-radius: 50%;
           cursor: pointer;
+          box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+          transition: all 150ms ease;
         }
-        .volume-slider::-moz-range-thumb {
-          width: 12px;
-          height: 12px;
+
+        .volume-slider::-webkit-slider-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5);
+        }
+
+        .volume-slider::-moz-range-track {
+          background: transparent;
+          border: none;
+        }
+
+        .volume-slider::-moz-range-progress {
           background: var(--color-accent);
+          border-radius: 5px;
+        }
+
+        .volume-slider::-moz-range-thumb {
+          width: 14px;
+          height: 14px;
+          background: var(--color-accent);
+          border: 2px solid var(--color-panel);
           border-radius: 50%;
           cursor: pointer;
-          border: none;
+          box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+          transition: all 150ms ease;
+        }
+
+        .volume-slider::-moz-range-thumb:hover {
+          transform: scale(1.2);
+          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.5);
+        }
+
+        .dark .volume-slider {
+          background: linear-gradient(
+            to right,
+            var(--color-accent) 0%,
+            var(--color-accent) ${volume * 100}%,
+            rgba(255, 255, 255, 0.1) ${volume * 100}%,
+            rgba(255, 255, 255, 0.1) 100%
+          );
         }
       `}</style>
     </>

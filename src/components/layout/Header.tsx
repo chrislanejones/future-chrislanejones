@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import { Menu, X } from "lucide-react";
 import { SimpleModeToggle } from "../simple-mode-toggle";
-import { useHeaderNavItems, socialLinks, SiteLogo } from "../page/links"; // Changed this line
+import { useHeaderNavItems, socialLinks, SiteLogo } from "../page/links";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -20,12 +20,12 @@ import {
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const headerNavItems = useHeaderNavItems(); // Use the hook instead of static import
+  const headerNavItems = useHeaderNavItems();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-  // Check if a link or any of its children are active
+  // Active nav state
   const isActive = (item: (typeof headerNavItems)[0]) => {
     if (item.href && pathname === item.href) return true;
     if (item.children) {
@@ -36,19 +36,13 @@ export default function Header() {
 
   return (
     <>
-      {/* Skip Links - Only visible when focused */}
+      {/* Accessibility Skip Links */}
       <div className="sr-only focus-within:not-sr-only">
         <a
           href="#main-content"
-          className="absolute top-0 left-10 z-[9999] bg-[color:var(--color-accent)] text-[color:var(--color-on-accent)] px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent-alt)]"
+          className="absolute top-0 left-10 z-[9999] bg-[color:var(--color-accent)] text-[color:var(--color-on-accent)] px-4 py-2 rounded-br-lg"
         >
           Skip to main content
-        </a>
-        <a
-          href="#main-navigation"
-          className="absolute top-0 left-60 z-[9999] bg-[color:var(--color-accent)] text-[color:var(--color-on-accent)] px-4 py-2 rounded-br-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--color-accent-alt)]"
-        >
-          Skip to navigation
         </a>
       </div>
 
@@ -58,7 +52,7 @@ export default function Header() {
           className="flex items-center gap-4"
           aria-label="Main navigation"
         >
-          {/* Brand: icon left, text right */}
+          {/* Left side – Logo */}
           <Link
             href="/"
             className="group inline-flex items-center gap-3"
@@ -72,32 +66,26 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Right side */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4 ms-auto">
-            {/* Navigation Menu */}
             <NavigationMenu>
               <NavigationMenuList className="flex items-center gap-3">
                 {headerNavItems.map((item) => (
-                  <NavigationMenuItem key={item.label} className="relative">
+                  <NavigationMenuItem key={item.label}>
                     {item.children ? (
                       <>
-                        {/* Trigger styled like a button (via buttonVariants in ui/navigation-menu) */}
                         <NavigationMenuTrigger>
                           {item.label}
                         </NavigationMenuTrigger>
-
-                        {/* IMPORTANT: let the Viewport position this; no absolute/left/top here */}
                         <NavigationMenuContent>
                           <div className="w-56 p-2">
-                            {" "}
-                            {/* ← no bg/border/shadow here */}
                             <ul className="space-y-1">
                               {item.children.map((child) => (
                                 <li key={child.href}>
                                   <NavigationMenuLink asChild>
                                     <Link
                                       href={child.href!}
-                                      className={`block w-full rounded-md px-3 py-2 text-foreground/90 hover:bg-[color:var(--color-surface-hover)] focus-ring ${
+                                      className={`block w-full rounded-md px-3 py-2 hover:bg-[color:var(--color-surface-hover)] focus-ring ${
                                         pathname === child.href
                                           ? "bg-[color:var(--color-surface-hover)]"
                                           : ""
@@ -124,7 +112,7 @@ export default function Header() {
                       <NavigationMenuLink asChild>
                         <Link
                           href={item.href!}
-                          className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow focus-ring transition hover:bg-[color:var(--color-surface-hover)] inline-flex items-center justify-center rounded-lg ${
+                          className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow rounded-lg transition hover:bg-[color:var(--color-surface-hover)] ${
                             isActive(item)
                               ? "bg-[color:var(--color-surface-hover)]"
                               : ""
@@ -143,12 +131,8 @@ export default function Header() {
               </NavigationMenuList>
             </NavigationMenu>
 
-            {/* Social Buttons */}
-            <div
-              className="flex items-center gap-3"
-              role="list"
-              aria-label="Social media links"
-            >
+            {/* Social buttons (desktop) */}
+            <div className="flex items-center gap-3" role="list">
               {socialLinks.map((social) => (
                 <div key={social.href} role="listitem">
                   <Button
@@ -161,8 +145,8 @@ export default function Header() {
                     <a
                       href={social.href}
                       target="_blank"
-                      rel="noopener noreferrer"
                       aria-label={social.label}
+                      rel="noopener noreferrer"
                     >
                       {social.icon}
                     </a>
@@ -173,7 +157,7 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Mobile Menu Button and Theme Toggle */}
+          {/* Mobile Nav Toggle */}
           <div className="lg:hidden ms-auto flex items-center gap-3">
             <SimpleModeToggle />
             <Button
@@ -181,75 +165,96 @@ export default function Header() {
               size="icon"
               round={true}
               onClick={toggleMobileMenu}
-              aria-label={
-                isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"
-              }
               aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
             >
-              {isMobileMenuOpen ? (
-                <X width="24" height="24" aria-hidden="true" />
-              ) : (
-                <Menu width="24" height="24" aria-hidden="true" />
-              )}
+              {isMobileMenuOpen ? <X width={24} /> : <Menu width={24} />}
             </Button>
           </div>
         </nav>
       </motion.header>
 
-      {/* Mobile Menu Overlay */}
+      {/* MOBILE MENU — FULL SCREEN OVERLAY */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
             {/* Backdrop */}
             <motion.div
               className="fixed inset-0 bg-base/80 backdrop-blur-sm z-40 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeMobileMenu}
-              aria-hidden="true"
             />
 
-            {/* Mobile Menu */}
+            {/* Fullscreen Menu */}
             <motion.div
               id="mobile-menu"
-              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-panel card shadow-2xl z-50 lg:hidden"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-0 z-50 lg:hidden flex flex-col bg-panel"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               role="dialog"
               aria-modal="true"
-              aria-label="Mobile navigation menu"
             >
-              <div className="p-6">
-                {/* Close Button */}
-                <div className="flex justify-end mb-8">
-                  <Button
-                    variant="neutral"
-                    size="icon"
-                    round={true}
-                    onClick={closeMobileMenu}
-                    aria-label="Close mobile menu"
-                  >
-                    <X width="24" height="24" aria-hidden="true" />
-                  </Button>
+              {/* Close button top-right */}
+              <div className="flex justify-end p-6">
+                <Button
+                  variant="neutral"
+                  size="icon"
+                  round={true}
+                  onClick={closeMobileMenu}
+                  aria-label="Close mobile menu"
+                >
+                  <X width={24} />
+                </Button>
+              </div>
+
+              {/* SCROLLABLE MENU CONTENT */}
+              <div className="flex-1 overflow-y-auto px-6 pb-24 space-y-10">
+                {/* Social links at TOP */}
+                <div className="space-y-4">
+                  <h2 className="text-foreground font-semibold px-1">
+                    Social Links
+                  </h2>
+                  <div className="flex gap-3">
+                    {socialLinks.map((social) => (
+                      <Button
+                        key={social.href}
+                        asChild
+                        variant="neutral"
+                        size="icon"
+                        round={true}
+                        title={social.label}
+                      >
+                        <a
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={social.label}
+                        >
+                          {social.icon}
+                        </a>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Mobile Navigation Links */}
-                <nav className="space-y-4" aria-label="Mobile navigation">
+                {/* NAVIGATION */}
+                <nav className="space-y-4 pt-4" aria-label="Mobile navigation">
                   {headerNavItems.map((item) => (
                     <div key={item.label}>
                       {item.children ? (
-                        <div>
-                          <div className="py-2 px-4 text-foreground">
+                        <>
+                          <h3 className="py-2 px-1 text-foreground font-semibold">
                             {item.label}
-                          </div>
-                          <div className="ml-4 space-y-2">
+                          </h3>
+
+                          <div className="ml-2 space-y-2">
                             {item.children.map((child) => (
                               <Link
                                 key={child.href}
                                 href={child.href!}
-                                className={`block nav-link text-md py-2 px-4 rounded-lg ${
+                                className={`block nav-link text-md py-2 px-3 rounded-lg ${
                                   pathname === child.href
                                     ? "bg-[color:var(--color-surface-hover)]"
                                     : ""
@@ -266,11 +271,11 @@ export default function Header() {
                               </Link>
                             ))}
                           </div>
-                        </div>
+                        </>
                       ) : (
                         <Link
                           href={item.href!}
-                          className={`block nav-link py-3 px-4 rounded-lg ${
+                          className={`block nav-link py-3 px-3 rounded-lg ${
                             isActive(item)
                               ? "bg-[color:var(--color-surface-hover)]"
                               : ""
@@ -286,39 +291,6 @@ export default function Header() {
                       )}
                     </div>
                   ))}
-
-                  {/* Mobile Social Links */}
-                  <div className="pt-6 border-t border-white/10 space-y-3">
-                    <h2
-                      className="text-foreground px-4 mb-3"
-                      style={{
-                        fontSize: "var(--step--1)",
-                        fontWeight: "var(--weight-demibold)",
-                      }}
-                    >
-                      Social Links
-                    </h2>
-                    {socialLinks.map((social) => (
-                      <Button
-                        key={social.href}
-                        asChild
-                        variant="neutral"
-                        size="lg"
-                        className="w-full shadow-passive hover:shadow-glow focus-ring justify-start"
-                      >
-                        <a
-                          href={social.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={closeMobileMenu}
-                          aria-label={social.label}
-                        >
-                          {social.icon}
-                          <span>{social.label}</span>
-                        </a>
-                      </Button>
-                    ))}
-                  </div>
                 </nav>
               </div>
             </motion.div>

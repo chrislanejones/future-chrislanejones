@@ -42,10 +42,7 @@ export default function ConferenceYearPage({
         {conferences.map((c, i) => (
           <Card
             key={`${c.year}-${c.slug}`}
-            size="page-third"
-            hover="lift"
-            border="standard"
-            shadow="soft"
+            size="small"
             height="large"
             delay={0.05 + i * 0.05}
             className="overflow-hidden"
@@ -113,7 +110,7 @@ export default function ConferenceYearPage({
 
       {/* Empty State */}
       {conferences.length === 0 && (
-        <Card size="page-full" className="text-center">
+        <Card size="full" className="text-center">
           <p className="text-muted">No conferences found for {year}</p>
           <Link
             href="/conferences"

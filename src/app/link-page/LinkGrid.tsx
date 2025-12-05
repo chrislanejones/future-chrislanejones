@@ -38,13 +38,7 @@ export default function LinkGrid() {
       {/* Grid Layout: 2 columns, 2 rows - using grid-area equivalent with Tailwind */}
       <div className="grid md:grid-cols-2 grid-cols-1 sm:grid-cols-1 md:grid-rows-2 gap-6 md:auto-rows-fr">
         {/* Card 1: Main Avatar and Info - Top Left (grid-area: 1 / 1 / 2 / 2) */}
-        <Card
-          size="small"
-          shadow="soft"
-          border="thin"
-          delay={0.1}
-          className="h-full"
-        >
+        <Card size="small" delay={0.1} className="h-full">
           <div className="flex flex-col items-center gap-4">
             <Image
               alt="Chris Lane Jones"
@@ -62,13 +56,7 @@ export default function LinkGrid() {
         </Card>
 
         {/* Card 2: Social Links - Top Right (grid-area: 1 / 2 / 2 / 3) */}
-        <Card
-          size="small"
-          shadow="soft"
-          border="thin"
-          delay={0.2}
-          className="h-full"
-        >
+        <Card size="small" delay={0.2} className="h-full">
           <h3 className="mb-6 text-center flex items-center justify-center space-x-2">
             Connect With Me
           </h3>
@@ -251,12 +239,24 @@ export default function LinkGrid() {
         </Card>
 
         {/* Card 3: Current Chrome Tabs - Bottom (spans both columns, grid-area: 2 / 1 / 3 / 3) */}
-        <Card size="large" shadow="soft" border="thin" delay={0.3}>
+        <Card size="large" delay={0.3}>
           <h3 className="mb-6 text-center flex items-center justify-center space-x-2">
             <FaChrome className="w-6 h-6" />
             <span>Chrome Tabs I Left Open...</span>
           </h3>
           <div className="space-y-3">
+            <Button variant="base" showExternalIcon={true} asChild>
+              <a
+                href="https://www.isocons.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between w-full"
+              >
+                <span>Isocons - Icon Library</span>
+                <span>isocons.app</span>
+              </a>
+            </Button>
+
             <Button
               variant="base"
               showExternalIcon={true}

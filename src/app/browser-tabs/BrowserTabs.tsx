@@ -57,7 +57,7 @@ export default function BrowserTabs() {
       {/* Provide TooltipProvider context for individual link tooltips */}
       <TooltipProvider delayDuration={100}>
         {/* Grid of BrowserCards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6 mt-10">
           {linkCategories.map((category, categoryIndex) => (
             <BrowserCard
               key={category.title}
