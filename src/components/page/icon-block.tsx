@@ -31,9 +31,12 @@ export default function IconBlock({
         <div className="flex items-center justify-center flex-1">
           {children}
         </div>
-        <span className="text-center text-[color:var(--color-ink)] mt-2 leading-tight" style={{ fontSize: 'var(--step--1)' }}>
+        <h4
+          className="text-center text-[color:var(--color-ink)]"
+          style={{ fontSize: "var(--step--1)" }}
+        >
           {label}
-        </span>
+        </h4>
       </div>
     </div>
   );
