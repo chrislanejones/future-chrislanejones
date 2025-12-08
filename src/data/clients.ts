@@ -100,7 +100,7 @@ export const clients: Client[] = [
   {
     name: "Alembic",
     logo: "/client-icons/Alembic-Logo.webp",
-    url: "https://www.alembicllc.com/",
+    url: "https://getalembic.com/",
   },
   {
     name: "Provision Partners",
