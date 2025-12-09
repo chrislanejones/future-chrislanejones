@@ -20,15 +20,15 @@ const badgeVariants = cva(
         default: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
           dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[color:var(--color-border)]
-          focus-visible:ring-[color:var(--color-accent)]
+          border border-(--color-border)
+          focus-visible:ring-(--color-accent)
         `,
 
         blue: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
           dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[color:var(--color-accent-alt)]
-          focus-visible:ring-[color:var(--color-accent-alt)]
+          border border-(--color-accent-alt)
+          focus-visible:ring-(--color-accent-alt)
         `,
         red: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
@@ -45,8 +45,8 @@ const badgeVariants = cva(
         green: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]
           dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[color:var(--color-accent)]
-          focus-visible:ring-[color:var(--color-accent)]
+          border border-(--color-accent)
+          focus-visible:ring-(--color-accent)
         `,
         pink: `
           [--badge-bg:#f3f4f6] [--badge-text:#111827]

@@ -7,6 +7,7 @@ export default defineSchema({
     title: v.string(),
     description: v.string(),
     canonicalUrl: v.optional(v.string()),
+    ogImage: v.optional(v.string()), // Added for OpenGraph image support
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
 

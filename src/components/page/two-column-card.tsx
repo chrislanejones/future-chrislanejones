@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import Image from "next/image";
 
 const twoColumnCardVariants = cva(
-  "rounded-3xl bg-panel p-4 md:p-6 lg:p-8 border border-[color:var(--color-border)]",
+  "rounded-3xl bg-panel p-4 md:p-6 lg:p-8 border border-(--color-border)",
   {
     variants: {
       size: {

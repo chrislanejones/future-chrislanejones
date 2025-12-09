@@ -106,7 +106,7 @@ export default function MusicPlayerContent() {
           <div className="absolute top-4 left-4 z-20">
             <div className="flex items-center gap-2 bg-panel/95 backdrop-blur-sm rounded-full px-4 py-3 shadow-sm transition-all hover:shadow-md">
               <Volume2
-                className="w-4 h-4 flex-shrink-0"
+                className="w-4 h-4 shrink-0"
                 style={{ color: "var(--color-accent)" }}
               />
               <input

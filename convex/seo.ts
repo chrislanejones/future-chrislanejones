@@ -24,7 +24,8 @@ export const updateSEO = mutation({
     path: v.string(),
     title: v.string(),
     description: v.string(),
-    canonicalUrl: v.optional(v.string()), // Added canonicalUrl
+    canonicalUrl: v.optional(v.string()),
+    ogImage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -32,13 +33,14 @@ export const updateSEO = mutation({
       .withIndex("by_path", (q) => q.eq("path", args.path))
       .first();
 
-    const canonical = args.canonicalUrl ?? args.path; // Use path as fallback canonical
+    const canonical = args.canonicalUrl ?? args.path;
 
     if (existing) {
       await ctx.db.patch(existing._id, {
         title: args.title,
         description: args.description,
         canonicalUrl: canonical,
+        ogImage: args.ogImage,
         updatedAt: Date.now(),
       });
       return existing._id;
@@ -48,6 +50,7 @@ export const updateSEO = mutation({
         title: args.title,
         description: args.description,
         canonicalUrl: canonical,
+        ogImage: args.ogImage,
         updatedAt: Date.now(),
       });
     }

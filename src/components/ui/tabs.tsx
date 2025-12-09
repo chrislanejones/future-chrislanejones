@@ -13,8 +13,8 @@ const tabsListVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[color:var(--color-muted-accent)] h-9 rounded-lg",
-        pills: "bg-[color:var(--color-muted-accent)] h-auto rounded-full",
+        default: "bg-(--color-muted-accent) h-9 rounded-lg",
+        pills: "bg-(--color-muted-accent) h-auto rounded-full",
       },
     },
     defaultVariants: {
@@ -54,8 +54,8 @@ const tabsTriggerVariants = cva(
         ].join(" "),
         pills: [
           "rounded-full px-6 py-2",
-          "data-[state=active]:bg-[color:var(--color-accent)]",
-          "data-[state=active]:text-[color:var(--color-on-accent)]",
+          "data-[state=active]:bg-(--color-accent)",
+          "data-[state=active]:text-(--color-on-accent)",
           "data-[state=active]:shadow-passive",
         ].join(" "),
       },

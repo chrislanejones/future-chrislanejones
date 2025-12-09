@@ -1,37 +1,20 @@
+// src/app/admin/AdminDashboard/AdminDashboard.tsx
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
-  Search,
   Settings,
   Image,
   FileText,
-  Save,
-  AlertCircle,
-  CheckCircle,
   LogOut,
-  MessageSquare,
-  Link as LinkIcon,
-  Calendar,
-  PanelLeft,
-  Plus,
-  Heart,
   List,
+  Link,
+  Calendar,
+  MessageSquare,
+  Heart,
 } from "lucide-react";
-import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { useUser, SignOutButton } from "@clerk/nextjs";
-import { useClerk } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
-import ContactMessagesTab from "./ContactMessagesTab";
-import MediaTab from "./MediaTab";
-import LinksManagerTab from "./LinksManagerTab";
-import CareerTimelineTab from "./CareerTimelineTab";
-import BlogPostsTab from "./BlogPostsTab";
-import BlogEngagementTab from "./BlogEngagementTab";
-import SettingsTab from "./SettingsTab";
-import PagesMenuTab from "./PagesMenuTab";
-import { SEOTitlesTab } from "./SEOTitlesTab";
+import { useClerk, useUser } from "@clerk/nextjs";
 import {
   Sidebar,
   SidebarContent,
@@ -39,23 +22,104 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuButton,
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { SimpleModeToggle } from "@/components/simple-mode-toggle";
+import { SeoTabEnhanced } from "./SeoTabEnhanced";
+import SettingsTabEnhanced from "./SettingsTabEnhanced";
+import MediaTabEnhanced from "./MediaTabEnhanced";
+import BlogPostsTabEnhanced from "./BlogPostsTabEnhanced";
+import PagesMenuTabEnhanced from "./PagesMenuTabEnhanced";
+import LinksManagerTabEnhanced from "./LinksManagerTabEnhanced";
+import CareerTimelineTabEnhanced from "./CareerTimelineTabEnhanced";
 
-const ComingSoonTab = ({ title }: { title: string }) => (
-  <div className="flex items-center justify-center h-full bg-[#111418] border border-[#1f242b] rounded-2xl">
-    <div className="text-center">
-      <div className="w-16 h-16 bg-[#1a1e24] rounded-full flex items-center justify-center mx-auto mb-4">
-        <AlertCircle className="w-8 h-8 text-[#4ade80]" />
-      </div>
-      <h2 className="mb-2 text-[#f3f4f6] font-bold">{title}</h2>
-      <p className="text-[#9ca3af]">This feature is coming soon</p>
+const ComingSoon = ({ title }: { title: string }) => (
+  <div className="flex items-center justify-center h-full">
+    <div className="text-center text-muted space-y-3">
+      <Heart className="w-10 h-10 opacity-40 mx-auto" />
+      <h2 className="text-xl font-semibold text-ink">{title}</h2>
+      <p>Module coming soon.</p>
     </div>
   </div>
 );
+
+// Separate component for sidebar content to access useSidebar hook
+const AdminSidebarContent = ({
+  tabs,
+  activeTab,
+  onTabChange,
+  onSignOut,
+}: {
+  tabs: { id: string; label: string; icon: React.ElementType }[];
+  activeTab: string;
+  onTabChange: (tabId: string) => void;
+  onSignOut: () => void;
+}) => {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
+  return (
+    <Sidebar collapsible="icon" className="border-r border-border bg-panel">
+      <SidebarHeader className="flex flex-col gap-2 p-4">
+        <div className="px-2">
+          {!isCollapsed && (
+            <h2 className="font-bold text-ink text-lg">Admin Dashboard</h2>
+          )}
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent className="overflow-hidden flex-1 overflow-y-auto p-2 space-y-1">
+        <SidebarMenu>
+          {tabs.map((tab) => (
+            <SidebarMenuItem key={tab.id}>
+              <Button
+                variant={activeTab === tab.id ? "accent" : "ghost"}
+                size="sm"
+                onClick={() => onTabChange(tab.id)}
+                className={`w-full justify-start gap-3 ${
+                  isCollapsed ? "justify-center px-0" : ""
+                }`}
+              >
+                <tab.icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                {!isCollapsed && <span>{tab.label}</span>}
+              </Button>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+
+      <SidebarFooter className="flex flex-col gap-2 mt-auto p-4">
+        <SidebarMenu>
+          {/* Sign Out Button */}
+          <SidebarMenuItem>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onSignOut}
+              className={`w-full justify-start gap-2 ${
+                isCollapsed ? "justify-center px-0" : ""
+              }`}
+            >
+              <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" />
+              {!isCollapsed && <span>Sign Out</span>}
+            </Button>
+          </SidebarMenuItem>
+
+          {/* Theme Toggle Button */}
+          <SidebarMenuItem>
+            <div className={`flex ${isCollapsed ? "justify-center" : "px-2"}`}>
+              <SimpleModeToggle />
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
+  );
+};
 
 const AdminDashboard = () => {
   const { user } = useUser();
@@ -63,15 +127,7 @@ const AdminDashboard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get active tab from URL search params, default to "seo"
-  const activeTab = searchParams.get("tab") || "pages-menu"; // Changed default tab to new "pages-menu"
-
-  // Query data for tab info
-  const allLinks = useQuery(api.browserLinks.getAll) ?? [];
-  const categories = useQuery(api.browserLinks.getCategories) ?? [];
-  const blogPosts = useQuery(api.blogPosts.getAllPostsAdmin) ?? [];
-  const allMedia = useQuery(api.media.getAll) ?? [];
-  const totalImages = allMedia.length;
+  const activeTab = searchParams.get("tab") || "pages";
 
   const handleSignOut = async () => {
     await signOut();
@@ -83,114 +139,68 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    { id: "pages-menu", label: "Pages & Menu", icon: List },
+    { id: "pages", label: "Pages & Menu", icon: List },
     { id: "seo", label: "SEO Manager", icon: FileText },
     { id: "media", label: "Media Manager", icon: Image },
-    { id: "links", label: "Links Manager", icon: LinkIcon },
-    { id: "career-timeline", label: "Career Timeline Manager", icon: Calendar },
+    { id: "links", label: "Links Manager", icon: Link },
+    { id: "career", label: "Career Timeline", icon: Calendar },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "blog-posts", label: "Blog Posts", icon: FileText },
-    { id: "blog-engagement", label: "Comments & Likes", icon: Heart },
+    { id: "engagement", label: "Comments & Likes", icon: Heart },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
-  // Get tab subtitle info
-  const getTabSubtitle = () => {
+  const renderTabContent = () => {
     switch (activeTab) {
+      case "pages":
+        return <PagesMenuTabEnhanced />;
+      case "seo":
+        return <SeoTabEnhanced />;
       case "media":
-        return `${totalImages} total images • Drag & drop to assign to pages or posts`;
+        return <MediaTabEnhanced />;
       case "links":
-        return `${allLinks.length} total links • ${categories.length} categories`;
-      case "career-timeline":
-        return "Manage your career timeline events displayed on the career page";
+        return <LinksManagerTabEnhanced />;
+      case "career":
+        return <CareerTimelineTabEnhanced />;
+      case "messages":
+        return <ComingSoon title="Messages" />;
+      case "blog-posts":
+        return <BlogPostsTabEnhanced />;
+      case "engagement":
+        return <ComingSoon title="Comments & Likes" />;
+      case "settings":
+        return <SettingsTabEnhanced />;
       default:
-        return null;
+        return <PagesMenuTabEnhanced />;
     }
   };
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="dark flex h-screen w-full bg-[#0b0d10]">
+      <div className="flex h-screen w-full bg-panel border-border text-ink">
         {/* Sidebar */}
-        <Sidebar collapsible="icon" className="border-r border-[#1f242b]">
-          <SidebarHeader>
-            <div className="px-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <h2 className="font-bold text-[#f3f4f6]">Main Panel</h2>
-              {user && (
-                <p className="text-[#9ca3af] mt-2 truncate">
-                  {user.primaryEmailAddress?.emailAddress}
-                </p>
-              )}
-            </div>
-          </SidebarHeader>
-
-          <SidebarContent>
-            <SidebarMenu>
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <SidebarMenuItem key={tab.id} className="px-2">
-                    <SidebarMenuButton
-                      onClick={() => handleTabChange(tab.id)}
-                      isActive={activeTab === tab.id}
-                      className={`${
-                        activeTab === tab.id
-                          ? "bg-[color:var(--color-muted-accent)] text-[#4ade80]"
-                          : "text-[#f3f4f6] hover:text-[#4ade80] hover:bg-[#111418]/50"
-                      } group-data-[state=collapsed]/sidebar-wrapper:justify-center`}
-                    >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
-                        {tab.label}
-                      </span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarContent>
-
-          <SidebarFooter>
-            <SidebarMenu>
-              <SidebarMenuItem className="px-2">
-                <SidebarMenuButton
-                  onClick={handleSignOut}
-                  className="text-[#f3f4f6] hover:text-[#4ade80] hover:bg-[#111418]/50 group-data-[state=collapsed]/sidebar-wrapper:justify-center"
-                >
-                  <LogOut className="w-5 h-5 flex-shrink-0" />
-                  <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
-                    Sign Out
-                  </span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
+        <AdminSidebarContent
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          onSignOut={handleSignOut}
+        />
 
         {/* Main Content */}
-        <SidebarInset className="flex-1">
-          <div className="sticky top-0 z-10 flex min-h-14 items-center gap-2 border-b border-[#1f242b] bg-[#111418] px-4 py-3">
-            <SidebarTrigger className="text-[#f3f4f6]" />
-            <div className="flex-1">
-              <h2 className="font-semibold text-[#f3f4f6]">
+        <SidebarInset className="flex flex-col flex-1 overflow-hidden">
+          <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-panel px-6 py-3">
+            <div className="flex items-center gap-2">
+              {/* Hamburger Menu Toggle */}
+              <SidebarTrigger className="rounded-md p-2 hover:bg-accent/10 text-ink" />
+              <h2 className="font-semibold text-ink text-lg">
                 {tabs.find((t) => t.id === activeTab)?.label}
               </h2>
-              {getTabSubtitle() && (
-                <p className="text-[#9ca3af] text-sm">{getTabSubtitle()}</p>
-              )}
             </div>
-          </div>
-          <div className="flex-1 p-6 overflow-auto">
-            {activeTab === "pages-menu" && <PagesMenuTab />}
-            {activeTab === "seo" && <SEOTitlesTab />}
-            {activeTab === "media" && <MediaTab />}
-            {activeTab === "links" && <LinksManagerTab />}
-            {activeTab === "career-timeline" && <CareerTimelineTab />}
-            {activeTab === "messages" && <ContactMessagesTab />}
-            {activeTab === "blog-posts" && <BlogPostsTab />}
-            {activeTab === "blog-engagement" && <BlogEngagementTab />}
-            {activeTab === "settings" && <SettingsTab />}
-          </div>
+          </header>
+
+          <main className="flex-1 overflow-auto p-6 bg-base">
+            {renderTabContent()}
+          </main>
         </SidebarInset>
       </div>
     </SidebarProvider>

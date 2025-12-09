@@ -28,7 +28,7 @@ export default function BlogContent() {
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="group flex flex-col items-center justify-center relative transition-all duration-300 opacity-90 hover:opacity-100 bg-[color:var(--color-base)] hover:bg-[color:var(--color-muted-accent)] rounded-lg p-4 border border-transparent hover:border-[color:var(--color-accent)] hover:shadow-glow w-full min-h-[50px]"
+              className="group flex flex-col items-center justify-center relative transition-all duration-300 opacity-90 hover:opacity-100 bg-(--color-base) hover:bg-(--color-muted-accent) rounded-lg p-4 border border-transparent hover:border-(--color-accent) hover:shadow-glow w-full min-h-[50px]"
             >
               <div className="flex-1 text-center">
                 <h4 className="text-ink group-hover:text-accent transition-colors">

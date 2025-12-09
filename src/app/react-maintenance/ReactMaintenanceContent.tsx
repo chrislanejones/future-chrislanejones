@@ -109,7 +109,7 @@ export default function ReactServicesPage() {
           {actionPlanItems.map((item, index) => (
             <Card key={index} size="full" delay={index * 0.1}>
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0">{item.icon}</div>
+                <div className="shrink-0">{item.icon}</div>
                 <div>
                   <h3 className="mb-2">{item.title}</h3>
                   <p className="mb-2">{item.description}</p>
@@ -181,7 +181,7 @@ export default function ReactServicesPage() {
               </li>
             </ul>
 
-            <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
+            <div className="text-center mt-auto pt-6 border-t border-(--color-border)">
               <div className="text-accent mb-6">$200 / month</div>
               <Button asChild variant="base" size="lg" className="w-full">
                 <Link href="#contact">Start the Action Plan</Link>
@@ -233,7 +233,7 @@ export default function ReactServicesPage() {
               </li>
             </ul>
 
-            <div className="text-center mt-auto pt-6 border-t border-[color:var(--color-border)]">
+            <div className="text-center mt-auto pt-6 border-t border-(--color-border)">
               <div className="text-accent mb-6">$250 / month</div>
               <Button asChild variant="base" size="lg" className="w-full">
                 <Link href="#contact">Start the Action Plan</Link>

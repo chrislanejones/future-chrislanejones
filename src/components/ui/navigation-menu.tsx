@@ -88,7 +88,7 @@ const NavigationMenuLink = React.forwardRef<
     className={cn(
       "block select-none rounded-md px-3 py-2 text-sm transition-colors",
       // your theme tokens
-      "text-foreground hover:bg-[color:var(--color-surface-hover)] focus-ring",
+      "text-foreground hover:bg-(--color-surface-hover) focus-ring",
       className
     )}
     {...props}
@@ -106,7 +106,7 @@ const NavigationMenuViewport = React.forwardRef<
       className={cn(
         // shadcn viewport + your tokens
         "origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-auto overflow-hidden",
-        "rounded-xl border border-[color:var(--color-border)] bg-panel text-foreground shadow-soft",
+        "rounded-xl border border-(--color-border) bg-panel text-foreground shadow-soft",
         "transition-[width,height] duration-200 ease-in-out",
         className
       )}

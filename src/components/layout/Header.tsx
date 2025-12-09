@@ -40,7 +40,7 @@ export default function Header() {
       <div className="sr-only focus-within:not-sr-only">
         <a
           href="#main-content"
-          className="absolute top-0 left-10 z-[9999] bg-[color:var(--color-accent)] text-[color:var(--color-on-accent)] px-4 py-2 rounded-br-lg"
+          className="absolute top-0 left-10 z-[9999] bg-(--color-accent) text-(--color-on-accent) px-4 py-2 rounded-br-lg"
         >
           Skip to main content
         </a>
@@ -85,9 +85,9 @@ export default function Header() {
                                   <NavigationMenuLink asChild>
                                     <Link
                                       href={child.href!}
-                                      className={`block w-full rounded-md px-3 py-2 hover:bg-[color:var(--color-surface-hover)] focus-ring ${
+                                      className={`block w-full rounded-md px-3 py-2 hover:bg-(--color-surface-hover) focus-ring ${
                                         pathname === child.href
-                                          ? "bg-[color:var(--color-surface-hover)]"
+                                          ? "bg-(--color-surface-hover)"
                                           : ""
                                       }`}
                                       target={
@@ -112,10 +112,8 @@ export default function Header() {
                       <NavigationMenuLink asChild>
                         <Link
                           href={item.href!}
-                          className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow rounded-lg transition hover:bg-[color:var(--color-surface-hover)] ${
-                            isActive(item)
-                              ? "bg-[color:var(--color-surface-hover)]"
-                              : ""
+                          className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow rounded-lg transition hover:bg-(--color-surface-hover) ${
+                            isActive(item) ? "bg-(--color-surface-hover)" : ""
                           }`}
                           target={item.isExternal ? "_blank" : undefined}
                           rel={
@@ -256,7 +254,7 @@ export default function Header() {
                                 href={child.href!}
                                 className={`block nav-link text-md py-2 px-3 rounded-lg ${
                                   pathname === child.href
-                                    ? "bg-[color:var(--color-surface-hover)]"
+                                    ? "bg-(--color-surface-hover)"
                                     : ""
                                 }`}
                                 onClick={closeMobileMenu}
@@ -276,9 +274,7 @@ export default function Header() {
                         <Link
                           href={item.href!}
                           className={`block nav-link py-3 px-3 rounded-lg ${
-                            isActive(item)
-                              ? "bg-[color:var(--color-surface-hover)]"
-                              : ""
+                            isActive(item) ? "bg-(--color-surface-hover)" : ""
                           }`}
                           onClick={closeMobileMenu}
                           target={item.isExternal ? "_blank" : undefined}
