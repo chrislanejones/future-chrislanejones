@@ -138,11 +138,11 @@ export default function ConferenceDetailPage({
 
             {/* Topics pills */}
             {conf.topics && conf.topics.length > 0 && (
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-[color:var(--color-border)]">
+              <div className="flex flex-wrap gap-2 pt-4 border-t border-(--color-border)">
                 {conf.topics.map((topic) => (
                   <span
                     key={topic}
-                    className="inline-block rounded-full border border-[color:var(--color-border)] px-3 py-1"
+                    className="inline-block rounded-full border border-(--color-border) px-3 py-1"
                   >
                     {topic}
                   </span>

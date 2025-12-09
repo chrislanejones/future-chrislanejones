@@ -13,6 +13,7 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - **Database:** [Convex](https://www.convex.dev/) (real-time backend)
 - **File Uploads:** [UploadThing](https://uploadthing.com/) (CDN-hosted media)
 - **Authentication:** [Clerk](https://clerk.com/)
+- **Error Handling:** [Effect.ts](https://effect.website/) (typed errors & functional pipelines)
 - **Analytics:** [PostHog](https://posthog.com/) (product analytics & session recording)
 - **UI Components:** [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
 - **Drag & Drop:** [@dnd-kit](https://dndkit.com/)
@@ -22,6 +23,7 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 ## ✨ Features
 
 ### 🎨 Frontend
+
 - Modern bento grid homepage layout
 - Dark mode with system preference detection
 - Smooth animations with Framer Motion
@@ -32,6 +34,7 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - Blog post pages with rich content
 
 ### 🔐 Admin Dashboard
+
 - Clerk authentication
 - **Media Manager** - Drag-and-drop image assignment to pages and blog posts
 - **Blog Post Manager** - Create and edit blog posts with UploadThing media uploads
@@ -40,7 +43,15 @@ Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind 
 - **Settings Manager** - Update site metadata and SEO
 - Real-time updates with Convex
 
+### 🛡️ Error Handling & Data Flow
+
+- Effect.ts for type-safe error handling
+- Functional pipelines for data transformations
+- Composable effects for async operations
+- Explicit error types for better debugging
+
 ### 📊 Analytics & Monitoring
+
 - PostHog analytics with session recording
 - User behavior tracking
 - Performance monitoring
@@ -132,6 +143,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
   "framer-motion": "^10.18.0",
   "convex": "^1.28.2",
   "@clerk/nextjs": "5.7.4",
+  "effect": "^3.12.5",
   "uploadthing": "^7.7.4",
   "@uploadthing/react": "^7.3.3",
   "@dnd-kit/core": "^6.3.1",
@@ -147,6 +159,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 Access the admin dashboard at `/admin` (requires authentication via Clerk):
 
 ### Media Manager
+
 - Upload images to UploadThing CDN
 - Organize media by pages and blog posts
 - Drag-and-drop to assign images to content
@@ -154,6 +167,7 @@ Access the admin dashboard at `/admin` (requires authentication via Clerk):
 - Real-time preview
 
 ### Content Management
+
 - **Blog Posts**: Create, edit, and publish blog posts with rich content
 - **Career Timeline**: Manage work experience and career milestones
 - **Browser Links**: Curate resource collections and bookmarks

@@ -81,13 +81,13 @@ export default function ConferenceYearPage({
                     {c.topics.slice(0, 3).map((topic) => (
                       <span
                         key={topic}
-                        className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5"
+                        className="inline-block rounded-full border border-(--color-border) px-2 py-0.5"
                       >
                         {topic}
                       </span>
                     ))}
                     {c.topics.length > 3 && (
-                      <span className="inline-block rounded-full border border-[color:var(--color-border)] px-2 py-0.5 text-muted">
+                      <span className="inline-block rounded-full border border-(--color-border) px-2 py-0.5 text-muted">
                         +{c.topics.length - 3}
                       </span>
                     )}

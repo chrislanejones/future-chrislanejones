@@ -48,7 +48,7 @@ export default function ImageGalleryContent() {
       </div>
 
       {/* Footer */}
-      <div className="p-4 flex-shrink-0 flex items-center justify-between gap-4 backdrop-blur-sm">
+      <div className="p-4 shrink-0 flex items-center justify-between gap-4 backdrop-blur-sm">
         <h3 className="text-ink tracking-tight truncate">
           Conference Fan Shots
         </h3>

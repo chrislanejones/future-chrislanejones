@@ -178,7 +178,7 @@ function TimelineTrail() {
                   </div>
 
                   {/* CENTER ICON (always visible) */}
-                  <div className="relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-green-500 dark:border-[#111418] shadow-lg flex items-center justify-center text-white md:mx-auto">
+                  <div className="relative z-10 shrink-0 w-12 h-12 rounded-full bg-green-500 dark:border-[#111418] shadow-lg flex items-center justify-center text-white md:mx-auto">
                     {event.icon}
                   </div>
 

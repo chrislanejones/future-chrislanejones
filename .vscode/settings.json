@@ -1,0 +1,9 @@
+{
+  "tailwindCSS.lint.invalidConfigPath": "ignore",
+  "tailwindCSS.lint.invalidTailwindDirective": "ignore",
+  "tailwindCSS.lint.invalidScreen": "ignore",
+  "tailwindCSS.lint.invalidVariant": "ignore",
+  "tailwindCSS.lint.invalidApply": "ignore",
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.experimental.configFile": null
+}

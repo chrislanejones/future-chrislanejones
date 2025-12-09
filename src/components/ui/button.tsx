@@ -18,31 +18,31 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         neutral: [
-          "bg-panel border border-[color:var(--color-border)]",
+          "bg-panel border border-(--color-border)",
           "text-foreground",
-          "hover:bg-[color:var(--color-surface-hover)]",
+          "hover:bg-(--color-surface-hover)",
         ].join(" "),
         base: [
-          "bg-[color:var(--color-muted-accent)]",
-          "hover:bg-[color:var(--color-surface-hover)]",
+          "bg-(--color-muted-accent)",
+          "hover:bg-(--color-surface-hover)",
           "text-foreground",
           "border border-transparent",
         ].join(" "),
         accent: [
-          "bg-[color:var(--color-foreground)]",
-          "hover:bg-[color:var(--color-muted)]",
-          "text-[color:var(--color-on-accent)]",
+          "bg-(--color-foreground)",
+          "hover:bg-(--color-muted)",
+          "text-(--color-on-accent)",
           "border border-transparent",
         ].join(" "),
         outline: [
           "bg-transparent",
           "text-foreground",
-          "border border-[color:var(--color-border)]",
+          "border border-(--color-border)",
         ].join(" "),
         ghost: [
           "bg-transparent",
           "text-foreground",
-          "hover:bg-[color:var(--color-surface-hover)]",
+          "hover:bg-(--color-surface-hover)",
         ].join(" "),
         disabled: [
           "bg-muted text-muted-foreground border border-dashed opacity-50 cursor-not-allowed pointer-events-none shadow-none saturate-50",

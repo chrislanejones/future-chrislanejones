@@ -70,7 +70,7 @@ export default function BrowserCard({
                           <img
                             src={link.favicon}
                             alt=""
-                            className="w-4 h-4 flex-shrink-0"
+                            className="w-4 h-4 shrink-0"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
                             }}
@@ -78,7 +78,7 @@ export default function BrowserCard({
                         )}
                         <span className="truncate">{link.label}</span>
                       </div>
-                      <span className="text-muted truncate max-w-[120px] flex-shrink-0">
+                      <span className="text-muted truncate max-w-[120px] shrink-0">
                         {link.domain}
                       </span>
                     </a>

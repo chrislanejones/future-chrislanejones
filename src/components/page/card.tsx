@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 const cardVariants = cva(
-  "card rounded-3xl bg-panel border border-[color:var(--color-border)]",
+  "card rounded-3xl bg-panel border border-(--color-border)",
   {
     variants: {
       size: {
@@ -128,7 +128,7 @@ export function CardFooter({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={`p-4 flex-shrink-0 ${className}`}>{children}</div>;
+  return <div className={`p-4 shrink-0 ${className}`}>{children}</div>;
 }
 
 export function CardImage({
@@ -153,7 +153,7 @@ export function CardImage({
         <motion.img
           src={src}
           alt={alt}
-          className={`object-cover w-full h-full border border-[color:var(--color-border)] ${className}`}
+          className={`object-cover w-full h-full border border-(--color-border) ${className}`}
           initial={{ scale: 1.1, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6 }}
@@ -163,7 +163,7 @@ export function CardImage({
         <motion.img
           src={src}
           alt={alt}
-          className={`object-cover w-full h-full border border-[color:var(--color-border)] ${className}`}
+          className={`object-cover w-full h-full border border-(--color-border) ${className}`}
           initial={{ scale: 1.1, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6 }}

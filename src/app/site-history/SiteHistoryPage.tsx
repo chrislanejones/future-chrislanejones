@@ -35,9 +35,9 @@ export default function SiteHistoryPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.15 + index * 0.05 }}
                   viewport={{ once: true, margin: "-100px" }}
-                  className="mt-4 pt-4 border-t border-[color:var(--color-border)]"
+                  className="mt-4 pt-4 border-t border-(--color-border)"
                 >
-                  <h3 className="text-sm font-semibold text-[color:var(--color-ink)] mb-3">
+                  <h3 className="text-sm font-semibold text-(--color-ink) mb-3">
                     Related Links
                   </h3>
                   <div className="space-y-2">
@@ -56,7 +56,7 @@ export default function SiteHistoryPage() {
                         >
                           <span className="truncate">{link.label}</span>
                           <svg
-                            className="w-4 h-4 flex-shrink-0"
+                            className="w-4 h-4 shrink-0"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"

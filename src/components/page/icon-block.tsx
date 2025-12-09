@@ -17,9 +17,9 @@ export default function IconBlock({
     <div
       className={`group flex flex-col items-center justify-center
         rounded-lg border border-transparent
-        bg-[color:var(--color-base)]
-        hover:bg-[color:var(--color-muted-accent)]
-        hover:border-[color:var(--color-accent)]
+        bg-(--color-base)
+        hover:bg-(--color-muted-accent)
+        hover:border-(--color-accent)
         hover:shadow-glow
         transition-all duration-300 cursor-pointer
         overflow-hidden aspect-square
@@ -32,7 +32,7 @@ export default function IconBlock({
           {children}
         </div>
         <h4
-          className="text-center text-[color:var(--color-ink)]"
+          className="text-center text-(--color-ink)"
           style={{ fontSize: "var(--step--1)" }}
         >
           {label}

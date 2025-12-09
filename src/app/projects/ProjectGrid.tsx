@@ -208,7 +208,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.features.slice(0, 3).map((feature, i) => (
               <li key={i} className="flex items-start gap-2">
                 <svg
-                  className="w-4 h-4 text-accent flex-shrink-0 mt-0.5"
+                  className="w-4 h-4 text-accent shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
