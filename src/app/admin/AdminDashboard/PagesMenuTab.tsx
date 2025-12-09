@@ -1,228 +1,120 @@
 "use client";
-import React, {
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-  useCallback,
-  createContext,
-  useContext,
-} from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { pageHeaders } from "@/data/header-data";
-import {
-  GripVertical,
-  Plus,
-  Trash2,
-  Edit2,
-  Save,
-  X,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react";
-import { DndProvider, useDrag, useDrop, ConnectDropTarget } from "react-dnd";
+import { GripVertical, Plus, Trash2, Edit2 } from "lucide-react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-// Define drag item types
 const ItemTypes = {
+  PAGE: "page",
   HEADER_ITEM: "headerItem",
   FOOTER_SECTION: "footerSection",
-  FOOTER_LINK: "footerLink",
-  PAGE: "page",
-} as const;
+};
 
-// Define types for drag and drop
-interface DragItem {
-  id: string;
-  type: string;
-  label?: string;
-  _id?: Id<"headerNavItems"> | Id<"footerNavSections"> | Id<"footerNavLinks">;
-  href?: string;
-  isExternal?: boolean;
-  originalIndex?: number;
-  parentId?: Id<"headerNavItems">;
-  sectionId?: Id<"footerNavSections">;
-  path?: string;
-}
-
-interface DraggablePage {
-  id: string;
-  label: string;
-  path: string;
-  isExternal?: boolean;
-  type: string;
-}
-
-interface DraggableHeaderNavItem {
-  _id: Id<"headerNavItems">;
-  id: string;
-  label: string;
-  href?: string;
-  isExternal?: boolean;
-  order: number;
-  parentId?: Id<"headerNavItems">;
-  children?: DraggableHeaderNavItem[];
-}
-
-interface DraggableFooterSection {
-  _id: Id<"footerNavSections">;
-  id: string;
-  title: string;
-  order: number;
-  links?: DraggableFooterNavLink[];
-}
-
-interface DraggableFooterNavLink {
-  _id: Id<"footerNavLinks">;
-  id: string;
-  label: string;
-  href: string;
-  isExternal?: boolean;
-  order: number;
-  sectionId?: Id<"footerNavSections">;
-}
-
-// Context for sharing mutations
-interface PagesMenuTabContextType {
-  updateHeaderItem: any;
-  deleteHeaderItem: any;
-  addHeaderItem: any;
-  updateFooterSection: any;
-  deleteFooterSection: any;
-  addFooterLink: any;
-  updateFooterLink: any;
-  deleteFooterLink: any;
-}
-
-const PagesMenuTabContext = createContext<PagesMenuTabContextType | null>(null);
-
-function PagesMenuTabProvider({ children }: { children: React.ReactNode }) {
-  const updateHeaderItem = useMutation(api.navigation.updateHeaderNavItem);
-  const deleteHeaderItem = useMutation(api.navigation.deleteHeaderNavItem);
-  const addHeaderItem = useMutation(api.navigation.addHeaderNavItem);
-  const updateFooterSection = useMutation(
-    api.navigation.updateFooterNavSection
-  );
-  const deleteFooterSection = useMutation(
-    api.navigation.deleteFooterNavSection
-  );
-  const addFooterLink = useMutation(api.navigation.addFooterNavLink);
-  const updateFooterLink = useMutation(api.navigation.updateFooterNavLink);
-  const deleteFooterLink = useMutation(api.navigation.deleteFooterNavLink);
-
-  return (
-    <PagesMenuTabContext.Provider
-      value={{
-        updateHeaderItem,
-        deleteHeaderItem,
-        addHeaderItem,
-        updateFooterSection,
-        deleteFooterSection,
-        addFooterLink,
-        updateFooterLink,
-        deleteFooterLink,
-      }}
-    >
-      {children}
-    </PagesMenuTabContext.Provider>
-  );
-}
-
-function usePagesMenuTabContext() {
-  const context = useContext(PagesMenuTabContext);
-  if (!context) {
-    throw new Error(
-      "usePagesMenuTabContext must be used within PagesMenuTabProvider"
-    );
-  }
-  return context;
-}
-
-function arrayMove<T>(array: T[], from: number, to: number): T[] {
-  const newArray = [...array];
-  const [item] = newArray.splice(from, 1);
-  newArray.splice(to, 0, item);
-  return newArray;
-}
-
-function DraggablePageItem({ page }: { page: DraggablePage }) {
+// Draggable Page Item Component
+function DraggablePageItem({
+  page,
+  onDelete,
+}: {
+  page: any;
+  onDelete: (id: string) => void;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.PAGE,
-    item: {
-      id: page.id,
+
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
       type: ItemTypes.PAGE,
-      label: page.label,
-      path: page.path,
-      isExternal: page.isExternal,
-    } as DragItem,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      item: { id: page.id, label: page.label, path: page.path },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
     }),
-  }));
+    [page]
+  );
 
   drag(ref);
 
   return (
     <div
       ref={ref}
-      className={`flex items-center gap-2 p-3 rounded-md mb-2 text-sm relative z-10 ${
-        isDragging
-          ? "opacity-50 border-dashed border-[color:var(--color-accent)]"
-          : "border border-[color:var(--color-border)]"
-      } bg-[color:var(--color-base)] cursor-grab`}
-      style={{ boxShadow: isDragging ? "var(--shadow-glow)" : "none" }}
+      className={`p-2 bg-[color:var(--color-muted-accent)] rounded-lg text-sm text-[color:var(--color-ink)] cursor-move group hover:opacity-80 transition-opacity ${
+        isDragging ? "opacity-50" : ""
+      }`}
     >
-      <GripVertical className="w-4 h-4 text-[color:var(--color-muted)]" />
-      <span>{page.label}</span>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 flex-1">
+          <GripVertical className="w-4 h-4 text-white flex-shrink-0" />
+          <span>{page.label}</span>
+        </div>
+
+        {/* Delete Page Button */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            onDelete(page.id);
+          }}
+          className="flex-shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          title={`Remove "${page.label}" from navigation`}
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 }
 
-// Fixed DroppableTarget component with proper ref handling
+// Droppable Target Component
 function DroppableTarget({
   id,
-  children,
   label,
   accept,
+  children,
+  onDrop,
 }: {
   id: string;
-  children: React.ReactNode;
   label: string;
   accept: string[];
+  children: React.ReactNode;
+  onDrop?: (item: any) => void;
 }) {
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept,
-    drop: (item: DragItem) => {
-      console.log("Dropped item:", item, "on target:", id);
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  }));
+  const ref = useRef<HTMLDivElement>(null);
 
-  // Create a proper ref callback function
-  const setDropRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      drop(node);
-    },
-    [drop]
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      accept,
+      drop: (item: any) => {
+        if (onDrop) {
+          onDrop(item);
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    }),
+    [onDrop]
   );
 
+  drop(ref);
+
   return (
-    <div className="w-80 bg-[color:var(--color-panel)] border border-[color:var(--color-border)] rounded-2xl">
-      <div className="p-4 border-b border-[color:var(--color-border)]">
-        <h3 className="text-[color:var(--color-ink)] font-semibold">{label}</h3>
-      </div>
+    <div
+      ref={ref}
+      className={`bg-[color:var(--color-panel)] border border-[color:var(--color-border)] rounded-2xl p-4 flex flex-col transition-colors ${
+        isOver
+          ? "border-[color:var(--color-accent)] bg-[color:var(--color-accent)]/5"
+          : ""
+      }`}
+    >
+      <h3 className="font-semibold text-[color:var(--color-ink)] mb-4">
+        {label}
+      </h3>
       <div
-        ref={setDropRef}
-        className={`p-4 transition-colors min-h-[400px] ${
-          isOver ? "bg-[color:var(--color-accent)]/10" : ""
-        }`}
+        className={`flex-1 overflow-y-auto ${isOver ? "ring-2 ring-[color:var(--color-accent)] rounded-lg p-2" : ""}`}
       >
         {children}
       </div>
@@ -230,19 +122,122 @@ function DroppableTarget({
   );
 }
 
+// Footer Section Component - handles hooks properly
+function FooterSection({
+  section,
+  onDropPage,
+  onDeleteSection,
+  onDeleteLink,
+}: {
+  section: any;
+  onDropPage: (item: any) => void;
+  onDeleteSection: (id: Id<"footerNavSections">) => void;
+  onDeleteLink: (id: Id<"footerNavLinks">) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      accept: [ItemTypes.PAGE],
+      drop: (item: any) => {
+        onDropPage(item);
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    }),
+    [onDropPage]
+  );
+
+  drop(ref);
+
+  return (
+    <div
+      ref={ref}
+      className={`p-3 bg-[color:var(--color-base)] border border-[color:var(--color-border)] rounded-lg group hover:border-red-500/30 transition-colors ${
+        isOver ? "border-[color:var(--color-accent)]" : ""
+      }`}
+    >
+      {/* Section Header */}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2 flex-1">
+          <GripVertical className="w-4 h-4 text-white flex-shrink-0" />
+          <span className="font-medium text-[color:var(--color-ink)]">
+            {section.title}
+          </span>
+        </div>
+
+        {/* Delete Section Button */}
+        <button
+          onClick={async () => {
+            if (
+              confirm(
+                `Delete "${section.title}"? This will delete all links in this section.`
+              )
+            ) {
+              onDeleteSection(section._id);
+            }
+          }}
+          className="flex-shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          title={`Delete "${section.title}" section`}
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Links in Section */}
+      {section.links && section.links.length > 0 && (
+        <div className="ml-2 space-y-2 pt-2 border-t border-[color:var(--color-border)]">
+          {section.links.map((link: any) => (
+            <div
+              key={link._id}
+              className="p-2 bg-[color:var(--color-muted-accent)] rounded-lg text-sm text-[color:var(--color-ink)] group"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-1">
+                  <GripVertical className="w-4 h-4 text-white flex-shrink-0" />
+                  <span>{link.label}</span>
+                </div>
+
+                {/* Delete Link Button */}
+                <button
+                  onClick={async () => {
+                    if (confirm(`Delete link "${link.label}"?`)) {
+                      onDeleteLink(link._id);
+                    }
+                  }}
+                  className="flex-shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  title={`Delete "${link.label}"`}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PagesMenuTab() {
   const headerItems = useQuery(api.navigation.getHeaderNavItems) ?? [];
   const footerSections = useQuery(api.navigation.getFooterNavSections) ?? [];
-  const addHeaderItem = useMutation(api.navigation.addHeaderNavItem);
-  const addFooterSection = useMutation(api.navigation.addFooterNavSection);
-  const reorderHeaderItems = useMutation(api.navigation.reorderHeaderNavItems);
-  const reorderFooterSections = useMutation(
-    api.navigation.reorderFooterNavSections
-  );
 
-  const allPagesFromApp: DraggablePage[] = useMemo(() => {
+  // Mutations
+  const addHeaderItem = useMutation(api.navigation.addHeaderNavItem);
+  const deleteHeaderItem = useMutation(api.navigation.deleteHeaderNavItem);
+  const addFooterSection = useMutation(api.navigation.addFooterNavSection);
+  const deleteFooterSection = useMutation(
+    api.navigation.deleteFooterNavSection
+  );
+  const addFooterLink = useMutation(api.navigation.addFooterNavLink);
+  const deleteFooterLink = useMutation(api.navigation.deleteFooterNavLink);
+
+  // Memoize available pages - show only labels, not paths
+  const allPagesFromApp = useMemo(() => {
     const uniquePaths = new Set<string>();
-    const pages: DraggablePage[] = [];
+    const pages = [];
 
     for (const path in pageHeaders) {
       if (!uniquePaths.has(path)) {
@@ -250,10 +245,8 @@ function PagesMenuTab() {
         const headerData = pageHeaders[path as keyof typeof pageHeaders];
         pages.push({
           id: path,
-          path: path,
+          path,
           label: headerData.title || path,
-          isExternal: false,
-          type: "page",
         });
       }
     }
@@ -261,147 +254,258 @@ function PagesMenuTab() {
     return pages.sort((a, b) => a.label.localeCompare(b.label));
   }, []);
 
-  const moveHeaderItem = useCallback(
-    (
-      dragId: string,
-      hoverId: string,
-      dragParentId?: Id<"headerNavItems">,
-      hoverParentId?: Id<"headerNavItems">
-    ) => {
-      const updates: Array<{
-        id: Id<"headerNavItems">;
-        order: number;
-        parentId?: Id<"headerNavItems">;
-      }> = [];
-
-      headerItems.forEach((item, index) => {
-        updates.push({
-          id: item._id,
-          order: index,
-          parentId: item.parentId,
+  // Handle dropping page to header
+  const handleDropToHeader = useCallback(
+    async (item: any) => {
+      try {
+        await addHeaderItem({
+          label: item.label,
+          href: item.path,
+          order: headerItems.length,
         });
+      } catch (error) {
+        console.error("Failed to add header item:", error);
+      }
+    },
+    [headerItems.length, addHeaderItem]
+  );
 
-        item.children?.forEach((child, childIndex) => {
-          updates.push({
-            id: child._id,
-            order: childIndex,
-            parentId: item._id,
+  // Handle dropping page to footer section
+  const handleDropToFooterSection = useCallback(
+    async (item: any, sectionId: Id<"footerNavSections">) => {
+      try {
+        const section = footerSections.find((s) => s._id === sectionId);
+        if (section) {
+          await addFooterLink({
+            sectionId,
+            label: item.label,
+            href: item.path,
+            order: section.links?.length || 0,
           });
+        }
+      } catch (error) {
+        console.error("Failed to add footer link:", error);
+      }
+    },
+    [footerSections, addFooterLink]
+  );
+
+  // Handle delete page (remove from all navigation)
+  const handleDeletePage = useCallback(
+    async (pageId: string) => {
+      const relatedHeaders = headerItems.filter((item) => item.href === pageId);
+      for (const header of relatedHeaders) {
+        try {
+          await deleteHeaderItem({ id: header._id });
+        } catch (error) {
+          console.error("Failed to delete header item:", error);
+        }
+      }
+
+      for (const section of footerSections) {
+        const relatedLinks = section.links?.filter(
+          (link) => link.href === pageId
+        );
+        if (relatedLinks) {
+          for (const link of relatedLinks) {
+            try {
+              await deleteFooterLink({ id: link._id });
+            } catch (error) {
+              console.error("Failed to delete footer link:", error);
+            }
+          }
+        }
+      }
+    },
+    [headerItems, footerSections, deleteHeaderItem, deleteFooterLink]
+  );
+
+  // Handle add header item manually
+  const handleAddHeaderManually = async () => {
+    const label = prompt("Enter label for new header item:");
+    if (label) {
+      const href = prompt("Enter path (e.g., /about):");
+      if (href) {
+        try {
+          await addHeaderItem({
+            label,
+            href,
+            order: headerItems.length,
+          });
+        } catch (error) {
+          console.error("Failed to add header item:", error);
+        }
+      }
+    }
+  };
+
+  // Handle add footer section manually
+  const handleAddFooterSection = async () => {
+    const title = prompt("Enter footer section title:");
+    if (title) {
+      try {
+        await addFooterSection({
+          title,
+          order: footerSections.length,
         });
-      });
-
-      reorderHeaderItems({ updates });
-    },
-    [headerItems, reorderHeaderItems]
-  );
-
-  const moveFooterSection = useCallback(
-    (dragId: string, hoverId: string) => {
-      const dragIndex = footerSections.findIndex((s) => s._id === dragId);
-      const hoverIndex = footerSections.findIndex((s) => s._id === hoverId);
-
-      if (dragIndex === -1 || hoverIndex === -1) return;
-
-      const updatedSections = arrayMove(footerSections, dragIndex, hoverIndex);
-      const updates = updatedSections.map((section, index) => ({
-        id: section._id,
-        order: index,
-      }));
-
-      reorderFooterSections({ updates });
-    },
-    [footerSections, reorderFooterSections]
-  );
+      } catch (error) {
+        console.error("Failed to add footer section:", error);
+      }
+    }
+  };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-      {/* Header Navigation */}
-      <DroppableTarget
-        id="headerNavTarget"
-        label="Header Navigation"
-        accept={[ItemTypes.PAGE, ItemTypes.HEADER_ITEM]}
-      >
-        <Button
-          onClick={async () => {
-            const label = prompt(
-              "Enter label for new main navigation item (e.g., 'About'):"
-            );
-            if (label) {
-              const newOrder = headerItems.filter((i) => !i.parentId).length;
-              await addHeaderItem({
-                label,
-                href: undefined,
-                isExternal: false,
-                parentId: undefined,
-                order: newOrder,
-              });
-            }
-          }}
-          size="sm"
-          variant="neutral"
-          className="w-full mb-3"
+    <DndProvider backend={HTML5Backend}>
+      <div className="grid grid-cols-3 gap-6 h-full">
+        {/* Column 1: Available Pages */}
+        <DroppableTarget
+          id="availablePagesTarget"
+          label="Available Pages"
+          accept={[ItemTypes.PAGE]}
         >
-          <Plus className="w-4 h-4 mr-2" /> Add New Main Item (Dropdown Holder)
-        </Button>
-        {headerItems
-          .filter((item) => item.parentId === undefined)
-          .map((item) => (
-            <div key={item._id} className="mb-2">
-              {/* This would be your SortableHeaderNavItem component */}
-              <div className="p-3 border rounded">{item.label}</div>
-            </div>
-          ))}
-      </DroppableTarget>
-
-      {/* Available Pages */}
-      <DroppableTarget id="availablePages" label="Available Pages" accept={[]}>
-        <div className="space-y-2">
-          {allPagesFromApp.map((page) => (
-            <DraggablePageItem key={page.id} page={page} />
-          ))}
-        </div>
-      </DroppableTarget>
-
-      {/* Footer Navigation */}
-      <DroppableTarget
-        id="footerNavTarget"
-        label="Footer Navigation"
-        accept={[ItemTypes.PAGE, ItemTypes.FOOTER_SECTION]}
-      >
-        <Button
-          onClick={async () => {
-            const title = prompt("Enter title for new footer section:");
-            if (title) {
-              const newOrder = footerSections.length;
-              await addFooterSection({
-                title,
-                order: newOrder,
-              });
-            }
-          }}
-          size="sm"
-          variant="neutral"
-          className="w-full mb-3"
-        >
-          <Plus className="w-4 h-4 mr-2" /> Add New Section
-        </Button>
-        {footerSections.map((section) => (
-          <div key={section._id} className="mb-2">
-            {/* This would be your SortableFooterSection component */}
-            <div className="p-3 border rounded">{section.title}</div>
+          <div className="space-y-2">
+            {allPagesFromApp.map((page) => (
+              <DraggablePageItem
+                key={page.id}
+                page={page}
+                onDelete={handleDeletePage}
+              />
+            ))}
           </div>
-        ))}
-      </DroppableTarget>
-    </div>
+        </DroppableTarget>
+
+        {/* Column 2: Header Navigation */}
+        <DroppableTarget
+          id="headerNavTarget"
+          label="Header Navigation"
+          accept={[ItemTypes.PAGE]}
+          onDrop={handleDropToHeader}
+        >
+          <div className="space-y-3">
+            <Button
+              onClick={handleAddHeaderManually}
+              size="sm"
+              variant="neutral"
+              className="w-full"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Header Item
+            </Button>
+
+            {headerItems?.map((item) => (
+              <div
+                key={item._id}
+                className="p-3 bg-[color:var(--color-base)] border border-[color:var(--color-border)] rounded-lg group hover:border-red-500/30 transition-colors"
+              >
+                {/* Main Header Item */}
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2 flex-1">
+                    <GripVertical className="w-4 h-4 text-white flex-shrink-0" />
+                    <span className="font-medium text-[color:var(--color-ink)]">
+                      {item.label}
+                    </span>
+                  </div>
+
+                  {/* Delete Header Item Button */}
+                  <button
+                    onClick={async () => {
+                      if (confirm(`Delete "${item.label}"?`)) {
+                        try {
+                          await deleteHeaderItem({ id: item._id });
+                        } catch (error) {
+                          console.error("Failed to delete:", error);
+                        }
+                      }
+                    }}
+                    className="flex-shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                    title={`Delete "${item.label}"`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Child Items */}
+                {item.children && item.children.length > 0 && (
+                  <div className="ml-2 space-y-2 pt-2 border-t border-[color:var(--color-border)]">
+                    {item.children.map((child) => (
+                      <div
+                        key={child._id}
+                        className="p-2 bg-[color:var(--color-muted-accent)] rounded-lg text-sm text-[color:var(--color-ink)] group"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-1">
+                            <GripVertical className="w-4 h-4 text-white flex-shrink-0" />
+                            <span>{child.label}</span>
+                          </div>
+                          <button
+                            onClick={async () => {
+                              if (confirm(`Delete "${child.label}"?`)) {
+                                try {
+                                  await deleteHeaderItem({
+                                    id: child._id,
+                                  });
+                                } catch (error) {
+                                  console.error("Failed to delete:", error);
+                                }
+                              }
+                            }}
+                            className="flex-shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </DroppableTarget>
+
+        {/* Column 3: Footer Navigation */}
+        <DroppableTarget
+          id="footerNavTarget"
+          label="Footer Navigation"
+          accept={[ItemTypes.PAGE]}
+        >
+          <div className="space-y-3">
+            <Button
+              onClick={handleAddFooterSection}
+              size="sm"
+              variant="neutral"
+              className="w-full"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add Section
+            </Button>
+
+            {footerSections?.map((section) => (
+              <FooterSection
+                key={section._id}
+                section={section}
+                onDropPage={(item) =>
+                  handleDropToFooterSection(item, section._id)
+                }
+                onDeleteSection={async (id) => {
+                  try {
+                    await deleteFooterSection({ id });
+                  } catch (error) {
+                    console.error("Failed to delete section:", error);
+                  }
+                }}
+                onDeleteLink={async (id) => {
+                  try {
+                    await deleteFooterLink({ id });
+                  } catch (error) {
+                    console.error("Failed to delete link:", error);
+                  }
+                }}
+              />
+            ))}
+          </div>
+        </DroppableTarget>
+      </div>
+    </DndProvider>
   );
 }
 
-const WrappedPagesMenuTab = () => (
-  <DndProvider backend={HTML5Backend}>
-    <PagesMenuTabProvider>
-      <PagesMenuTab />
-    </PagesMenuTabProvider>
-  </DndProvider>
-);
-
-export default WrappedPagesMenuTab;
+export default PagesMenuTab;

@@ -135,7 +135,7 @@ const AdminDashboard = () => {
                       isActive={activeTab === tab.id}
                       className={`${
                         activeTab === tab.id
-                          ? "bg-[#111418] text-[#4ade80] border border-[#4ade80]"
+                          ? "bg-[color:var(--color-muted-accent)] text-[#4ade80]"
                           : "text-[#f3f4f6] hover:text-[#4ade80] hover:bg-[#111418]/50"
                       } group-data-[state=collapsed]/sidebar-wrapper:justify-center`}
                     >
