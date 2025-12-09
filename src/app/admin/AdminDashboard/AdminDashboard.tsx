@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   Settings,
   Image,
@@ -54,7 +55,7 @@ const AdminSidebarContent = ({
   onTabChange,
   onSignOut,
 }: {
-  tabs: { id: string; label: string; icon: React.ElementType }[];
+  tabs: { id: string; label: string; icon: LucideIcon }[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
   onSignOut: () => void;
