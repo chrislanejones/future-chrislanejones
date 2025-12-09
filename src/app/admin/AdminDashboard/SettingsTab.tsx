@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Heart,
   Terminal,
+  type LucideIcon,
 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -19,8 +20,8 @@ import { api } from "../../../../convex/_generated/api";
 interface DataSource {
   id: string;
   label: string;
-  icon: React.ElementType;
-  mutation: any;
+  icon: LucideIcon;
+  mutation: ReturnType<typeof useMutation>;
 }
 
 interface LogEntry {
