@@ -92,7 +92,7 @@ export function Button({
   const enhancedChildren = React.useMemo(() => {
     if (!showExternalIcon) return children;
 
-    if (React.isValidElement(children)) {
+    if (React.isValidElement<{ children?: React.ReactNode; onFocus?: (e: React.FocusEvent<HTMLElement>) => void; onBlur?: (e: React.FocusEvent<HTMLElement>) => void }>(children)) {
       const originalChildren = children.props.children;
 
       return React.cloneElement(children, {

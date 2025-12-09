@@ -184,7 +184,7 @@ const PhotoGallery = ({
       rotate: custom.rotate,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 70,
         damping: 12,
         delay: custom.order * 0.15,

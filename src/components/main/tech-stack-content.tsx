@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import IconBlock from "@/components/page/icon-block";
 
 import {
@@ -26,7 +27,7 @@ type TechItem = { name: string; icon: { path: string } };
 
 type AiTool = {
   name: string;
-  svg: JSX.Element;
+  svg: ReactNode;
 };
 
 const techStack: TechItem[] = [

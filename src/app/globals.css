@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --color-base: #f9fafb; /* soft off-white, cleaner base */
@@ -325,13 +323,13 @@ html.dark .speech-bubble--compact {
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-ink);
 }
 
 /* Client logo filters - dark in light mode, white in dark mode */
