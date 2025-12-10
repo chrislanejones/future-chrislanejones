@@ -1,5 +1,4 @@
 "use client";
-
 import {
   FaGithub,
   FaTwitter,
@@ -9,9 +8,11 @@ import {
   FaCodepen,
   FaDev,
   FaHome,
-  FaTools,
+  FaWordpress,
   FaChrome,
   FaAtom,
+  FaStar,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,26 @@ import Image from "next/image";
 import { SiteLogo } from "@/components/page/links";
 import Link from "next/link";
 import { SimpleModeToggle } from "@/components/simple-mode-toggle";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+
+interface FeaturedLink {
+  _id: string;
+  href: string;
+  label: string;
+  domain: string;
+  favicon?: string;
+  category: string;
+  color: string;
+  featured?: boolean;
+}
 
 export default function LinkGrid() {
+  // Query for featured links from Convex
+  const featuredLinks = useQuery(api.browserLinks.getFeatured) as
+    | FeaturedLink[]
+    | undefined;
+
   return (
     <>
       {/* Header with Logo and Theme Toggle */}
@@ -231,7 +250,7 @@ export default function LinkGrid() {
               asChild
             >
               <a href="/wordpress-maintenance">
-                <FaTools className="w-4 h-4 mr-2" />
+                <FaWordpress className="w-4 h-4 mr-2" />
                 WordPress Services
               </a>
             </Button>
@@ -245,85 +264,54 @@ export default function LinkGrid() {
             <span>Chrome Tabs I Left Open...</span>
           </h3>
           <div className="space-y-3">
-            <Button variant="base" showExternalIcon={true} asChild>
-              <a
-                href="https://www.isocons.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between w-full"
-              >
-                <span>Isocons - Icon Library</span>
-                <span>isocons.app</span>
-              </a>
-            </Button>
+            {featuredLinks && featuredLinks.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3">
+                {featuredLinks.map((link) => (
+                  <Button
+                    key={link._id}
+                    variant="base"
+                    showExternalIcon={true}
+                    className="justify-center"
+                    asChild
+                  >
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.favicon ? (
+                        <img
+                          src={link.favicon}
+                          alt=""
+                          className="w-4 h-4 mr-2 rounded"
+                        />
+                      ) : (
+                        <FaExternalLinkAlt className="w-4 h-4 mr-2" />
+                      )}
+                      {link.label}
+                    </a>
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted">
+                <p className="text-sm">No featured links yet.</p>
+                <p className="text-xs mt-2">
+                  Mark links as "Featured" in the admin panel to display them
+                  here.
+                </p>
+              </div>
+            )}
 
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="flex items-center justify-between w-full"
-            >
-              <a
-                href="https://effect.website/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between w-full"
-              >
-                <span>Effect - TypeScript Library</span>
-                <span>effect.website</span>
-              </a>
-            </Button>
-
-            <Button variant="base" showExternalIcon={true} asChild>
-              <a
-                href="https://github.com/aulianza/aulianza.id"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between w-full"
-              >
-                <span>aulianza.id</span>
-                <span>https://github.com/aulianza/aulianza.id</span>
-              </a>
-            </Button>
-
-            <Button variant="base" showExternalIcon={true} asChild>
-              <a
-                href="https://www.fffuel.co/ooorganize/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between w-full"
-              >
-                <span>ooorganize pattern</span>
-                <span>https://www.fffuel.co/ooorganize/</span>
-              </a>
-            </Button>
-
-            <Button variant="base" showExternalIcon={true} asChild>
-              <a
-                href="https://pro.aceternity.com/products/navbars"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between w-full"
-              >
-                <span>Aceternity UI</span>
-                <span>aceternity.com</span>
-              </a>
-            </Button>
-
-            <Button variant="base" showExternalIcon={true} asChild>
-              <a
-                href="https://learnxinyminutes.com/zig/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between w-full"
-              >
-                <span>Learn X in Y minutes</span>
-                <span>https://learnxinyminutes.com/zig/</span>
-              </a>
-            </Button>
-
-            <Button variant="base" asChild className="w-full">
-              <a href="/browser-tabs">See More Browser Tabs</a>
-            </Button>
+            {/* Link to full browser tabs page */}
+            <div className="mt-6 pt-4 border-t border-border">
+              <Button variant="base" className="w-full justify-center" asChild>
+                <a href="/browser-tabs">
+                  <FaChrome className="w-4 h-4 mr-2" />
+                  View All Browser Tabs
+                </a>
+              </Button>
+            </div>
           </div>
         </Card>
       </div>

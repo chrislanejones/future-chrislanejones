@@ -1,5 +1,5 @@
-// src/app/admin/AdminDashboard/BlogPostsTabEnhanced.tsx
 "use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Search,
@@ -13,6 +13,8 @@ import {
   AlertCircle,
   CheckCircle,
   Tag,
+  Image as ImageIcon,
+  Calendar,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -56,6 +58,8 @@ const BlogPostsTabEnhanced = () => {
   );
   const [isUploading, setIsUploading] = useState(false);
   const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
@@ -83,16 +87,19 @@ const BlogPostsTabEnhanced = () => {
     coverImage: "",
     tags: [] as string[],
     published: false,
+    createdAt: Date.now(),
   });
 
   const [tagInput, setTagInput] = useState("");
 
+  // Auto-select first post
   useEffect(() => {
     if (posts.length > 0 && !selectedPost && !isCreating) {
       setSelectedPost(posts[0] as BlogPost);
     }
   }, [posts, selectedPost, isCreating]);
 
+  // Update form when post is selected
   useEffect(() => {
     if (selectedPost && !isCreating) {
       setFormData({
@@ -103,20 +110,14 @@ const BlogPostsTabEnhanced = () => {
         coverImage: selectedPost.coverImage || "",
         tags: selectedPost.tags || [],
         published: selectedPost.published,
+        createdAt: selectedPost.createdAt,
       });
       setIsEditing(false);
     }
   }, [selectedPost, isCreating]);
 
-  const filteredPosts = posts.filter(
-    (post) =>
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.slug.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   const handleCreateNew = () => {
     setIsCreating(true);
-    setIsEditing(true);
     setSelectedPost(null);
     setFormData({
       title: "",
@@ -126,79 +127,9 @@ const BlogPostsTabEnhanced = () => {
       coverImage: "",
       tags: [],
       published: false,
+      createdAt: Date.now(),
     });
-  };
-
-  const handleCancelCreate = () => {
-    setIsCreating(false);
-    setIsEditing(false);
-    if (posts.length > 0) {
-      setSelectedPost(posts[0] as BlogPost);
-    }
-  };
-
-  const handleSave = async () => {
-    try {
-      if (isCreating) {
-        await createPost({
-          title: formData.title,
-          slug: formData.slug,
-          excerpt: formData.excerpt,
-          content: formData.content,
-          coverImage: formData.coverImage || undefined,
-          tags: formData.tags.length > 0 ? formData.tags : undefined,
-          published: formData.published,
-        });
-        setIsCreating(false);
-      } else if (selectedPost) {
-        await updatePost({
-          id: selectedPost._id,
-          title: formData.title,
-          slug: formData.slug,
-          excerpt: formData.excerpt,
-          content: formData.content,
-          coverImage: formData.coverImage || undefined,
-          tags: formData.tags.length > 0 ? formData.tags : undefined,
-          published: formData.published,
-        });
-      }
-      setIsEditing(false);
-      setSaveStatus("success");
-      setTimeout(() => setSaveStatus(null), 3000);
-    } catch (error) {
-      setSaveStatus("error");
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!selectedPost) return;
-    if (confirm(`Are you sure you want to delete "${selectedPost.title}"?`)) {
-      try {
-        await deletePost({ id: selectedPost._id });
-        setSelectedPost(null);
-        setSaveStatus("success");
-        setTimeout(() => setSaveStatus(null), 3000);
-      } catch (error) {
-        setSaveStatus("error");
-      }
-    }
-  };
-
-  const handleAddTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData({
-        ...formData,
-        tags: [...formData.tags, tagInput.trim()],
-      });
-      setTagInput("");
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setFormData({
-      ...formData,
-      tags: formData.tags.filter((tag) => tag !== tagToRemove),
-    });
+    setIsEditing(true);
   };
 
   const generateSlug = (title: string) => {
@@ -212,348 +143,565 @@ const BlogPostsTabEnhanced = () => {
     setFormData({
       ...formData,
       title,
-      slug: isCreating || !formData.slug ? generateSlug(title) : formData.slug,
+      slug: generateSlug(title),
     });
+    setIsEditing(true);
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploading(true);
-    await startUpload([file]);
+  const handleAddTag = () => {
+    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+      setFormData({
+        ...formData,
+        tags: [...formData.tags, tagInput.trim()],
+      });
+      setTagInput("");
+      setIsEditing(true);
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setFormData({
+      ...formData,
+      tags: formData.tags.filter((t) => t !== tag),
+    });
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    if (!formData.title.trim() || !formData.slug.trim()) {
+      setSaveStatus("error");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      if (isCreating) {
+        await createPost({
+          title: formData.title,
+          slug: formData.slug,
+          excerpt: formData.excerpt,
+          content: formData.content,
+          coverImage: formData.coverImage || undefined,
+          tags: formData.tags,
+          published: formData.published,
+        });
+        setSaveStatus("success");
+        setIsCreating(false);
+      } else if (selectedPost) {
+        await updatePost({
+          id: selectedPost._id,
+          title: formData.title,
+          slug: formData.slug,
+          excerpt: formData.excerpt,
+          content: formData.content,
+          coverImage: formData.coverImage || undefined,
+          tags: formData.tags,
+          published: formData.published,
+          createdAt: formData.createdAt,
+        });
+        setSaveStatus("success");
+      }
+      setIsEditing(false);
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (error) {
+      console.error("Failed to save post:", error);
+      setSaveStatus("error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: Id<"blogPosts">) => {
+    try {
+      await deletePost({ id });
+      setDeleteConfirm(null);
+      if (selectedPost?._id === id) {
+        setSelectedPost(null);
+      }
+      setSaveStatus("success");
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      setSaveStatus("error");
+    }
+  };
+
+  const handleCancel = () => {
+    if (isCreating) {
+      setIsCreating(false);
+      if (posts.length > 0) {
+        setSelectedPost(posts[0] as BlogPost);
+      }
+    } else if (selectedPost) {
+      setFormData({
+        title: selectedPost.title,
+        slug: selectedPost.slug,
+        excerpt: selectedPost.excerpt,
+        content: selectedPost.content,
+        coverImage: selectedPost.coverImage || "",
+        tags: selectedPost.tags || [],
+        published: selectedPost.published,
+        createdAt: selectedPost.createdAt,
+      });
+    }
+    setIsEditing(false);
   };
 
   const handleMediaSelect = (imageUrl: string) => {
     setFormData({ ...formData, coverImage: imageUrl });
-    setIsMediaDrawerOpen(false);
+    setIsEditing(true);
   };
 
-  if (!posts.length && !isCreating) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-muted mx-auto mb-4 opacity-50" />
-          <p className="text-muted mb-4">No blog posts yet</p>
-          <Button onClick={handleCreateNew} variant="accent">
-            <Plus className="w-4 h-4 mr-2" />
-            Create First Post
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const filteredPosts = posts.filter(
+    (post) =>
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.slug.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   return (
-    <div className="flex gap-6 h-full">
-      {/* Sidebar */}
-      <div className="w-64 flex flex-col bg-panel border border-border rounded-lg">
-        <div className="p-4 border-b border-border">
-          <Button
-            onClick={handleCreateNew}
-            className="w-full gap-2"
-            variant="accent"
-          >
-            <Plus className="w-4 h-4" />
-            New Post
-          </Button>
+    <div className="grid grid-cols-3 gap-6 h-full">
+      {/* Status Messages */}
+      {saveStatus === "success" && (
+        <div className="col-span-3">
+          <SuccessDisplay
+            message="Changes saved successfully!"
+            onDismiss={() => setSaveStatus(null)}
+            compact
+          />
         </div>
-        <div className="p-4 border-b border-border">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-            <input
-              type="text"
-              placeholder="Search posts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-base border border-border rounded-lg text-ink focus:outline-none"
-            />
-          </div>
+      )}
+      {saveStatus === "error" && (
+        <div className="col-span-3">
+          <ErrorDisplay
+            error={
+              new Error("Failed to save changes. Please check required fields.")
+            }
+            onDismiss={() => setSaveStatus(null)}
+            compact
+          />
         </div>
-        <div className="flex-1 overflow-y-auto space-y-2 p-4">
-          {filteredPosts.map((post) => (
-            <button
-              key={post._id}
-              onClick={() => {
-                setSelectedPost(post as BlogPost);
-                setIsCreating(false);
-              }}
-              className={`w-full text-left px-3 py-2 rounded-lg transition-all ${
-                selectedPost?._id === post._id
-                  ? "bg-accent text-on-accent"
-                  : "bg-base hover:bg-surface-hover text-ink"
-              }`}
-            >
-              <p className="font-medium truncate text-sm">{post.title}</p>
-              <p className="text-xs text-muted">{post.slug}</p>
-            </button>
-          ))}
+      )}
+
+      {/* Left Panel - Post List */}
+      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-(--color-ink)">Blog Posts</h3>
+        </div>
+
+        {/* New Post Button - Homepage style */}
+        <Button
+          onClick={handleCreateNew}
+          variant="accent"
+          className="w-full gap-2 mb-4"
+        >
+          <Plus className="w-4 h-4" />
+          New Post
+        </Button>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+          <input
+            type="text"
+            placeholder="Search posts..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+          />
+        </div>
+
+        {/* Post List */}
+        <div className="flex-1 overflow-y-auto space-y-2">
+          {filteredPosts.length === 0 ? (
+            <p className="text-sm text-muted text-center py-8">
+              {searchQuery
+                ? "No posts found"
+                : "No posts yet. Create your first one!"}
+            </p>
+          ) : (
+            filteredPosts.map((post) => (
+              <button
+                key={post._id}
+                onClick={() => {
+                  setIsCreating(false);
+                  setSelectedPost(post as BlogPost);
+                }}
+                className={`w-full text-left p-3 rounded-lg transition ${
+                  selectedPost?._id === post._id && !isCreating
+                    ? "bg-(--color-foreground) text-(--color-panel)"
+                    : "hover:bg-(--color-surface-hover) text-(--color-ink)"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`mt-1 ${
+                      selectedPost?._id === post._id && !isCreating
+                        ? "text-(--color-panel)"
+                        : post.published
+                          ? "text-green-500"
+                          : "text-muted"
+                    }`}
+                  >
+                    {post.published ? (
+                      <Eye className="w-4 h-4" />
+                    ) : (
+                      <EyeOff className="w-4 h-4" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="font-medium truncate block">
+                      {post.title}
+                    </span>
+                    <span
+                      className={`text-xs ${
+                        selectedPost?._id === post._id && !isCreating
+                          ? "opacity-70"
+                          : "text-muted"
+                      }`}
+                    >
+                      {formatDate(post.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Main Editor */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Toast */}
-        {saveStatus && (
-          <div className="mb-4">
-            {saveStatus === "success" ? (
-              <SuccessDisplay
-                message={
-                  isCreating ? "Blog post created!" : "Blog post updated!"
-                }
-                onDismiss={() => setSaveStatus(null)}
-              />
-            ) : (
-              <ErrorDisplay
-                error={new Error("Failed to save blog post")}
-                onDismiss={() => setSaveStatus(null)}
-              />
-            )}
-          </div>
-        )}
+      {/* Right Panel - Post Editor */}
+      <div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+        {selectedPost || isCreating ? (
+          <>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <div>
+                <h2 className="font-bold text-ink">
+                  {isCreating ? "New Post" : formData.title || "Untitled"}
+                </h2>
+                <p className="text-sm text-muted">
+                  {formData.slug && `/${formData.slug}`}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                {isEditing ? (
+                  <>
+                    <Button onClick={handleCancel} variant="outline" size="sm">
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSave}
+                      variant="accent"
+                      size="sm"
+                      className="gap-2"
+                      disabled={isSaving}
+                    >
+                      <Save className="w-4 h-4" />
+                      {isSaving ? "Saving..." : "Save"}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit
+                    </Button>
+                    {selectedPost && (
+                      <Button
+                        onClick={() => setDeleteConfirm(selectedPost._id)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
 
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h2 className="text-lg font-bold text-ink">
-              {isCreating ? "Create New Post" : "Edit Blog Post"}
-            </h2>
-            {selectedPost && !isCreating && (
-              <p className="text-sm text-muted">
-                Last updated:{" "}
-                {new Date(selectedPost.updatedAt).toLocaleDateString()}
-              </p>
-            )}
-          </div>
-          <div className="flex gap-2">
-            {!isEditing && !isCreating && (
-              <>
-                <Button
-                  onClick={() => setIsEditing(true)}
-                  variant="base"
-                  className="gap-2"
-                >
-                  <Edit2 className="w-4 h-4" />
-                  Edit
-                </Button>
-                <Button
-                  onClick={handleDelete}
-                  variant="outline"
-                  className="gap-2 text-red-500"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Delete
-                </Button>
-              </>
-            )}
-            {(isEditing || isCreating) && (
-              <>
-                <Button onClick={handleSave} variant="accent" className="gap-2">
-                  <Save className="w-4 h-4" />
-                  Save
-                </Button>
-                <Button
-                  onClick={
-                    isCreating ? handleCancelCreate : () => setIsEditing(false)
-                  }
-                  variant="outline"
-                  className="gap-2"
-                >
-                  <X className="w-4 h-4" />
-                  Cancel
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Form */}
-        <div className="flex-1 overflow-y-auto space-y-6 pr-4">
-          {/* Title */}
-          <div>
-            <label className="block mb-2 font-medium text-ink">Title *</label>
-            <Input
-              type="text"
-              value={formData.title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              disabled={!isEditing && !isCreating}
-              placeholder="Post title"
-            />
-          </div>
-
-          {/* Slug */}
-          <div>
-            <label className="block mb-2 font-medium text-ink">Slug *</label>
-            <Input
-              type="text"
-              value={formData.slug}
-              onChange={(e) =>
-                setFormData({ ...formData, slug: e.target.value })
-              }
-              disabled={!isEditing && !isCreating}
-              placeholder="post-slug"
-            />
-          </div>
-
-          {/* Excerpt */}
-          <div>
-            <label className="block mb-2 font-medium text-ink">Excerpt *</label>
-            <textarea
-              value={formData.excerpt}
-              onChange={(e) =>
-                setFormData({ ...formData, excerpt: e.target.value })
-              }
-              disabled={!isEditing && !isCreating}
-              rows={3}
-              className="w-full px-4 py-3 bg-panel border border-border rounded-lg text-ink focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50"
-              placeholder="Brief summary of the post..."
-            />
-          </div>
-
-          {/* Content - HTML Editor */}
-          <div>
-            <label className="block mb-2 font-medium text-ink">Content *</label>
-            <HtmlEditorEnhanced
-              value={formData.content}
-              onChange={(content) => setFormData({ ...formData, content })}
-              placeholder="Write your content here..."
-              onImageClick={() => setIsMediaDrawerOpen(true)}
-            />
-          </div>
-
-          {/* Cover Image */}
-          <div>
-            <label className="block mb-2 font-medium text-ink">
-              Cover Image
-            </label>
-            {formData.coverImage && (
-              <div className="mb-3 relative group">
-                <Image
-                  src={formData.coverImage}
-                  alt="Cover preview"
-                  width={400}
-                  height={200}
-                  className="w-full h-48 object-cover rounded-lg border border-border"
+            {/* Form Fields */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">Title</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  disabled={!isEditing}
+                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  placeholder="Enter post title..."
                 />
-                {(isEditing || isCreating) && (
+              </div>
+
+              {/* Slug */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">Slug</label>
+                <input
+                  type="text"
+                  value={formData.slug}
+                  onChange={(e) => {
+                    setFormData({ ...formData, slug: e.target.value });
+                    setIsEditing(true);
+                  }}
+                  disabled={!isEditing}
+                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  placeholder="post-url-slug"
+                />
+              </div>
+
+              {/* Publish Date */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  <span className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Publish Date
+                  </span>
+                </label>
+                <input
+                  type="datetime-local"
+                  value={
+                    formData.createdAt && !isNaN(formData.createdAt)
+                      ? new Date(formData.createdAt).toISOString().slice(0, 16)
+                      : new Date().toISOString().slice(0, 16)
+                  }
+                  onChange={(e) => {
+                    const newDate = new Date(e.target.value).getTime();
+                    if (!isNaN(newDate)) {
+                      setFormData({ ...formData, createdAt: newDate });
+                      setIsEditing(true);
+                    }
+                  }}
+                  disabled={!isEditing}
+                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                />
+              </div>
+
+              {/* Excerpt */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  Excerpt
+                </label>
+                <textarea
+                  value={formData.excerpt}
+                  onChange={(e) => {
+                    setFormData({ ...formData, excerpt: e.target.value });
+                    setIsEditing(true);
+                  }}
+                  disabled={!isEditing}
+                  rows={2}
+                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent resize-none disabled:opacity-60"
+                  placeholder="Brief description of the post..."
+                />
+              </div>
+
+              {/* Cover Image */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  Cover Image
+                </label>
+                {formData.coverImage ? (
+                  <div className="relative rounded-xl overflow-hidden border border-border">
+                    <Image
+                      src={formData.coverImage}
+                      alt="Cover"
+                      width={800}
+                      height={400}
+                      className="w-full h-48 object-cover"
+                    />
+                    {isEditing && (
+                      <div className="absolute top-2 right-2 flex gap-2">
+                        <button
+                          onClick={() => setIsMediaDrawerOpen(true)}
+                          className="p-2 bg-accent text-white rounded-lg hover:bg-accent/80 transition"
+                          title="Change image"
+                        >
+                          <ImageIcon className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setFormData({ ...formData, coverImage: "" });
+                            setIsEditing(true);
+                          }}
+                          className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                          title="Remove image"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
                   <button
-                    onClick={() => setFormData({ ...formData, coverImage: "" })}
-                    className="absolute top-2 right-2 p-2 bg-red-500/90 text-white rounded-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                    onClick={() => isEditing && setIsMediaDrawerOpen(true)}
+                    disabled={!isEditing}
+                    className="w-full px-4 py-8 border-2 border-dashed border-border rounded-xl text-muted hover:border-accent hover:text-accent transition flex flex-col items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <ImageIcon className="w-8 h-8" />
+                    <span>Click to select a cover image</span>
                   </button>
                 )}
               </div>
-            )}
-            <div className="flex gap-2">
-              <Input
-                type="text"
-                value={formData.coverImage}
-                onChange={(e) =>
-                  setFormData({ ...formData, coverImage: e.target.value })
-                }
-                disabled={!isEditing && !isCreating}
-                placeholder="Or paste image URL..."
-                className="flex-1"
-              />
-              {(isEditing || isCreating) && (
-                <Button
-                  onClick={() => setIsMediaDrawerOpen(true)}
-                  variant="outline"
-                >
-                  Browse
-                </Button>
-              )}
-            </div>
-          </div>
 
-          {/* Tags */}
-          <div>
-            <label className="block mb-2 font-medium text-ink">Tags</label>
-            <div className="flex gap-2 mb-3">
-              <Input
-                type="text"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleAddTag();
-                  }
-                }}
-                disabled={!isEditing && !isCreating}
-                placeholder="Add a tag..."
-              />
-              <Button
-                onClick={handleAddTag}
-                disabled={!isEditing && !isCreating}
-                variant="outline"
-              >
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.tags.map((tag) => (
-                <div
-                  key={tag}
-                  className="flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent rounded-full"
-                >
-                  <Tag className="w-4 h-4 text-accent" />
-                  <span className="text-sm text-ink">{tag}</span>
-                  {(isEditing || isCreating) && (
-                    <button
-                      onClick={() => handleRemoveTag(tag)}
-                      className="text-accent hover:opacity-70"
+              {/* Tags */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">Tags</label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {formData.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm"
                     >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
+                      <Tag className="w-3 h-3" />
+                      {tag}
+                      {isEditing && (
+                        <button
+                          onClick={() => handleRemoveTag(tag)}
+                          className="ml-1 hover:text-red-500 transition"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </span>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+                {isEditing && (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={tagInput}
+                      onChange={(e) => setTagInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
+                      className="flex-1 px-3 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+                      placeholder="Add a tag..."
+                    />
+                    <Button onClick={handleAddTag} variant="outline" size="sm">
+                      Add
+                    </Button>
+                  </div>
+                )}
+              </div>
 
-          {/* Published Status */}
-          <div className="flex items-center justify-between p-4 bg-base border border-border rounded-lg">
-            <div>
-              <label className="text-ink font-medium">Published Status</label>
-              <p className="text-sm text-muted">
-                {formData.published
-                  ? "Visible to public"
-                  : "Hidden from public"}
-              </p>
+              {/* Published Toggle */}
+              <div className="flex items-center justify-between p-4 bg-base border border-border rounded-xl">
+                <div className="flex items-center gap-3">
+                  {formData.published ? (
+                    <Eye className="w-5 h-5 text-green-500" />
+                  ) : (
+                    <EyeOff className="w-5 h-5 text-muted" />
+                  )}
+                  <div>
+                    <p className="font-medium text-ink">
+                      {formData.published ? "Published" : "Draft"}
+                    </p>
+                    <p className="text-sm text-muted">
+                      {formData.published
+                        ? "Post is visible to everyone"
+                        : "Post is hidden from public"}
+                    </p>
+                  </div>
+                </div>
+                {isEditing && (
+                  <button
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        published: !formData.published,
+                      });
+                    }}
+                    className={`px-4 py-2 rounded-lg font-medium transition ${
+                      formData.published
+                        ? "bg-green-500 text-white hover:bg-green-600"
+                        : "bg-muted-accent text-ink hover:bg-surface-hover"
+                    }`}
+                  >
+                    {formData.published ? "Unpublish" : "Publish"}
+                  </button>
+                )}
+              </div>
+
+              {/* Content Editor */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  Content
+                </label>
+                {isEditing ? (
+                  <HtmlEditorEnhanced
+                    value={formData.content}
+                    onChange={(content) => {
+                      setFormData({ ...formData, content });
+                    }}
+                    placeholder="Write your post content..."
+                  />
+                ) : (
+                  <div
+                    className="p-4 bg-base border border-border rounded-xl prose prose-sm dark:prose-invert max-w-none min-h-[200px]"
+                    dangerouslySetInnerHTML={{
+                      __html: formData.content || "<p>No content yet...</p>",
+                    }}
+                  />
+                )}
+              </div>
             </div>
-            <Button
-              onClick={() =>
-                setFormData({ ...formData, published: !formData.published })
-              }
-              disabled={!isEditing && !isCreating}
-              variant={formData.published ? "accent" : "outline"}
-              className="gap-2"
-            >
-              {formData.published ? (
-                <>
-                  <Eye className="w-4 h-4" />
-                  Published
-                </>
-              ) : (
-                <>
-                  <EyeOff className="w-4 h-4" />
-                  Draft
-                </>
-              )}
-            </Button>
+
+            <MediaDrawer
+              isOpen={isMediaDrawerOpen}
+              onClose={() => setIsMediaDrawerOpen(false)}
+              onSelect={handleMediaSelect}
+              title="Select Cover Image"
+              description="Choose a cover image for your blog post"
+            />
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-muted">
+            <div className="text-center">
+              <Tag className="w-12 h-12 mx-auto opacity-40 mb-4" />
+              <p>Select a post to view or edit</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Media Drawer */}
-      <MediaDrawer
-        isOpen={isMediaDrawerOpen}
-        onClose={() => setIsMediaDrawerOpen(false)}
-        onSelect={handleMediaSelect}
-        title="Select Image"
-        description="Choose an image for your blog post"
-      />
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+            <h3 className="text-lg font-bold text-ink mb-4">Delete Post?</h3>
+            <p className="text-muted mb-6">This action cannot be undone.</p>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleDelete(deleteConfirm as Id<"blogPosts">)}
+                variant="disabled"
+                className="flex-1"
+              >
+                Delete
+              </Button>
+              <Button
+                onClick={() => setDeleteConfirm(null)}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

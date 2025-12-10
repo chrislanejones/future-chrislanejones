@@ -7,7 +7,7 @@ export default defineSchema({
     title: v.string(),
     description: v.string(),
     canonicalUrl: v.optional(v.string()),
-    ogImage: v.optional(v.string()), // Added for OpenGraph image support
+    ogImage: v.optional(v.string()),
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
 
@@ -29,13 +29,15 @@ export default defineSchema({
     category: v.string(),
     color: v.string(),
     order: v.number(),
+    featured: v.optional(v.boolean()), // NEW: featured field for link-page display
     createdAt: v.number(),
     updatedAt: v.number(),
     screenshotUrl: v.optional(v.string()),
     screenshotUpdatedAt: v.optional(v.number()),
   })
     .index("by_category", ["category"])
-    .index("by_order", ["order"]),
+    .index("by_order", ["order"])
+    .index("by_featured", ["featured"]), // NEW: index for querying featured links
 
   blogPosts: defineTable({
     title: v.string(),
@@ -105,13 +107,12 @@ export default defineSchema({
     .index("by_assigned_id", ["assignedToId"])
     .index("by_uploaded", ["uploadedAt"]),
 
-  // New Tables for Navigation Management
   headerNavItems: defineTable({
     label: v.string(),
-    href: v.optional(v.string()), // Main link
+    href: v.optional(v.string()),
     isExternal: v.optional(v.boolean()),
     order: v.number(),
-    parentId: v.optional(v.id("headerNavItems")), // For nested dropdowns
+    parentId: v.optional(v.id("headerNavItems")),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

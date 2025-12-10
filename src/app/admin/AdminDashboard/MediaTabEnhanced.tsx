@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import {
   Search,
@@ -10,6 +11,7 @@ import {
   ChevronDown,
   ChevronRight,
   Filter,
+  ImageIcon,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -18,6 +20,7 @@ import { useUploadThing } from "@/utils/uploadthing";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 interface MediaFile {
@@ -73,6 +76,7 @@ const MediaTabEnhanced = () => {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
+
     setIsUploading(true);
     await startUpload(Array.from(files));
   };
@@ -136,6 +140,7 @@ const MediaTabEnhanced = () => {
   };
 
   const currentImages = getCurrentImages();
+
   const filteredImages = currentImages.filter((img) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -153,97 +158,177 @@ const MediaTabEnhanced = () => {
 
   return (
     <div className="space-y-6 h-full flex flex-col">
-      {/* Header */}
+      {/* Status Messages */}
       {error && <ErrorDisplay error={error} onDismiss={() => setError(null)} />}
       {success && (
         <SuccessDisplay message={success} onDismiss={() => setSuccess(null)} />
       )}
 
-      <div className="bg-panel border border-border rounded-lg p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-ink">Media Library</h2>
-            <p className="text-sm text-muted">{totalImages} total images</p>
+      {/* Header Actions */}
+      <div className="grid grid-cols-12 items-center gap-4">
+        <div className="col-span-4 flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2 text-ink font-medium">
+            <ImageIcon className="w-5 h-5 text-accent" />
+            <span>{totalImages} images</span>
           </div>
 
-          <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-on-accent hover:shadow-glow transition font-medium cursor-pointer">
-            <Upload className="w-4 h-4" />
-            {isUploading ? "Uploading..." : "Upload Images"}
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              disabled={isUploading}
-              className="hidden"
-            />
-          </label>
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-1 bg-base rounded-lg p-1 border border-border">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-2 rounded transition ${
+                viewMode === "grid"
+                  ? "bg-(--color-foreground) text-(--color-base)"
+                  : "text-muted hover:text-ink"
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-2 rounded transition ${
+                viewMode === "list"
+                  ? "bg-(--color-foreground) text-(--color-base)"
+                  : "text-muted hover:text-ink"
+              }`}
+            >
+              <List className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        {/* Search Bar */}
+        <div className="relative col-span-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+          <input
+            type="text"
+            placeholder="Search images..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+          />
+        </div>
+
+        {/* Upload Button - Homepage Style */}
+        <div className="col-span-2 flex justify-end">
+          <Button
+            variant="accent"
+            className="gap-2 w-full md:w-auto"
+            disabled={isUploading}
+            asChild
+          >
+            <label className="cursor-pointer">
+              <Upload className="w-4 h-4" />
+              {isUploading ? "Uploading..." : "Upload Images"}
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                disabled={isUploading}
+              />
+            </label>
+          </Button>
         </div>
       </div>
 
-      {/* Main Layout */}
-      <div className="flex-1 overflow-hidden flex gap-6">
-        {/* Sidebar */}
-        <div className="w-64 border border-border rounded-lg bg-panel overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-border space-y-2">
+      {/* Upload Progress */}
+      {isUploading && (
+        <div className="flex items-center gap-2 text-accent">
+          <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          <span>Uploading...</span>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="flex gap-6 flex-1 min-h-0">
+        {/* Sidebar - Library */}
+        <div className="w-64 border border-border rounded-lg bg-panel overflow-hidden flex flex-col shrink-0">
+          <div className="p-4 border-b border-border">
+            <h3 className="font-semibold text-ink">Library</h3>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+            {/* All Images */}
             <button
               onClick={() => setSelectedView("all")}
               className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                 selectedView === "all"
-                  ? "bg-accent text-on-accent"
+                  ? "bg-(--color-foreground) text-(--color-panel)"
                   : "hover:bg-surface-hover text-ink"
               }`}
             >
               All Images
+              <span
+                className={`text-xs ml-2 ${
+                  selectedView === "all" ? "opacity-70" : "opacity-70"
+                }`}
+              >
+                ({totalImages})
+              </span>
             </button>
+
+            {/* Unassigned */}
             <button
               onClick={() => setSelectedView("unassigned")}
               className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                 selectedView === "unassigned"
-                  ? "bg-accent text-on-accent"
+                  ? "bg-(--color-foreground) text-(--color-panel)"
                   : "hover:bg-surface-hover text-ink"
               }`}
             >
-              Unassigned ({organizedMedia.unassigned.length})
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto space-y-2 p-2">
-            {/* Pages Section */}
-            <div>
-              <button
-                onClick={() => togglePageExpanded("pages")}
-                className="w-full text-left px-3 py-2 flex items-center gap-2 text-sm font-medium text-muted hover:text-ink transition"
+              Unassigned
+              <span
+                className={`text-xs ml-2 ${
+                  selectedView === "unassigned" ? "opacity-70" : "opacity-70"
+                }`}
               >
-                {expandedPages.has("pages") ? (
-                  <ChevronDown className="w-4 h-4" />
-                ) : (
-                  <ChevronRight className="w-4 h-4" />
-                )}
-                Pages
-              </button>
+                ({organizedMedia.unassigned.length})
+              </span>
+            </button>
 
-              {expandedPages.has("pages") && (
-                <div className="space-y-1 pl-2">
-                  {organizedMedia.pages.map((page) => (
-                    <button
-                      key={page.id}
-                      onClick={() => setSelectedView(`page-${page.id}`)}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
-                        selectedView === `page-${page.id}`
-                          ? "bg-accent text-on-accent"
-                          : "hover:bg-surface-hover text-ink"
-                      }`}
-                    >
-                      {page.title}
-                      <span className="text-xs text-muted ml-2">
-                        ({page.images.length})
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Pages Section */}
+            {organizedMedia.pages.length > 0 && (
+              <div>
+                <button
+                  onClick={() => togglePageExpanded("pages")}
+                  className="w-full text-left px-3 py-2 flex items-center gap-2 text-sm font-medium text-muted hover:text-ink transition"
+                >
+                  {expandedPages.has("pages") ? (
+                    <ChevronDown className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                  Pages
+                </button>
+                {expandedPages.has("pages") && (
+                  <div className="space-y-1 pl-2">
+                    {organizedMedia.pages.map((page) => (
+                      <button
+                        key={page.id}
+                        onClick={() => setSelectedView(`page-${page.id}`)}
+                        className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
+                          selectedView === `page-${page.id}`
+                            ? "bg-(--color-foreground) text-(--color-panel)"
+                            : "hover:bg-surface-hover text-ink"
+                        }`}
+                      >
+                        {page.title}
+                        <span
+                          className={`text-xs ml-2 ${
+                            selectedView === `page-${page.id}`
+                              ? "opacity-70"
+                              : "text-muted"
+                          }`}
+                        >
+                          ({page.images.length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Blog Posts Section */}
             {organizedMedia.blogPosts.length > 0 && (
@@ -259,7 +344,6 @@ const MediaTabEnhanced = () => {
                   )}
                   Blog Posts
                 </button>
-
                 {expandedPosts.has("posts") && (
                   <div className="space-y-1 pl-2">
                     {organizedMedia.blogPosts.map((post) => (
@@ -268,12 +352,18 @@ const MediaTabEnhanced = () => {
                         onClick={() => setSelectedView(`post-${post.id}`)}
                         className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                           selectedView === `post-${post.id}`
-                            ? "bg-accent text-on-accent"
+                            ? "bg-(--color-foreground) text-(--color-panel)"
                             : "hover:bg-surface-hover text-ink"
                         }`}
                       >
                         {post.title}
-                        <span className="text-xs text-muted ml-2">
+                        <span
+                          className={`text-xs ml-2 ${
+                            selectedView === `post-${post.id}`
+                              ? "opacity-70"
+                              : "text-muted"
+                          }`}
+                        >
                           ({post.images.length})
                         </span>
                       </button>
@@ -285,175 +375,133 @@ const MediaTabEnhanced = () => {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 overflow-hidden flex flex-col">
-          {/* Toolbar */}
-          <div className="flex items-center justify-between gap-4 mb-4 pb-4 border-b border-border">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-              <input
-                type="text"
-                placeholder="Search images..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-panel border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-              />
+        {/* Main Image Grid/List */}
+        <div className="flex-1 min-w-0 overflow-auto">
+          {/* Images */}
+          {filteredImages.length === 0 ? (
+            <div className="text-center py-12">
+              <ImageIcon className="w-12 h-12 mx-auto text-muted opacity-50 mb-4" />
+              <p className="text-muted">
+                {searchQuery ? "No images found" : "No images in this view"}
+              </p>
             </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === "grid"
-                    ? "bg-accent text-on-accent"
-                    : "hover:bg-surface-hover text-muted"
-                }`}
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition ${
-                  viewMode === "list"
-                    ? "bg-accent text-on-accent"
-                    : "hover:bg-surface-hover text-muted"
-                }`}
-              >
-                <List className="w-4 h-4" />
-              </button>
+          ) : viewMode === "grid" ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {filteredImages.map((image) => (
+                <div
+                  key={image._id}
+                  className="group relative aspect-square rounded-lg overflow-hidden border border-border hover:border-accent transition"
+                >
+                  <Image
+                    src={image.url}
+                    alt={image.altText || image.filename}
+                    fill
+                    className="object-cover"
+                    sizes="200px"
+                  />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                    <a
+                      href={image.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
+                    >
+                      <Download className="w-4 h-4 text-white" />
+                    </a>
+                    <button
+                      onClick={() => setDeleteConfirm(image._id)}
+                      className="p-2 bg-red-500/80 rounded-lg hover:bg-red-500 transition"
+                    >
+                      <Trash2 className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 opacity-0 group-hover:opacity-100 transition">
+                    <p className="text-xs text-white truncate">
+                      {image.filename}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-
-          {/* Grid/List View */}
-          <div className="flex-1 overflow-y-auto">
-            {filteredImages.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-muted">
-                  {searchQuery ? "No images found" : "No images yet"}
-                </p>
-              </div>
-            ) : viewMode === "grid" ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {filteredImages.map((image) => (
-                  <div
-                    key={image._id}
-                    className="group relative aspect-square rounded-lg overflow-hidden border border-border hover:border-accent transition"
-                  >
+          ) : (
+            <div className="space-y-2">
+              {filteredImages.map((image) => (
+                <div
+                  key={image._id}
+                  className="flex items-center gap-4 p-3 border border-border rounded-lg hover:border-accent transition"
+                >
+                  <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
                     <Image
                       src={image.url}
                       alt={image.altText || image.filename}
                       fill
-                      className="object-cover group-hover:scale-105 transition"
-                      sizes="150px"
+                      className="object-cover"
+                      sizes="64px"
                     />
-
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex flex-col justify-between p-2">
-                      <div className="flex justify-end gap-1">
-                        {deleteConfirm === image._id ? (
-                          <div className="flex gap-1">
-                            <button
-                              onClick={() => handleDeleteImage(image._id)}
-                              className="p-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                            <button
-                              onClick={() => setDeleteConfirm(null)}
-                              className="p-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => setDeleteConfirm(image._id)}
-                            className="p-1 bg-red-500/80 text-white rounded hover:bg-red-600 transition"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        )}
-                      </div>
-
-                      <div>
-                        <p className="text-white text-xs font-medium truncate">
-                          {image.filename}
-                        </p>
-                        {image.assignedToTitle && (
-                          <p className="text-white/70 text-xs truncate">
-                            → {image.assignedToTitle}
-                          </p>
-                        )}
-                      </div>
-                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {filteredImages.map((image) => (
-                  <div
-                    key={image._id}
-                    className="flex items-center gap-4 p-3 bg-base rounded-lg border border-border hover:border-accent transition group"
-                  >
-                    <div className="relative w-16 h-16 rounded overflow-hidden shrink-0">
-                      <Image
-                        src={image.url}
-                        alt={image.altText || image.filename}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-ink truncate">
-                        {image.filename}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-ink font-medium truncate">
+                      {image.filename}
+                    </p>
+                    {image.assignedToTitle && (
+                      <p className="text-sm text-muted truncate">
+                        Assigned to: {image.assignedToTitle}
                       </p>
-                      {image.assignedToTitle && (
-                        <p className="text-sm text-muted truncate">
-                          → {image.assignedToTitle}
-                        </p>
-                      )}
+                    )}
+                    {image.size && (
                       <p className="text-xs text-muted">
-                        {image.size
-                          ? `${(image.size / 1024).toFixed(1)} KB`
-                          : "Unknown size"}
+                        {(image.size / 1024).toFixed(1)} KB
                       </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
-                      {deleteConfirm === image._id ? (
-                        <>
-                          <button
-                            onClick={() => handleDeleteImage(image._id)}
-                            className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => setDeleteConfirm(null)}
-                            className="p-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-                          >
-                            ✕
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => setDeleteConfirm(image._id)}
-                          className="p-2 bg-red-500/80 text-white rounded hover:bg-red-600 transition"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={image.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-muted hover:text-ink transition"
+                    >
+                      <Download className="w-4 h-4" />
+                    </a>
+                    <button
+                      onClick={() => setDeleteConfirm(image._id)}
+                      className="p-2 text-red-500 hover:bg-red-500/10 rounded transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+            <h3 className="text-lg font-bold text-ink mb-4">Delete Image?</h3>
+            <p className="text-muted mb-6">This action cannot be undone.</p>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleDeleteImage(deleteConfirm as Id<"media">)}
+                variant="disabled"
+                className="flex-1"
+              >
+                Delete
+              </Button>
+              <Button
+                onClick={() => setDeleteConfirm(null)}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
