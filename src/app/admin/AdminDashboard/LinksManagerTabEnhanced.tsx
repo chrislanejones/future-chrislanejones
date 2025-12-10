@@ -1,14 +1,14 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
+  Search,
   Plus,
-  Trash2,
   Edit2,
+  Trash2,
   Save,
   X,
-  AlertCircle,
-  CheckCircle,
-  Link as LinkIcon,
+  Star,
   GripVertical,
   ExternalLink,
 } from "lucide-react";
@@ -17,19 +17,41 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import { useLinksEffect } from "../hooks/useLinksEffect";
 
+interface BrowserLink {
+  _id: Id<"browserLinks">;
+  href: string;
+  label: string;
+  domain: string;
+  favicon?: string;
+  category: string;
+  color: string;
+  order: number;
+  featured?: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+interface Category {
+  category: string;
+  color: string;
+  count: number;
+}
+
 const LinksManagerTabEnhanced = () => {
-  const allLinks = useQuery(api.browserLinks.getAll) ?? [];
-  const categories = useQuery(api.browserLinks.getCategories) ?? [];
+  const allLinks = (useQuery(api.browserLinks.getAll) ?? []) as BrowserLink[];
+  const categories = (useQuery(api.browserLinks.getCategories) ??
+    []) as Category[];
+
   const createLink = useMutation(api.browserLinks.create);
   const updateLink = useMutation(api.browserLinks.update);
   const deleteLink = useMutation(api.browserLinks.deleteLink);
   const deleteCategory = useMutation(api.browserLinks.deleteCategory);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    categories[0]?.category || ""
-  );
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
@@ -42,9 +64,17 @@ const LinksManagerTabEnhanced = () => {
     label: "",
     domain: "",
     favicon: "",
-    category: selectedCategory,
+    category: "",
     color: "blue",
   });
+
+  // Auto-select first category on load
+  useEffect(() => {
+    if (categories.length > 0 && !selectedCategory) {
+      setSelectedCategory(categories[0].category);
+      setFormData((prev) => ({ ...prev, category: categories[0].category }));
+    }
+  }, [categories, selectedCategory]);
 
   const CHROME_COLORS = [
     { id: "blue", name: "Blue", class: "bg-blue-500" },
@@ -100,7 +130,6 @@ const LinksManagerTabEnhanced = () => {
         return;
       }
 
-      // Extract domain from URL
       const url = new URL(formData.href);
       const domain = url.hostname;
 
@@ -169,11 +198,32 @@ const LinksManagerTabEnhanced = () => {
     }
   };
 
+  const handleToggleFeatured = async (link: BrowserLink) => {
+    try {
+      await updateLink({
+        id: link._id,
+        featured: !link.featured,
+      });
+      setSuccess(
+        link.featured
+          ? `"${link.label}" removed from featured`
+          : `"${link.label}" added to featured`
+      );
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err
+          : new Error("Failed to update featured status")
+      );
+    }
+  };
+
   const currentCategoryLinks = getLinksInCategory(selectedCategory);
 
   return (
     <div className="space-y-6 h-full flex flex-col">
-      {/* Header */}
+      {/* Status Messages */}
       {error && <ErrorDisplay error={error} onDismiss={() => setError(null)} />}
       {success && (
         <SuccessDisplay message={success} onDismiss={() => setSuccess(null)} />
@@ -283,167 +333,197 @@ const LinksManagerTabEnhanced = () => {
               </div>
 
               <div className="flex gap-2 pt-4">
-                <button
+                <Button
                   onClick={handleSaveLink}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-accent text-on-accent rounded-lg hover:shadow-glow transition font-bold"
+                  variant="accent"
+                  className="flex-1 gap-2"
                 >
                   <Save className="w-4 h-4" />
                   Save
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-2 bg-muted-accent text-ink rounded-lg hover:bg-surface-hover transition font-bold"
+                  variant="outline"
+                  className="flex-1"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Main Layout */}
-      <div className="flex-1 overflow-hidden flex gap-6">
-        {/* Categories Sidebar */}
-        <div className="w-64 border border-border rounded-lg bg-panel overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-border">
-            <h3 className="font-semibold text-ink mb-3">Categories</h3>
-            <button
-              onClick={() => handleOpenModal()}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-accent text-on-accent rounded-lg hover:shadow-glow transition font-medium text-sm"
-            >
-              <Plus className="w-4 h-4" />
-              Add Link
-            </button>
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+            <h3 className="text-lg font-bold text-ink mb-4">Delete Link?</h3>
+            <p className="text-muted mb-6">This action cannot be undone.</p>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handleDeleteLink(deleteConfirm)}
+                variant="disabled"
+                className="flex-1"
+              >
+                Delete
+              </Button>
+              <Button
+                onClick={() => setDeleteConfirm(null)}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
+        </div>
+      )}
 
-          <div className="flex-1 overflow-y-auto space-y-1 p-2">
+      {/* Main Grid */}
+      <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
+        {/* Categories Panel */}
+        <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+          <h3 className="font-semibold text-(--color-ink) mb-4">Categories</h3>
+          <div className="flex-1 overflow-y-auto space-y-2">
             {categories.map((cat) => (
               <button
                 key={cat.category}
                 onClick={() => setSelectedCategory(cat.category)}
-                className={`w-full text-left px-3 py-2 rounded-lg transition ${
+                className={`w-full text-left px-3 py-2 rounded-lg transition text-sm flex items-center justify-between ${
                   selectedCategory === cat.category
-                    ? "bg-accent text-on-accent"
-                    : "hover:bg-surface-hover text-ink"
+                    ? "bg-(--color-foreground) text-(--color-panel)"
+                    : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
                 }`}
               >
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-2 h-2 rounded-full ${CHROME_COLORS.find((c) => c.id === cat.color)?.class}`}
+                    className={`w-3 h-3 rounded-full chrome-group-${cat.color}`}
                   />
-                  <span className="truncate text-sm">{cat.category}</span>
+                  <span>{cat.category}</span>
                 </div>
-                <span className="text-xs text-opacity-70">
-                  {getLinksInCategory(cat.category).length} links
+                <span
+                  className={`text-xs ${
+                    selectedCategory === cat.category
+                      ? "text-(--color-panel)/70"
+                      : "text-muted"
+                  }`}
+                >
+                  {cat.count}
                 </span>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Links View */}
-        <div className="flex-1 overflow-y-auto bg-panel border border-border rounded-lg p-6">
-          {selectedCategory && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-ink">
-                  {selectedCategory}
-                </h2>
+        {/* Links Panel */}
+        <div className="col-span-2 bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-(--color-ink)">
+              {selectedCategory || "Select a category"}
+            </h3>
+            <div className="flex items-center gap-2">
+              {selectedCategory && (
                 <button
                   onClick={() => handleDeleteCategory(selectedCategory)}
                   className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition"
+                  title="Delete category"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-              </div>
-
-              {currentCategoryLinks.length === 0 ? (
-                <div className="text-center py-12">
-                  <LinkIcon className="w-12 h-12 text-muted mx-auto mb-3 opacity-50" />
-                  <p className="text-muted mb-4">No links in this category</p>
-                  <button
-                    onClick={() => handleOpenModal()}
-                    className="px-4 py-2 bg-accent text-on-accent rounded-lg hover:shadow-glow transition font-medium"
-                  >
-                    Add First Link
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {currentCategoryLinks.map((link) => (
-                    <div
-                      key={link._id}
-                      className="group p-4 bg-base border border-border rounded-lg hover:border-accent transition"
-                    >
-                      <div className="flex items-start gap-3 mb-3">
-                        {link.favicon && (
-                          <img
-                            src={link.favicon}
-                            alt=""
-                            className="w-6 h-6 rounded"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                            }}
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-ink truncate">
-                            {link.label}
-                          </p>
-                          <p className="text-xs text-muted truncate">
-                            {link.domain}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                        <button
-                          onClick={() => handleOpenModal(link._id)}
-                          className="flex-1 flex items-center justify-center gap-1 px-2 py-1 bg-accent/10 text-accent rounded hover:bg-accent/20 transition text-sm font-medium"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                          Edit
-                        </button>
-                        {deleteConfirm === link._id ? (
-                          <>
-                            <button
-                              onClick={() => handleDeleteLink(link._id)}
-                              className="flex-1 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm font-medium"
-                            >
-                              Delete
-                            </button>
-                            <button
-                              onClick={() => setDeleteConfirm(null)}
-                              className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-                            >
-                              ✕
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            onClick={() => setDeleteConfirm(link._id)}
-                            className="flex items-center justify-center px-2 py-1 bg-red-500/10 text-red-500 rounded hover:bg-red-500/20 transition"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        )}
-
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center px-2 py-1 bg-blue-500/10 text-blue-500 rounded hover:bg-blue-500/20 transition"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               )}
+              <Button
+                onClick={() => handleOpenModal()}
+                variant="accent"
+                className="gap-2"
+                disabled={!selectedCategory}
+              >
+                <Plus className="w-4 h-4" />
+                Add Link
+              </Button>
             </div>
-          )}
+          </div>
+
+          <div className="flex-1 overflow-y-auto space-y-2">
+            {currentCategoryLinks.length === 0 ? (
+              <p className="text-sm text-muted text-center py-8">
+                No links in this category
+              </p>
+            ) : (
+              currentCategoryLinks.map((link) => (
+                <div
+                  key={link._id}
+                  className="p-3 bg-(--color-base) border border-(--color-border) rounded-lg group hover:border-accent transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <GripVertical className="w-4 h-4 text-muted shrink-0 cursor-move" />
+
+                    {link.favicon && (
+                      <img
+                        src={link.favicon}
+                        alt=""
+                        className="w-4 h-4 shrink-0"
+                      />
+                    )}
+
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-(--color-ink) truncate">
+                        {link.label}
+                      </p>
+                      <p className="text-xs text-muted truncate">
+                        {link.domain}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleToggleFeatured(link)}
+                        className={`p-2 transition rounded ${
+                          link.featured
+                            ? "text-yellow-500"
+                            : "text-muted hover:text-yellow-500"
+                        }`}
+                        title={
+                          link.featured
+                            ? "Remove from featured"
+                            : "Add to featured"
+                        }
+                      >
+                        <Star
+                          className="w-4 h-4"
+                          fill={link.featured ? "currentColor" : "none"}
+                        />
+                      </button>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 text-muted hover:text-ink transition"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                      <Button
+                        onClick={() => handleOpenModal(link._id)}
+                        variant="ghost"
+                        size="sm"
+                        className="p-2"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        onClick={() => setDeleteConfirm(link._id)}
+                        variant="ghost"
+                        size="sm"
+                        className="p-2 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

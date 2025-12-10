@@ -18,6 +18,9 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
 
 interface SEOEntry {
   _id: Id<"seoMetadata">;
@@ -41,6 +44,7 @@ export const SeoTabEnhanced = () => {
     null
   );
   const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [formData, setFormData] = useState({
     path: "",
@@ -50,15 +54,15 @@ export const SeoTabEnhanced = () => {
     ogImage: "",
   });
 
-  // Set first page as selected on initial load
+  // Auto-select homepage (/) first, or first entry if no homepage
   useEffect(() => {
     if (seoEntries.length > 0 && !selectedPage) {
-      const firstEntry = seoEntries[0] as SEOEntry;
+      const homePage = seoEntries.find((entry) => entry.path === "/");
+      const firstEntry = (homePage || seoEntries[0]) as SEOEntry;
       setSelectedPage(firstEntry);
     }
   }, [seoEntries, selectedPage]);
 
-  // Update form when selected page changes
   useEffect(() => {
     if (selectedPage) {
       setFormData({
@@ -79,6 +83,13 @@ export const SeoTabEnhanced = () => {
       entry.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Sort to ensure homepage is first
+  const sortedFilteredPages = [...filteredPages].sort((a, b) => {
+    if (a.path === "/") return -1;
+    if (b.path === "/") return 1;
+    return a.path.localeCompare(b.path);
+  });
+
   const handlePageSelect = (page: SEOEntry) => {
     setSelectedPage(page);
     setSaveStatus(null);
@@ -87,6 +98,7 @@ export const SeoTabEnhanced = () => {
   const handleSave = async () => {
     if (!selectedPage) return;
 
+    setIsSaving(true);
     try {
       await updateSEO({
         path: formData.path,
@@ -95,13 +107,14 @@ export const SeoTabEnhanced = () => {
         canonicalUrl: formData.canonicalUrl || undefined,
         ogImage: formData.ogImage || undefined,
       });
-
       setIsEditing(false);
       setSaveStatus("success");
       setTimeout(() => setSaveStatus(null), 3000);
     } catch (error) {
       console.error("Failed to save SEO:", error);
       setSaveStatus("error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -115,11 +128,8 @@ export const SeoTabEnhanced = () => {
     setIsEditing(true);
   };
 
-  // SEO scoring
   const calculateSEOScore = () => {
     let score = 0;
-
-    // Title score (optimal: 50-60 chars)
     if (formData.title.length >= 30 && formData.title.length <= 60) {
       score += 25;
     } else if (formData.title.length >= 50 && formData.title.length <= 60) {
@@ -128,7 +138,6 @@ export const SeoTabEnhanced = () => {
       score += 10;
     }
 
-    // Description score (optimal: 150-160 chars)
     if (
       formData.description.length >= 120 &&
       formData.description.length <= 160
@@ -143,12 +152,10 @@ export const SeoTabEnhanced = () => {
       score += 10;
     }
 
-    // Canonical URL
     if (formData.canonicalUrl) {
       score += 25;
     }
 
-    // OG Image
     if (formData.ogImage) {
       score += 25;
     }
@@ -170,118 +177,144 @@ export const SeoTabEnhanced = () => {
     return "bg-red-500";
   };
 
+  const getPageName = (path: string): string => {
+    if (path === "/") return "Home";
+    const name = path
+      .replace(/^\//, "")
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+    return name;
+  };
+
   return (
-    <div className="h-full flex gap-6">
+    <div className="grid grid-cols-3 gap-6 h-full">
       {/* Left Panel - Page List */}
-      <div className="w-80 flex flex-col bg-panel border border-border rounded-2xl overflow-hidden">
-        <div className="p-4 border-b border-border">
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted" />
-            <input
-              type="text"
-              placeholder="Search pages..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-base border border-border rounded-lg text-ink focus:ring-2 focus:ring-accent focus:border-accent placeholder:text-muted"
-            />
-          </div>
-          <p className="text-sm text-muted">{seoEntries.length} pages</p>
+      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+        <h3 className="font-semibold text-(--color-ink) mb-4">Pages</h3>
+
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+          <input
+            type="text"
+            placeholder="Search pages..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+          />
         </div>
 
-        <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {filteredPages.map((page) => (
+        {/* Page List */}
+        <div className="flex-1 overflow-y-auto space-y-2">
+          {sortedFilteredPages.map((entry) => (
             <button
-              key={page._id}
-              onClick={() => handlePageSelect(page as SEOEntry)}
-              className={`w-full text-left px-3 py-3 rounded-xl transition-all ${
-                selectedPage?._id === page._id
-                  ? "bg-accent/10 border border-accent/30"
-                  : "hover:bg-base border border-transparent"
+              key={entry._id}
+              onClick={() => handlePageSelect(entry as SEOEntry)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
+                selectedPage?._id === entry._id
+                  ? "bg-(--color-foreground) text-(--color-panel)"
+                  : "hover:bg-(--color-surface-hover) text-(--color-ink)"
               }`}
             >
-              <div className="flex items-center gap-2 mb-1">
-                <Globe className="w-4 h-4 text-muted shrink-0" />
-                <p className="font-medium text-ink truncate">{page.path}</p>
+              <div className="flex items-center gap-2">
+                <Globe
+                  className={`w-4 h-4 ${
+                    selectedPage?._id === entry._id
+                      ? "text-(--color-panel)"
+                      : "text-muted"
+                  }`}
+                />
+                <span className="truncate">{getPageName(entry.path)}</span>
               </div>
-              <p className="text-sm text-muted truncate pl-6">{page.title}</p>
+              <p
+                className={`text-xs truncate mt-1 ${
+                  selectedPage?._id === entry._id
+                    ? "text-(--color-panel)/70"
+                    : "text-muted"
+                }`}
+              >
+                {entry.path}
+              </p>
             </button>
           ))}
+          {sortedFilteredPages.length === 0 && (
+            <p className="text-sm text-muted text-center py-4">
+              No pages found
+            </p>
+          )}
         </div>
       </div>
 
       {/* Right Panel - SEO Editor */}
-      <div className="flex-1 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+      <div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
         {selectedPage ? (
           <>
-            {/* Header */}
-            <div className="p-6 border-b border-border">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-ink">
-                    {selectedPage.path}
-                  </h2>
-                  <p className="text-sm text-muted">
-                    Last updated:{" "}
-                    {new Date(selectedPage.updatedAt).toLocaleDateString()}
-                  </p>
+            {/* Header with Save Button */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-accent/10 rounded-lg">
+                  <FileText className="w-5 h-5 text-accent" />
                 </div>
-                <div className="flex items-center gap-3">
-                  {/* SEO Score */}
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-2xl font-bold ${getScoreColor(seoScore)}`}
-                    >
+                <div>
+                  <h2 className="font-bold text-ink">
+                    {getPageName(selectedPage.path)}
+                  </h2>
+                  <p className="text-sm text-muted">{selectedPage.path}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                {/* SEO Score */}
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBgColor(seoScore)}`}
+                  >
+                    <span className="text-sm font-bold text-white">
                       {seoScore}
                     </span>
-                    <div className="flex flex-col">
-                      <span className="text-xs text-muted">SEO Score</span>
-                      <div className="w-16 h-1.5 bg-base rounded-full overflow-hidden">
-                        <div
-                          className={`h-full ${getScoreBgColor(seoScore)} transition-all`}
-                          style={{ width: `${seoScore}%` }}
-                        />
-                      </div>
-                    </div>
                   </div>
-
-                  {saveStatus && (
-                    <div
-                      className={`flex items-center gap-1 px-3 py-1 rounded-lg ${
-                        saveStatus === "success"
-                          ? "bg-green-500/10 text-green-500"
-                          : "bg-red-500/10 text-red-500"
-                      }`}
-                    >
-                      {saveStatus === "success" ? (
-                        <CheckCircle className="w-4 h-4" />
-                      ) : (
-                        <AlertCircle className="w-4 h-4" />
-                      )}
-                      <span className="text-sm">
-                        {saveStatus === "success" ? "Saved" : "Error"}
-                      </span>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleSave}
-                    disabled={!isEditing}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                      isEditing
-                        ? "bg-accent text-on-accent hover:shadow-glow"
-                        : "bg-base text-muted cursor-not-allowed"
-                    }`}
+                  <span
+                    className={`text-sm font-medium ${getScoreColor(seoScore)}`}
                   >
-                    <Save className="w-4 h-4" />
-                    Save
-                  </button>
+                    SEO Score
+                  </span>
                 </div>
+
+                {/* Save Button - Homepage style */}
+                <Button
+                  onClick={handleSave}
+                  disabled={!isEditing || isSaving}
+                  variant="accent"
+                  className="gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  {isSaving ? "Saving..." : "Save"}
+                </Button>
               </div>
             </div>
 
-            {/* Form */}
+            {/* Status Messages */}
+            {saveStatus === "success" && (
+              <div className="mx-6 mt-4">
+                <SuccessDisplay
+                  message="SEO settings saved successfully!"
+                  onDismiss={() => setSaveStatus(null)}
+                  compact
+                />
+              </div>
+            )}
+            {saveStatus === "error" && (
+              <div className="mx-6 mt-4">
+                <ErrorDisplay
+                  error={new Error("Failed to save SEO settings")}
+                  onDismiss={() => setSaveStatus(null)}
+                  compact
+                />
+              </div>
+            )}
+
+            {/* Form Fields */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Title */}
+              {/* Page Title */}
               <div>
                 <label className="block mb-2 text-ink font-medium">
                   Page Title
@@ -306,7 +339,7 @@ export const SeoTabEnhanced = () => {
                 )}
               </div>
 
-              {/* Description */}
+              {/* Meta Description */}
               <div>
                 <label className="block mb-2 text-ink font-medium">
                   Meta Description
@@ -348,149 +381,75 @@ export const SeoTabEnhanced = () => {
                 />
               </div>
 
-              {/* OpenGraph Image */}
+              {/* OG Image */}
               <div>
                 <label className="block mb-2 text-ink font-medium">
                   OpenGraph Image
                 </label>
                 {formData.ogImage ? (
-                  <div className="relative">
-                    <div className="relative aspect-video w-full max-w-md rounded-xl overflow-hidden border border-border bg-base">
-                      <Image
-                        src={formData.ogImage}
-                        alt="OpenGraph preview"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        onClick={() => setIsMediaDrawerOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-base border border-border rounded-lg text-ink hover:bg-muted/10 transition"
-                      >
-                        <ImageIcon className="w-4 h-4" />
-                        Change Image
-                      </button>
-                      <button
-                        onClick={handleRemoveOgImage}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 hover:bg-red-500/20 transition"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Remove
-                      </button>
-                    </div>
+                  <div className="relative rounded-xl overflow-hidden border border-border">
+                    <Image
+                      src={formData.ogImage}
+                      alt="OG Image"
+                      width={600}
+                      height={315}
+                      className="w-full h-auto object-cover"
+                    />
+                    <button
+                      onClick={handleRemoveOgImage}
+                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 ) : (
                   <button
                     onClick={() => setIsMediaDrawerOpen(true)}
-                    className="flex items-center justify-center gap-3 w-full max-w-md aspect-video border-2 border-dashed border-border rounded-xl bg-base hover:border-accent hover:bg-accent/5 transition group"
+                    className="w-full px-4 py-8 border-2 border-dashed border-border rounded-xl text-muted hover:border-accent hover:text-accent transition flex flex-col items-center gap-2"
                   >
-                    <ImageIcon className="w-8 h-8 text-muted group-hover:text-accent transition" />
-                    <span className="text-muted group-hover:text-accent transition font-medium">
-                      Browse Image
-                    </span>
+                    <ImageIcon className="w-8 h-8" />
+                    <span>Click to select an image</span>
+                    <span className="text-xs">1200×630px recommended</span>
                   </button>
                 )}
-                <p className="mt-2 text-sm text-muted">
-                  Recommended: 1200×630px for optimal social media display
-                </p>
               </div>
 
-              {/* Search Preview */}
-              <div className="mt-8 p-4 bg-base border border-border rounded-xl">
+              {/* Search Preview - Dark Mode Fixed */}
+              <div className="p-4 bg-base border border-border rounded-xl">
                 <h3 className="mb-3 text-ink font-semibold flex items-center gap-2">
                   <Search className="w-4 h-4" />
                   Search Preview
                 </h3>
-                <div className="p-4 bg-white rounded-lg">
-                  <p className="text-blue-600 text-lg hover:underline cursor-pointer">
+                <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <p className="text-blue-600 dark:text-blue-400 text-lg hover:underline cursor-pointer font-medium">
                     {formData.title || "Page Title"}
                   </p>
-                  <p className="text-green-700 text-sm">
+                  <p className="text-green-700 dark:text-green-400 text-sm">
                     {formData.canonicalUrl ||
                       `https://chrislanejones.com${formData.path}`}
                   </p>
-                  <p className="text-gray-600 text-sm mt-1">
+                  <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
                     {formData.description ||
                       "Meta description will appear here..."}
                   </p>
                 </div>
               </div>
-
-              {/* SEO Best Practices */}
-              <div className="p-4 bg-base border border-border rounded-xl">
-                <h3 className="mb-3 text-ink font-semibold">
-                  SEO Best Practices
-                </h3>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle
-                      className={`w-4 h-4 mt-0.5 shrink-0 ${
-                        formData.title.length >= 30 &&
-                        formData.title.length <= 60
-                          ? "text-green-500"
-                          : "text-muted"
-                      }`}
-                    />
-                    <span className="text-foreground text-sm">
-                      Title: 30-60 characters (optimal: 50-60)
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle
-                      className={`w-4 h-4 mt-0.5 shrink-0 ${
-                        formData.description.length >= 120 &&
-                        formData.description.length <= 160
-                          ? "text-green-500"
-                          : "text-muted"
-                      }`}
-                    />
-                    <span className="text-foreground text-sm">
-                      Description: 120-160 characters (optimal: 150-160)
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle
-                      className={`w-4 h-4 mt-0.5 shrink-0 ${
-                        formData.canonicalUrl ? "text-green-500" : "text-muted"
-                      }`}
-                    />
-                    <span className="text-foreground text-sm">
-                      Set canonical URL to prevent duplicate content
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle
-                      className={`w-4 h-4 mt-0.5 shrink-0 ${
-                        formData.ogImage ? "text-green-500" : "text-muted"
-                      }`}
-                    />
-                    <span className="text-foreground text-sm">
-                      Add OpenGraph image for social sharing
-                    </span>
-                  </li>
-                </ul>
-              </div>
             </div>
+
+            <MediaDrawer
+              isOpen={isMediaDrawerOpen}
+              onClose={() => setIsMediaDrawerOpen(false)}
+              onSelect={handleMediaSelect}
+              title="Select OpenGraph Image"
+              description="Choose an image for social media sharing (1200×630px recommended)"
+            />
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <FileText className="w-16 h-16 text-muted mx-auto mb-4 opacity-50" />
-              <p className="text-muted">Select a page to edit SEO metadata</p>
-            </div>
+          <div className="flex-1 flex items-center justify-center text-muted">
+            Select a page to edit SEO settings
           </div>
         )}
       </div>
-
-      {/* Media Drawer */}
-      <MediaDrawer
-        isOpen={isMediaDrawerOpen}
-        onClose={() => setIsMediaDrawerOpen(false)}
-        onSelect={handleMediaSelect}
-        title="Select OpenGraph Image"
-        description="Choose an image for social media sharing (1200×630px recommended)"
-      />
     </div>
   );
 };

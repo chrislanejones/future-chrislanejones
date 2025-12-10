@@ -1,4 +1,3 @@
-// src/app/admin/AdminDashboard/PagesMenuTabEnhanced.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -8,7 +7,6 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { GripVertical, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Types based on your schema
 interface SEOPage {
   _id: Id<"seoMetadata">;
   path: string;
@@ -42,10 +40,8 @@ interface FooterNavSection {
   links: FooterNavLink[];
 }
 
-// Helper to convert path to friendly page name
 const getPageName = (path: string): string => {
   if (path === "/") return "Home";
-  // Remove leading slash and convert to title case
   const name = path
     .replace(/^\//, "")
     .replace(/-/g, " ")
@@ -53,7 +49,6 @@ const getPageName = (path: string): string => {
   return name;
 };
 
-// Draggable Page Item Component
 const DraggablePageItem = ({ page }: { page: SEOPage }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData(
@@ -76,7 +71,7 @@ const DraggablePageItem = ({ page }: { page: SEOPage }) => {
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-1">
           <GripVertical
-            className="w-4 h-4 text-white shrink-0"
+            className="w-4 h-4 text-muted shrink-0"
             aria-hidden="true"
           />
           <span>{getPageName(page.path)}</span>
@@ -86,7 +81,6 @@ const DraggablePageItem = ({ page }: { page: SEOPage }) => {
   );
 };
 
-// Header Nav Item Component
 const HeaderNavItemComponent = ({
   item,
   onDelete,
@@ -119,10 +113,8 @@ const HeaderNavItemComponent = ({
 
   return (
     <div
-      className={`p-3 bg-(--color-base) border rounded-lg group hover:border-red-500/30 transition-colors ${
-        isDragOver
-          ? "border-[#4ade80] bg-[#4ade80]/10"
-          : "border-(--color-border)"
+      className={`p-3 bg-(--color-base) border rounded-lg group hover:border-accent/30 transition-colors ${
+        isDragOver ? "border-accent bg-accent/5" : "border-(--color-border)"
       }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -131,7 +123,7 @@ const HeaderNavItemComponent = ({
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 flex-1">
           <GripVertical
-            className="w-4 h-4 text-white shrink-0 cursor-move"
+            className="w-4 h-4 text-muted shrink-0 cursor-move"
             aria-hidden="true"
           />
           <span className="font-medium text-(--color-ink)">{item.label}</span>
@@ -144,8 +136,6 @@ const HeaderNavItemComponent = ({
           <Trash2 className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
-
-      {/* Nested Children */}
       {item.children && item.children.length > 0 && (
         <div className="ml-2 space-y-2 pt-2 border-t border-(--color-border)">
           {item.children.map((child) => (
@@ -156,7 +146,7 @@ const HeaderNavItemComponent = ({
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-1">
                   <GripVertical
-                    className="w-4 h-4 text-white shrink-0"
+                    className="w-4 h-4 text-muted shrink-0"
                     aria-hidden="true"
                   />
                   <span>{child.label}</span>
@@ -164,6 +154,7 @@ const HeaderNavItemComponent = ({
                 <button
                   onClick={() => onDeleteChild(child._id)}
                   className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  title={`Delete "${child.label}"`}
                 >
                   <Trash2 className="w-3 h-3" aria-hidden="true" />
                 </button>
@@ -176,7 +167,6 @@ const HeaderNavItemComponent = ({
   );
 };
 
-// Footer Section Component
 const FooterSectionComponent = ({
   section,
   onDelete,
@@ -209,10 +199,8 @@ const FooterSectionComponent = ({
 
   return (
     <div
-      className={`p-3 bg-(--color-base) border rounded-lg group hover:border-red-500/30 transition-colors ${
-        isDragOver
-          ? "border-[#4ade80] bg-[#4ade80]/10"
-          : "border-(--color-border)"
+      className={`p-3 bg-(--color-base) border rounded-lg group hover:border-accent/30 transition-colors ${
+        isDragOver ? "border-accent bg-accent/5" : "border-(--color-border)"
       }`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -221,7 +209,7 @@ const FooterSectionComponent = ({
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-2 flex-1">
           <GripVertical
-            className="w-4 h-4 text-white shrink-0 cursor-move"
+            className="w-4 h-4 text-muted shrink-0 cursor-move"
             aria-hidden="true"
           />
           <span className="font-medium text-(--color-ink)">
@@ -231,13 +219,11 @@ const FooterSectionComponent = ({
         <button
           onClick={onDelete}
           className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
-          title={`Delete "${section.title}" section`}
+          title={`Delete "${section.title}"`}
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
-
-      {/* Section Links */}
       {section.links && section.links.length > 0 && (
         <div className="ml-2 space-y-2 pt-2 border-t border-(--color-border)">
           {section.links.map((link) => (
@@ -248,7 +234,7 @@ const FooterSectionComponent = ({
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-1">
                   <GripVertical
-                    className="w-4 h-4 text-white shrink-0"
+                    className="w-4 h-4 text-muted shrink-0"
                     aria-hidden="true"
                   />
                   <span>{link.label}</span>
@@ -269,9 +255,7 @@ const FooterSectionComponent = ({
   );
 };
 
-// Main Component
 const PagesMenuTabEnhanced = () => {
-  // Fetch data using your existing APIs
   const seoPages = useQuery(api.seo.getAllSEO) as SEOPage[] | undefined;
   const headerItems = useQuery(api.navigation.getHeaderNavItems) as
     | HeaderNavItem[]
@@ -280,11 +264,8 @@ const PagesMenuTabEnhanced = () => {
     | FooterNavSection[]
     | undefined;
 
-  // Mutations for header nav
   const addHeaderNavItem = useMutation(api.navigation.addHeaderNavItem);
   const deleteHeaderNavItem = useMutation(api.navigation.deleteHeaderNavItem);
-
-  // Mutations for footer nav
   const addFooterNavSection = useMutation(api.navigation.addFooterNavSection);
   const deleteFooterNavSection = useMutation(
     api.navigation.deleteFooterNavSection
@@ -292,7 +273,6 @@ const PagesMenuTabEnhanced = () => {
   const addFooterNavLink = useMutation(api.navigation.addFooterNavLink);
   const deleteFooterNavLink = useMutation(api.navigation.deleteFooterNavLink);
 
-  // Get next order number
   const getNextHeaderOrder = () => {
     if (!headerItems || headerItems.length === 0) return 0;
     return Math.max(...headerItems.map((item) => item.order)) + 1;
@@ -309,7 +289,6 @@ const PagesMenuTabEnhanced = () => {
     return Math.max(...section.links.map((link) => link.order)) + 1;
   };
 
-  // Add new header item
   const handleAddHeaderItem = async () => {
     try {
       await addHeaderNavItem({
@@ -322,7 +301,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Add new footer section
   const handleAddFooterSection = async () => {
     try {
       await addFooterNavSection({
@@ -334,7 +312,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Delete header item
   const handleDeleteHeaderItem = async (id: Id<"headerNavItems">) => {
     try {
       await deleteHeaderNavItem({ id });
@@ -343,7 +320,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Delete footer section
   const handleDeleteFooterSection = async (id: Id<"footerNavSections">) => {
     try {
       await deleteFooterNavSection({ id });
@@ -352,7 +328,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Delete footer link
   const handleDeleteFooterLink = async (id: Id<"footerNavLinks">) => {
     try {
       await deleteFooterNavLink({ id });
@@ -361,7 +336,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Handle drop on header item (add as child)
   const handleDropOnHeaderItem = async (
     parentId: Id<"headerNavItems">,
     e: React.DragEvent
@@ -371,7 +345,6 @@ const PagesMenuTabEnhanced = () => {
       if (data.type === "page") {
         const parent = headerItems?.find((item) => item._id === parentId);
         const childOrder = parent?.children?.length ?? 0;
-
         await addHeaderNavItem({
           label: data.title,
           href: data.path,
@@ -384,7 +357,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Handle drop on footer section
   const handleDropOnFooterSection = async (
     sectionId: Id<"footerNavSections">,
     e: React.DragEvent
@@ -404,7 +376,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Handle drop on header column (add as top-level item)
   const handleDropOnHeaderColumn = async (e: React.DragEvent) => {
     try {
       const data = JSON.parse(e.dataTransfer.getData("application/json"));
@@ -420,7 +391,6 @@ const PagesMenuTabEnhanced = () => {
     }
   };
 
-  // Loading state
   if (
     seoPages === undefined ||
     headerItems === undefined ||
@@ -428,45 +398,48 @@ const PagesMenuTabEnhanced = () => {
   ) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="animate-pulse text-[#9ca3af]">Loading...</div>
+        <div className="animate-pulse text-muted">Loading...</div>
       </div>
     );
   }
 
+  // Sort pages with homepage first
+  const sortedPages = [...seoPages].sort((a, b) => {
+    if (a.path === "/") return -1;
+    if (b.path === "/") return 1;
+    return a.path.localeCompare(b.path);
+  });
+
   return (
     <div className="grid grid-cols-3 gap-6 h-full">
-      {/* Column 1: Available Pages */}
-      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col transition-colors">
+      {/* Available Pages Column */}
+      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <h3 className="font-semibold text-(--color-ink) mb-4">
           Available Pages
         </h3>
+        <p className="text-xs text-muted mb-4">
+          Drag pages to header or footer sections
+        </p>
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-2">
-            {seoPages.map((page) => (
+            {sortedPages.map((page) => (
               <DraggablePageItem key={page._id} page={page} />
             ))}
-            {seoPages.length === 0 && (
-              <p className="text-sm text-[#9ca3af] text-center py-4">
-                No pages available. Add pages in SEO Manager first.
-              </p>
-            )}
           </div>
         </div>
       </div>
-
-      {/* Column 2: Header Navigation */}
+      {/* Header Navigation Column */}
       <div
         className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col transition-colors"
         onDragOver={(e) => {
           e.preventDefault();
-          e.currentTarget.classList.add("border-[#4ade80]");
+          e.currentTarget.classList.add("border-accent");
         }}
         onDragLeave={(e) => {
-          e.currentTarget.classList.remove("border-[#4ade80]");
+          e.currentTarget.classList.remove("border-accent");
         }}
         onDrop={(e) => {
-          e.currentTarget.classList.remove("border-[#4ade80]");
-          // Only handle if dropped directly on column
+          e.currentTarget.classList.remove("border-accent");
           const target = e.target as HTMLElement;
           if (!target.closest(".group")) {
             handleDropOnHeaderColumn(e);
@@ -478,12 +451,13 @@ const PagesMenuTabEnhanced = () => {
         </h3>
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-3">
+            {/* Add Header Item Button - Homepage style */}
             <Button
-              variant="outline"
-              className="w-full h-9 text-sm bg-panel border border-(--color-border) text-foreground hover:bg-(--color-surface-hover)"
+              variant="accent"
+              className="w-full gap-2"
               onClick={handleAddHeaderItem}
             >
-              <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
+              <Plus className="w-4 h-4" />
               Add Header Item
             </Button>
 
@@ -496,9 +470,8 @@ const PagesMenuTabEnhanced = () => {
                 onDrop={(e) => handleDropOnHeaderItem(item._id, e)}
               />
             ))}
-
             {headerItems.length === 0 && (
-              <p className="text-sm text-[#9ca3af] text-center py-4">
+              <p className="text-sm text-muted text-center py-4">
                 Drag pages here to add to header navigation
               </p>
             )}
@@ -506,19 +479,20 @@ const PagesMenuTabEnhanced = () => {
         </div>
       </div>
 
-      {/* Column 3: Footer Navigation */}
-      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col transition-colors">
+      {/* Footer Sections Column */}
+      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <h3 className="font-semibold text-(--color-ink) mb-4">
-          Footer Navigation
+          Footer Sections
         </h3>
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-3">
+            {/* Add Section Button - Homepage style */}
             <Button
-              variant="outline"
-              className="w-full h-9 text-sm bg-panel border border-(--color-border) text-foreground hover:bg-(--color-surface-hover)"
+              variant="accent"
+              className="w-full gap-2"
               onClick={handleAddFooterSection}
             >
-              <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
+              <Plus className="w-4 h-4" />
               Add Section
             </Button>
 
@@ -527,14 +501,13 @@ const PagesMenuTabEnhanced = () => {
                 key={section._id}
                 section={section}
                 onDelete={() => handleDeleteFooterSection(section._id)}
-                onDeleteLink={(linkId) => handleDeleteFooterLink(linkId)}
+                onDeleteLink={handleDeleteFooterLink}
                 onDrop={(e) => handleDropOnFooterSection(section._id, e)}
               />
             ))}
-
             {footerSections.length === 0 && (
-              <p className="text-sm text-[#9ca3af] text-center py-4">
-                Create sections and drag pages to add footer links
+              <p className="text-sm text-muted text-center py-4">
+                Add sections to organize footer links
               </p>
             )}
           </div>

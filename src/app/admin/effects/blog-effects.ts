@@ -9,6 +9,7 @@ export interface BlogPostData {
   coverImage?: string;
   tags?: string[];
   published: boolean;
+  createdAt?: number;
 }
 
 export interface BlogValidationResult {

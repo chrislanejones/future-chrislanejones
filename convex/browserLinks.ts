@@ -1,11 +1,7 @@
-// convex/browserLinks.ts
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { linkSeed } from "../src/data/linkSeed";
 
-/**
- * Query: get all saved browser links
- */
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
@@ -13,7 +9,6 @@ export const getAll = query({
   },
 });
 
-// Query to get links by category
 export const getByCategory = query({
   args: { category: v.string() },
   handler: async (ctx, args) => {
@@ -25,24 +20,43 @@ export const getByCategory = query({
   },
 });
 
-// Query to get all unique categories with their colors
+// NEW: Get only featured links for link-page
+export const getFeatured = query({
+  args: {},
+  handler: async (ctx) => {
+    const links = await ctx.db
+      .query("browserLinks")
+      .filter((q) => q.eq(q.field("featured"), true))
+      .collect();
+    return links.sort((a, b) => a.order - b.order);
+  },
+});
+
 export const getCategories = query({
   handler: async (ctx) => {
     const links = await ctx.db.query("browserLinks").collect();
-    const categoriesMap = new Map<string, string>();
+    const categoriesMap = new Map<string, { color: string; count: number }>();
+
     links.forEach((link) => {
       if (!categoriesMap.has(link.category)) {
-        categoriesMap.set(link.category, link.color);
+        categoriesMap.set(link.category, { color: link.color, count: 1 });
+      } else {
+        const existing = categoriesMap.get(link.category)!;
+        categoriesMap.set(link.category, {
+          ...existing,
+          count: existing.count + 1,
+        });
       }
     });
-    return Array.from(categoriesMap.entries()).map(([category, color]) => ({
+
+    return Array.from(categoriesMap.entries()).map(([category, data]) => ({
       category,
-      color,
+      color: data.color,
+      count: data.count,
     }));
   },
 });
 
-// Mutation to create a new link
 export const create = mutation({
   args: {
     href: v.string(),
@@ -52,35 +66,45 @@ export const create = mutation({
     category: v.string(),
     color: v.string(),
     order: v.number(),
+    featured: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("browserLinks", {
       ...args,
+      featured: args.featured ?? false,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
   },
 });
 
-// Mutation to update a link
 export const update = mutation({
   args: {
     id: v.id("browserLinks"),
-    href: v.string(),
-    label: v.string(),
-    domain: v.string(),
+    href: v.optional(v.string()),
+    label: v.optional(v.string()),
+    domain: v.optional(v.string()),
     favicon: v.optional(v.string()),
-    category: v.string(),
-    color: v.string(),
-    order: v.number(),
+    category: v.optional(v.string()),
+    color: v.optional(v.string()),
+    order: v.optional(v.number()),
+    featured: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const { id, ...updateData } = args;
-    await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
+
+    // Filter out undefined values
+    const cleanedData: Record<string, any> = {};
+    for (const [key, value] of Object.entries(updateData)) {
+      if (value !== undefined) {
+        cleanedData[key] = value;
+      }
+    }
+
+    await ctx.db.patch(id, { ...cleanedData, updatedAt: Date.now() });
   },
 });
 
-// Mutation to delete a link
 export const deleteLink = mutation({
   args: { id: v.id("browserLinks") },
   handler: async (ctx, args) => {
@@ -88,7 +112,6 @@ export const deleteLink = mutation({
   },
 });
 
-// Mutation to bulk delete links by category
 export const deleteCategory = mutation({
   args: { category: v.string() },
   handler: async (ctx, args) => {
@@ -96,16 +119,31 @@ export const deleteCategory = mutation({
       .query("browserLinks")
       .withIndex("by_category", (q) => q.eq("category", args.category))
       .collect();
+
     for (const link of linksInCategory) {
       await ctx.db.delete(link._id);
     }
+
     return linksInCategory.length;
   },
 });
 
-/**
- * Seed initial data (now sourced from src/data/linkSeed.ts)
- */
+// Toggle featured status for a link
+export const toggleFeatured = mutation({
+  args: { id: v.id("browserLinks") },
+  handler: async (ctx, args) => {
+    const link = await ctx.db.get(args.id);
+    if (!link) throw new Error("Link not found");
+
+    await ctx.db.patch(args.id, {
+      featured: !link.featured,
+      updatedAt: Date.now(),
+    });
+
+    return { featured: !link.featured };
+  },
+});
+
 export const seedLinks = mutation({
   handler: async (ctx) => {
     let inserted = 0;
@@ -121,6 +159,7 @@ export const seedLinks = mutation({
           category: category.title,
           color: category.color,
           order: i,
+          featured: false,
           createdAt: Date.now(),
           updatedAt: Date.now(),
         });
@@ -135,4 +174,3 @@ export const seedLinks = mutation({
     };
   },
 });
-
