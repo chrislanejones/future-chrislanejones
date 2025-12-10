@@ -1,0 +1,919 @@
+
+===== FILE: src/data/header-data.ts =====
+export const pageHeaders = {
+"/about": {
+title: "About Me",
+breadcrumbPage: "About",
+description:
+"Life on the trails and the web, building modern React applications and leading the local WordPress community.",
+},
+"/browser-tabs": {
+title: "Chrome Tabs I Left Open",
+breadcrumbPage: "Links",
+description:
+"A curated collection of useful resources, tools, and inspiration that I keep coming back to.",
+},
+"/career": {
+title: "Career",
+breadcrumbPage: "Career",
+description:
+"Following the trail from video production to web development—navigating frameworks, communities, and mountain views along the way.",
+},
+"/conferences": {
+title: "Conferences",
+breadcrumbPage: "Conferences",
+description:
+"Highlights and notes from events I've attended—open source, web, and community conferences across the years.",
+},
+"/blog": {
+title: "Blog",
+breadcrumbPage: "Blog",
+description:
+"Thoughts on web development, React, WordPress, and building things on the internet.",
+},
+"/logo-page": {
+title: "About the Logo",
+breadcrumbPage: "Logo",
+description:
+"The mountain in my logo represents more than just a visual element—it’s a symbol of the journey. Each peak conquered in code, each valley navigated through debugging, mirrors the trails I hike 
+in the Shenandoah Mountains.",
+},
+"/projects": {
+title: "Projects",
+breadcrumbPage: "Projects",
+description:
+"A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience.",
+},
+"/react-maintenance": {
+title: "React Site Maintenance",
+breadcrumbPage: "React Services",
+description:
+"A Monthly Action Plan That Makes Sense - Comprehensive React application maintenance, including regular updates, performance optimization, dependency management, and technical support.",
+},
+"/site-history": {
+title: "Site History",
+breadcrumbPage: "Site History",
+description:
+"The evolution of chrislanejones.com through various technologies, frameworks, and design iterations—from WordPress 2.1 to modern Next.js.",
+},
+"/site-map": {
+title: "Site Map & Changelog",
+breadcrumbPage: "Changelog",
+description:
+"Explore all available pages on chrislanejones.com and Track site updates",
+},
+"/wordpress-maintenance": {
+title: "WordPress Site Maintenance",
+breadcrumbPage: "WordPress Services",
+description:
+"A Monthly Action Plan That Makes Sense - Comprehensive website maintenance, including regular updates, security scans, performance optimization, and technical support.",
+},
+"/contact": {
+title: "Contact",
+breadcrumbPage: "Contact",
+description:
+"Get in touch about web development projects, WordPress meetups, or hiking trails.",
+},
+"/fallback": {
+title: "Page",
+breadcrumbPage: "Page",
+description:
+"Content coming soon. In the meantime, enjoy exploring the rest of the site.",
+},
+} as const;
+export type PageRoute = keyof typeof pageHeaders;
+export type PageHeaderData = (typeof pageHeaders)[PageRoute];
+export const layoutMetadata = {
+"/admin": {
+title: "Admin Dashboard | Chris Lane Jones",
+description: "Manage portfolio content and SEO",
+},
+} as const;
+export type LayoutRoute = keyof typeof layoutMetadata;
+export type LayoutMetadata = (typeof layoutMetadata)[LayoutRoute];
+export function getPageHeader(path: string): PageHeaderData {
+if (path in pageHeaders) {
+return pageHeaders[path as PageRoute];
+}
+return pageHeaders["/fallback"];
+}
+export function getLayoutMeta(path: string): LayoutMetadata | undefined {
+if (path in layoutMetadata) {
+return layoutMetadata[path as LayoutRoute];
+}
+return undefined;
+}
+
+===== FILE: src/data/linkSeed.ts =====
+export type LinkSeedCategory = {
+title: string;
+color:
+| "blue"
+| "red"
+| "yellow"
+| "green"
+| "pink"
+| "purple"
+| "cyan"
+| "orange";
+links: Array<{
+href: string;
+label: string;
+domain: string;
+favicon?: string;
+}>;
+};
+export const linkSeed: LinkSeedCategory[] = [
+{
+title: "Development Tools",
+color: "orange",
+links: [
+{
+href: "https:
+label: "Effect - TypeScript Library",
+domain: "effect.website",
+favicon: "https:
+},
+{
+href: "https:
+label: "Effect Generators Guide",
+domain: "effect.website",
+favicon: "https:
+},
+{
+href: "https:
+label: "aulianza.id",
+domain: "github.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Augment Code",
+domain: "augmentcode.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Bun Documentation",
+domain: "bun.sh",
+favicon: "https:
+},
+],
+},
+{
+title: "Design & UI Resources",
+color: "cyan",
+links: [
+{
+href: "https:
+label: "Chakra UI Playground",
+domain: "chakra-ui.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Aceternity UI Components",
+domain: "aceternity.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Hero UI Components",
+domain: "heroui.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Radix UI",
+domain: "radix-ui.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Framer Motion",
+domain: "framer.com",
+favicon: "https:
+},
+],
+},
+{
+title: "Learning & Tutorials",
+color: "purple",
+links: [
+{
+href: "https:
+label: "Josh Comeau - SVG Guide",
+domain: "joshwcomeau.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Shaders with R3F",
+domain: "blog.maximeheckel.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Learn X in Y minutes",
+domain: "learnxinyminutes.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "MDN Web Docs",
+domain: "developer.mozilla.org",
+favicon: "https:
+},
+{
+href: "https:
+label: "Load Balancing Guide",
+domain: "samwho.dev",
+favicon: "https:
+},
+],
+},
+{
+title: "Layout & Design Patterns",
+color: "green",
+links: [
+{
+href: "https:
+label: "Bento Box Layouts",
+domain: "blog.openreplay.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Bento Layout CSS Grid",
+domain: "iamsteve.me",
+favicon: "https:
+},
+{
+href: "https:
+label: "Bento Grids",
+domain: "bentogrids.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "React Component Variants",
+domain: "dev.to",
+favicon: "https:
+},
+{
+href: "https:
+label: "Icograms Designer",
+domain: "icograms.com",
+favicon: "https:
+},
+],
+},
+{
+title: "Icon Libraries",
+color: "blue",
+links: [
+{
+href: "https:
+label: "Lucide Icons",
+domain: "lucide.dev",
+favicon: "https:
+},
+{
+href: "https:
+label: "React Icons",
+domain: "react-icons.github.io",
+favicon: "https:
+},
+{
+href: "https:
+label: "Simple Icons",
+domain: "simpleicons.org",
+favicon: "https:
+},
+{
+href: "https:
+label: "Feather Icons",
+domain: "feathericons.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Flowbite Icons",
+domain: "flowbite.com",
+favicon: "https:
+},
+],
+},
+{
+title: "Developer Portfolios",
+color: "pink",
+links: [
+{
+href: "https:
+label: "Eric Wu",
+domain: "ericwu.me",
+favicon: "https:
+},
+{
+href: "https:
+label: "Braydon Coyer",
+domain: "braydoncoyer.dev",
+favicon: "https:
+},
+{
+href: "https:
+label: "Rachel How",
+domain: "rachelhow.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Kent C. Dodds",
+domain: "kentcdodds.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Adrian Zumbrunnen",
+domain: "azumbrunnen.me",
+favicon: "https:
+},
+],
+},
+{
+title: "FOSS",
+color: "red",
+links: [
+{
+href: "https:
+label: "Immich - Photo Backup",
+domain: "github.com",
+favicon: "https:
+},
+{
+href: "https:
+label: "Omarchy Linux",
+domain: "omarchy.org",
+favicon: "https:
+},
+{
+href: "https:
+label: "Jellyfin - Media Server",
+domain: "jellyfin.org",
+favicon: "https:
+},
+{
+href: "https:
+label: "FOSS Photo Software",
+domain: "github.com",
+favicon: "https:
+},
+],
+},
+];
+
+===== FILE: src/data/logo-variants.ts =====
+export type LogoVariant = {
+title: string;
+description: string;
+image: string;
+imageAlt: string;
+};
+export const logoVariants: LogoVariant[] = [
+{
+title: "Tracing Mountain",
+description:
+"The original line-art sketch with layered mountain ranges, flowing horizon lines, and careful attention to depth. This version shows the complete vision with all the detailed landscape elements.",
+image: "/site-icons/Tracing-Moutain.webp",
+imageAlt: "Detailed line-traced mountain with layered landscapes",
+},
+{
+title: "Mountain Sketch",
+description:
+"A bold, simplified outline focusing on the dominant peak. Clean and minimalist, this version captures the essential mountain shape without the sun, perfect for dark mode and high-contrast 
+applications.",
+image: "/site-icons/Mountain-sketch.webp",
+imageAlt: "Bold outline sketch of mountain peak on dark background",
+},
+{
+title: "Main Logo",
+description:
+"The full-color hero version with rich teal and olive tones creating depth, topped with the signature bright green outline and warm orange sun. This is the complete identity piece with all layers and 
+colors working together.",
+image: "/site-icons/Main-Logo.webp",
+imageAlt: "Full-color mountain logo with layered greens and orange sun",
+},
+{
+title: "Favicon Mountain",
+description:
+"A single-peak interpretation optimized for small sizes. The bright green outline against darker tones ensures visibility at tiny dimensions, making it ideal for browser tabs and app icons.",
+image: "/site-icons/Favicon-Mountain.webp",
+imageAlt: "Single mountain peak optimized for small favicon sizes",
+},
+];
+
+===== FILE: src/data/site-history-data.ts =====
+export interface SiteHistoryLink {
+label: string;
+url: string;
+}
+export interface SiteHistorySection {
+title: string;
+description: string;
+image: string;
+imageAlt: string;
+imagePosition: "left" | "right";
+links?: SiteHistoryLink[];
+}
+export const siteHistorySections: SiteHistorySection[] = [
+{
+title: "2007-2009 Pre-chrislanejones.com",
+description:
+"My first professional website was built on WordPress 2.1, released in January 2007. I modified the iconic Kubrick theme by Michael Heilemann—the default WordPress theme that defined an era of 
+blogging.\n\nThe Kubrick theme was elegant in its simplicity: a clean white background, blue header, customizable header image, and that distinctive rounded sidebar. The domain was 
+inspirationalexperiences.org.",
+image: "/site-history/WordPress-2.1-January-2007.webp",
+imageAlt: "WordPress 2.1 interface with Kubrick theme from January 2007",
+imagePosition: "left",
+links: [
+{
+label: "The Secret History of Kubrick Theme",
+url: "https:
+},
+{
+label: "A Journey Through WordPress Interface",
+url: "https:
+},
+],
+},
+{
+title: "2012-2016 - Chrislanejones.com: The Video Production Years",
+description:
+"In 2013, I graduated with a Bachelor of Arts in Television Production after three video production communications internships at the University of North Florida.\n\nI started my career in video 
+editing working at a local church in Jacksonville, FL—First Baptist Church of Jacksonville. When I worked at the church, I spent hours designing my website and I decided to switch careers to 
+building websites.\n\nThis video production website portfolio helped me land my first job in tech, even though it referenced me being a video editor and web designer.\n\nI used a responsive theme to 
+build my website, which was still a new concept in 2014. My first job in tech was at Web.com, and the majority of the websites were not responsive when I started.\n\nThis site was built with the 
+CyberChimps Responsive WordPress theme—one of the early champions of mobile-first design in the WordPress ecosystem.",
+image: "/site-history/Original-Video-Production-Website.webp",
+imageAlt: "Original video production portfolio website",
+imagePosition: "right",
+links: [
+{
+label: "CyberChimps Responsive Theme Review",
+url: "https:
+},
+],
+},
+{
+title: "2017-2024 - WordPress Bootstrap Resume: The Ugly Years",
+description:
+"I built my own WordPress website from scratch using Bootstrap, and honestly... it was ugly. I can't believe it was up for so long.\n\nThis website was live during my move to Virginia, a period of 
+major life and career transition. Looking back, it's a humbling reminder that not every design decision ages well. The Bootstrap grid was there, the functionality worked, but the aesthetic? Let's 
+just say it was more 'functional' than 'beautiful.'\n\nDespite its appearance, this site served its purpose—it got me through contract work, networking events, and eventually led to better 
+opportunities. It's proof that perfect is the enemy of done, and sometimes you just need to ship it and iterate later.",
+image: "/site-history/My-Resume-Website.webp",
+imageAlt: "WordPress Bootstrap resume website from 2017-2024",
+imagePosition: "left",
+},
+{
+title: "2024-2025 - The Short-Lived Post-COVID WordPress Site",
+description:
+"This site was built during my transition from WordPress to React—a bridge between two worlds. I was falling in love with React's component model and growing increasingly frustrated with 
+WordPress's direction, particularly the controversies surrounding Matt Mullenweg and the platform's fractured ecosystem.\n\nThe block editor (Gutenberg) felt clunky compared to the elegance of React 
+components. The WordPress drama was exhausting. And most importantly, I wanted the creative freedom that React offered—especially for animations and micro-interactions.\n\nReact with Framer Motion 
+made it trivially easy to add smooth, performant animations that would have been painful in WordPress.\n\nThis site didn't last long. By mid-2025, I had fully transitioned to a modern React stack 
+with Next.js, TypeScript, Tailwind CSS, and Framer Motion.",
+image: "/site-history/Post-Covid-WordPress-Website.webp",
+imageAlt: "Post-COVID WordPress website during transition to React",
+imagePosition: "right",
+},
+{
+title: "2025 - Future: Modern React & Framer Motion",
+description:
+"This is the site you're looking at right now—built with Next.js 14, React, TypeScript, Tailwind CSS, and Framer Motion.\n\nI finally had the creative freedom I'd been craving. Framer Motion made 
+animations smooth and intuitive. The component-based architecture meant I could build reusable pieces and iterate quickly. TypeScript caught bugs before they reached production. Tailwind made styling 
+fast and consistent.\n\nThe bento grid layout, the smooth page transitions, the interactive components, the dark mode—all of this would have been significantly harder in WordPress. React gave me 
+the tools to build the portfolio site I'd always envisioned.\n\nLooking ahead, I'm excited to continuing to push what's possible with modern web technologies. The journey continues.",
+image: "/site-history/New-React-Website.webp",
+imageAlt: "Current Next.js and React website with modern animations",
+imagePosition: "left",
+},
+];
+
+===== FILE: src/lib/seo.ts =====
+import { Metadata } from "next";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../convex/_generated/api";
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL!;
+const convex = new ConvexHttpClient(convexUrl);
+export async function getPageSEO(path: string): Promise<Metadata> {
+try {
+const data = await convex.query(api.seo.getSEOByPath, { path });
+if (data && data.title && data.description) {
+const metadata: Metadata = {
+title: data.title,
+description: data.description,
+};
+if (data.canonicalUrl) {
+metadata.alternates = {
+canonical: data.canonicalUrl,
+};
+}
+return metadata;
+}
+console.log(`No SEO data found for path: ${path}, using defaults`);
+return getDefaultSEO(path);
+} catch (error) {
+console.error("Error fetching SEO from Convex:", error);
+return getDefaultSEO(path);
+}
+}
+function getDefaultSEO(path: string): Metadata {
+const defaults: Record<string, Metadata> = {
+"/": {
+title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+description:
+"Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+alternates: { canonical: "https:
+},
+"/about": {
+title: "About Chris Jones | Developer, Hiker & Community Leader",
+description:
+"From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and life in Virginia's Shenandoah Mountains.",
+alternates: { canonical: "https:
+},
+"/blog": {
+title: "Blog | Web Development, React & WordPress Insights",
+description:
+"Articles and tutorials about web development, React, Next.js, WordPress, and building modern web applications. Tips, tricks, and lessons learned from the field.",
+alternates: { canonical: "https:
+},
+"/contact": {
+title: "Contact Chris Lane Jones | Web Development Services",
+description:
+"Get in touch for web development projects, WordPress maintenance, React consulting, or speaking opportunities. Available for freelance work and collaborations.",
+alternates: { canonical: "https:
+},
+"/projects": {
+title: "Web Development Projects | Next.js, React & WordPress Sites",
+description:
+"Full-stack projects featuring Next.js applications, WordPress plugins, image editors, and web tools. View my work with TypeScript, React, and modern frameworks.",
+alternates: { canonical: "https:
+},
+"/career": {
+title: "Career & Experience | Chris Lane Jones Web Developer",
+description:
+"10+ years from video editor to senior developer. Experience with React, Next.js, WordPress, and building solutions for Fortune 500 companies and government agencies.",
+alternates: { canonical: "https:
+},
+"/browser-tabs": {
+title: "Developer Resources & Tools | Curated Web Dev Bookmarks",
+description:
+"My collection of essential web development resources: React libraries, design tools, icon sets, UI frameworks, and learning materials I reference daily.",
+alternates: { canonical: "https:
+},
+"/conferences": {
+title: "Tech Conferences Attended | All Things Open, RenderATL & More",
+description:
+"Notes from web development conferences including All Things Open, WordCamp US, THAT Conference, RenderATL, and RVAJS. Insights from the JavaScript community.",
+alternates: { canonical: "https:
+},
+"/link-page": {
+title: "Connect With Chris Lane Jones | Social Media & Portfolio Links",
+description:
+"Find me on GitHub, LinkedIn, Twitter/X, and CodePen. Access my portfolio, blog posts, WordPress services, and web development resources all in one place.",
+alternates: { canonical: "https:
+},
+"/logo-page": {
+title: "Mountain Logo Design Story | Chris Lane Jones Brand Identity",
+description:
+"The meaning behind my mountain logo design - representing the journey through code and trails. Explore different logo variations and design philosophy.",
+alternates: { canonical: "https:
+},
+"/site-history": {
+title: "Portfolio Evolution | From WordPress 2.1 to Next.js React App",
+description:
+"18 years of website evolution: from the Kubrick WordPress theme in 2007 to modern Next.js. See how my portfolio transformed alongside web technology.",
+alternates: { canonical: "https:
+},
+"/site-map": {
+title: "Site Map | Chris Lane Jones Portfolio Navigation",
+description:
+"Complete site map of my web development portfolio. Browse all pages including projects, blog posts, services, conference notes, and developer resources.",
+alternates: { canonical: "https:
+},
+"/wordpress-maintenance": {
+title: "WordPress Maintenance Services | Monthly Action Plan",
+description:
+"Comprehensive WordPress maintenance including security scans, plugin updates, performance optimization, and technical support. Three hours of site changes monthly with 99.9% uptime guarantee.",
+alternates: {
+canonical: "https:
+},
+},
+"/react-maintenance": {
+title: "React Application Maintenance | Monthly Support & Optimization",
+description:
+"Expert React app maintenance with dependency updates, security monitoring, performance optimization, and debugging. Three hours of consulting monthly for Next.js and React applications.",
+alternates: { canonical: "https:
+},
+};
+return (
+defaults[path] || {
+title: "Chris Lane Jones — Dev & Hiker",
+description: "Building modern web applications.",
+}
+);
+}
+
+===== FILE: src/lib/utils.ts =====
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+export function cn(...inputs: ClassValue[]) {
+return twMerge(clsx(inputs))
+}
+
+===== FILE: src/providers/ConvexClientProvider.tsx =====
+"use client";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ReactNode } from "react";
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+export function ConvexClientProvider({ children }: { children: ReactNode }) {
+return <ConvexProvider client={convex}>{children}</ConvexProvider>;
+}
+
+===== FILE: src/providers/PostHogProvider.tsx =====
+"use client";
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
+import { useEffect } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+export function PHProvider({ children }: { children: React.ReactNode }) {
+useEffect(() => {
+if (typeof window !== "undefined") {
+posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+api_host:
+process.env.NEXT_PUBLIC_POSTHOG_HOST || "https:
+capture_pageview: false,
+capture_pageleave: true,
+});
+}
+}, []);
+return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
+}
+export function PostHogPageView() {
+const pathname = usePathname();
+const searchParams = useSearchParams();
+useEffect(() => {
+if (pathname) {
+let url = window.origin + pathname;
+if (searchParams && searchParams.toString()) {
+url = url + `?${searchParams.toString()}`;
+}
+posthog.capture("$pageview", {
+$current_url: url,
+});
+}
+}, [pathname, searchParams]);
+return null;
+}
+
+===== FILE: src/scripts/migrate-blog-images.ts =====
+import { UTApi } from "uploadthing/server";
+import * as fs from "fs";
+import * as path from "path";
+const utapi = new UTApi({
+token: process.env.UPLOADTHING_TOKEN || process.env.UPLOADTHING_API_KEY,
+});
+interface BlogImage {
+localPath: string;
+blogPostSlug: string;
+blogPostTitle: string;
+}
+const imagesToMigrate: BlogImage[] = [
+{
+localPath: "public/projects/multi-image-compress-and-edit-app.webp",
+blogPostSlug: "building-modern-react-applications-with-nextjs-14",
+blogPostTitle: "Building Modern React Applications with Next.js 14",
+},
+{
+localPath: "public/gallery/Richmond-WordPress-Meetup.webp",
+blogPostSlug: "wordpress-vs-modern-frameworks-when-to-choose-what",
+blogPostTitle: "WordPress vs Modern Frameworks: When to Choose What",
+},
+{
+localPath: "public/gallery/Standing-Desk-Setup.webp",
+blogPostSlug: "remote-work-setup-perfect-development-environment",
+blogPostTitle: "Remote Work Setup: Building the Perfect Development Environment",
+},
+];
+async function migrateImages() {
+console.log("🚀 Starting blog image migration to UploadThing...\n");
+for (const image of imagesToMigrate) {
+try {
+console.log(`📤 Uploading: ${path.basename(image.localPath)}`);
+const filePath = path.join(process.cwd(), image.localPath);
+const fileBuffer = fs.readFileSync(filePath);
+const fileName = path.basename(image.localPath);
+const file = new File([fileBuffer], fileName, {
+type: "image/webp",
+});
+const response = await utapi.uploadFiles([file]);
+if (response[0].data) {
+const uploadedUrl = response[0].data.url;
+const fileSize = fileBuffer.length;
+console.log(`✅ Uploaded successfully!`);
+console.log(` URL: ${uploadedUrl}`);
+console.log(` Size: ${(fileSize / 1024).toFixed(1)} KB`);
+console.log(` Blog Post: ${image.blogPostTitle}\n`);
+console.log(`📝 Convex Media Entry:`);
+console.log(JSON.stringify({
+url: uploadedUrl,
+filename: fileName,
+size: fileSize,
+assignedToType: "blogPost",
+assignedToSlug: image.blogPostSlug,
+assignedToTitle: image.blogPostTitle,
+}, null, 2));
+console.log("\n---\n");
+} else {
+console.error(`❌ Failed to upload ${fileName}`);
+console.error(response[0].error);
+}
+} catch (error) {
+console.error(`❌ Error uploading ${image.localPath}:`, error);
+}
+}
+console.log("✨ Migration complete!");
+}
+migrateImages().catch(console.error);
+
+===== FILE: src/scripts/navigation-seed.ts =====
+import React from "react";
+import type { NavLink } from "../components/page/links";
+export interface SeedHeaderNavItem {
+label: string;
+href?: string;
+isExternal?: boolean;
+children?: NavLink[];
+}
+export const staticHeaderNavItems: SeedHeaderNavItem[] = [
+{ label: "Home", href: "/" },
+{
+label: "About",
+children: [
+{ href: "/about", label: "About" },
+{ href: "/browser-tabs", label: "Chrome Tabs I Left Open" },
+{ href: "/site-history", label: "History of This Site" },
+{ href: "/link-page", label: "Link Page" },
+],
+},
+{
+label: "Work",
+children: [
+{ href: "/projects", label: "Projects" },
+{ href: "/career", label: "Career & Resume" },
+{ href: "/conferences", label: "Conferences" },
+{ href: "/react-maintenance", label: "React Services" },
+{ href: "/wordpress-maintenance", label: "WordPress Services" },
+],
+},
+{ label: "Blog", href: "/blog" },
+{ label: "Contact", href: "/contact" },
+];
+export interface SeedFooterNavSection {
+title: string;
+links: NavLink[];
+}
+export const staticFooterNavLinks: SeedFooterNavSection[] = [
+{
+title: "About",
+links: [
+{ href: "/", label: "Home" },
+{ href: "/about", label: "About" },
+{ href: "/link-page", label: "Link Page" },
+{ href: "/browser-tabs", label: "Browser Tabs" },
+{ href: "/contact", label: "Contact" },
+],
+},
+{
+title: "Work",
+links: [
+{ href: "/projects", label: "Projects" },
+{ href: "/career", label: "Career & Resume" },
+{ href: "/blog", label: "Blog" },
+{ href: "/react-maintenance", label: "React Services" },
+{ href: "/wordpress-maintenance", label: "WordPress Services" },
+{ href: "/conferences", label: "Conferences" },
+],
+},
+{
+title: "Resources",
+links: [
+{ href: "/site-history", label: "History of This Site" },
+{ href: "/logo-page", label: "About The Logo" },
+{ href: "/site-map", label: "Change Log / Site Map" },
+{ href: "/admin", label: "Admin" },
+{ href: "/404", label: "404 Music Lounge" },
+],
+},
+];
+
+===== FILE: src/scripts/run-media-migration.ts =====
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "../../convex/_generated/api";
+const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL;
+if (!CONVEX_URL) {
+console.error("❌ NEXT_PUBLIC_CONVEX_URL not found in environment");
+process.exit(1);
+}
+const client = new ConvexHttpClient(CONVEX_URL);
+async function runMigration() {
+console.log("🚀 Running media migration in Convex...\n");
+try {
+const results = await client.mutation(api.media.migrateBlogImages, {});
+console.log("✅ Migration complete!\n");
+console.log("Results:");
+console.log(JSON.stringify(results, null, 2));
+const successCount = results.filter((r: any) => r.success).length;
+const failCount = results.filter((r: any) => !r.success).length;
+console.log(`\n✨ Success: ${successCount}, Failed: ${failCount}`);
+} catch (error) {
+console.error("❌ Migration failed:", error);
+process.exit(1);
+}
+}
+runMigration();
+
+===== FILE: src/types/css.d.ts =====
+declare module "*.css" {
+const content: { [className: string]: string };
+export default content;
+}
+declare module "*.scss" {
+const content: { [className: string]: string };
+export default content;
+}
+declare module "*.sass" {
+const content: { [className: string]: string };
+export default content;
+}
+
+===== FILE: src/utils/uploadthing.ts =====
+import { generateReactHelpers } from "@uploadthing/react";
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
+export const { useUploadThing, uploadFiles } =
+generateReactHelpers<OurFileRouter>();
+export type UploadedFile = {
+url: string;
+name: string;
+size: number;
+};
+
+===== FILE: tailwind.config.ts =====
+import type { Config } from "tailwindcss";
+const config: Config = {
+content: [
+
+===== FILE: tsconfig.json =====
+{
+"compilerOptions": {
+"target": "ES2017",
+"lib": [
+"dom",
+"dom.iterable",
+"esnext"
+],
+"allowJs": true,
+"skipLibCheck": true,
+"strict": true,
+"noEmit": true,
+"esModuleInterop": true,
+"module": "esnext",
+"moduleResolution": "bundler",
+"resolveJsonModule": true,
+"isolatedModules": true,
+"jsx": "react-jsx",
+"incremental": true,
+"plugins": [
+{
+"name": "next"
+}
+],
+"paths": {
+],
+"exclude": [
+"node_modules"
+]
+}
+
+===== FILE: .vscode/settings.json =====
+{
+"tailwindCSS.lint.invalidConfigPath": "ignore",
+"tailwindCSS.lint.invalidTailwindDirective": "ignore",
+"tailwindCSS.lint.invalidScreen": "ignore",
+"tailwindCSS.lint.invalidVariant": "ignore",
+"tailwindCSS.lint.invalidApply": "ignore",
+"css.lint.unknownAtRules": "ignore",
+"tailwindCSS.experimental.configFile": null
+}
+

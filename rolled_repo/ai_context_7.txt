@@ -1,0 +1,1675 @@
+
+===== FILE: src/app/site-history/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import SiteHistoryPage from "@/app/site-history/SiteHistoryPage";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/site-history");
+}
+export default function SiteHistory() {
+const headerData = getPageHeader("/site-history");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<SiteHistoryPage />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/site-history/SiteHistoryPage.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import { TwoColumnCard } from "@/components/page/two-column-card";
+import { Button } from "@/components/ui/button";
+import { siteHistorySections } from "@/data/site-history-data";
+export default function SiteHistoryPage() {
+return (
+<div className="space-y-8">
+{section.links && section.links.length > 0 && (
+<motion.div
+initial={{ opacity: 0, y: 10 }}
+whileInView={{ opacity: 1, y: 0 }}
+transition={{ duration: 0.3, delay: 0.15 + index * 0.05 }}
+viewport={{ once: true, margin: "-100px" }}
+className="mt-4 pt-4 border-t border-(--color-border)"
+>
+<h3 className="text-sm font-semibold text-(--color-ink) mb-3">
+Related Links
+</h3>
+<div className="space-y-2">
+{section.links.map((link) => (
+<Button
+key={link.url}
+variant="base"
+asChild
+className="w-full"
+>
+<a
+href={link.url}
+target="_blank"
+rel="noopener noreferrer"
+className="flex items-center justify-between w-full gap-2"
+>
+<span className="truncate">{link.label}</span>
+<svg
+className="w-4 h-4 shrink-0"
+fill="none"
+stroke="currentColor"
+viewBox="0 0 24 24"
+>
+<path
+strokeLinecap="round"
+strokeLinejoin="round"
+strokeWidth={2}
+d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+/>
+</svg>
+</a>
+</Button>
+))}
+</div>
+</motion.div>
+)}
+</div>
+</TwoColumnCard>
+</div>
+))}
+</div>
+);
+}
+
+===== FILE: src/app/site-map/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import SiteMapPage from "./SiteMapPage";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/site-map");
+}
+export default function SiteMap() {
+const headerData = getPageHeader("/site-map");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<SiteMapPage />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/site-map/SiteMapPage.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import Card from "@/components/page/card";
+import {
+FileText,
+ExternalLink,
+Home,
+Briefcase,
+Code,
+Book,
+MessageSquare,
+Users,
+Mountain,
+} from "lucide-react";
+const sitemapSections = [
+{
+title: "Main Pages",
+icon: <Home className="w-5 h-5" />,
+links: [
+{ label: "Home", href: "/" },
+{ label: "About", href: "/about" },
+{ label: "Career", href: "/career" },
+{ label: "Projects", href: "/projects" },
+{ label: "Contact", href: "/contact" },
+],
+},
+{
+title: "Services",
+icon: <Briefcase className="w-5 h-5" />,
+links: [
+{ label: "WordPress Maintenance", href: "/wordpress-maintenance" },
+{ label: "React Maintenance", href: "/react-maintenance" },
+],
+},
+{
+title: "Content & Resources",
+icon: <Book className="w-5 h-5" />,
+links: [
+{ label: "Browser Tabs", href: "/browser-tabs" },
+{ label: "Conferences", href: "/conferences" },
+{ label: "Site History", href: "/site-history" },
+{ label: "About the Logo", href: "/logo" },
+],
+},
+{
+title: "Connect",
+icon: <Users className="w-5 h-5" />,
+links: [
+{ label: "Link Page", href: "/link-page" },
+{
+label: "GitHub",
+href: "https:
+external: true,
+},
+{
+label: "LinkedIn",
+href: "https:
+external: true,
+},
+{ label: "𝕏 (Twitter)", href: "https:
+{
+label: "BlueSky",
+href: "https:
+external: true,
+},
+],
+},
+];
+export default function SiteMapPage() {
+return (
+<>
+<Card
+size="small"
+delay={0.1}
+className="flex flex-col"
+style={{ minHeight: "auto" }}
+>
+<div className="flex items-center gap-3 mb-6">
+<FileText className="w-6 h-6 text-accent" />
+<h2 className="">Changelog</h2>
+</div>
+<div className="flex-1 flex items-center justify-center text-center py-12">
+<div className="space-y-4">
+<div className="w-16 h-16 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
+<Code className="w-8 h-8 text-accent" />
+</div>
+<h3 className="text-muted">Coming Soon</h3>
+<p className="text-muted max-w-sm">
+Detailed version history and site updates will be documented
+here. Check back soon for a comprehensive changelog.
+</p>
+</div>
+</div>
+</Card>
+<Card
+size="full"
+delay={0.3}
+className="mt-6"
+style={{ minHeight: "auto" }}
+>
+<div className="text-center space-y-4">
+<h2 className="">Built With</h2>
+<p className="text-muted max-w-2xl mx-auto">
+This site is built with Next.js 14, React, TypeScript, Tailwind CSS,
+and Framer Motion. Hosted on Vercel with data managed through
+Convex.
+</p>
+<div className="flex flex-wrap justify-center gap-3 pt-4">
+{[
+"Next.js",
+"React",
+"TypeScript",
+"Tailwind CSS",
+"Framer Motion",
+"Vercel",
+"Convex",
+].map((tech) => (
+<span
+key={tech}
+className="px-4 py-2 rounded-full bg-accent/10 text-accent"
+>
+{tech}
+</span>
+))}
+</div>
+</div>
+</Card>
+</>
+);
+}
+
+===== FILE: src/app/wordpress-maintenance/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import WPMaintenanceContent from "./WP-MaintenanceContent";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/WordPress-Maintenance");
+}
+export default function WordPressMaintenancePage() {
+const headerData = getPageHeader("/wordpress-maintenance");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<WPMaintenanceContent />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/wordpress-maintenance/WP-MaintenanceContent.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import ClientSliderContent from "@/components/main/client-slider-content";
+import ContactForm from "@/components/page/contact-form";
+const WPactionPlanItems = [
+{
+icon: "🎨",
+title: "Website Consulting & Design Edits",
+description:
+"Three hours of site changes (copy, images, SEO edits, e-commerce additions, and videos) and/or website consulting a month.",
+details:
+"Whether it's refreshing content or reimagining layouts; improving the design increases engagement.",
+},
+{
+icon: "🛡️",
+title: "Security, Maintenance & Backups",
+description:
+"Your website's security isn't just about protection—it's about peace of mind.",
+details:
+"Monthly security scans, vulnerability testing, updating plugins/themes, Disaster recovery plan – daily WordPress offsite backups on secure servers.",
+},
+{
+icon: "🚑",
+title: "Technical Support & Troubleshooting",
+description:
+"Fixing broken links and images, resolving website errors and bugs, and troubleshooting plugin and theme conflicts.",
+details:
+"We also resolve uptime problems. This also includes an initial review of the hosting web panel setup.",
+},
+{
+icon: "⚡",
+title: "Site Performance Optimization",
+description:
+"Improving performance bottlenecks by crushing 💪 Google's PageSpeed Insights score.",
+details:
+"Image optimization, JavaScript / CSS minification, caching implementation, and server optimization make up the majority of performance issues. Faster sites improve SEO Rankings.",
+},
+{
+icon: "📊",
+title: "Quarterly SEO Reviews",
+description:
+"Stay ahead of the curve and capture new opportunities with data-driven insights.",
+details:
+"Improvements to meta tags and page-level content help boost rankings.",
+},
+{
+icon: "🇺🇸",
+title: "Based in the USA",
+description: "Our skilled US-based professionals handle every project.",
+details:
+"We understand your market and share a similar time zone. We take pride in our work.",
+},
+];
+export default function WordPressServicesPage() {
+return (
+<>
+<motion.section
+initial={{ opacity: 0 }}
+animate={{ opacity: 1 }}
+transition={{ duration: 0.6, delay: 0.3 }}
+className="mb-16"
+>
+<h2 className="text-center mb-12">
+The Full Maintenance Action Plan 🎯
+</h2>
+<div className="grid md:grid-cols-12 gap-4">
+{WPactionPlanItems.map((item, index) => (
+<Card
+key={index}
+size="full"
+delay={index * 0.1}
+style={{ minHeight: "auto" }}
+>
+<div className="flex items-start gap-4">
+<div className="shrink-0">{item.icon}</div>
+<div>
+<h3 className="mb-2">{item.title}</h3>
+<p className="mb-2">{item.description}</p>
+<p className="opacity-80">{item.details}</p>
+</div>
+</div>
+</Card>
+))}
+</div>
+</motion.section>
+<div className="grid md:grid-cols-2 gap-6">
+{" "}
+<Card
+size="small"
+className="flex flex-col"
+>
+<h3 className="mb-6">The Action Plan</h3>
+<ul className="space-y-3 mb-8 flex-1">
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">
+Three hours of site changes and consulting monthly
+</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">99.9% website uptime</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">
+Monthly security scans & vulnerability testing
+</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">Plugin/theme updates</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">Daily WordPress offsite backups</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">Fix broken links and images</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">Resolve errors and conflicts</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">✓</span>
+<span className="">Performance optimization</span>
+</li>
+</ul>
+<div className="text-center mt-auto pt-6 border-t border-(--color-border)">
+<div className="text-accent mb-6">$200 / month</div>
+<Button asChild variant="base" size="lg" className="w-full">
+<Link href="
+</Button>
+</div>
+</Card>
+<motion.section
+initial={{ opacity: 0 }}
+whileInView={{ opacity: 1 }}
+transition={{ duration: 0.6 }}
+viewport={{ once: true }}
+className="mb-16"
+>
+<Card size="hero" height="large" delay={0.1}>
+<ClientSliderContent />
+</Card>
+</motion.section>
+<ContactForm
+id="contact"
+variant="maintenance"
+serviceType="WordPress"
+plusPlanLabel="SEO"
+/>{" "}
+
+===== FILE: src/components/main/blog-content.tsx =====
+"use client";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import Link from "next/link";
+import { Newspaper } from "lucide-react";
+import { Button } from "@/components/ui/button";
+export default function BlogContent() {
+const posts = useQuery(api.blogPosts.getAllPosts);
+const recentPosts = posts?.slice(0, 2) || [];
+const getDaysAgo = (timestamp: number): string => {
+const now = Date.now();
+const diffInMs = now - timestamp;
+const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+if (diffInDays === 0) return "today";
+if (diffInDays === 1) return "1 day ago";
+return `${diffInDays} days ago`;
+};
+return (
+<div className="flex flex-col h-full">
+<div className="grid grid-cols-[1fr_auto] items-center gap-4">
+<h3 className="text-ink tracking-tight">Latest Blog Posts</h3>
+<Button
+variant="neutral"
+size="icon"
+round
+aria-label="View all blog posts"
+asChild
+>
+<Link href="/blog">
+<Newspaper className="w-5 h-5 text-ink" />
+</Link>
+</Button>
+</div>
+</div>
+);
+}
+
+===== FILE: src/components/main/client-slider-content.tsx =====
+"use client";
+import IconSlider, { SliderItem } from "@/components/page/icon-slider";
+import { clients } from "@/data/clients";
+const clientItems: SliderItem[] = clients.map((client) => ({
+name: client.name,
+logo: client.logo,
+url: client.url,
+}));
+export default function ClientSliderContent() {
+return (
+<IconSlider
+items={clientItems}
+title="Past and Present Clients"
+showNavigation={true}
+showPagination={true}
+variant="large-block"
+/>
+);
+}
+
+===== FILE: src/components/main/conference-slider-content.tsx =====
+"use client";
+import { conferences } from "@/data/conferences";
+import IconSlider, { SliderItem } from "../page/icon-slider";
+const conferenceItems: SliderItem[] = conferences.map((conf) => ({
+name: conf.name,
+logo: conf.coverImage || "",
+url: `/conferences/${conf.year}/${conf.slug}`,
+year: conf.year.toString(),
+location: conf.city,
+}));
+export default function ConferenceSliderContent() {
+return (
+<IconSlider
+items={conferenceItems}
+title="Tech Conferences Attended"
+showNavigation={true}
+showPagination={true}
+variant="no-filter"
+/>
+);
+}
+
+===== FILE: src/components/main/hero-content.tsx =====
+"use client";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { MountainSnow } from "lucide-react";
+export default function HeroContent() {
+const [isAnimated, setIsAnimated] = useState(false);
+useEffect(() => {
+const timer = setTimeout(() => setIsAnimated(true), 500);
+return () => clearTimeout(timer);
+}, []);
+const replayAnimation = () => {
+setIsAnimated(false);
+setTimeout(() => setIsAnimated(true), 100);
+};
+return (
+<div className="relative h-full">
+<div className="flex flex-col h-full">
+<div className="flex flex-col gap-4">
+<h1 className="h1 tracking-tight text-ink">
+UX/UI Web Design and Development
+</h1>
+<h2 className="h2 text-ink">
+I Consult, Design, and Develop Web Interfaces for Businesses and
+Government Agencies.
+</h2>
+</div>
+<div className="mt-auto flex items-center gap-3">
+<Button asChild variant="neutral">
+<a href="/contact">Contact Me</a>
+</Button>
+<Button
+variant="neutral"
+size="icon"
+round={true}
+onClick={replayAnimation}
+aria-label="Replay animation"
+>
+<MountainSnow className="h-5 w-5" aria-hidden="true" />
+</Button>
+</div>
+</div>
+</div>
+);
+}
+
+===== FILE: src/components/main/image-gallery-content.tsx =====
+"use client";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
+const photos: GalleryPhoto[] = [
+{
+src: "/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp",
+alt: "Theo Browne and Chris at Render 2024",
+description: "Theo Browne and I at Render 2024",
+},
+{
+src: "/gallery/fan-gallery/Jason-Lengstorf-and-I.webp",
+alt: "Jason Lengstorf and I at Epic Web Conf 2025",
+description: "Jason Lengstorf and I at Epic Web Conf 2025",
+},
+{
+src: "/gallery/fan-gallery/Group-Photo-With-Kent-C-Dodds-at-THAT-Conf.webp",
+alt: "Group Photo with Kent C. Dodds at THAT Conf WI 2024",
+description: "Group Photo with Kent C. Dodds at THAT Conf WI 2024",
+},
+{
+src: "/gallery/fan-gallery/Kevin-Powell-And-I-THAT-Conf.webp",
+alt: "Kevin Powell And I THAT Conference WI 2025",
+description: "Kevin Powell And I THAT Conf WI 2025",
+},
+{
+src: "/gallery/fan-gallery/ChrisSev-Avindra-and-I-ATO-2024.webp",
+alt: "Chris Sev, Avindra Fernando, and I at ATO 2024",
+description: "Chris Sev, Avindra Fernando, and I at ATO 2024",
+},
+];
+export default function ImageGalleryContent() {
+return (
+<div className="relative w-full h-full flex flex-col overflow-hidden">
+<div className="p-4 shrink-0 flex items-center justify-between gap-4 backdrop-blur-sm">
+<h3 className="text-ink tracking-tight truncate">
+Conference Fan Shots
+</h3>
+<GalleryDrawer photos={photos} title="Gallery" animationDelay={0.2} />
+</div>
+</div>
+);
+}
+
+===== FILE: src/components/main/music-player-content.tsx =====
+"use client";
+import { useState, useRef, useEffect } from "react";
+import { Play, Pause, SkipForward, Volume2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardMedia, CardFooter } from "@/components/page/card";
+import Image from "next/image";
+type Track = {
+title: string;
+artist: string;
+album: string;
+src: string;
+artwork: string;
+};
+const tracks: Track[] = [
+{
+title: "Afterlife",
+artist: "Sharon Van Etten",
+album: "Sharon Van Etten & The Attachment Theory",
+artwork: "/music/art/Attachment-Theory.webp",
+src: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
+},
+{
+title: "Praise",
+artist: "Panda Bear",
+album: "Sinister Grift",
+artwork: "/music/art/Panda-Bear-Sinister-Grift.webp",
+src: "/music/audio/Panda-Bear-Praise.mp3",
+},
+{
+title: "After The Earthquake",
+artist: "Alvvays",
+album: "Blue Rev",
+artwork: "/music/art/Alvvays-Blue-Rev-Album-Art.webp",
+src: "/music/audio/alvvays-after-the-earthquake.mp3",
+},
+];
+export default function MusicPlayerContent() {
+const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+const [isPlaying, setIsPlaying] = useState(false);
+const [volume, setVolume] = useState(0.7);
+const audioRef = useRef<HTMLAudioElement | null>(null);
+const currentTrack = tracks[currentTrackIndex];
+const handlePlayPause = () => {
+if (audioRef.current) {
+if (isPlaying) audioRef.current.pause();
+else audioRef.current.play();
+setIsPlaying(!isPlaying);
+}
+};
+const handleNext = () => {
+const nextIndex = (currentTrackIndex + 1) % tracks.length;
+setCurrentTrackIndex(nextIndex);
+setIsPlaying(true);
+};
+const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+const newVolume = parseFloat(event.target.value);
+setVolume(newVolume);
+if (audioRef.current) audioRef.current.volume = newVolume;
+};
+useEffect(() => {
+if (audioRef.current) audioRef.current.volume = volume;
+}, [volume]);
+useEffect(() => {
+if (audioRef.current && isPlaying) {
+audioRef.current.play().catch((err) => {
+console.error("Playback error:", err);
+});
+}
+}, [currentTrackIndex, isPlaying]);
+return (
+<>
+<audio
+ref={audioRef}
+src={currentTrack.src}
+preload="metadata"
+crossOrigin="anonymous"
+/>
+<Card
+size="large"
+height="large"
+layout="media-top"
+className="overflow-hidden flex flex-col"
+>
+<CardMedia>
+<Image
+src={currentTrack.artwork}
+alt={`${currentTrack.album} artwork`}
+fill
+className="object-cover"
+sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+/>
+<div className="absolute inset-0 bg-gradient-to-t from-base/90 via-base/20 to-transparent" />
+<div className="absolute top-4 right-4 z-20">
+<Button
+onClick={handleNext}
+variant="neutral"
+size="icon"
+round
+aria-label="Next track"
+>
+<SkipForward className="w-5 h-5 text-ink" />
+</Button>
+</div>
+</CardMedia>
+
+===== FILE: src/components/main/projects-content.tsx =====
+"use client";
+import { useState, SVGProps } from "react";
+import { motion, AnimatePresence, wrap } from "framer-motion";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Github, ExternalLink } from "lucide-react";
+type Project = {
+title: string;
+description: string;
+features: string[];
+image: string;
+githubUrl: string;
+vercelUrl: string;
+};
+const projects: Project[] = [
+{
+title: "Image Editor & Optimizer",
+description:
+"Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
+features: [
+"Offline-friendly and keyboard-navigable",
+"Undo/redo, rotation/flip, pagination",
+"Bulk crop mirroring across selected images",
+],
+image: "/projects/Image-Horse-App.webp",
+githubUrl:
+"https:
+vercelUrl: "",
+},
+{
+title: "Golang Web Crawler",
+description:
+"This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content, while detecting connectivity issues, 
+network errors, and anti-bot protections.",
+features: [
+"Built in Go (Golang) for high concurrency and efficient network operations.",
+"Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
+"Features bot protection detection for systems like Cloudflare, Incapsula, and Sucuri",
+],
+image: "/projects/Web-Crawler-Golang-App.webp",
+githubUrl: "git@github.com:chrislanejones/webcrawler-go.git",
+vercelUrl: "",
+},
+{
+title: "Vim/Neovim Shortcut Finder",
+description:
+"Interactive app to discover and master Vim/Neovim shortcuts via intuitive search and contextual learning.",
+features: [
+"Interactive shortcut search and filtering",
+"Context-aware command suggestions",
+"Custom shortcut collection builder",
+],
+image: "/projects/MPC-Vim-Filter-Tool.webp",
+githubUrl: "https:
+vercelUrl: "https:
+},
+];
+export default function ProjectsContent() {
+const [currentIndex, setCurrentIndex] = useState(0);
+const [direction, setDirection] = useState<1 | -1>(1);
+const currentProject = projects[currentIndex];
+const setProject = (dir: 1 | -1) => {
+const nextIndex = wrap(0, projects.length, currentIndex + dir);
+setCurrentIndex(nextIndex);
+setDirection(dir);
+};
+const prev = () => setProject(-1);
+const next = () => setProject(1);
+const hasGithub = currentProject.githubUrl.trim() !== "";
+const hasVercel = currentProject.vercelUrl.trim() !== "";
+return (
+<>
+<div className="flex flex-wrap items-center gap-3 mt-6 md:mt-auto">
+<Button asChild variant="neutral" className="min-w-[140px]">
+<a href="/projects">View All Projects</a>
+</Button>
+<Button onClick={prev} variant="neutral" size="icon" round>
+<ArrowLeft />
+</Button>
+<Button
+onClick={() => hasGithub && window.open(currentProject.githubUrl)}
+variant="neutral"
+size="icon"
+round
+disabled={!hasGithub}
+aria-label="GitHub"
+>
+<Github className="w-5 h-5" aria-hidden="true" />
+</Button>
+<Button
+onClick={() => hasVercel && window.open(currentProject.vercelUrl)}
+variant="neutral"
+size="icon"
+round
+disabled={!hasVercel}
+aria-label="Live demo"
+>
+<ExternalLink className="w-5 h-5" aria-hidden="true" />
+</Button>
+<Button onClick={next} variant="neutral" size="icon" round>
+<ArrowRight />
+</Button>
+</div>
+</div>
+<div className="relative md:hidden w-full aspect-[4/3]">
+<Image
+src={currentProject.image}
+alt={`${currentProject.title} preview`}
+fill
+className="object-cover"
+sizes="100vw"
+/>
+</div>
+function ArrowLeft() {
+return (
+<svg {...iconProps} xmlns="http:
+<path d="m12 19-7-7 7-7" />
+<path d="M19 12H5" />
+</svg>
+);
+}
+function ArrowRight() {
+return (
+<svg {...iconProps} viewBox="0 0 24 24">
+<path d="M5 12h14" />
+<path d="m12 5 7 7-7 7" />
+</svg>
+);
+}
+const iconProps: SVGProps<SVGSVGElement> = {
+width: 24,
+height: 24,
+fill: "none",
+stroke: "currentColor",
+strokeWidth: 2,
+strokeLinecap: "round",
+strokeLinejoin: "round",
+};
+
+===== FILE: src/components/main/quote-content.tsx =====
+"use client";
+import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { RefreshCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
+import type { ReactNode } from "react";
+const QUOTES: ReactNode[] = [
+"Note: Better Ramblings Coming Soon",
+"Note: Better Ramblings Coming Soon",
+"Note: Better Ramblings Coming Soon",
+"<marquee>Under Construction 'cone.gif' <marquee>",
+"2010: I was learning After Effects 2025: I am learning Effect.ts",
+"I spent way too many hours building this site, let's bring back Geosites",
+"When I tried SQL for the first time I hit DROP TABLE attempting to download.",
+"Locked my fridge with a CAPTCHA to stop my midnight snacking.",
+'In 2017, three people called on the same day asking me "How can I learn to code tonight?"',
+'I didn\'t code as a child because this "<!--[if !(IE 6)]>" scared me.',
+"I lock my computer at night to prevent my cats from online shopping",
+"Powered by coffee and deprecated APIs since 2015",
+"I tried to explain `git blame` to my wife. I'm now sleeping on the couch.",
+"I'm at the age where I avoid Starbuck's wooden chairs with square backrest at all costs",
+];
+export default function QuoteContent() {
+const [index, setIndex] = useState(0);
+useEffect(() => {
+setIndex(Math.floor(Math.random() * QUOTES.length));
+}, []);
+const nextQuote = () => {
+setIndex((prev) => {
+if (QUOTES.length <= 1) return prev;
+let newIndex = prev;
+while (newIndex === prev)
+newIndex = Math.floor(Math.random() * QUOTES.length);
+return newIndex;
+});
+};
+return (
+<div className="relative h-full flex flex-col">
+<div className="pt-6 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+<Button
+asChild
+variant="neutral"
+size="icon"
+className="rounded-full h-11 w-11 p-0 overflow-hidden ring-2 ring-white/5 hover:shadow-glow transition-all hover:scale-105"
+aria-label="View About page"
+>
+<Link href="/about">
+<Image
+alt="Chris Lane Jones profile photo"
+className="h-full w-full object-cover"
+src="/Professional-Photo-of-Chris-Lane-Jones.webp"
+width={44}
+height={44}
+priority
+/>
+</Link>
+</Button>
+<h3 className="text-ink text-center">My Ramblings</h3>
+<Button
+type="button"
+onClick={nextQuote}
+variant="neutral"
+size="icon"
+className="rounded-full h-11 w-11 justify-self-end shadow-sm transition hover:scale-105"
+aria-label="New quote"
+>
+<RefreshCcw className="h-5 w-5" aria-hidden="true" />
+</Button>
+</div>
+</div>
+);
+}
+
+===== FILE: src/components/main/tech-stack-content.tsx =====
+"use client";
+import type { ReactNode } from "react";
+import IconBlock from "@/components/page/icon-block";
+import {
+siReactquery,
+siBun,
+siTypescript,
+siFramer,
+siTailwindcss,
+siNextdotjs,
+siReact,
+siModelcontextprotocol,
+siThreedotjs,
+siDrizzle,
+siGnubash,
+siZig,
+siGo,
+siNixos,
+siPostgresql,
+siSvelte,
+siShadcnui,
+} from "simple-icons";
+type TechItem = { name: string; icon: { path: string } };
+type AiTool = {
+name: string;
+svg: ReactNode;
+};
+const techStack: TechItem[] = [
+{ name: "React", icon: siReact },
+{ name: "Next.js", icon: siNextdotjs },
+{ name: "TypeScript", icon: siTypescript },
+{ name: "Tailwind", icon: siTailwindcss },
+{ name: "Framer Motion", icon: siFramer },
+{ name: "TanStack", icon: siReactquery },
+{ name: "Three.js", icon: siThreedotjs },
+{ name: "MCP", icon: siModelcontextprotocol },
+{ name: "Drizzle ORM", icon: siDrizzle },
+{ name: "Bun", icon: siBun },
+{ name: "Shell", icon: siGnubash },
+{ name: "ShadUI", icon: siShadcnui },
+];
+const techStackFuture: TechItem[] = [
+{ name: "Zig", icon: siZig },
+{ name: "Go", icon: siGo },
+{ name: "NixOS", icon: siNixos },
+{ name: "Convex", icon: siPostgresql },
+{ name: "Svelte", icon: siSvelte },
+];
+export const aiTools: AiTool[] = [
+{
+name: "Claude",
+svg: (
+<svg
+className="h-8 w-8"
+viewBox="0 0 46 32"
+xmlns="http:
+fill="currentColor"
+>
+<path d="M32.73 0h-6.945L38.45 32h6.945L32.73 0ZM12.665 0 0 32h7.082l2.59-6.72h13.25l2.59 6.72h7.082L19.929 0h-7.264Zm-.702 19.337 4.334-11.246 4.334 11.246h-8.668Z" />
+</svg>
+),
+},
+{
+name: "Gemini 2.5 Pro",
+svg: (
+<svg
+className="h-8 w-8"
+viewBox="0 0 16 16"
+xmlns="http:
+fill="currentColor"
+>
+<title>Gemini</title>
+<path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z" />
+</svg>
+),
+},
+{
+name: "GPT 5",
+svg: (
+<svg
+className="h-8 w-8"
+xmlns="http:
+viewBox="118 120 480 480"
+fill="currentColor"
+>
+<path d="M304.246 295.411V249.828C304.246 245.989 305.687 243.109 309.044 241.191L400.692 188.412C413.167 181.215 428.042 177.858 443.394 177.858C500.971 177.858 537.44 222.482 537.44 269.982C537.44 
+273.34 537.44 277.179 536.959 281.018L441.954 225.358C436.197 222 430.437 222 424.68 225.358L304.246 295.411ZM518.245 472.945V364.024C518.245 357.304 515.364 352.507 509.608 349.149L389.174 
+279.096L428.519 256.543C431.877 254.626 434.757 254.626 438.115 256.543L529.762 309.323C556.154 324.679 573.905 357.304 573.905 388.971C573.905 425.436 552.315 459.024 518.245 
+472.941V472.945ZM275.937 376.982L236.592 353.952C233.235 352.034 231.794 349.154 231.794 345.315V239.756C231.794 188.416 271.139 149.548 324.4 149.548C344.555 149.548 363.264 156.268 379.102 
+168.262L284.578 222.964C278.822 226.321 275.942 231.119 275.942 237.838V376.986L275.937 376.982ZM360.626 425.922L304.246 394.255V327.083L360.626 295.416L417.002 327.083V394.255L360.626 
+425.922ZM396.852 571.789C376.698 571.789 357.989 565.07 342.151 553.075L436.674 498.374C442.431 495.017 445.311 490.219 445.311 483.499V344.352L485.138 367.382C488.495 369.299 489.936 372.179 489.936 
+376.018V481.577C489.936 532.917 450.109 571.785 396.852 571.785V571.789ZM283.134 464.79L191.486 412.01C165.094 396.654 147.343 364.029 147.343 332.362C147.343 295.416 169.415 262.309 203.48 
+248.393V357.791C203.48 364.51 206.361 369.308 212.117 372.665L332.074 442.237L292.729 464.79C289.372 466.707 286.491 466.707 283.134 464.79ZM277.859 543.48C223.639 543.48 183.813 502.695 183.813 
+452.314C183.813 448.475 184.294 444.636 184.771 440.797L279.295 495.498C285.051 498.856 290.812 498.856 296.568 495.498L417.002 425.927V471.509C417.002 475.349 415.562 478.229 412.204 480.146L320.557 
+532.926C308.081 540.122 293.206 543.48 277.854 543.48H277.859ZM396.852 600.576C454.911 600.576 503.37 559.313 514.41 504.612C568.149 490.696 602.696 440.315 602.696 388.976C602.696 355.387 588.303 
+322.762 562.392 299.25C564.791 289.173 566.231 279.096 566.231 269.024C566.231 200.411 510.571 149.067 446.274 149.067C433.322 149.067 420.846 150.984 408.37 155.305C386.775 134.192 357.026 120.758 
+324.4 120.758C266.342 120.758 217.883 162.02 206.843 216.721C153.104 230.637 118.557 281.018 118.557 332.357C118.557 365.946 132.95 398.571 158.861 422.083C156.462 432.16 155.022 442.237 155.022 
+452.309C155.022 520.922 210.682 572.266 274.978 572.266C287.931 572.266 300.407 570.349 312.883 566.028C334.473 587.141 364.222 600.576 396.852 600.576Z" />
+</svg>
+),
+},
+];
+export default function TechStackContent() {
+return (
+<div className="flex flex-col gap-3 h-full">
+<div className="p-3">
+<h3 className="text-ink tracking-tight mb-3">Tech I Love 💖</h3>
+<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+{techStack.map((tech) => (
+<IconBlock key={tech.name} label={tech.name}>
+<svg
+aria-hidden
+viewBox="0 0 24 24"
+className="h-8 w-8"
+fill="currentColor"
+>
+<path d={tech.icon.path} />
+</svg>
+</IconBlock>
+))}
+</div>
+</div>
+<div className="p-3">
+<h3 className="text-ink tracking-tight mb-3">
+Learning & Exploring 🧪
+</h3>
+<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+{techStackFuture.map((tech) => (
+<IconBlock key={tech.name} label={tech.name}>
+<svg
+aria-hidden
+viewBox="0 0 24 24"
+className="h-8 w-8"
+fill="currentColor"
+>
+<path d={tech.icon.path} />
+</svg>
+</IconBlock>
+))}
+</div>
+</div>
+<div className="p-3">
+<h3 className="text-ink tracking-tight mb-3">Current AI Tools 🤖</h3>
+<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+{aiTools.map((tool) => (
+<IconBlock key={tool.name} label={tool.name}>
+{tool.svg}
+</IconBlock>
+))}
+</div>
+</div>
+</div>
+);
+}
+
+===== FILE: src/components/mode-toggle.tsx =====
+"use client";
+import * as React from "react";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import {
+DropdownMenu,
+DropdownMenuContent,
+DropdownMenuItem,
+DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+export function ModeToggle() {
+const { setTheme } = useTheme();
+return (
+<DropdownMenu>
+<DropdownMenuTrigger asChild>
+<Button variant="outline" size="icon">
+<Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+<Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+<span className="sr-only">Toggle theme</span>
+</Button>
+</DropdownMenuTrigger>
+<DropdownMenuContent align="end">
+<DropdownMenuItem onClick={() => setTheme("light")}>
+Light
+</DropdownMenuItem>
+<DropdownMenuItem onClick={() => setTheme("dark")}>
+Dark
+</DropdownMenuItem>
+<DropdownMenuItem onClick={() => setTheme("system")}>
+System
+</DropdownMenuItem>
+</DropdownMenuContent>
+</DropdownMenu>
+);
+}
+
+===== FILE: src/components/page/banner.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import {
+Breadcrumb,
+BreadcrumbItem,
+BreadcrumbLink,
+BreadcrumbList,
+BreadcrumbPage,
+BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { ReactNode } from "react";
+import WireframeTerrain from "./wireframe-terrain";
+interface BannerProps {
+title: string;
+breadcrumbPage: string;
+description?: string;
+children?: ReactNode;
+}
+export default function Banner({
+title,
+breadcrumbPage,
+description,
+children,
+}: BannerProps) {
+return (
+<motion.div className="relative py-1 lg:py-12">
+<WireframeTerrain variant="right" />
+<div className="relative z-10 flex flex-col lg:flex-row items-start lg:justify-between gap-6 px-3">
+<div className="text-left flex-1">
+<h1 className="h1 tracking-tight text-ink pb-4">{title}</h1>
+{description && (
+<p className="p text-ink max-w-md text-left lg:hidden pb-6">
+{description}
+</p>
+)}
+<div className="lg:hidden pb-6">{children}</div>
+<Breadcrumb className="pb-6">
+<BreadcrumbList>
+<BreadcrumbItem>
+<BreadcrumbLink href="/">Home</BreadcrumbLink>
+</BreadcrumbItem>
+<BreadcrumbSeparator />
+<BreadcrumbItem>
+<BreadcrumbPage>{breadcrumbPage}</BreadcrumbPage>
+</BreadcrumbItem>
+</BreadcrumbList>
+</Breadcrumb>
+<div className="hidden lg:block">{children}</div>
+</div>
+{description && (
+<p className="p text-ink max-w-md text-right hidden lg:block">
+{description}
+</p>
+)}
+</div>
+</motion.div>
+);
+}
+
+===== FILE: src/components/page/browser-card.tsx =====
+"use client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/page/card";
+import {
+Tooltip,
+TooltipTrigger,
+TooltipContent,
+} from "@/components/ui/tooltip";
+import Image from "next/image";
+type BrowserLink = {
+href: string;
+label: string;
+domain: string;
+favicon?: string;
+screenshotUrl?: string;
+};
+type BrowserCardProps = {
+title: string;
+color:
+| "blue"
+| "red"
+| "yellow"
+| "green"
+| "pink"
+| "purple"
+| "cyan"
+| "orange";
+links: BrowserLink[];
+delay?: number;
+};
+export default function BrowserCard({
+title,
+color,
+links,
+delay = 0,
+}: BrowserCardProps) {
+return (
+<Card size="medium" delay={delay}>
+<div className="space-y-4">
+<div className="space-y-2">
+{links.map((link) => (
+<Tooltip key={link.href} delayDuration={200}>
+<TooltipTrigger asChild>
+<div>
+<Button
+variant="base"
+showExternalIcon={true}
+asChild
+className="w-full"
+>
+<a
+href={link.href}
+target="_blank"
+rel="noopener noreferrer"
+className="flex items-center justify-between w-full gap-2"
+>
+<div className="flex items-center gap-2 min-w-0 flex-1">
+{link.favicon && (
+<img
+src={link.favicon}
+alt=""
+className="w-4 h-4 shrink-0"
+onError={(e) => {
+e.currentTarget.style.display = "none";
+}}
+/>
+)}
+<span className="truncate">{link.label}</span>
+</div>
+<span className="text-muted truncate max-w-[120px] shrink-0">
+{link.domain}
+</span>
+</a>
+</Button>
+</div>
+</TooltipTrigger>
+
+===== FILE: src/components/page/card.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+const cardVariants = cva(
+"card rounded-3xl bg-panel border border-(--color-border)",
+{
+variants: {
+size: {
+small: "col-span-1 row-span-1",
+medium: "col-span-1 md:col-span-2 row-span-1",
+large: "col-span-1 md:col-span-2",
+wide: "col-span-1 md:col-span-4 row-span-1",
+hero: "col-span-1 md:col-span-4 row-span-1",
+full: "col-span-1 md:col-span-6 row-span-1",
+},
+height: {
+small: "min-h-[25px] md:min-h-[25px]",
+medium: "min-h-[200px] md:min-h-[210px]",
+large: "md:row-span-2 min-h-[400px] md:min-h-[420px]",
+xl: "min-h-[300px] sm:min-h-[350px] lg:min-h-[400px]",
+},
+layout: {
+default: "p-4",
+"media-top": "overflow-hidden flex flex-col",
+"media-bottom": "overflow-hidden flex flex-col-reverse",
+"media-left": "overflow-hidden flex flex-row",
+"media-right": "overflow-hidden flex flex-row-reverse",
+split: "grid md:grid-cols-2 gap-6 p-4",
+stacked: "flex flex-col gap-4 p-4",
+},
+mediaRadius: {
+none: "",
+sm: "[&>*:first-child]:rounded-sm",
+md: "[&>*:first-child]:rounded-md",
+lg: "[&>*:first-child]:rounded-lg",
+xl: "[&>*:first-child]:rounded-xl",
+"2xl": "[&>*:first-child]:rounded-2xl",
+top: "[&>*:first-child]:rounded-t-2xl",
+bottom: "[&>*:first-child]:rounded-b-2xl",
+inset:
+"[&>*:first-child]:rounded-2xl [&>*:first-child]:m-4 [&>*:first-child]:overflow-hidden",
+},
+},
+defaultVariants: {
+size: "medium",
+height: "medium",
+layout: "default",
+mediaRadius: "none",
+},
+}
+);
+interface UnifiedCardProps extends VariantProps<typeof cardVariants> {
+children: ReactNode;
+className?: string;
+delay?: number;
+id?: string;
+style?: React.CSSProperties;
+}
+export function Card({
+children,
+size,
+height,
+layout,
+mediaRadius,
+className = "",
+delay = 0,
+id,
+style,
+}: UnifiedCardProps) {
+return (
+<motion.article
+id={id}
+className={`${cardVariants({
+size,
+height,
+layout,
+mediaRadius,
+})} ${className} pointer-events-auto`}
+style={{
+...style,
+willChange: "transform, opacity",
+}}
+initial={{
+opacity: 0,
+y: 20,
+scale: 0.95,
+}}
+animate={{
+opacity: 1,
+y: 0,
+scale: 1,
+}}
+transition={{
+duration: 0.4,
+delay,
+type: "spring",
+stiffness: 300,
+damping: 30,
+}}
+viewport={{ once: true }}
+>
+{children}
+</motion.article>
+);
+}
+export function CardMedia({
+children,
+className = "",
+}: {
+children: ReactNode;
+className?: string;
+}) {
+return (
+<div className={`relative flex-1 min-h-0 ${className}`}>{children}</div>
+);
+}
+export function CardFooter({
+children,
+className = "",
+}: {
+children: ReactNode;
+className?: string;
+}) {
+return <div className={`p-4 shrink-0 ${className}`}>{children}</div>;
+}
+export function CardImage({
+src,
+alt,
+className = "",
+priority = false,
+fill = false,
+sizes = "(max-width: 768px) 100vw, 50vw",
+...props
+}: {
+src: string;
+alt: string;
+className?: string;
+priority?: boolean;
+fill?: boolean;
+sizes?: string;
+} & Omit<React.ComponentPropsWithoutRef<typeof motion.img>, "src" | "alt">) {
+return (
+<div className="relative overflow-hidden rounded-xl aspect-[16/9]">
+{fill ? (
+<motion.img
+src={src}
+alt={alt}
+className={`object-cover w-full h-full border border-(--color-border) ${className}`}
+initial={{ scale: 1.1, opacity: 0.8 }}
+animate={{ scale: 1, opacity: 1 }}
+transition={{ duration: 0.6 }}
+{...props}
+/>
+) : (
+<motion.img
+src={src}
+alt={alt}
+className={`object-cover w-full h-full border border-(--color-border) ${className}`}
+initial={{ scale: 1.1, opacity: 0.8 }}
+animate={{ scale: 1, opacity: 1 }}
+transition={{ duration: 0.6 }}
+{...props}
+/>
+)}
+</div>
+);
+}
+export default Card;
+
+===== FILE: src/components/page/contact-form.tsx =====
+"use client";
+import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
+import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+export type FormData = {
+name: string;
+email: string;
+phone?: string;
+message: string;
+};
+export type ContactFormVariant = "full" | "maintenance";
+interface ContactFormProps {
+variant: ContactFormVariant;
+serviceType?: "React" | "WordPress";
+plusPlanLabel?: "Performance" | "SEO";
+delay?: number;
+className?: string;
+id?: string;
+}
+const ContactForm: React.FC<ContactFormProps> = ({
+variant,
+serviceType,
+plusPlanLabel,
+delay = 0.2,
+className,
+id,
+}) => {
+const createMessage = useMutation(api.contactMessages.create);
+const defaultBasicMessage = `I'm interested in your ${serviceType} maintenance services. Could you tell me more?`;
+const defaultPlusMessage = `I'm interested in "The Action Plan (With ${plusPlanLabel})" for your ${serviceType} maintenance services. Could you tell me more?`;
+const [selectedPlan, setSelectedPlan] = useState<"basic" | "plus">("basic");
+const initialMessage = useMemo(() => {
+if (variant === "maintenance" && serviceType) {
+return selectedPlan === "basic"
+? defaultBasicMessage
+: defaultPlusMessage;
+}
+return "";
+}, [
+variant,
+serviceType,
+selectedPlan,
+defaultBasicMessage,
+defaultPlusMessage,
+]);
+const getSource = (
+currentVariant: ContactFormVariant,
+currentServiceType?: "React" | "WordPress"
+) => {
+if (currentVariant === "maintenance" && currentServiceType) {
+return `${currentServiceType.toLowerCase()}-maintenance-page`;
+}
+return "contact-page";
+};
+const [formData, setFormData] = useState<FormData>({
+name: "",
+email: "",
+phone: "",
+message: initialMessage,
+});
+const [isSubmitting, setIsSubmitting] = useState(false);
+const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(
+null
+);
+const [errors, setErrors] = useState<Record<string, string>>({});
+useEffect(() => {
+setFormData((prev) => ({
+...prev,
+message: initialMessage,
+}));
+}, [initialMessage]);
+const validateForm = () => {
+const newErrors: Record<string, string> = {};
+if (!formData.name.trim()) {
+newErrors.name = "Name is required";
+}
+if (!formData.email.trim()) {
+newErrors.email = "Email is required";
+} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+newErrors.email = "Please enter a valid email";
+}
+if (!formData.message.trim()) {
+newErrors.message = "Message is required";
+} else if (formData.message.length < 10) {
+newErrors.message = "Message must be at least 10 characters";
+}
+if (formData.phone && !/^[\d\s\-\+\(\)]+$/.test(formData.phone)) {
+newErrors.phone = "Please enter a valid phone number";
+}
+setErrors(newErrors);
+return Object.keys(newErrors).length === 0;
+};
+const handleSubmitInternal = async (e: React.FormEvent) => {
+e.preventDefault();
+if (!validateForm()) {
+return;
+}
+setIsSubmitting(true);
+setSubmitStatus(null);
+try {
+const finalSource = getSource(variant, serviceType);
+await createMessage({
+name: formData.name.trim(),
+email: formData.email.trim(),
+phone: formData.phone?.trim() || undefined,
+message: formData.message.trim(),
+source: finalSource,
+});
+setSubmitStatus("success");
+setFormData({
+name: "",
+email: "",
+phone: "",
+message: initialMessage,
+});
+setErrors({});
+setTimeout(() => {
+setSubmitStatus(null);
+}, 5000);
+} catch (error) {
+console.error("Failed to send message:", error);
+setSubmitStatus("error");
+} finally {
+setIsSubmitting(false);
+}
+};
+const handleChange = (
+e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+const { name, value } = e.target;
+setFormData((prev) => ({ ...prev, [name]: value }));
+if (errors[name]) {
+setErrors((prev) => ({ ...prev, [name]: "" }));
+}
+};
+return (
+<motion.div
+id={id}
+initial={{ opacity: 0, y: 20 }}
+animate={{ opacity: 1, y: 0 }}
+transition={{ duration: 0.6, delay }}
+className={`${variant === "full" ? "mt-8" : ""} ${className || ""}`}
+>
+<Card size="full">
+<form onSubmit={handleSubmitInternal} className="space-y-6">
+<div>
+<label htmlFor="name" className="block mb-2">
+Name *
+</label>
+<Input
+type="text"
+id="name"
+name="name"
+value={formData.name}
+onChange={handleChange}
+className={errors.name ? "border-red-500" : ""}
+placeholder="John Doe"
+/>
+{errors.name && <p className="mt-1 text-red-500">{errors.name}</p>}
+</div>
+<div>
+<label htmlFor="email" className="block mb-2">
+Email *
+</label>
+<Input
+type="email"
+id="email"
+name="email"
+value={formData.email}
+onChange={handleChange}
+className={errors.email ? "border-red-500" : ""}
+placeholder="john@example.com"
+/>
+{errors.email && (
+<p className="mt-1 text-red-500">{errors.email}</p>
+)}
+</div>
+{variant === "maintenance" && serviceType && plusPlanLabel && (
+<div>
+<label className="block mb-2">Choose An Action Plan</label>
+<div className="space-y-2">
+<label className="flex items-center gap-2 cursor-pointer">
+<input
+type="radio"
+name="plan"
+value="basic"
+checked={selectedPlan === "basic"}
+onChange={() => setSelectedPlan("basic")}
+className="text-accent"
+/>
+<span className="">The Action Plan</span>
+</label>
+<label className="flex items-center gap-2 cursor-pointer">
+<input
+type="radio"
+name="plan"
+value="plus"
+checked={selectedPlan === "plus"}
+onChange={() => setSelectedPlan("plus")}
+className="text-accent"
+/>
+<span className="">
+The Action Plan Plus (With {plusPlanLabel})
+</span>
+</label>
+</div>
+</div>
+)}
+<div>
+<label htmlFor="message" className="block mb-2">
+Message *
+</label>
+<Textarea
+id="message"
+name="message"
+value={formData.message}
+onChange={handleChange}
+rows={variant === "full" ? 6 : 3}
+className={errors.message ? "border-red-500" : ""}
+placeholder={
+variant === "full"
+? "Tell me about your project or inquiry..."
+: "I'm interested in your services..."
+}
+/>
+{errors.message && (
+<p className="mt-1 text-red-500">{errors.message}</p>
+)}
+

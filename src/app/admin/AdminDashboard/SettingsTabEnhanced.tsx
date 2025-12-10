@@ -3,19 +3,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   RefreshCw,
-  CheckCircle,
-  AlertCircle,
   Database,
-  FileText,
   Link as LinkIcon,
   Calendar,
   MessageSquare,
-  Terminal,
   Navigation,
+  User,
+  Upload,
+  Save,
+  Trash2,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useUploadThing } from "@/utils/uploadthing";
+import { useToast } from "../hooks/useToast";
+import { ToastContainer } from "../components/ToastContainer";
+import Image from "next/image";
 
 interface DataSource {
   id: string;
@@ -30,21 +37,68 @@ interface LogEntry {
   type: "info" | "success" | "error";
 }
 
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+const menuItems: MenuItem[] = [
+  { id: "profile", label: "Profile", icon: User },
+  { id: "data-management", label: "Data Management", icon: Database },
+];
+
 const SettingsTabEnhanced = () => {
-  // Mutations - stored separately, not in the dataSources array
-  const seedSEO = useMutation(api.seo.seedSEOData);
+  // Profile from Convex
+  const profile = useQuery(api.siteSettings.getProfile);
+  const updateProfile = useMutation(api.siteSettings.updateProfile);
+  const updateAvatar = useMutation(api.siteSettings.updateAvatar);
+  const removeAvatarMutation = useMutation(api.siteSettings.removeAvatar);
+
+  // Local profile state (for form editing)
+  const [profileData, setProfileData] = useState({
+    name: "",
+    bio: "",
+    avatar: "",
+    email: "",
+    location: "",
+  });
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  // Sync Convex data to local state
+  useEffect(() => {
+    if (profile) {
+      setProfileData({
+        name: profile.name || "",
+        bio: profile.bio || "",
+        avatar: profile.avatar || "",
+        email: profile.email || "",
+        location: profile.location || "",
+      });
+    }
+  }, [profile]);
+
+  // Scrollspy state
+  const [activeSection, setActiveSection] = useState("profile");
+  const contentRef = useRef<HTMLDivElement>(null);
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  // Data Management state
   const seedLinks = useMutation(api.browserLinks.seedLinks);
   const seedTimeline = useMutation(api.careerTimeline.seedTimeline);
   const seedBlogPosts = useMutation(api.blogPosts.seedBlogPosts);
   const seedNavigation = useMutation(api.navigation.seedNavigationData);
+  const seedSEO = useMutation(api.seo.seedSEOData);
+  const seedProfile = useMutation(api.siteSettings.seedProfile);
 
-  // Mutation map for easy lookup
   const mutationMap: Record<string, () => Promise<unknown>> = {
-    seo: seedSEO,
     links: seedLinks,
     "career-timeline": seedTimeline,
     "blog-posts": seedBlogPosts,
     navigation: seedNavigation,
+    seo: seedSEO,
+    profile: seedProfile,
   };
 
   const [selectedSources, setSelectedSources] = useState<Set<string>>(
@@ -52,10 +106,98 @@ const SettingsTabEnhanced = () => {
   );
   const [isReseeding, setIsReseeding] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error">("success");
+  const {
+    toasts,
+    removeToast,
+    success,
+    error: showError,
+    loading: showLoading,
+  } = useToast();
   const logEndRef = useRef<HTMLDivElement>(null);
+
+  const { startUpload } = useUploadThing("mediaUploader", {
+    onClientUploadComplete: async (res) => {
+      if (res && res[0]) {
+        setProfileData((prev) => ({ ...prev, avatar: res[0].url }));
+        await updateAvatar({ avatar: res[0].url });
+        setIsUploadingAvatar(false);
+        success("Avatar uploaded!");
+      }
+    },
+    onUploadError: (error: Error) => {
+      console.error("Upload error:", error);
+      setIsUploadingAvatar(false);
+      showError("Failed to upload avatar");
+    },
+  });
+
+  // Scrollspy effect
+  useEffect(() => {
+    const container = contentRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop;
+      const offset = 100;
+
+      for (const item of menuItems) {
+        const section = sectionRefs.current[item.id];
+        if (section) {
+          const sectionTop = section.offsetTop - offset;
+          const sectionBottom = sectionTop + section.offsetHeight;
+
+          if (scrollTop >= sectionTop && scrollTop < sectionBottom) {
+            setActiveSection(item.id);
+            break;
+          }
+        }
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Auto-scroll logs
+  useEffect(() => {
+    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [logs]);
+
+  const scrollToSection = (sectionId: string) => {
+    const section = sectionRefs.current[sectionId];
+    if (section && contentRef.current) {
+      contentRef.current.scrollTo({
+        top: section.offsetTop - 24,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingAvatar(true);
+    await startUpload([file]);
+  };
+
+  const handleSaveProfile = async () => {
+    setIsSavingProfile(true);
+    try {
+      await updateProfile({
+        name: profileData.name,
+        bio: profileData.bio,
+        avatar: profileData.avatar || undefined,
+        email: profileData.email || undefined,
+        location: profileData.location || undefined,
+      });
+      success("Profile saved!");
+    } catch (err) {
+      console.error("Failed to save profile:", err);
+      showError("Failed to save profile");
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
 
   const addLog = (
     message: string,
@@ -71,27 +213,18 @@ const SettingsTabEnhanced = () => {
     ]);
   };
 
-  useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
-
-  const showToastNotification = (
-    message: string,
-    type: "success" | "error"
-  ) => {
-    setToastMessage(message);
-    setToastType(type);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 4000);
-  };
-
-  // Data sources metadata only
   const dataSources: DataSource[] = [
+    {
+      id: "profile",
+      label: "Profile",
+      icon: User,
+      description: "Site owner name, bio, and social links",
+    },
     {
       id: "seo",
       label: "SEO Metadata",
       icon: FileText,
-      description: "Page titles, descriptions, and canonical URLs",
+      description: "Page titles and meta descriptions",
     },
     {
       id: "links",
@@ -162,10 +295,7 @@ const SettingsTabEnhanced = () => {
 
   const handleReseed = async () => {
     if (selectedSources.size === 0) {
-      showToastNotification(
-        "Please select at least one data source to reseed",
-        "error"
-      );
+      showError("Please select at least one data source to reseed");
       addLog("Reseed aborted: No data sources selected", "error");
       return;
     }
@@ -205,15 +335,9 @@ const SettingsTabEnhanced = () => {
       addLog(summary, errorCount === 0 ? "success" : "error");
 
       if (errorCount === 0) {
-        showToastNotification(
-          "All data sources reseeded successfully!",
-          "success"
-        );
+        success("All data sources reseeded successfully!");
       } else {
-        showToastNotification(
-          `Reseed completed with ${errorCount} error(s)`,
-          "error"
-        );
+        showError(`Reseed completed with ${errorCount} error(s)`);
       }
 
       setTimeout(() => {
@@ -222,7 +346,7 @@ const SettingsTabEnhanced = () => {
     } catch (error) {
       const errorMsg = "Unexpected error during reseed";
       addLog(errorMsg, "error");
-      showToastNotification(errorMsg, "error");
+      showError(errorMsg);
       console.error("Reseed error:", error);
     } finally {
       setIsReseeding(false);
@@ -234,184 +358,316 @@ const SettingsTabEnhanced = () => {
   };
 
   return (
-    <div className="max-w-4xl space-y-6 relative">
-      {/* Toast Notification */}
-      {showToast && (
-        <div
-          className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg flex items-center gap-3 ${
-            toastType === "success"
-              ? "bg-green-500/90 text-white"
-              : "bg-red-500/90 text-white"
-          }`}
-        >
-          {toastType === "success" ? (
-            <CheckCircle className="w-5 h-5" />
-          ) : (
-            <AlertCircle className="w-5 h-5" />
-          )}
-          <span>{toastMessage}</span>
-        </div>
-      )}
+    <div className="h-full flex gap-6">
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Header */}
-      <div className="bg-panel border border-border rounded-2xl p-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-accent/10 rounded-lg">
-            <Database className="w-5 h-5 text-accent" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-ink">Data Management</h2>
-            <p className="text-sm text-muted">
-              Reseed initial data for selected modules
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Data Sources Selection */}
-      <div className="bg-panel border border-border rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-ink font-semibold">Select Data Sources</h3>
-          <div className="flex gap-2">
-            <button
-              onClick={selectAll}
-              className="px-3 py-1 text-sm text-accent hover:bg-accent/10 rounded-lg transition"
-            >
-              Select All
-            </button>
-            <button
-              onClick={deselectAll}
-              className="px-3 py-1 text-sm text-muted hover:bg-muted/10 rounded-lg transition"
-            >
-              Clear
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {dataSources.map((source) => {
-            const Icon = source.icon;
-            const isSelected = selectedSources.has(source.id);
-
-            return (
+      {/* Sidebar Menu */}
+      <div className="w-56 shrink-0">
+        <div className="bg-panel border border-border rounded-2xl p-3 sticky top-0">
+          <nav className="space-y-1">
+            {menuItems.map((item) => (
               <button
-                key={source.id}
-                onClick={() => toggleSource(source.id)}
-                disabled={isReseeding}
-                className={`flex items-start gap-3 p-4 rounded-xl border transition-all text-left ${
-                  isSelected
-                    ? "border-accent bg-accent/5"
-                    : "border-border hover:border-accent/50 hover:bg-base"
-                } ${isReseeding ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                <div
-                  className={`p-2 rounded-lg ${
-                    isSelected ? "bg-accent/20" : "bg-base"
-                  }`}
-                >
-                  <Icon
-                    className={`w-5 h-5 ${
-                      isSelected ? "text-accent" : "text-muted"
-                    }`}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className={`font-medium ${
-                      isSelected ? "text-accent" : "text-ink"
-                    }`}
-                  >
-                    {source.label}
-                  </p>
-                  <p className="text-sm text-muted truncate">
-                    {source.description}
-                  </p>
-                </div>
-                <div
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    isSelected ? "border-accent bg-accent" : "border-muted"
-                  }`}
-                >
-                  {isSelected && <CheckCircle className="w-3 h-3 text-white" />}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Action Panel */}
-      <div className="bg-panel border border-border rounded-2xl p-6">
-        <div className="space-y-4">
-          {/* Warning */}
-          <div className="flex items-start gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-            <AlertCircle className="w-4 h-4 text-yellow-500 shrink-0 mt-0.5" />
-            <p className="text-sm text-yellow-600 dark:text-yellow-400">
-              Reseeding adds initial data if tables are empty. Some operations
-              may skip if data already exists.
-            </p>
-          </div>
-
-          {/* Reseed Button */}
-          <button
-            onClick={handleReseed}
-            disabled={isReseeding || selectedSources.size === 0}
-            className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all ${
-              isReseeding || selectedSources.size === 0
-                ? "bg-base text-muted cursor-not-allowed"
-                : "bg-accent text-on-accent hover:shadow-glow"
-            }`}
-          >
-            <RefreshCw
-              className={`w-4 h-4 ${isReseeding ? "animate-spin" : ""}`}
-            />
-            {isReseeding
-              ? "Reseeding Data..."
-              : selectedSources.size === 0
-                ? "Select Data Sources"
-                : `Reseed ${selectedSources.size} Source${selectedSources.size > 1 ? "s" : ""}`}
-          </button>
-        </div>
-      </div>
-
-      {/* Log Panel */}
-      {logs.length > 0 && (
-        <div className="bg-panel border border-border rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-muted" />
-              <h3 className="text-ink font-semibold">Operation Log</h3>
-            </div>
-            <button
-              onClick={clearLogs}
-              className="text-sm text-muted hover:text-ink transition"
-            >
-              Clear
-            </button>
-          </div>
-
-          <div className="max-h-64 overflow-y-auto bg-base rounded-lg p-4 font-mono text-sm space-y-1">
-            {logs.map((log, i) => (
-              <div
-                key={i}
-                className={`flex items-start gap-2 ${
-                  log.type === "success"
-                    ? "text-green-500"
-                    : log.type === "error"
-                      ? "text-red-500"
-                      : "text-muted"
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  activeSection === item.id
+                    ? "bg-accent text-on-accent"
+                    : "text-muted hover:text-ink hover:bg-surface-hover"
                 }`}
               >
-                <span className="text-muted/50 shrink-0">
-                  {log.timestamp.toLocaleTimeString()}
-                </span>
-                <span className="break-all">{log.message}</span>
-              </div>
+                <item.icon className="w-4 h-4 shrink-0" />
+                {item.label}
+              </button>
             ))}
-            <div ref={logEndRef} />
-          </div>
+          </nav>
         </div>
-      )}
+      </div>
+
+      {/* Content Area */}
+      <div
+        ref={contentRef}
+        className="flex-1 overflow-y-auto pr-2 space-y-8 scroll-smooth"
+      >
+        {/* Profile Section */}
+        <section
+          id="profile"
+          ref={(el) => {
+            sectionRefs.current["profile"] = el;
+          }}
+          className="scroll-mt-6"
+        >
+          <div className="bg-panel border border-border rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <User className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-ink">Profile</h2>
+                <p className="text-sm text-muted">
+                  Your personal information displayed across the site
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {/* Avatar */}
+              <div className="flex items-start gap-6">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden bg-base border-2 border-border">
+                    {profileData.avatar ? (
+                      <Image
+                        src={profileData.avatar}
+                        alt="Avatar"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-accent/10">
+                        <User className="w-10 h-10 text-accent/50" />
+                      </div>
+                    )}
+                  </div>
+                  <label
+                    htmlFor="avatar-upload"
+                    className="absolute -bottom-1 -right-1 p-2 bg-accent text-on-accent rounded-full cursor-pointer hover:bg-accent/90 transition shadow-md"
+                  >
+                    {isUploadingAvatar ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4" />
+                    )}
+                  </label>
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                  />
+                </div>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium text-ink">Profile Photo</p>
+                  <p className="text-xs text-muted">
+                    Recommended: Square image, at least 200x200px
+                  </p>
+                  {profileData.avatar && (
+                    <button
+                      onClick={async () => {
+                        setProfileData((prev) => ({ ...prev, avatar: "" }));
+                        await removeAvatarMutation();
+                      }}
+                      className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1 mt-2"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Remove photo
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Name */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="profile-name"
+                  className="block text-sm font-medium text-ink"
+                >
+                  Name
+                </label>
+                <Input
+                  id="profile-name"
+                  value={profileData.name}
+                  onChange={(e) =>
+                    setProfileData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  placeholder="Your name"
+                  className="max-w-md"
+                />
+              </div>
+
+              {/* Bio */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="profile-bio"
+                  className="block text-sm font-medium text-ink"
+                >
+                  Bio
+                </label>
+                <textarea
+                  id="profile-bio"
+                  value={profileData.bio}
+                  onChange={(e) =>
+                    setProfileData((prev) => ({ ...prev, bio: e.target.value }))
+                  }
+                  placeholder="A short bio about yourself"
+                  rows={4}
+                  className="w-full px-3 py-2 bg-base border border-border rounded-lg text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                />
+                <p className="text-xs text-muted">
+                  {profileData.bio.length}/300 characters
+                </p>
+              </div>
+
+              {/* Save Button */}
+              <div className="pt-2">
+                <Button
+                  onClick={handleSaveProfile}
+                  variant="outline"
+                  disabled={isSavingProfile}
+                  className="gap-2"
+                >
+                  {isSavingProfile ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  Save Profile
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Data Management Section */}
+        <section
+          id="data-management"
+          ref={(el) => {
+            sectionRefs.current["data-management"] = el;
+          }}
+          className="scroll-mt-6"
+        >
+          <div className="bg-panel border border-border rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <Database className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-ink">Data Management</h2>
+                <p className="text-sm text-muted">
+                  Reseed initial data for selected modules
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* Source Selection */}
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-ink">Data Sources</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={selectAll}
+                    className="text-xs text-accent hover:underline"
+                  >
+                    Select all
+                  </button>
+                  <span className="text-muted">|</span>
+                  <button
+                    onClick={deselectAll}
+                    className="text-xs text-muted hover:text-ink"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {dataSources.map((source) => (
+                  <button
+                    key={source.id}
+                    onClick={() => toggleSource(source.id)}
+                    className={`p-4 rounded-xl border-2 text-left transition-all ${
+                      selectedSources.has(source.id)
+                        ? "border-accent bg-accent/5"
+                        : "border-border hover:border-accent/50"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          selectedSources.has(source.id)
+                            ? "bg-accent/20 text-accent"
+                            : "bg-base text-muted"
+                        }`}
+                      >
+                        <source.icon className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p
+                          className={`font-medium text-sm ${
+                            selectedSources.has(source.id)
+                              ? "text-ink"
+                              : "text-muted"
+                          }`}
+                        >
+                          {source.label}
+                        </p>
+                        <p className="text-xs text-muted mt-0.5">
+                          {source.description}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              {/* Reseed Button */}
+              <Button
+                onClick={handleReseed}
+                disabled={isReseeding || selectedSources.size === 0}
+                variant="outline"
+                className="w-full gap-2 mt-4"
+              >
+                <RefreshCw
+                  className={`w-4 h-4 ${isReseeding ? "animate-spin" : ""}`}
+                />
+                {isReseeding
+                  ? "Reseeding..."
+                  : selectedSources.size === 0
+                    ? "Select data sources"
+                    : `Reseed ${selectedSources.size} source${selectedSources.size > 1 ? "s" : ""}`}
+              </Button>
+
+              {/* Logs */}
+              {logs.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-ink">Activity Log</p>
+                    <button
+                      onClick={clearLogs}
+                      className="text-xs text-muted hover:text-ink"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="max-h-48 overflow-y-auto bg-base rounded-lg p-3 space-y-1 font-mono text-xs">
+                    {logs.map((log, i) => (
+                      <div
+                        key={i}
+                        className={`${
+                          log.type === "success"
+                            ? "text-emerald-500"
+                            : log.type === "error"
+                              ? "text-red-500"
+                              : "text-muted"
+                        }`}
+                      >
+                        <span className="opacity-50">
+                          [{log.timestamp.toLocaleTimeString()}]
+                        </span>{" "}
+                        {log.message}
+                      </div>
+                    ))}
+                    <div ref={logEndRef} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

@@ -19,7 +19,6 @@ import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useLinksEffect } from "../hooks/useLinksEffect";
 
 interface BrowserLink {
   _id: Id<"browserLinks">;
@@ -424,17 +423,18 @@ const LinksManagerTabEnhanced = () => {
             </h3>
             <div className="flex items-center gap-2">
               {selectedCategory && (
-                <button
+                <Button
                   onClick={() => handleDeleteCategory(selectedCategory)}
                   className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition"
                   title="Delete category"
+                  variant="outline"
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </Button>
               )}
               <Button
                 onClick={() => handleOpenModal()}
-                variant="accent"
+                variant="outline"
                 className="gap-2"
                 disabled={!selectedCategory}
               >
@@ -474,26 +474,24 @@ const LinksManagerTabEnhanced = () => {
                         {link.domain}
                       </p>
                     </div>
-
                     <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => handleToggleFeatured(link)}
-                        className={`p-2 transition rounded ${
-                          link.featured
-                            ? "text-yellow-500"
-                            : "text-muted hover:text-yellow-500"
-                        }`}
-                        title={
-                          link.featured
-                            ? "Remove from featured"
-                            : "Add to featured"
-                        }
-                      >
-                        <Star
-                          className="w-4 h-4"
-                          fill={link.featured ? "currentColor" : "none"}
+                      <div className="flex items-center gap-4 pr-3 mr-1 border-r border-border/50">
+                        <Switch
+                          checked={!!link.featured}
+                          onCheckedChange={() => handleToggleFeatured(link)}
+                          id={`featured-${link._id}`}
+                          className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-zinc-600 [&>span]:bg-white [&>span]:shadow-md"
                         />
-                      </button>
+                        <label
+                          htmlFor={`featured-${link._id}`}
+                          className={`text-xs font-medium cursor-pointer select-none whitespace-nowrap ${
+                            link.featured ? "text-emerald-500" : "text-muted"
+                          }`}
+                        >
+                          Featured On Ohter Pages
+                        </label>
+                      </div>
+
                       <a
                         href={link.href}
                         target="_blank"

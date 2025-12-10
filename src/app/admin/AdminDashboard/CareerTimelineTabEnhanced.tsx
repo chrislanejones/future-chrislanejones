@@ -349,7 +349,7 @@ const CareerTimelineTabEnhanced = () => {
                     {selectedEvent && (
                       <Button
                         onClick={() => setDeleteConfirm(selectedEvent._id)}
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
                       >

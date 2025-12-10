@@ -1,205 +1,116 @@
-// src/app/admin/effects/messages-effects.ts
-import { Effect, pipe } from "effect";
+import { v } from "convex/values";
+import { query, mutation } from "../../../../convex/_generated/server";
 
-export interface ContactMessage {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  source: string;
-  read: boolean;
-  createdAt: number;
-}
+// Get the profile (there should only be one)
+export const getProfile = query({
+  args: {},
+  handler: async (ctx) => {
+    const profile = await ctx.db.query("siteSettings").first();
+    return profile;
+  },
+});
 
-export interface MessageFilter {
-  searchQuery?: string;
-  read?: boolean;
-  source?: string;
-  dateRange?: { start: number; end: number };
-}
-
-export class MessageError extends Error {
-  readonly _tag = "MessageError";
-  constructor(message: string) {
-    super(message);
-    this.name = "MessageError";
-  }
-}
-
-export class MessageValidationError extends Error {
-  readonly _tag = "MessageValidationError";
-  constructor(message: string) {
-    super(message);
-    this.name = "MessageValidationError";
-  }
-}
-
-export const validateEmail = (email: string) =>
-  Effect.gen(function* () {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!email || email.trim().length === 0) {
-      yield* Effect.fail(new MessageValidationError("Email is required"));
-    }
-
-    if (!emailRegex.test(email)) {
-      yield* Effect.fail(new MessageValidationError(`Invalid email: ${email}`));
-    }
-
-    return email;
-  });
-
-export const validatePhone = (phone?: string) =>
-  Effect.gen(function* () {
-    if (!phone) return undefined;
-
-    const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-
-    if (!phoneRegex.test(phone)) {
-      yield* Effect.fail(
-        new MessageValidationError(`Invalid phone number: ${phone}`)
-      );
-    }
-
-    return phone;
-  });
-
-export const filterMessagesEffect = (
-  messages: ContactMessage[],
-  filter: MessageFilter
-) =>
-  Effect.gen(function* () {
-    let filtered = [...messages];
-
-    if (filter.searchQuery) {
-      const query = filter.searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (m) =>
-          m.name.toLowerCase().includes(query) ||
-          m.email.toLowerCase().includes(query) ||
-          m.message.toLowerCase().includes(query)
-      );
-    }
-
-    if (filter.read !== undefined) {
-      filtered = filtered.filter((m) => m.read === filter.read);
-    }
-
-    if (filter.source) {
-      filtered = filtered.filter((m) => m.source === filter.source);
-    }
-
-    if (filter.dateRange) {
-      filtered = filtered.filter(
-        (m) =>
-          m.createdAt >= filter.dateRange!.start &&
-          m.createdAt <= filter.dateRange!.end
-      );
-    }
-
-    return filtered;
-  });
-
-export const markMessageReadEffect = (messageId: string) =>
-  Effect.gen(function* () {
-    if (!messageId) {
-      yield* Effect.fail(new MessageValidationError("Message ID is required"));
-    }
-
-    yield* Effect.promise(
-      () => new Promise((resolve) => setTimeout(resolve, 200))
-    ).pipe(
-      Effect.catchAll(() =>
-        Effect.fail(new MessageError("Failed to mark message as read"))
-      )
-    );
-
-    return { success: true, messageId };
-  });
-
-export const bulkMarkReadEffect = (messageIds: string[]) =>
-  Effect.gen(function* () {
-    if (messageIds.length === 0) {
-      yield* Effect.fail(new MessageValidationError("No messages selected"));
-    }
-
-    yield* Effect.promise(
-      () => new Promise((resolve) => setTimeout(resolve, 500))
-    ).pipe(
-      Effect.catchAll(() =>
-        Effect.fail(new MessageError("Bulk operation failed"))
-      )
-    );
-
-    return { success: true, updated: messageIds.length };
-  });
-
-export const deleteMessageEffect = (messageId: string) =>
-  Effect.gen(function* () {
-    if (!messageId) {
-      yield* Effect.fail(new MessageValidationError("Message ID is required"));
-    }
-
-    yield* Effect.promise(
-      () => new Promise((resolve) => setTimeout(resolve, 300))
-    ).pipe(
-      Effect.catchAll(() =>
-        Effect.fail(new MessageError("Failed to delete message"))
-      )
-    );
-
-    return { success: true, deleted: messageId };
-  });
-
-export const sendReplyEffect = (
-  toEmail: string,
-  subject: string,
-  body: string
-) =>
-  pipe(
-    validateEmail(toEmail),
-    Effect.flatMap(() =>
-      Effect.gen(function* () {
-        if (!subject || subject.trim().length === 0) {
-          yield* Effect.fail(new MessageValidationError("Subject is required"));
-        }
-
-        if (!body || body.trim().length === 0) {
-          yield* Effect.fail(
-            new MessageValidationError("Message body is required")
-          );
-        }
-
-        yield* Effect.promise(
-          () => new Promise((resolve) => setTimeout(resolve, 1000))
-        ).pipe(
-          Effect.catchAll(() =>
-            Effect.fail(new MessageError("Failed to send reply"))
-          )
-        );
-
-        return { success: true, sentTo: toEmail };
+// Update or create the profile
+export const updateProfile = mutation({
+  args: {
+    name: v.string(),
+    bio: v.string(),
+    avatar: v.optional(v.string()),
+    email: v.optional(v.string()),
+    location: v.optional(v.string()),
+    socialLinks: v.optional(
+      v.object({
+        github: v.optional(v.string()),
+        linkedin: v.optional(v.string()),
+        twitter: v.optional(v.string()),
+        codepen: v.optional(v.string()),
+        youtube: v.optional(v.string()),
       })
-    )
-  );
+    ),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db.query("siteSettings").first();
 
-export const exportMessagesEffect = (messages: ContactMessage[]) =>
-  Effect.gen(function* () {
-    if (messages.length === 0) {
-      yield* Effect.fail(new MessageValidationError("No messages to export"));
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        ...args,
+        updatedAt: Date.now(),
+      });
+      return existing._id;
+    } else {
+      return await ctx.db.insert("siteSettings", {
+        ...args,
+        updatedAt: Date.now(),
+      });
+    }
+  },
+});
+
+// Update just the avatar
+export const updateAvatar = mutation({
+  args: {
+    avatar: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db.query("siteSettings").first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        avatar: args.avatar,
+        updatedAt: Date.now(),
+      });
+      return existing._id;
+    } else {
+      // Create with defaults if doesn't exist
+      return await ctx.db.insert("siteSettings", {
+        name: "",
+        bio: "",
+        avatar: args.avatar,
+        updatedAt: Date.now(),
+      });
+    }
+  },
+});
+
+// Remove avatar
+export const removeAvatar = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const existing = await ctx.db.query("siteSettings").first();
+
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        avatar: undefined,
+        updatedAt: Date.now(),
+      });
+    }
+  },
+});
+
+// Seed default profile data
+export const seedProfile = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const existing = await ctx.db.query("siteSettings").first();
+
+    if (existing) {
+      return { success: true, message: "Profile already exists" };
     }
 
-    yield* Effect.promise(
-      () => new Promise((resolve) => setTimeout(resolve, 800))
-    ).pipe(
-      Effect.catchAll(() => Effect.fail(new MessageError("Export failed")))
-    );
+    await ctx.db.insert("siteSettings", {
+      name: "Chris Lane Jones",
+      bio: "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+      email: "",
+      location: "Louisa, Virginia",
+      socialLinks: {
+        github: "https://github.com/chrislanejones",
+        linkedin: "https://linkedin.com/in/chrislanejones",
+        twitter: "https://twitter.com/chrislanejones",
+        codepen: "https://codepen.io/chrislanejones",
+      },
+      updatedAt: Date.now(),
+    });
 
-    const filename = `messages_${new Date().toISOString()}.json`;
-    return {
-      filename,
-      count: messages.length,
-      size: (JSON.stringify(messages).length / 1024).toFixed(2) + " KB",
-    };
-  });
+    return { success: true, message: "Profile seeded successfully" };
+  },
+});

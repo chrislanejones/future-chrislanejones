@@ -1,0 +1,1757 @@
+
+===== FILE: components.json =====
+{
+"$schema": "https:
+"style": "new-york",
+"rsc": true,
+"tsx": true,
+"tailwind": {
+"config": "tailwind.config.ts",
+"css": "src/app/globals.css",
+"baseColor": "gray",
+"cssVariables": true,
+"prefix": ""
+},
+"aliases": {
+"components": "@/components",
+"utils": "@/lib/utils",
+"ui": "@/components/ui",
+"lib": "@/lib",
+"hooks": "@/hooks"
+},
+"iconLibrary": "lucide"
+}
+
+===== FILE: convex/blogPosts.ts =====
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
+async function getPostMedia(ctx: any, postId: string) {
+const media = await ctx.db
+.query("media")
+.withIndex("by_assigned_id", (q: any) => q.eq("assignedToId", postId))
+.filter((q: any) => q.eq(q.field("assignedToType"), "blogPost"))
+.collect();
+return media[0]?.url;
+}
+export const getAllPosts = query({
+args: {},
+handler: async (ctx) => {
+const posts = await ctx.db
+.query("blogPosts")
+.filter((q) => q.eq(q.field("published"), true))
+.order("desc")
+.collect();
+return await Promise.all(
+posts.map(async (post) => {
+const mediaUrl = await getPostMedia(ctx, post._id);
+return {
+...post,
+coverImage: mediaUrl || post.coverImage,
+};
+})
+);
+},
+});
+export const getAllPostsAdmin = query({
+args: {},
+handler: async (ctx) => {
+const posts = await ctx.db
+.query("blogPosts")
+.order("desc")
+.collect();
+return await Promise.all(
+posts.map(async (post) => {
+const mediaUrl = await getPostMedia(ctx, post._id);
+return {
+...post,
+coverImage: mediaUrl || post.coverImage,
+};
+})
+);
+},
+});
+export const getPostBySlug = query({
+args: { slug: v.string() },
+handler: async (ctx, args) => {
+const post = await ctx.db
+.query("blogPosts")
+.filter((q) =>
+q.and(
+q.eq(q.field("slug"), args.slug),
+q.eq(q.field("published"), true)
+)
+)
+.first();
+if (!post) return null;
+const mediaUrl = await getPostMedia(ctx, post._id);
+return {
+...post,
+coverImage: mediaUrl || post.coverImage,
+};
+},
+});
+export const createPost = mutation({
+args: {
+title: v.string(),
+slug: v.string(),
+excerpt: v.string(),
+content: v.string(),
+coverImage: v.optional(v.string()),
+tags: v.optional(v.array(v.string())),
+published: v.optional(v.boolean()),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("blogPosts", {
+...args,
+published: args.published ?? false,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const updatePost = mutation({
+args: {
+id: v.id("blogPosts"),
+title: v.optional(v.string()),
+slug: v.optional(v.string()),
+excerpt: v.optional(v.string()),
+content: v.optional(v.string()),
+coverImage: v.optional(v.string()),
+tags: v.optional(v.array(v.string())),
+published: v.optional(v.boolean()),
+createdAt: v.optional(v.number()),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+return await ctx.db.patch(id, {
+...updateData,
+updatedAt: Date.now(),
+});
+},
+});
+export const deletePost = mutation({
+args: { id: v.id("blogPosts") },
+handler: async (ctx, args) => {
+return await ctx.db.delete(args.id);
+},
+});
+export const toggleLike = mutation({
+args: {
+postId: v.id("blogPosts"),
+userIdentifier: v.string(),
+},
+handler: async (ctx, args) => {
+const existingLike = await ctx.db
+.query("blogLikes")
+.withIndex("by_user_post", (q) =>
+q.eq("userIdentifier", args.userIdentifier).eq("postId", args.postId)
+)
+.first();
+if (existingLike) {
+await ctx.db.delete(existingLike._id);
+const post = await ctx.db.get(args.postId);
+if (post) {
+await ctx.db.patch(args.postId, {
+likesCount: Math.max(0, (post.likesCount || 0) - 1),
+});
+}
+return { liked: false };
+} else {
+await ctx.db.insert("blogLikes", {
+postId: args.postId,
+userIdentifier: args.userIdentifier,
+createdAt: Date.now(),
+});
+const post = await ctx.db.get(args.postId);
+if (post) {
+await ctx.db.patch(args.postId, {
+likesCount: (post.likesCount || 0) + 1,
+});
+}
+return { liked: true };
+}
+},
+});
+export const getUserLikeStatus = query({
+args: {
+postId: v.id("blogPosts"),
+userIdentifier: v.string(),
+},
+handler: async (ctx, args) => {
+const like = await ctx.db
+.query("blogLikes")
+.withIndex("by_user_post", (q) =>
+q.eq("userIdentifier", args.userIdentifier).eq("postId", args.postId)
+)
+.first();
+return { liked: !!like };
+},
+});
+export const addComment = mutation({
+args: {
+postId: v.id("blogPosts"),
+parentId: v.optional(v.id("blogComments")),
+authorName: v.string(),
+authorEmail: v.string(),
+content: v.string(),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("blogComments", {
+...args,
+approved: false,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const getComments = query({
+args: { postId: v.id("blogPosts") },
+handler: async (ctx, args) => {
+return await ctx.db
+.query("blogComments")
+.withIndex("by_post", (q) => q.eq("postId", args.postId))
+.filter((q) => q.eq(q.field("approved"), true))
+.order("asc")
+.collect();
+},
+});
+export const getAllCommentsAdmin = query({
+args: {},
+handler: async (ctx) => {
+const comments = await ctx.db
+.query("blogComments")
+.order("desc")
+.collect();
+const enrichedComments = await Promise.all(
+comments.map(async (comment) => {
+const post = await ctx.db.get(comment.postId);
+return {
+...comment,
+postTitle: post?.title || "Unknown Post",
+postSlug: post?.slug || "",
+};
+})
+);
+return enrichedComments;
+},
+});
+export const getPendingCommentsCount = query({
+args: {},
+handler: async (ctx) => {
+const pendingComments = await ctx.db
+.query("blogComments")
+.filter((q) => q.eq(q.field("approved"), false))
+.collect();
+return pendingComments.length;
+},
+});
+export const getAllLikesAdmin = query({
+args: {},
+handler: async (ctx) => {
+const likes = await ctx.db
+.query("blogLikes")
+.order("desc")
+.collect();
+const postLikesMap = new Map<string, number>();
+likes.forEach((like) => {
+const postId = like.postId;
+postLikesMap.set(postId, (postLikesMap.get(postId) || 0) + 1);
+});
+const postsWithLikes = await Promise.all(
+Array.from(postLikesMap.entries()).map(async ([postId, count]) => {
+const post = await ctx.db.get(postId as Id<"blogPosts">);
+const blogPost = post && 'title' in post && 'slug' in post ? post : null;
+return {
+postId,
+postTitle: blogPost?.title || "Unknown Post",
+postSlug: blogPost?.slug || "",
+likesCount: count,
+};
+})
+);
+return {
+total: likes.length,
+byPost: postsWithLikes.sort((a, b) => b.likesCount - a.likesCount),
+};
+},
+});
+export const approveComment = mutation({
+args: { commentId: v.id("blogComments") },
+handler: async (ctx, args) => {
+return await ctx.db.patch(args.commentId, {
+approved: true,
+updatedAt: Date.now(),
+});
+},
+});
+export const deleteComment = mutation({
+args: { commentId: v.id("blogComments") },
+handler: async (ctx, args) => {
+return await ctx.db.delete(args.commentId);
+},
+});
+export const seedBlogPosts = mutation({
+args: {},
+handler: async (ctx) => {
+const existingPosts = await ctx.db.query("blogPosts").collect();
+if (existingPosts.length > 0) {
+return "Blog posts already exist";
+}
+const now = Date.now();
+const blogPosts = [
+{
+title: "Building Modern React Applications with Next.js 14",
+slug: "building-modern-react-applications-nextjs-14",
+excerpt: "Explore the latest features in Next.js 14 and how they can transform your React development workflow. From app router to server components, we'll cover it all.",
+content: `
+Next.js 14 has brought some incredible improvements to the React ecosystem. In this post, we'll explore the key features that make it a game-changer for modern web development.
+The new App Router in Next.js 14 provides a more intuitive way to structure your applications. With file-based routing and nested layouts, building complex applications has never been easier.
+Server Components allow us to render components on the server, reducing the JavaScript bundle size and improving performance significantly.
+- Improved performance
+- Better SEO
+- Enhanced developer experience
+- Simplified data fetching
+Whether you're building a simple website or a complex web application, Next.js 14 provides the tools you need to succeed.
+`,
+coverImage: "/projects/multi-image-compress-and-edit-app.webp",
+tags: ["React", "Next.js", "Web Development", "JavaScript"],
+published: true,
+likesCount: 12,
+createdAt: now - 7 * 24 * 60 * 60 * 1000,
+updatedAt: now - 7 * 24 * 60 * 60 * 1000,
+},
+{
+title: "WordPress vs Modern Frameworks: When to Choose What",
+slug: "wordpress-vs-modern-frameworks-when-to-choose-what",
+excerpt: "A comprehensive comparison between WordPress and modern JavaScript frameworks. Learn when each approach makes sense for your project.",
+content: `
+Choosing the right technology stack for your project can be challenging. Let's break down when WordPress makes sense versus when you should reach for modern JavaScript frameworks.
+WordPress powers over 40% of the web for good reasons:
+- Content management made easy
+- Extensive plugin ecosystem
+- SEO-friendly out of the box
+- Large community support
+Frameworks like React, Vue, and Svelte offer:
+- Better performance
+- More flexibility
+- Modern development experience
+- Enhanced user interactions
+Consider these factors when choosing:
+1. **Content needs**: Heavy content management? WordPress wins.
+2. **Performance requirements**: Need lightning-fast interactions? Go modern.
+3. **Team expertise**: Use what your team knows best.
+4. **Budget and timeline**: WordPress can be faster to launch.
+The best choice depends on your specific project requirements and constraints.
+`,
+coverImage: "/gallery/Richmond-WordPress-Meetup.webp",
+tags: ["WordPress", "React", "Web Development", "CMS"],
+published: true,
+likesCount: 8,
+createdAt: now - 3 * 24 * 60 * 60 * 1000,
+updatedAt: now - 3 * 24 * 60 * 60 * 1000,
+},
+{
+title: "Remote Work Setup: Building the Perfect Development Environment",
+slug: "remote-work-setup-perfect-development-environment",
+excerpt: "From standing desks to multiple monitors, discover how to create a productive remote development environment that boosts your coding efficiency.",
+content: `
+Working remotely as a developer requires the right setup to maintain productivity and comfort. Here's how I've optimized my home office over the years.
+A good monitor setup is crucial for productivity:
+- Primary: 32" 4K monitor for main work
+- Secondary: Vertical 24" for documentation and Slack
+- Laptop screen for terminal and system monitoring
+- Standing desk for health and energy
+- Ergonomic chair for long coding sessions
+- External keyboard and mouse
+- Proper lighting to reduce eye strain
+- VS Code with essential extensions
+- Terminal setup with Oh My Zsh
+- Git workflows and aliases
+- Docker for consistent environments
+- Time tracking with focus sessions
+- Note-taking system (Obsidian/Notion)
+- Calendar blocking for deep work
+- Communication boundaries
+The environment affects productivity:
+- Dedicated workspace separate from relaxation areas
+- Plants for better air quality and mood
+- Background music or noise cancellation
+- Regular breaks and movement
+Working from the Shenandoah Mountains provides natural inspiration and a change of pace that fuels creativity. Sometimes the best debugging happens on a hiking trail!
+Remember: the perfect setup is personal. Experiment and adjust based on what works for your workflow and preferences.
+`,
+coverImage: "/gallery/Standing-Desk-Setup.webp",
+tags: ["Remote Work", "Productivity", "Development Environment", "Home Office"],
+published: true,
+likesCount: 15,
+createdAt: now - 1 * 24 * 60 * 60 * 1000,
+updatedAt: now - 1 * 24 * 60 * 60 * 1000,
+},
+];
+for (const post of blogPosts) {
+await ctx.db.insert("blogPosts", post);
+}
+return `Successfully seeded ${blogPosts.length} blog posts`;
+},
+});
+
+===== FILE: convex/browserLinks.ts =====
+import { query, mutation } from "./_generated/server";
+import { v } from "convex/values";
+import { linkSeed } from "../src/data/linkSeed";
+export const getAll = query({
+args: {},
+handler: async (ctx) => {
+return await ctx.db.query("browserLinks").order("desc").collect();
+},
+});
+export const getByCategory = query({
+args: { category: v.string() },
+handler: async (ctx, args) => {
+const links = await ctx.db
+.query("browserLinks")
+.withIndex("by_category", (q) => q.eq("category", args.category))
+.collect();
+return links.sort((a, b) => a.order - b.order);
+},
+});
+export const getFeatured = query({
+args: {},
+handler: async (ctx) => {
+const links = await ctx.db
+.query("browserLinks")
+.filter((q) => q.eq(q.field("featured"), true))
+.collect();
+return links.sort((a, b) => a.order - b.order);
+},
+});
+export const getCategories = query({
+handler: async (ctx) => {
+const links = await ctx.db.query("browserLinks").collect();
+const categoriesMap = new Map<string, { color: string; count: number }>();
+links.forEach((link) => {
+if (!categoriesMap.has(link.category)) {
+categoriesMap.set(link.category, { color: link.color, count: 1 });
+} else {
+const existing = categoriesMap.get(link.category)!;
+categoriesMap.set(link.category, {
+...existing,
+count: existing.count + 1,
+});
+}
+});
+return Array.from(categoriesMap.entries()).map(([category, data]) => ({
+category,
+color: data.color,
+count: data.count,
+}));
+},
+});
+export const create = mutation({
+args: {
+href: v.string(),
+label: v.string(),
+domain: v.string(),
+favicon: v.optional(v.string()),
+category: v.string(),
+color: v.string(),
+order: v.number(),
+featured: v.optional(v.boolean()),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("browserLinks", {
+...args,
+featured: args.featured ?? false,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const update = mutation({
+args: {
+id: v.id("browserLinks"),
+href: v.optional(v.string()),
+label: v.optional(v.string()),
+domain: v.optional(v.string()),
+favicon: v.optional(v.string()),
+category: v.optional(v.string()),
+color: v.optional(v.string()),
+order: v.optional(v.number()),
+featured: v.optional(v.boolean()),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+const cleanedData: Record<string, any> = {};
+for (const [key, value] of Object.entries(updateData)) {
+if (value !== undefined) {
+cleanedData[key] = value;
+}
+}
+await ctx.db.patch(id, { ...cleanedData, updatedAt: Date.now() });
+},
+});
+export const deleteLink = mutation({
+args: { id: v.id("browserLinks") },
+handler: async (ctx, args) => {
+await ctx.db.delete(args.id);
+},
+});
+export const deleteCategory = mutation({
+args: { category: v.string() },
+handler: async (ctx, args) => {
+const linksInCategory = await ctx.db
+.query("browserLinks")
+.withIndex("by_category", (q) => q.eq("category", args.category))
+.collect();
+for (const link of linksInCategory) {
+await ctx.db.delete(link._id);
+}
+return linksInCategory.length;
+},
+});
+export const toggleFeatured = mutation({
+args: { id: v.id("browserLinks") },
+handler: async (ctx, args) => {
+const link = await ctx.db.get(args.id);
+if (!link) throw new Error("Link not found");
+await ctx.db.patch(args.id, {
+featured: !link.featured,
+updatedAt: Date.now(),
+});
+return { featured: !link.featured };
+},
+});
+export const seedLinks = mutation({
+handler: async (ctx) => {
+let inserted = 0;
+for (const category of linkSeed) {
+for (let i = 0; i < category.links.length; i++) {
+const link = category.links[i];
+await ctx.db.insert("browserLinks", {
+href: link.href,
+label: link.label,
+domain: link.domain,
+favicon: link.favicon,
+category: category.title,
+color: category.color,
+order: i,
+featured: false,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+inserted++;
+}
+}
+return {
+success: true,
+inserted,
+message: `Seeded ${inserted} links across ${linkSeed.length} categories`,
+};
+},
+});
+
+===== FILE: convex/careerTimeline.ts =====
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+export const getAllEvents = query({
+handler: async (ctx) => {
+const events = await ctx.db
+.query("careerTimeline")
+.withIndex("by_order")
+.order("asc")
+.collect();
+return events;
+},
+});
+export const addEvent = mutation({
+args: {
+year: v.string(),
+title: v.string(),
+description: v.string(),
+location: v.optional(v.string()),
+iconName: v.string(),
+order: v.number(),
+},
+handler: async (ctx, args) => {
+const now = Date.now();
+const eventId = await ctx.db.insert("careerTimeline", {
+year: args.year,
+title: args.title,
+description: args.description,
+location: args.location,
+iconName: args.iconName,
+order: args.order,
+createdAt: now,
+updatedAt: now,
+});
+return eventId;
+},
+});
+export const updateEvent = mutation({
+args: {
+id: v.id("careerTimeline"),
+year: v.string(),
+title: v.string(),
+description: v.string(),
+location: v.optional(v.string()),
+iconName: v.string(),
+order: v.number(),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+await ctx.db.patch(id, {
+...updateData,
+updatedAt: Date.now(),
+});
+},
+});
+export const deleteEvent = mutation({
+args: {
+id: v.id("careerTimeline"),
+},
+handler: async (ctx, args) => {
+await ctx.db.delete(args.id);
+},
+});
+export const reorderEvents = mutation({
+args: {
+updates: v.array(
+v.object({
+id: v.id("careerTimeline"),
+order: v.number(),
+})
+),
+},
+handler: async (ctx, args) => {
+const now = Date.now();
+for (const update of args.updates) {
+await ctx.db.patch(update.id, {
+order: update.order,
+updatedAt: now,
+});
+}
+},
+});
+export const seedTimeline = mutation({
+handler: async (ctx) => {
+const existing = await ctx.db.query("careerTimeline").collect();
+if (existing.length > 0) {
+return { message: "Timeline already seeded", count: existing.length };
+}
+const now = Date.now();
+const events = [
+{
+year: "2013",
+title: "I Am a First-Generation College Graduate",
+description:
+"Graduated from University of North Florida with Bachelor of Arts with a concentration in Multimedia Journalism & Production",
+location: "Jacksonville, FL",
+iconName: "GraduationCap",
+order: 0,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2013-2016",
+title: "Lights, Camera, Action",
+description: "I Started a Career in Video Editing and Production",
+location: "Jacksonville, FL",
+iconName: "Video",
+order: 1,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2016",
+title: "I Enjoyed Coding My Personal Website So Much I Switched Careers",
+description:
+"Decided to switch from video production to web design after designing personal website",
+location: "Jacksonville, FL",
+iconName: "Star",
+order: 2,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2017",
+title: "Front-End Web Development (jQuery Days)",
+description:
+"Began working with WordPress Theme and Plugin Development, JavaScript, jQuery, and the MERN Stack",
+location: "Jacksonville, FL",
+iconName: "Lightbulb",
+order: 3,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2018",
+title: "We Moved to the Mountains, Because Why Not?",
+description:
+"Relocated to Harrisonburg, Virginia in the Shenandoah Mountains",
+location: "Harrisonburg, VA",
+iconName: "Mountain",
+order: 4,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2019",
+title: "Moved Once Again — Moving Companies Love Us",
+description:
+"Picked Living Among the Cows to Be Near the Mountains and Richmond, VA.",
+location: "Louisa, VA",
+iconName: "Home",
+order: 5,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2023",
+title: "WordPress Meetup Host",
+description:
+"Started leading Richmond's local WordPress meetup with monthly sessions.",
+location: "Louisa, VA",
+iconName: "Users",
+order: 6,
+createdAt: now,
+updatedAt: now,
+},
+{
+year: "2024",
+title: "React Developer That Also Does WordPress",
+description:
+"Shifted More to React After Seeing the Animations (I Still Do WordPress Too)",
+location: "Louisa, VA",
+iconName: "Code2",
+order: 7,
+createdAt: now,
+updatedAt: now,
+},
+];
+for (const event of events) {
+await ctx.db.insert("careerTimeline", event);
+}
+return { message: "Timeline seeded successfully", count: events.length };
+},
+});
+
+===== FILE: convex/contactMessages.ts =====
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+export const getAll = query({
+args: {},
+handler: async (ctx) => {
+return await ctx.db
+.query("contactMessages")
+.withIndex("by_created")
+.order("desc")
+.collect();
+},
+});
+export const getUnreadCount = query({
+args: {},
+handler: async (ctx) => {
+const unread = await ctx.db
+.query("contactMessages")
+.filter((q) => q.eq(q.field("read"), false))
+.collect();
+return unread.length;
+},
+});
+export const markAsRead = mutation({
+args: { id: v.id("contactMessages") },
+handler: async (ctx, args) => {
+return await ctx.db.patch(args.id, { read: true });
+},
+});
+export const markAsUnread = mutation({
+args: { id: v.id("contactMessages") },
+handler: async (ctx, args) => {
+return await ctx.db.patch(args.id, { read: false });
+},
+});
+export const deleteMessage = mutation({
+args: { id: v.id("contactMessages") },
+handler: async (ctx, args) => {
+return await ctx.db.delete(args.id);
+},
+});
+export const create = mutation({
+args: {
+name: v.string(),
+email: v.string(),
+phone: v.optional(v.string()),
+message: v.string(),
+source: v.string(),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("contactMessages", {
+...args,
+read: false,
+createdAt: Date.now(),
+});
+},
+});
+
+===== FILE: convex/_generated/api.d.ts =====
+import type * as blogPosts from "../blogPosts.js";
+import type * as browserLinks from "../browserLinks.js";
+import type * as careerTimeline from "../careerTimeline.js";
+import type * as contactMessages from "../contactMessages.js";
+import type * as http from "../http.js";
+import type * as media from "../media.js";
+import type * as navigation from "../navigation.js";
+import type * as seo from "../seo.js";
+import type * as siteSettings from "../siteSettings.js";
+import type {
+ApiFromModules,
+FilterApi,
+FunctionReference,
+} from "convex/server";
+declare const fullApi: ApiFromModules<{
+blogPosts: typeof blogPosts;
+browserLinks: typeof browserLinks;
+careerTimeline: typeof careerTimeline;
+contactMessages: typeof contactMessages;
+http: typeof http;
+media: typeof media;
+navigation: typeof navigation;
+seo: typeof seo;
+siteSettings: typeof siteSettings;
+}>;
+export declare const api: FilterApi<
+typeof fullApi,
+FunctionReference<any, "public">
+>;
+export declare const internal: FilterApi<
+typeof fullApi,
+FunctionReference<any, "internal">
+>;
+export declare const components: {};
+
+===== FILE: convex/_generated/api.js =====
+import { anyApi, componentsGeneric } from "convex/server";
+export const api = anyApi;
+export const internal = anyApi;
+export const components = componentsGeneric();
+
+===== FILE: convex/_generated/dataModel.d.ts =====
+import type {
+DataModelFromSchemaDefinition,
+DocumentByName,
+TableNamesInDataModel,
+SystemTableNames,
+} from "convex/server";
+import type { GenericId } from "convex/values";
+import schema from "../schema.js";
+export type TableNames = TableNamesInDataModel<DataModel>;
+export type Doc<TableName extends TableNames> = DocumentByName<
+DataModel,
+TableName
+>;
+export type Id<TableName extends TableNames | SystemTableNames> =
+GenericId<TableName>;
+export type DataModel = DataModelFromSchemaDefinition<typeof schema>;
+
+===== FILE: convex/_generated/server.d.ts =====
+import {
+ActionBuilder,
+HttpActionBuilder,
+MutationBuilder,
+QueryBuilder,
+GenericActionCtx,
+GenericMutationCtx,
+GenericQueryCtx,
+GenericDatabaseReader,
+GenericDatabaseWriter,
+} from "convex/server";
+import type { DataModel } from "./dataModel.js";
+export declare const query: QueryBuilder<DataModel, "public">;
+export declare const internalQuery: QueryBuilder<DataModel, "internal">;
+export declare const mutation: MutationBuilder<DataModel, "public">;
+export declare const internalMutation: MutationBuilder<DataModel, "internal">;
+export declare const action: ActionBuilder<DataModel, "public">;
+export declare const internalAction: ActionBuilder<DataModel, "internal">;
+export declare const httpAction: HttpActionBuilder;
+export type QueryCtx = GenericQueryCtx<DataModel>;
+export type MutationCtx = GenericMutationCtx<DataModel>;
+export type ActionCtx = GenericActionCtx<DataModel>;
+export type DatabaseReader = GenericDatabaseReader<DataModel>;
+export type DatabaseWriter = GenericDatabaseWriter<DataModel>;
+
+===== FILE: convex/_generated/server.js =====
+import {
+actionGeneric,
+httpActionGeneric,
+queryGeneric,
+mutationGeneric,
+internalActionGeneric,
+internalMutationGeneric,
+internalQueryGeneric,
+} from "convex/server";
+export const query = queryGeneric;
+export const internalQuery = internalQueryGeneric;
+export const mutation = mutationGeneric;
+export const internalMutation = internalMutationGeneric;
+export const action = actionGeneric;
+export const internalAction = internalActionGeneric;
+export const httpAction = httpActionGeneric;
+
+===== FILE: convex/http.ts =====
+import { httpRouter } from "convex/server";
+import { httpAction } from "./_generated/server";
+import { api } from "./_generated/api";
+const http = httpRouter();
+http.route({
+path: "/seo",
+method: "GET",
+handler: httpAction(async (ctx, request) => {
+const url = new URL(request.url);
+const path = url.searchParams.get("path") || "/";
+const seoData = await ctx.runQuery(api.seo.getSEOByPath, { path });
+return new Response(JSON.stringify(seoData), {
+headers: {
+"Content-Type": "application/json",
+"Access-Control-Allow-Origin": "*",
+},
+});
+}),
+});
+export default http;
+
+===== FILE: convex/media.ts =====
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
+export const getAll = query({
+args: {},
+handler: async (ctx) => {
+return await ctx.db.query("media").order("desc").collect();
+},
+});
+export const getByAssignedType = query({
+args: { assignedToType: v.string() },
+handler: async (ctx, args) => {
+return await ctx.db
+.query("media")
+.withIndex("by_assigned_type", (q) =>
+q.eq("assignedToType", args.assignedToType)
+)
+.collect();
+},
+});
+export const getByAssignedId = query({
+args: { assignedToId: v.string() },
+handler: async (ctx, args) => {
+return await ctx.db
+.query("media")
+.withIndex("by_assigned_id", (q) =>
+q.eq("assignedToId", args.assignedToId)
+)
+.collect();
+},
+});
+export const getUnassigned = query({
+args: {},
+handler: async (ctx) => {
+const allMedia = await ctx.db.query("media").collect();
+return allMedia.filter((item) => !item.assignedToType);
+},
+});
+export const getOrganized = query({
+args: {},
+handler: async (ctx) => {
+const allMedia = await ctx.db.query("media").collect();
+const blogPosts = await ctx.db.query("blogPosts").order("desc").collect();
+const pages = [
+{ id: "home", title: "Home Page" },
+{ id: "about", title: "About Page" },
+{ id: "gallery", title: "Gallery" },
+{ id: "projects", title: "Projects" },
+{ id: "browser-tabs", title: "Browser Tabs" },
+];
+const organized = {
+pages: pages.map((page) => ({
+...page,
+images: allMedia.filter(
+(m) => m.assignedToType === "page" && m.assignedToId === page.id
+),
+})),
+blogPosts: blogPosts.map((post) => ({
+id: post._id,
+title: post.title,
+slug: post.slug,
+images: allMedia.filter(
+(m) => m.assignedToType === "blogPost" && m.assignedToId === post._id
+),
+})),
+unassigned: allMedia.filter((m) => !m.assignedToType),
+};
+return organized;
+},
+});
+export const create = mutation({
+args: {
+url: v.string(),
+filename: v.string(),
+altText: v.optional(v.string()),
+size: v.optional(v.number()),
+mimeType: v.optional(v.string()),
+assignedToType: v.optional(v.string()),
+assignedToId: v.optional(v.string()),
+assignedToTitle: v.optional(v.string()),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("media", {
+...args,
+uploadedAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const update = mutation({
+args: {
+id: v.id("media"),
+url: v.optional(v.string()),
+filename: v.optional(v.string()),
+altText: v.optional(v.string()),
+assignedToType: v.optional(v.string()),
+assignedToId: v.optional(v.string()),
+assignedToTitle: v.optional(v.string()),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+await ctx.db.patch(id, {
+...updateData,
+updatedAt: Date.now(),
+});
+},
+});
+export const assign = mutation({
+args: {
+mediaId: v.id("media"),
+assignedToType: v.string(),
+assignedToId: v.string(),
+assignedToTitle: v.string(),
+},
+handler: async (ctx, args) => {
+await ctx.db.patch(args.mediaId, {
+assignedToType: args.assignedToType,
+assignedToId: args.assignedToId,
+assignedToTitle: args.assignedToTitle,
+updatedAt: Date.now(),
+});
+},
+});
+export const unassign = mutation({
+args: {
+mediaId: v.id("media"),
+},
+handler: async (ctx, args) => {
+await ctx.db.patch(args.mediaId, {
+assignedToType: undefined,
+assignedToId: undefined,
+assignedToTitle: undefined,
+updatedAt: Date.now(),
+});
+},
+});
+export const deleteMedia = mutation({
+args: { id: v.id("media") },
+handler: async (ctx, args) => {
+await ctx.db.delete(args.id);
+},
+});
+export const migrateBlogImages = mutation({
+args: {},
+handler: async (ctx) => {
+const now = Date.now();
+const images = [
+{
+url: "https:
+filename: "multi-image-compress-and-edit-app.webp",
+size: 47274,
+slug: "building-modern-react-applications-nextjs-14",
+title: "Building Modern React Applications with Next.js 14",
+},
+{
+url: "https:
+filename: "Richmond-WordPress-Meetup.webp",
+size: 23216,
+slug: "wordpress-vs-modern-frameworks-when-to-choose-what",
+title: "WordPress vs Modern Frameworks: When to Choose What",
+},
+{
+url: "https:
+filename: "Standing-Desk-Setup.webp",
+size: 25642,
+slug: "remote-work-setup-perfect-development-environment",
+title: "Remote Work Setup: Building the Perfect Development Environment",
+},
+];
+const results = [];
+for (const image of images) {
+const post = await ctx.db
+.query("blogPosts")
+.filter((q) => q.eq(q.field("slug"), image.slug))
+.first();
+if (post) {
+const existingMedia = await ctx.db
+.query("media")
+.filter((q) => q.eq(q.field("assignedToId"), post._id))
+.first();
+if (existingMedia) {
+results.push({
+success: true,
+filename: image.filename,
+postTitle: image.title,
+mediaId: existingMedia._id,
+skipped: true,
+});
+} else {
+const mediaId = await ctx.db.insert("media", {
+url: image.url,
+filename: image.filename,
+size: image.size,
+mimeType: "image/webp",
+assignedToType: "blogPost",
+assignedToId: post._id,
+assignedToTitle: image.title,
+uploadedAt: now,
+updatedAt: now,
+});
+results.push({
+success: true,
+filename: image.filename,
+postTitle: image.title,
+mediaId,
+created: true,
+});
+}
+} else {
+results.push({
+success: false,
+filename: image.filename,
+error: `Blog post not found for slug: ${image.slug}`,
+});
+}
+}
+return results;
+},
+});
+
+===== FILE: convex/navigation.ts =====
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
+import {
+staticHeaderNavItems,
+staticFooterNavLinks,
+} from "@/scripts/navigation-seed";
+export const getHeaderNavItems = query({
+args: {},
+handler: async (ctx) => {
+const mainItems = await ctx.db
+.query("headerNavItems")
+.filter((q) => q.eq(q.field("parentId"), undefined))
+.order("asc")
+.collect();
+const itemsWithChildren = await Promise.all(
+mainItems.map(async (item) => {
+const children = await ctx.db
+.query("headerNavItems")
+.filter((q) => q.eq(q.field("parentId"), item._id))
+.order("asc")
+.collect();
+return {
+...item,
+children: children.length > 0 ? children : undefined,
+};
+})
+);
+return itemsWithChildren;
+},
+});
+export const addHeaderNavItem = mutation({
+args: {
+label: v.string(),
+href: v.optional(v.string()),
+isExternal: v.optional(v.boolean()),
+parentId: v.optional(v.id("headerNavItems")),
+order: v.number(),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("headerNavItems", {
+...args,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const updateHeaderNavItem = mutation({
+args: {
+id: v.id("headerNavItems"),
+label: v.optional(v.string()),
+href: v.optional(v.string()),
+isExternal: v.optional(v.boolean()),
+parentId: v.optional(v.id("headerNavItems")),
+order: v.optional(v.number()),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
+},
+});
+export const deleteHeaderNavItem = mutation({
+args: { id: v.id("headerNavItems") },
+handler: async (ctx, args) => {
+const children = await ctx.db
+.query("headerNavItems")
+.filter((q) => q.eq(q.field("parentId"), args.id))
+.collect();
+for (const child of children) {
+await ctx.db.delete(child._id);
+}
+await ctx.db.delete(args.id);
+},
+});
+export const reorderHeaderNavItems = mutation({
+args: {
+updates: v.array(
+v.object({
+id: v.id("headerNavItems"),
+order: v.number(),
+parentId: v.optional(v.id("headerNavItems")),
+})
+),
+},
+handler: async (ctx, args) => {
+const now = Date.now();
+for (const update of args.updates) {
+await ctx.db.patch(update.id, {
+order: update.order,
+parentId: update.parentId === null ? undefined : update.parentId,
+updatedAt: now,
+});
+}
+},
+});
+export const getFooterNavSections = query({
+args: {},
+handler: async (ctx) => {
+const sections = await ctx.db
+.query("footerNavSections")
+.order("asc")
+.collect();
+const sectionsWithLinks = await Promise.all(
+sections.map(async (section) => {
+const links = await ctx.db
+.query("footerNavLinks")
+.filter((q) => q.eq(q.field("sectionId"), section._id))
+.order("asc")
+.collect();
+return {
+...section,
+links: links,
+};
+})
+);
+return sectionsWithLinks;
+},
+});
+export const addFooterNavSection = mutation({
+args: {
+title: v.string(),
+order: v.number(),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("footerNavSections", {
+...args,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const updateFooterNavSection = mutation({
+args: {
+id: v.id("footerNavSections"),
+title: v.optional(v.string()),
+order: v.optional(v.number()),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
+},
+});
+export const deleteFooterNavSection = mutation({
+args: { id: v.id("footerNavSections") },
+handler: async (ctx, args) => {
+const links = await ctx.db
+.query("footerNavLinks")
+.filter((q) => q.eq(q.field("sectionId"), args.id))
+.collect();
+for (const link of links) {
+await ctx.db.delete(link._id);
+}
+await ctx.db.delete(args.id);
+},
+});
+export const addFooterNavLink = mutation({
+args: {
+sectionId: v.id("footerNavSections"),
+label: v.string(),
+href: v.string(),
+isExternal: v.optional(v.boolean()),
+order: v.number(),
+},
+handler: async (ctx, args) => {
+return await ctx.db.insert("footerNavLinks", {
+...args,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+},
+});
+export const updateFooterNavLink = mutation({
+args: {
+id: v.id("footerNavLinks"),
+sectionId: v.optional(v.id("footerNavSections")),
+label: v.optional(v.string()),
+href: v.optional(v.string()),
+isExternal: v.optional(v.boolean()),
+order: v.optional(v.number()),
+},
+handler: async (ctx, args) => {
+const { id, ...updateData } = args;
+await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
+},
+});
+export const deleteFooterNavLink = mutation({
+args: { id: v.id("footerNavLinks") },
+handler: async (ctx, args) => {
+await ctx.db.delete(args.id);
+},
+});
+export const reorderFooterNavLinks = mutation({
+args: {
+updates: v.array(
+v.object({
+id: v.id("footerNavLinks"),
+order: v.number(),
+sectionId: v.optional(v.id("footerNavSections")),
+})
+),
+},
+handler: async (ctx, args) => {
+const now = Date.now();
+for (const update of args.updates) {
+await ctx.db.patch(update.id, {
+order: update.order,
+sectionId: update.sectionId,
+updatedAt: now,
+});
+}
+},
+});
+export const reorderFooterNavSections = mutation({
+args: {
+updates: v.array(
+v.object({
+id: v.id("footerNavSections"),
+order: v.number(),
+})
+),
+},
+handler: async (ctx, args) => {
+const now = Date.now();
+for (const update of args.updates) {
+await ctx.db.patch(update.id, {
+order: update.order,
+updatedAt: now,
+});
+}
+},
+});
+export const seedNavigationData = mutation({
+args: {},
+handler: async (ctx) => {
+const existingHeaderItems = await ctx.db.query("headerNavItems").collect();
+if (existingHeaderItems.length === 0) {
+console.log("Seeding header navigation items...");
+let order = 0;
+for (const item of staticHeaderNavItems) {
+if (item.children) {
+const parentId = await ctx.db.insert("headerNavItems", {
+label: item.label,
+href: item.href,
+order: order++,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+let childOrder = 0;
+for (const child of item.children) {
+await ctx.db.insert("headerNavItems", {
+label: child.label,
+href: child.href,
+isExternal: child.isExternal,
+parentId: parentId,
+order: childOrder++,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+}
+} else {
+await ctx.db.insert("headerNavItems", {
+label: item.label,
+href: item.href,
+isExternal: item.isExternal,
+order: order++,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+}
+}
+console.log("Header navigation seeded.");
+}
+const existingFooterSections = await ctx.db
+.query("footerNavSections")
+.collect();
+if (existingFooterSections.length === 0) {
+console.log("Seeding footer navigation sections and links...");
+let sectionOrder = 0;
+for (const section of staticFooterNavLinks) {
+const sectionId = await ctx.db.insert("footerNavSections", {
+title: section.title,
+order: sectionOrder++,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+let linkOrder = 0;
+for (const link of section.links) {
+await ctx.db.insert("footerNavLinks", {
+sectionId: sectionId,
+label: link.label,
+href: link.href,
+isExternal: link.isExternal,
+order: linkOrder++,
+createdAt: Date.now(),
+updatedAt: Date.now(),
+});
+}
+}
+console.log("Footer navigation seeded.");
+}
+return "Navigation data seeded successfully!";
+},
+});
+
+===== FILE: convex/schema.ts =====
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
+export default defineSchema({
+siteSettings: defineTable({
+name: v.string(),
+bio: v.string(),
+avatar: v.optional(v.string()),
+email: v.optional(v.string()),
+location: v.optional(v.string()),
+socialLinks: v.optional(
+v.object({
+github: v.optional(v.string()),
+linkedin: v.optional(v.string()),
+twitter: v.optional(v.string()),
+codepen: v.optional(v.string()),
+youtube: v.optional(v.string()),
+})
+),
+updatedAt: v.number(),
+}),
+seoMetadata: defineTable({
+path: v.string(),
+title: v.string(),
+description: v.string(),
+canonicalUrl: v.optional(v.string()),
+ogImage: v.optional(v.string()),
+updatedAt: v.number(),
+}).index("by_path", ["path"]),
+contactMessages: defineTable({
+name: v.string(),
+email: v.string(),
+phone: v.optional(v.string()),
+message: v.string(),
+createdAt: v.number(),
+read: v.boolean(),
+source: v.string(),
+}).index("by_created", ["createdAt"]),
+browserLinks: defineTable({
+href: v.string(),
+label: v.string(),
+domain: v.string(),
+favicon: v.optional(v.string()),
+category: v.string(),
+color: v.string(),
+order: v.number(),
+featured: v.optional(v.boolean()),
+createdAt: v.number(),
+updatedAt: v.number(),
+screenshotUrl: v.optional(v.string()),
+screenshotUpdatedAt: v.optional(v.number()),
+})
+.index("by_category", ["category"])
+.index("by_order", ["order"])
+.index("by_featured", ["featured"]),
+blogPosts: defineTable({
+title: v.string(),
+slug: v.string(),
+excerpt: v.string(),
+content: v.string(),
+coverImage: v.optional(v.string()),
+tags: v.optional(v.array(v.string())),
+published: v.boolean(),
+likesCount: v.optional(v.number()),
+createdAt: v.number(),
+updatedAt: v.number(),
+})
+.index("by_slug", ["slug"])
+.index("by_published", ["published"])
+.index("by_created", ["createdAt"]),
+blogLikes: defineTable({
+postId: v.id("blogPosts"),
+userIdentifier: v.string(),
+createdAt: v.number(),
+})
+.index("by_post", ["postId"])
+.index("by_user_post", ["userIdentifier", "postId"]),
+blogComments: defineTable({
+postId: v.id("blogPosts"),
+parentId: v.optional(v.id("blogComments")),
+authorName: v.string(),
+authorEmail: v.string(),
+content: v.string(),
+approved: v.boolean(),
+createdAt: v.number(),
+updatedAt: v.number(),
+})
+.index("by_post", ["postId"])
+.index("by_parent", ["parentId"])
+.index("by_approved", ["approved"])
+.index("by_created", ["createdAt"]),
+careerTimeline: defineTable({
+year: v.string(),
+title: v.string(),
+description: v.string(),
+location: v.optional(v.string()),
+iconName: v.string(),
+order: v.number(),
+createdAt: v.number(),
+updatedAt: v.number(),
+})
+.index("by_order", ["order"])
+.index("by_created", ["createdAt"]),
+media: defineTable({
+url: v.string(),
+filename: v.string(),
+altText: v.optional(v.string()),
+size: v.optional(v.number()),
+mimeType: v.optional(v.string()),
+assignedToType: v.optional(v.string()),
+assignedToId: v.optional(v.string()),
+assignedToTitle: v.optional(v.string()),
+uploadedAt: v.number(),
+updatedAt: v.number(),
+})
+.index("by_assigned_type", ["assignedToType"])
+.index("by_assigned_id", ["assignedToId"])
+.index("by_uploaded", ["uploadedAt"]),
+headerNavItems: defineTable({
+label: v.string(),
+href: v.optional(v.string()),
+isExternal: v.optional(v.boolean()),
+order: v.number(),
+parentId: v.optional(v.id("headerNavItems")),
+createdAt: v.number(),
+updatedAt: v.number(),
+})
+.index("by_order", ["order"])
+.index("by_parent_order", ["parentId", "order"]),
+footerNavSections: defineTable({
+title: v.string(),
+order: v.number(),
+createdAt: v.number(),
+updatedAt: v.number(),
+}).index("by_order", ["order"]),
+footerNavLinks: defineTable({
+sectionId: v.id("footerNavSections"),
+label: v.string(),
+href: v.string(),
+isExternal: v.optional(v.boolean()),
+order: v.number(),
+createdAt: v.number(),
+updatedAt: v.number(),
+}).index("by_section_order", ["sectionId", "order"]),
+});
+
+===== FILE: convex/seo.ts =====
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+import { Doc } from "./_generated/dataModel";
+export const getAllSEO = query({
+handler: async (ctx) => {
+return await ctx.db.query("seoMetadata").collect();
+},
+});
+export const getSEOByPath = query({
+args: { path: v.string() },
+handler: async (ctx, args) => {
+const result = await ctx.db
+.query("seoMetadata")
+.withIndex("by_path", (q) => q.eq("path", args.path))
+.first();
+return result;
+},
+});
+export const updateSEO = mutation({
+args: {
+path: v.string(),
+title: v.string(),
+description: v.string(),
+canonicalUrl: v.optional(v.string()),
+ogImage: v.optional(v.string()),
+},
+handler: async (ctx, args) => {
+const existing = await ctx.db
+.query("seoMetadata")
+.withIndex("by_path", (q) => q.eq("path", args.path))
+.first();
+const canonical = args.canonicalUrl ?? args.path;
+if (existing) {
+await ctx.db.patch(existing._id, {
+title: args.title,
+description: args.description,
+canonicalUrl: canonical,
+ogImage: args.ogImage,
+updatedAt: Date.now(),
+});
+return existing._id;
+} else {
+return await ctx.db.insert("seoMetadata", {
+path: args.path,
+title: args.title,
+description: args.description,
+canonicalUrl: canonical,
+ogImage: args.ogImage,
+updatedAt: Date.now(),
+});
+}
+},
+});
+export const seedSEOData = mutation({
+handler: async (ctx) => {
+const pages = [
+{
+path: "/",
+title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+description:
+"Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+canonicalUrl: "https:
+},
+{
+path: "/about",
+title: "About Chris Jones | Developer, Hiker & Community Leader",
+description:
+"From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and life in Virginia's Shenandoah Mountains.",
+canonicalUrl: "https:
+},
+{
+path: "/projects",
+title: "Web Development Projects | Next.js, React & WordPress Sites",
+description:
+"Full-stack projects featuring Next.js applications, WordPress plugins, image editors, and web tools. View my work with TypeScript, React, and modern frameworks.",
+canonicalUrl: "https:
+},
+{
+path: "/career",
+title: "Career & Experience | Chris Lane Jones Web Developer",
+description:
+"10+ years from video editor to senior developer. Experience with React, Next.js, WordPress, and building solutions for Fortune 500 companies and government agencies.",
+canonicalUrl: "https:
+},
+{
+path: "/browser-tabs",
+title: "Developer Resources & Tools | Curated Web Dev Bookmarks",
+description:
+"My collection of essential web development resources: React libraries, design tools, icon sets, UI frameworks, and learning materials I reference daily.",
+canonicalUrl: "https:
+},
+{
+path: "/conferences",
+title: "Tech Conferences Attended | All Things Open, RenderATL & More",
+description:
+"Notes from web development conferences including All Things Open, WordCamp US, THAT Conference, RenderATL, and RVAJS. Insights from the JavaScript community.",
+canonicalUrl: "https:
+},
+{
+path: "/link-page",
+title: "Connect With Chris Lane Jones | Social Media & Portfolio Links",
+description:
+"Find me on GitHub, LinkedIn, Twitter/X, and CodePen. Access my portfolio, blog posts, WordPress services, and web development resources all in one place.",
+canonicalUrl: "https:
+},
+{
+path: "/logo-page",
+title: "Mountain Logo Design Story | Chris Lane Jones Brand Identity",
+description:
+"The meaning behind my mountain logo design - representing the journey through code and trails. Explore different logo variations and design philosophy.",
+canonicalUrl: "https:
+},
+{
+path: "/site-history",
+title: "Portfolio Evolution | From WordPress 2.1 to Next.js React App",
+description:
+"18 years of website evolution: from the Kubrick WordPress theme in 2007 to modern Next.js. See how my portfolio transformed alongside web technology.",
+canonicalUrl: "https:
+},
+{
+path: "/wordpress-maintenance",
+title: "WordPress Maintenance Services | Monthly Action Plan",
+description:
+"Comprehensive WordPress maintenance including security scans, plugin updates, performance optimization, and technical support. Three hours of site changes monthly with 99.9% uptime guarantee.",
+canonicalUrl: "https:
+},
+{
+path: "/react-maintenance",
+title: "React Application Maintenance | Monthly Support & Optimization",
+description:
+"Expert React app maintenance with dependency updates, security monitoring, performance optimization, and debugging. Three hours of consulting monthly for Next.js and React applications.",
+canonicalUrl: "https:
+},
+];
+let inserted = 0;
+let updated = 0;
+for (const page of pages) {
+const existing = await ctx.db
+.query("seoMetadata")
+.withIndex("by_path", (q) => q.eq("path", page.path))
+.first();
+if (!existing) {
+await ctx.db.insert("seoMetadata", {
+...page,
+updatedAt: Date.now(),
+canonicalUrl: page.canonicalUrl || page.path,
+});
+inserted++;
+} else {
+updated++;
+}
+}
+return {
+success: true,
+total: pages.length,
+inserted,
+updated,
+message: `Seeded ${inserted} new pages, ${updated} already existed`,
+};
+},
+});
+

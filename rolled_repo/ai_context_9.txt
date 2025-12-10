@@ -1,0 +1,1452 @@
+
+===== FILE: src/components/ui/image-pill.tsx =====
+import * as React from "react";
+import { Badge, type BadgeProps } from "@/components/ui/badge";
+type ImagePillProps = {
+children: React.ReactNode;
+variant?: BadgeProps["variant"];
+className?: string;
+position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";
+};
+const POS = {
+"bottom-right": "bottom-4 right-4",
+"bottom-left": "bottom-4 left-4",
+"top-right": "top-4 right-4",
+"top-left": "top-4 left-4",
+} as const;
+export function ImagePill({
+children,
+variant = "dark",
+className = "",
+position = "bottom-right",
+}: ImagePillProps) {
+return (
+<Badge
+variant={variant}
+className={`absolute ${POS[position]} p px-3 py-1.5 shadow-lg ${className}`}
+>
+{children}
+</Badge>
+);
+}
+
+===== FILE: src/components/ui/input.tsx =====
+import * as React from "react"
+import { cn } from "@/lib/utils"
+export interface InputProps
+extends React.InputHTMLAttributes<HTMLInputElement> {}
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+({ className, type, ...props }, ref) => {
+return (
+<input
+type={type}
+className={cn(
+"flex h-10 w-full rounded-lg border border-(--color-border) bg-(--color-panel) px-3 py-2 text-sm text-(--color-ink) placeholder:text-(--color-muted) focus-ring transition disabled:cursor-not-allowed 
+disabled:opacity-50",
+className
+)}
+ref={ref}
+{...props}
+/>
+)
+}
+)
+Input.displayName = "Input"
+export { Input }
+
+===== FILE: src/components/ui/navigation-menu.tsx =====
+"use client";
+import * as React from "react";
+import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+const NavigationMenu = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.Root>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root>
+>(({ className, children, ...props }, ref) => (
+<NavigationMenuPrimitive.Root
+ref={ref}
+className={cn("relative z-50 flex justify-center", className)}
+{...props}
+>
+{children}
+<NavigationMenuViewport />
+</NavigationMenuPrimitive.Root>
+));
+NavigationMenu.displayName = NavigationMenuPrimitive.Root.displayName;
+const NavigationMenuList = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.List>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.List>
+>(({ className, ...props }, ref) => (
+<NavigationMenuPrimitive.List
+ref={ref}
+className={cn(
+"group flex list-none items-center justify-center gap-2",
+className
+)}
+{...props}
+/>
+));
+NavigationMenuList.displayName = NavigationMenuPrimitive.List.displayName;
+const NavigationMenuItem = NavigationMenuPrimitive.Item;
+const NavigationMenuTrigger = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.Trigger>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+<NavigationMenuPrimitive.Trigger
+ref={ref}
+className={cn(
+buttonVariants({ variant: "neutral", size: "sm" }),
+"group inline-flex items-center justify-center gap-1 font-medium transition-colors focus-ring hover:shadow-glow",
+className
+)}
+{...props}
+>
+{children}
+<ChevronDown
+className="ml-1 h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180"
+aria-hidden="true"
+/>
+</NavigationMenuPrimitive.Trigger>
+));
+NavigationMenuTrigger.displayName = NavigationMenuPrimitive.Trigger.displayName;
+const NavigationMenuContent = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.Content>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Content>
+>(({ className, ...props }, ref) => (
+<NavigationMenuPrimitive.Content
+ref={ref}
+className={cn(
+"data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out",
+"data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out",
+"data-[motion=from-start]:slide-in-from-left-52 data-[motion=from-end]:slide-in-from-right-52",
+"data-[motion=to-start]:slide-out-to-left-52 data-[motion=to-end]:slide-out-to-right-52",
+className
+)}
+{...props}
+/>
+));
+NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName;
+const NavigationMenuLink = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.Link>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Link>
+>(({ className, ...props }, ref) => (
+<NavigationMenuPrimitive.Link
+ref={ref}
+className={cn(
+"block select-none rounded-md px-3 py-2 text-sm transition-colors",
+"text-foreground hover:bg-(--color-surface-hover) focus-ring",
+className
+)}
+{...props}
+/>
+));
+NavigationMenuLink.displayName = NavigationMenuPrimitive.Link.displayName;
+const NavigationMenuViewport = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
+>(({ className, ...props }, ref) => (
+<div className="absolute left-0 top-full flex w-full justify-center">
+<NavigationMenuPrimitive.Viewport
+ref={ref}
+className={cn(
+"origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-auto overflow-hidden",
+"rounded-xl border border-(--color-border) bg-panel text-foreground shadow-soft",
+"transition-[width,height] duration-200 ease-in-out",
+className
+)}
+{...props}
+/>
+</div>
+));
+NavigationMenuViewport.displayName =
+NavigationMenuPrimitive.Viewport.displayName;
+const NavigationMenuIndicator = React.forwardRef<
+React.ElementRef<typeof NavigationMenuPrimitive.Indicator>,
+React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Indicator>
+>(({ className, ...props }, ref) => (
+<NavigationMenuPrimitive.Indicator
+ref={ref}
+className={cn(
+"top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden",
+"data-[state=visible]:animate-in data-[state=hidden]:animate-out",
+className
+)}
+{...props}
+>
+<div className="relative top-[60%] h-2 w-2 rotate-45 rounded-tl-sm border-l border-t bg-panel shadow" />
+</NavigationMenuPrimitive.Indicator>
+));
+NavigationMenuIndicator.displayName =
+NavigationMenuPrimitive.Indicator.displayName;
+export {
+NavigationMenu,
+NavigationMenuList,
+NavigationMenuItem,
+NavigationMenuTrigger,
+NavigationMenuContent,
+NavigationMenuLink,
+NavigationMenuIndicator,
+NavigationMenuViewport,
+};
+
+===== FILE: src/components/ui/separator.tsx =====
+"use client"
+import * as React from "react"
+import * as SeparatorPrimitive from "@radix-ui/react-separator"
+import { cn } from "@/lib/utils"
+const Separator = React.forwardRef<
+React.ElementRef<typeof SeparatorPrimitive.Root>,
+React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
+>(
+(
+{ className, orientation = "horizontal", decorative = true, ...props },
+ref
+) => (
+<SeparatorPrimitive.Root
+ref={ref}
+decorative={decorative}
+orientation={orientation}
+className={cn(
+"shrink-0 bg-border",
+orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
+className
+)}
+{...props}
+/>
+)
+)
+Separator.displayName = SeparatorPrimitive.Root.displayName
+export { Separator }
+
+===== FILE: src/components/ui/sheet.tsx =====
+"use client"
+import * as React from "react"
+import * as SheetPrimitive from "@radix-ui/react-dialog"
+import { cva, type VariantProps } from "class-variance-authority"
+import { X } from "lucide-react"
+import { cn } from "@/lib/utils"
+const Sheet = SheetPrimitive.Root
+const SheetTrigger = SheetPrimitive.Trigger
+const SheetClose = SheetPrimitive.Close
+const SheetPortal = SheetPrimitive.Portal
+const SheetOverlay = React.forwardRef<
+React.ElementRef<typeof SheetPrimitive.Overlay>,
+React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+<SheetPrimitive.Overlay
+className={cn(
+"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+className
+)}
+{...props}
+ref={ref}
+/>
+))
+SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
+const sheetVariants = cva(
+"fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out",
+{
+variants: {
+side: {
+top: "inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+bottom:
+"inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+right:
+"inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
+},
+},
+defaultVariants: {
+side: "right",
+},
+}
+)
+interface SheetContentProps
+extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
+VariantProps<typeof sheetVariants> {}
+const SheetContent = React.forwardRef<
+React.ElementRef<typeof SheetPrimitive.Content>,
+SheetContentProps
+>(({ side = "right", className, children, ...props }, ref) => (
+<SheetPortal>
+<SheetOverlay />
+<SheetPrimitive.Content
+ref={ref}
+className={cn(sheetVariants({ side }), className)}
+{...props}
+>
+<SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring 
+focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+<X className="h-4 w-4" />
+<span className="sr-only">Close</span>
+</SheetPrimitive.Close>
+{children}
+</SheetPrimitive.Content>
+</SheetPortal>
+))
+SheetContent.displayName = SheetPrimitive.Content.displayName
+const SheetHeader = ({
+className,
+...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+<div
+className={cn(
+"flex flex-col space-y-2 text-center sm:text-left",
+className
+)}
+{...props}
+/>
+)
+SheetHeader.displayName = "SheetHeader"
+const SheetFooter = ({
+className,
+...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+<div
+className={cn(
+"flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+className
+)}
+{...props}
+/>
+)
+SheetFooter.displayName = "SheetFooter"
+const SheetTitle = React.forwardRef<
+React.ElementRef<typeof SheetPrimitive.Title>,
+React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
+>(({ className, ...props }, ref) => (
+<SheetPrimitive.Title
+ref={ref}
+className={cn("text-lg font-semibold text-foreground", className)}
+{...props}
+/>
+))
+SheetTitle.displayName = SheetPrimitive.Title.displayName
+const SheetDescription = React.forwardRef<
+React.ElementRef<typeof SheetPrimitive.Description>,
+React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>
+>(({ className, ...props }, ref) => (
+<SheetPrimitive.Description
+ref={ref}
+className={cn("text-sm text-muted-foreground", className)}
+{...props}
+/>
+))
+SheetDescription.displayName = SheetPrimitive.Description.displayName
+export {
+Sheet,
+SheetPortal,
+SheetOverlay,
+SheetTrigger,
+SheetClose,
+SheetContent,
+SheetHeader,
+SheetFooter,
+SheetTitle,
+SheetDescription,
+}
+
+===== FILE: src/components/ui/sidebar.tsx =====
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
+import { cn } from "@/lib/utils"
+const SIDEBAR_COOKIE_NAME = "sidebar_state"
+const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH_MOBILE = "18rem"
+const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+type SidebarContext = {
+state: "expanded" | "collapsed"
+open: boolean
+setOpen: (open: boolean | ((open: boolean) => boolean)) => void
+openMobile: boolean
+setOpenMobile: (open: boolean) => void
+isMobile: boolean
+toggleSidebar: () => void
+}
+const SidebarContext = React.createContext<SidebarContext | undefined>(undefined)
+export function useSidebar() {
+const context = React.useContext(SidebarContext)
+if (!context) {
+throw new Error("useSidebar must be used within a SidebarProvider.")
+}
+return context
+}
+interface SidebarProviderProps extends React.HTMLAttributes<HTMLDivElement> {
+defaultOpen?: boolean
+open?: boolean
+onOpenChange?: (open: boolean) => void
+}
+export const SidebarProvider = React.forwardRef<
+HTMLDivElement,
+SidebarProviderProps
+>(
+(
+{
+defaultOpen = true,
+open: openProp,
+onOpenChange: onOpenChangeProp,
+className,
+style,
+children,
+...props
+},
+ref
+) => {
+const [_open, _setOpen] = React.useState(defaultOpen)
+const [openMobile, setOpenMobile] = React.useState(false)
+const [isMobile, setIsMobile] = React.useState(false)
+React.useEffect(() => {
+const checkMobile = () => {
+setIsMobile(window.innerWidth < 1024)
+}
+checkMobile()
+window.addEventListener("resize", checkMobile)
+return () => window.removeEventListener("resize", checkMobile)
+}, [])
+const open = openProp ?? _open
+const setOpen = React.useCallback(
+(value: boolean | ((value: boolean) => boolean)) => {
+const openState = typeof value === "function" ? value(open) : value
+if (onOpenChangeProp) {
+onOpenChangeProp(openState)
+} else {
+_setOpen(openState)
+}
+document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+},
+[open, onOpenChangeProp]
+)
+const toggleSidebar = React.useCallback(() => {
+return isMobile
+? setOpenMobile((open) => !open)
+: setOpen((open) => !open)
+}, [isMobile, setOpen])
+React.useEffect(() => {
+const handleKeyDown = (event: KeyboardEvent) => {
+if (
+event.key.toLowerCase() === SIDEBAR_KEYBOARD_SHORTCUT &&
+(event.metaKey || event.ctrlKey)
+) {
+event.preventDefault()
+toggleSidebar()
+}
+}
+window.addEventListener("keydown", handleKeyDown)
+return () => window.removeEventListener("keydown", handleKeyDown)
+}, [toggleSidebar])
+const value: SidebarContext = {
+state: open ? "expanded" : "collapsed",
+open,
+setOpen,
+openMobile,
+setOpenMobile,
+isMobile,
+toggleSidebar,
+}
+return (
+<SidebarContext.Provider value={value}>
+<div
+ref={ref}
+data-state={value.state}
+className={cn("group/sidebar-wrapper flex", className)}
+style={
+{
+"--sidebar-width": SIDEBAR_WIDTH,
+"--sidebar-width-mobile": SIDEBAR_WIDTH_MOBILE,
+...style,
+} as React.CSSProperties
+}
+{...props}
+>
+{children}
+</div>
+</SidebarContext.Provider>
+)
+}
+)
+SidebarProvider.displayName = "SidebarProvider"
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+side?: "left" | "right"
+variant?: "sidebar" | "floating" | "inset"
+collapsible?: "offcanvas" | "icon" | "none"
+}
+export const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
+(
+{
+side = "left",
+variant = "sidebar",
+collapsible = "offcanvas",
+className,
+...props
+},
+ref
+) => {
+const { isMobile, openMobile, setOpenMobile } = useSidebar()
+return (
+<>
+{isMobile && openMobile && (
+<div
+className="fixed inset-0 z-40 bg-black/50"
+onClick={() => setOpenMobile(false)}
+/>
+)}
+<div
+ref={ref}
+className={cn(
+"bg-sidebar text-sidebar-foreground flex h-svh w-[var(--sidebar-width)] flex-col transition-all duration-300",
+variant === "floating" && "rounded-lg border m-2",
+collapsible === "icon" && "group-data-[state=collapsed]/sidebar-wrapper:w-16",
+isMobile &&
+cn(
+"fixed inset-y-0 z-50 border-r",
+side === "left" && "-translate-x-full transition-transform duration-300",
+openMobile && "translate-x-0"
+),
+className
+)}
+{...props}
+/>
+</>
+)
+}
+)
+Sidebar.displayName = "Sidebar"
+export const SidebarInset = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+<div
+ref={ref}
+className={cn("relative flex flex-1 flex-col min-w-0", className)}
+{...props}
+/>
+))
+SidebarInset.displayName = "SidebarInset"
+export const SidebarHeader = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+<div
+ref={ref}
+className={cn("flex flex-col gap-2 p-4", className)}
+{...props}
+/>
+))
+SidebarHeader.displayName = "SidebarHeader"
+export const SidebarFooter = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+<div
+ref={ref}
+className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+{...props}
+/>
+))
+SidebarFooter.displayName = "SidebarFooter"
+export const SidebarContent = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+<div
+ref={ref}
+className={cn("flex-1 overflow-hidden overflow-y-auto", className)}
+{...props}
+/>
+))
+SidebarContent.displayName = "SidebarContent"
+export const SidebarGroup = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+<div
+ref={ref}
+className={cn("relative flex w-full min-w-0 flex-col px-2 py-4", className)}
+{...props}
+/>
+))
+SidebarGroup.displayName = "SidebarGroup"
+export const SidebarGroupLabel = React.forwardRef<
+HTMLSpanElement,
+React.HTMLAttributes<HTMLSpanElement>
+>(({ className, ...props }, ref) => (
+<span
+ref={ref}
+className={cn(
+"text-sidebar-foreground/70 px-2 py-1.5 text-xs font-medium truncate",
+className
+)}
+{...props}
+/>
+))
+SidebarGroupLabel.displayName = "SidebarGroupLabel"
+export const SidebarGroupAction = React.forwardRef<
+HTMLButtonElement,
+React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+<button
+ref={ref}
+className={cn(
+"absolute right-3 top-3 rounded-md p-2 hover:bg-sidebar-accent",
+className
+)}
+{...props}
+/>
+))
+SidebarGroupAction.displayName = "SidebarGroupAction"
+export const SidebarGroupContent = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+<div ref={ref} className={cn("w-full", className)} {...props} />
+))
+SidebarGroupContent.displayName = "SidebarGroupContent"
+export const SidebarMenu = React.forwardRef<
+HTMLUListElement,
+React.HTMLAttributes<HTMLUListElement>
+>(({ className, ...props }, ref) => (
+<ul
+ref={ref}
+className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+{...props}
+/>
+))
+SidebarMenu.displayName = "SidebarMenu"
+export const SidebarMenuItem = React.forwardRef<
+HTMLLIElement,
+React.HTMLAttributes<HTMLLIElement>
+>(({ className, ...props }, ref) => (
+<li
+ref={ref}
+className={cn("group/menu-item relative", className)}
+{...props}
+/>
+))
+SidebarMenuItem.displayName = "SidebarMenuItem"
+const sidebarMenuButtonVariants = cva(
+cn(
+"peer/menu-button relative flex w-full items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent 
+hover:text-sidebar-accent-foreground focus-visible:ring-2",
+"active:bg-sidebar-primary active:text-sidebar-primary-foreground"
+),
+{
+variants: {
+isActive: {
+true: "bg-sidebar-primary text-sidebar-primary-foreground",
+},
+size: {
+default: "h-8",
+sm: "h-7 text-xs",
+lg: "h-12 text-base px-3",
+},
+},
+}
+)
+export interface SidebarMenuButtonProps
+extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+VariantProps<typeof sidebarMenuButtonVariants> {
+asChild?: boolean
+}
+export const SidebarMenuButton = React.forwardRef<
+HTMLButtonElement,
+SidebarMenuButtonProps
+>(
+(
+{ className, isActive, size = "default", asChild = false, ...props },
+ref
+) => {
+const Comp = asChild ? Slot : "button"
+return (
+<Comp
+ref={ref}
+data-active={isActive}
+className={cn(
+sidebarMenuButtonVariants({ isActive, size }),
+className
+)}
+{...props}
+/>
+)
+}
+)
+SidebarMenuButton.displayName = "SidebarMenuButton"
+export const SidebarMenuAction = React.forwardRef<
+HTMLButtonElement,
+React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+<button
+ref={ref}
+className={cn(
+"peer/menu-action absolute right-1.5 top-1/2 flex aspect-square w-5 -translate-y-1/2 items-center justify-center rounded-md p-0 outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent 
+hover:text-sidebar-accent-foreground focus-visible:ring-2 opacity-0 group-hover/menu-item:opacity-100",
+className
+)}
+{...props}
+/>
+))
+SidebarMenuAction.displayName = "SidebarMenuAction"
+export const SidebarMenuSub = React.forwardRef<
+HTMLUListElement,
+React.HTMLAttributes<HTMLUListElement>
+>(({ className, ...props }, ref) => (
+<ul
+ref={ref}
+className={cn(
+"border-sidebar-border mx-3.5 flex min-w-0 flex-col gap-1 border-l px-2.5 py-0.5",
+className
+)}
+{...props}
+/>
+))
+SidebarMenuSub.displayName = "SidebarMenuSub"
+export const SidebarMenuSubItem = React.forwardRef<
+HTMLLIElement,
+React.HTMLAttributes<HTMLLIElement>
+>(({ className, ...props }, ref) => (
+<li ref={ref} className={cn("group/menu-sub-item relative", className)} {...props} />
+))
+SidebarMenuSubItem.displayName = "SidebarMenuSubItem"
+export const SidebarMenuSubButton = React.forwardRef<
+HTMLButtonElement,
+React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
+>(({ className, asChild = false, ...props }, ref) => {
+const Comp = asChild ? Slot : "button"
+return (
+<Comp
+ref={ref}
+className={cn(
+"peer/menu-sub-button relative flex w-full items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent 
+hover:text-sidebar-accent-foreground focus-visible:ring-2",
+className
+)}
+{...props}
+/>
+)
+})
+SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
+export const SidebarMenuBadge = React.forwardRef<
+HTMLSpanElement,
+React.HTMLAttributes<HTMLSpanElement>
+>(({ className, ...props }, ref) => (
+<span
+ref={ref}
+className={cn(
+"ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-sidebar-primary px-1 text-[10px] font-medium text-sidebar-primary-foreground",
+className
+)}
+{...props}
+/>
+))
+SidebarMenuBadge.displayName = "SidebarMenuBadge"
+export const SidebarMenuSkeleton = React.forwardRef<
+HTMLDivElement,
+React.HTMLAttributes<HTMLDivElement> & { showIcon?: boolean }
+>(({ className, showIcon = false, ...props }, ref) => (
+<div
+ref={ref}
+className={cn("flex items-center gap-2 px-2 py-1.5", className)}
+{...props}
+>
+{showIcon && <div className="h-4 w-4 rounded bg-sidebar-accent" />}
+<div className="flex-1 h-4 bg-sidebar-accent rounded" />
+</div>
+))
+SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton"
+export const SidebarSeparator = React.forwardRef<
+HTMLHRElement,
+React.HTMLAttributes<HTMLHRElement>
+>(({ className, ...props }, ref) => (
+<hr
+ref={ref}
+className={cn("bg-sidebar-border -mx-2 my-2 h-px", className)}
+{...props}
+/>
+))
+SidebarSeparator.displayName = "SidebarSeparator"
+export const SidebarTrigger = React.forwardRef<
+HTMLButtonElement,
+React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => {
+const { toggleSidebar } = useSidebar()
+return (
+<button
+ref={ref}
+onClick={toggleSidebar}
+className={cn("rounded-md p-2 hover:bg-accent", className)}
+{...props}
+>
+<svg
+className="h-4 w-4"
+fill="none"
+stroke="currentColor"
+viewBox="0 0 24 24"
+>
+<path
+strokeLinecap="round"
+strokeLinejoin="round"
+strokeWidth={2}
+d="M4 6h16M4 12h16M4 18h16"
+/>
+</svg>
+</button>
+)
+})
+SidebarTrigger.displayName = "SidebarTrigger"
+export const SidebarRail = React.forwardRef<
+HTMLButtonElement,
+React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => {
+const { toggleSidebar } = useSidebar()
+return (
+<button
+ref={ref}
+onClick={toggleSidebar}
+className={cn(
+"absolute inset-y-0 right-0 w-1 hover:bg-sidebar-accent transition-colors",
+className
+)}
+{...props}
+/>
+)
+})
+SidebarRail.displayName = "SidebarRail"
+
+===== FILE: src/components/ui/switch.tsx =====
+"use client"
+import * as React from "react"
+import * as SwitchPrimitives from "@radix-ui/react-switch"
+import { cn } from "@/lib/utils"
+const Switch = React.forwardRef<
+React.ElementRef<typeof SwitchPrimitives.Root>,
+React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
+>(({ className, ...props }, ref) => (
+<SwitchPrimitives.Root
+className={cn(
+"peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 
+focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary 
+data-[state=unchecked]:bg-input",
+className
+)}
+{...props}
+ref={ref}
+>
+<SwitchPrimitives.Thumb
+className={cn(
+"pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0"
+)}
+/>
+</SwitchPrimitives.Root>
+))
+Switch.displayName = SwitchPrimitives.Root.displayName
+export { Switch }
+
+===== FILE: src/components/ui/tabs.tsx =====
+"use client";
+import * as React from "react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/lib/utils";
+const Tabs = TabsPrimitive.Root;
+const tabsListVariants = cva(
+"inline-flex items-center justify-center p-1 text-muted",
+{
+variants: {
+variant: {
+default: "bg-(--color-muted-accent) h-9 rounded-lg",
+pills: "bg-(--color-muted-accent) h-auto rounded-full",
+},
+},
+defaultVariants: {
+variant: "default",
+},
+}
+);
+const TabsList = React.forwardRef<
+React.ElementRef<typeof TabsPrimitive.List>,
+React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> &
+VariantProps<typeof tabsListVariants>
+>(({ className, variant, ...props }, ref) => (
+<TabsPrimitive.List
+ref={ref}
+className={cn(tabsListVariants({ variant }), className)}
+{...props}
+/>
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
+const tabsTriggerVariants = cva(
+[
+"inline-flex items-center justify-center whitespace-nowrap transition-all",
+"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+"disabled:pointer-events-none disabled:opacity-50",
+"text-sm font-medium ring-offset-background",
+].join(" "),
+{
+variants: {
+variant: {
+default: [
+"rounded-md px-3 py-1",
+"focus-visible:ring-ring",
+"data-[state=active]:bg-panel data-[state=active]:text-foreground",
+"data-[state=active]:shadow-passive",
+].join(" "),
+pills: [
+"rounded-full px-6 py-2",
+"data-[state=active]:bg-(--color-accent)",
+"data-[state=active]:text-(--color-on-accent)",
+"data-[state=active]:shadow-passive",
+].join(" "),
+},
+},
+defaultVariants: {
+variant: "default",
+},
+}
+);
+const TabsTrigger = React.forwardRef<
+React.ElementRef<typeof TabsPrimitive.Trigger>,
+React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> &
+VariantProps<typeof tabsTriggerVariants>
+>(({ className, variant, ...props }, ref) => (
+<TabsPrimitive.Trigger
+ref={ref}
+className={cn(tabsTriggerVariants({ variant }), className)}
+{...props}
+/>
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+const TabsContent = React.forwardRef<
+React.ElementRef<typeof TabsPrimitive.Content>,
+React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
+>(({ className, ...props }, ref) => (
+<TabsPrimitive.Content
+ref={ref}
+className={cn(
+"mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+className
+)}
+{...props}
+/>
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
+export { Tabs, TabsList, TabsTrigger, TabsContent };
+
+===== FILE: src/components/ui/textarea.tsx =====
+import * as React from "react"
+import { cn } from "@/lib/utils"
+export interface TextareaProps
+extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+({ className, ...props }, ref) => {
+return (
+<textarea
+className={cn(
+"flex min-h-[120px] w-full rounded-lg border border-(--color-border) bg-(--color-panel) px-3 py-2 text-sm text-(--color-ink) placeholder:text-(--color-muted) focus-ring transition 
+disabled:cursor-not-allowed disabled:opacity-50 resize-none",
+className
+)}
+ref={ref}
+{...props}
+/>
+)
+}
+)
+Textarea.displayName = "Textarea"
+export { Textarea }
+
+===== FILE: src/components/ui/tooltip.tsx =====
+"use client"
+import * as React from "react"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
+import { cn } from "@/lib/utils"
+const TooltipProvider = TooltipPrimitive.Provider
+const Tooltip = TooltipPrimitive.Root
+const TooltipTrigger = TooltipPrimitive.Trigger
+const TooltipContent = React.forwardRef<
+React.ElementRef<typeof TooltipPrimitive.Content>,
+React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+>(({ className, sideOffset = 4, ...props }, ref) => (
+<TooltipPrimitive.Portal>
+<TooltipPrimitive.Content
+ref={ref}
+sideOffset={sideOffset}
+className={cn(
+"z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 
+data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 
+origin-[--radix-tooltip-content-transform-origin]",
+className
+)}
+{...props}
+/>
+</TooltipPrimitive.Portal>
+))
+TooltipContent.displayName = TooltipPrimitive.Content.displayName
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+
+===== FILE: src/data/about-data.ts =====
+export interface AboutSection {
+title: string;
+description: string;
+image: string;
+imageAlt: string;
+imageDescription: string;
+imagePosition: "left" | "right";
+}
+export const aboutSections: AboutSection[] = [
+{
+title: "From Video Production to Web Development",
+description:
+"I am passionate about design and development on React platforms; Next.js and Astro. I also work on WordPress websites. I'm big on learning new things in a rapid-paced, ever-changing tech industry 
+— never a dull moment in JavaScript, PHP, and their frameworks.\n\nIn 2013, I graduated after three communications internships at the University of North Florida. I started my career in video 
+editing but after spending hours working and designing my website, I decided to switch careers to build websites. I work with React Frameworks like Next.js and WordPress websites.",
+image: "/gallery/Me-Recording-A-Video.webp",
+imageAlt: "Chris recording a video",
+imageDescription: "Recording a video in the field in 2013",
+imagePosition: "left",
+},
+{
+title: "Local Meetup Host & Community Leader",
+description:
+"I led Richmond's local WordPress meetup and hosted monthly meetups from January 2022 till January 2025. We discussed WordPress topics, general web knowledge, and provide support for developers in 
+the Glen Allen area.\n\nPreviously served as Digital Director for The JOMM (Jacksonville Online Marketing Meetup), where I increased monthly attendance and website engagement.",
+image: "/gallery/Richmond-WordPress-Meetup.webp",
+imageAlt: "Richmond WordPress Meetup",
+imageDescription: "WPRVA Event Banner",
+imagePosition: "right",
+},
+{
+title: "Living in the Shenandoah Mountains",
+description:
+"Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local 
+equine-assisted private practice counseling service — [Heaven's Rays Ministries](https:
+image: "/gallery/Me-on-a-Bike-Trail.webp",
+imageAlt: "Me on my bike at the Bike Trails by Piney River",
+imageDescription: "Exploring bike trails near the Piney River",
+imagePosition: "left",
+},
+{
+title: "Adventure & Travel",
+description:
+"I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights.\n\nAfter this 
+trip, we started looking for work in the towns adjacent to the Appalachian Mountains. We love hiking, biking, and exploring the outdoors. We ended up moving to Harrisonburg, Virginia in 2018 and then 
+moved to Central Virginia in 2019.",
+image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
+imageAlt: "Glacier National Park",
+imageDescription: "Adventures at Glacier National Park",
+imagePosition: "right",
+},
+];
+
+===== FILE: src/data/career-timeline.ts =====
+import React from "react";
+import {
+GraduationCap,
+Video,
+Star,
+Lightbulb,
+Mountain,
+Home,
+Users,
+Code2,
+} from "lucide-react";
+export type TimelineEvent = {
+year: string;
+title: string;
+description: string;
+location?: string;
+icon: React.ReactNode;
+};
+export const timelineEvents: TimelineEvent[] = [
+{
+year: "2013",
+title: "I Am a First-Generation College Graduate",
+description:
+"Graduated from University of North Florida with Bachelor of Arts with a concentration in Multimedia Journalism & Production",
+location: "Jacksonville, FL",
+icon: React.createElement(GraduationCap, { className: "w-6 h-6" }),
+},
+{
+year: "2013-2016",
+title: "Lights, Camera, Action",
+description: "I Started a Career in Video Editing and Production",
+location: "Jacksonville, FL",
+icon: React.createElement(Video, { className: "w-6 h-6" }),
+},
+{
+year: "2016",
+title: "I Enjoyed Coding My Personal Website So Much I Switched Careers",
+description:
+"Decided to switch from video production to web design after designing personal website",
+location: "Jacksonville, FL",
+icon: React.createElement(Star, { className: "w-6 h-6" }),
+},
+{
+year: "2017",
+title: "Front-End Web Development (jQuery Days)",
+description:
+"Began working with WordPress Theme and Plugin Development, JavaScript, jQuery, and the MERN Stack",
+location: "Jacksonville, FL",
+icon: React.createElement(Lightbulb, { className: "w-6 h-6" }),
+},
+{
+year: "2018",
+title: "We Moved to the Mountains, Because Why Not?",
+description:
+"Relocated to Harrisonburg, Virginia in the Shenandoah Mountains",
+location: "Harrisonburg, VA",
+icon: React.createElement(Mountain, { className: "w-6 h-6" }),
+},
+{
+year: "2019",
+title: "Moved Once Again — Moving Companies Love Us",
+description:
+"Picked Living Among the Cows to Be Near the Mountains and Richmond, VA.",
+location: "Louisa, VA",
+icon: React.createElement(Home, { className: "w-6 h-6" }),
+},
+{
+year: "2023",
+title: "WordPress Meetup Host",
+description:
+"Started leading Richmond's local WordPress meetup with monthly sessions.",
+location: "Louisa, VA",
+icon: React.createElement(Users, { className: "w-6 h-6" }),
+},
+{
+year: "2024",
+title: "React Developer That Also Does WordPress",
+description:
+"Shifted More to React After Seeing the Animations (I Still Do WordPress Too)",
+location: "Louisa, VA",
+icon: React.createElement(Code2, { className: "w-6 h-6" }),
+},
+];
+
+===== FILE: src/data/clients.ts =====
+export type Client = {
+name: string;
+logo: string;
+url: string;
+};
+export const clients: Client[] = [
+{
+name: "Allianz Travel",
+logo: "/client-icons/Allianz-Travel-Logo.webp",
+url: "https:
+},
+{
+name: "Blue Triangle",
+logo: "/client-icons/Blue-Triangle-Logo.webp",
+url: "https:
+},
+{
+name: "VITA",
+logo: "/client-icons/VITA-Logo.webp",
+url: "https:
+},
+{
+name: "Adecco",
+logo: "/client-icons/Adecco-Logo.webp",
+url: "https:
+},
+{
+name: "RS&H",
+logo: "/client-icons/RSandH-Logo.webp",
+url: "https:
+},
+{
+name: "American Airlines",
+logo: "/client-icons/American-Airlines-Logo.webp",
+url: "https:
+},
+{
+name: "Asponte",
+logo: "/client-icons/Asponte-Logo.webp",
+url: "https:
+},
+{
+name: "Florida Dept of Transportation",
+logo: "/client-icons/Florida-Dept-of-Transportation-Logo.webp",
+url: "https:
+},
+{
+name: "AIS Network",
+logo: "/client-icons/AIS-Network-Logo.webp",
+url: "https:
+},
+{
+name: "Amtrak",
+logo: "/client-icons/Amtrak-Logo.webp",
+url: "https:
+},
+{
+name: "USDOT",
+logo: "/client-icons/USDOT-Logo.webp",
+url: "https:
+},
+{
+name: "StubHub",
+logo: "/client-icons/StubHub-Logo.webp",
+url: "https:
+},
+{
+name: "Gov of Virginia - Abigail Spanberger",
+logo: "/client-icons/Gov-of-Virginia-Abigail Spanberger-Logo.webp",
+url: "https:
+},
+{
+name: "Elvacomm",
+logo: "/client-icons/Elvacomm-Logo.webp",
+url: "https:
+},
+{
+name: "Engage Marketing",
+logo: "/client-icons/Engage-Marketing-Logo.webp",
+url: "https:
+},
+{
+name: "Fisher Design",
+logo: "/client-icons/Fisher-Design-Logo.webp",
+url: "https:
+},
+{
+name: "WorldStrides",
+logo: "/client-icons/WorldStrides-Logo.webp",
+url: "https:
+},
+{
+name: "Azzly",
+logo: "/client-icons/AZZLY-Logo.webp",
+url: "https:
+},
+{
+name: "Alembic",
+logo: "/client-icons/Alembic-Logo.webp",
+url: "https:
+},
+{
+name: "Provision Partners",
+logo: "/client-icons/Provision-Partners-Logo.webp",
+url: "https:
+},
+];
+
+===== FILE: src/data/conferences.ts =====
+export type Conference = {
+slug: string;
+name: string;
+year: number;
+dates?: { start: string; end?: string };
+city?: string;
+venue?: string;
+url?: string;
+topics?: string[];
+summary?: string;
+talkLinks?: { label: string; url: string }[];
+coverImage?: string;
+};
+export const conferences: Conference[] = [
+{
+slug: "all-things-open-2025",
+name: "All Things Open",
+year: 2025,
+dates: { start: "2025-10-26", end: "2025-10-28" },
+city: "Raleigh, NC",
+venue: "Raleigh Convention Center",
+url: "https:
+topics: ["Open Source", "Cloud", "AI/ML", "DevOps"],
+coverImage: "/conferences/All-Things-Open-2025.webp",
+summary:
+"All Things Open 2025 brings thousands of engineers, maintainers, and tech leaders to downtown Raleigh for three days of open source talks, hands-on sessions, and community meetups at the Raleigh 
+Convention Center.",
+},
+{
+slug: "epic-web-conf-2025",
+name: "Epic Web Conf",
+year: 2025,
+dates: { start: "2025-03-26" },
+city: "Salt Lake City, UT",
+venue: "Hilton Salt Lake City Center (main venue), plus offsite events",
+url: "https:
+topics: ["Full-stack Web", "React", "Testing", "DX"],
+coverImage: "/conferences/Epic-Web-Logo-2025.webp",
+summary:
+"Epic Web Conf is a curated full-stack conference founded by Kent C. Dodds' EpicWeb.dev, bringing together framework authors, library maintainers, and working engineers to discuss building great UX 
+and great DX. The 2025 edition took place in downtown Salt Lake City with a free livestream and hands-on workshops before/around the main program.\n\nSessions focused on pragmatic patterns for React 
+and modern web apps (routing, data loading, server components, testing), plus real-world tooling—Vite/Vitest, Playwright, auth, caching, and performance. The hallway track was a highlight, with 
+creators and practitioners trading hard-won lessons you can apply immediately to production apps.",
+},
+{
+slug: "all-things-open-ai-2025",
+name: "All Things Open.AI",
+year: 2025,
+dates: { start: "2025-03-17", end: "2025-03-18" },
+city: "Durham, NC",
+venue: "Carolina Theatre",
+url: "https:
+topics: ["AI/ML", "Open Source", "MLOps", "Safety"],
+coverImage: "/conferences/All-Things-Open-AI-2025.webp",
+summary:
+"All Things Open.AI is a practitioner-focused spinoff from the All Things Open team, created to explore the real-world impact of AI across tooling, platforms, and organizations. The inaugural 2025 
+event ran two days at the Carolina Theatre in Durham, bringing together engineers, data scientists, and product leaders for dense, vendor-neutral content on the AI stack.\n\nTalks emphasized applied 
+machine learning, model governance, safety and security, and the intersection of open source with rapidly evolving AI tooling. The format mirrored ATO's community ethos—multi-track sessions, 
+hands-on workshops, and hallway track networking—aimed at helping teams ship responsible AI in production.",
+},
+{
+slug: "all-things-open-2024",
+name: "All Things Open",
+year: 2024,
+dates: { start: "2024-10-27", end: "2024-10-29" },
+city: "Raleigh, NC",
+venue: "Raleigh Convention Center",
+url: "https:
+topics: ["Open Source", "Cloud", "AI/ML", "DevOps"],
+coverImage: "/conferences/All-Things-Open-2024-Smaller.png",
+summary:
+"All Things Open 2024 brought thousands of engineers, maintainers, and tech leaders to downtown Raleigh for three days of open source talks, hands-on sessions, and community meetups at the Raleigh 
+Convention Center.",
+},
+{
+slug: "tech-coast-conference-2024",
+name: "Tech Coast Conference",
+year: 2024,
+dates: { start: "2024-08-29" },
+city: "Jacksonville, FL",
+venue: "UNF Adam W. Herbert University Center",
+url: "https:
+topics: ["IT Leadership", "Cybersecurity", "Cloud", "Data"],
+coverImage: "/conferences/Tech-Coast-Conference-2024.webp",
+summary:
+"Jacksonville's flagship tech event featuring regional IT leaders, security practitioners, cloud experts, and vendors across a one-day multi-track program hosted at UNF.",
+},
+{
+slug: "that-conference-wi-2024",
+name: "THAT Conference (WI)",
+year: 2024,
+dates: { start: "2024-07-29", end: "2024-08-01" },
+city: "Wisconsin Dells, WI",
+venue: "Kalahari Resorts & Conventions",
+url: "https:
+topics: ["Full-stack", "Community", "Career"],
+coverImage: "/conferences/That-Conference-Logo-LowRes.png",
+summary:
+"Camp-style, family-friendly developer conference in the Wisconsin Dells, known for deep-dive technical talks alongside community and family activities.",
+},
+{
+slug: "renderatl-2024",
+name: "RenderATL",
+year: 2024,
+city: "Atlanta, GA",
+url: "https:
+topics: ["Frontend", "AI", "Cloud", "Leadership"],
+coverImage: "/conferences/RenderATL-2024-Logo-Green.png",
+summary:
+"A multi-day tech conference and expo in Atlanta covering frontend frameworks, AI, and leadership, with workshops, career programming, and a large sponsor hall.",
+},
+{
+slug: "rvajs-2023",
+name: "RVA JavaScript Conference",
+year: 2023,
+dates: { start: "2023-11-17" },
+city: "Richmond, VA",
+venue: "Science Museum of Virginia",
+url: "https:
+topics: ["JavaScript", "TypeScript", "Node.js", "React"],
+coverImage: "/conferences/RVAJS-Conf-Richmond-2023.webp",
+summary:
+"A one-day JavaScript conference hosted by rvatech/ with talks spanning TypeScript, Node, React, tooling, and architecture.",
+},
+{
+slug: "wordcamp-us-2023",
+name: "WordCamp US",
+year: 2023,
+dates: { start: "2023-08-24", end: "2023-08-26" },
+city: "National Harbor, MD",
+venue: "Gaylord National Resort & Convention Center",
+url: "https:
+topics: ["WordPress", "Open Source", "Community"],
+coverImage: "/conferences/WordCamp-US-2023.webp",
+summary:
+"The flagship U.S. WordPress conference with Contributor Day, multi-track sessions, and an active sponsor hall at the Gaylord National in National Harbor.",
+},
+{
+slug: "tech-coast-conference-2020",
+name: "Tech Coast Conference",
+year: 2020,
+dates: { start: "2020-08-19" },
+city: "Jacksonville, FL (Virtual)",
+url: "https:
+topics: ["IT Leadership", "Security", "Cloud"],
+coverImage: "/conferences/Tech-Coast-Conference-2020.webp",
+summary:
+"The 2020 edition pivoted online, delivering talks and panels focused on security, cloud, and regional tech growth in a virtual format.",
+},
+{
+slug: "tech-coast-conference-2018",
+name: "Tech Coast Conference",
+year: 2018,
+city: "Jacksonville, FL",
+venue: "UNF Adam W. Herbert University Center",
+url: "https:
+topics: ["IT", "Security", "Data"],
+coverImage: "/conferences/Tech-Coast-Conference-2018.webp",
+summary:
+"An early TCC edition hosted at UNF, gathering local technologists and businesses to discuss trends in security, data, and enterprise IT.",
+},
+{
+slug: "wordcamp-jacksonville-2018",
+name: "WordCamp Jacksonville",
+year: 2018,
+dates: { start: "2018-04-07", end: "2018-04-08" },
+city: "Jacksonville, FL",
+venue: "Keiser University",
+url: "https:
+topics: ["WordPress", "Community"],
+coverImage: "/conferences/Jacksonville-WordCamp-2018.webp",
+summary:
+"Two-day WordCamp with multi-track sessions and a KidsCamp, hosted at Keiser University and focused on practical WordPress skills.",
+},
+{
+slug: "wordcamp-jacksonville-2017",
+name: "WordCamp Jacksonville",
+year: 2017,
+dates: { start: "2017-05-20", end: "2017-05-21" },
+city: "Jacksonville, FL",
+venue: "Keiser University",
+url: "https:
+topics: ["WordPress", "Community"],
+coverImage: "/conferences/WordCamp-Jackonville-2017.webp",
+summary:
+"Jacksonville's second annual WordCamp, featuring business, user, and developer tracks, plus KidsCamp and community networking.",
+},
+{
+slug: "wordcamp-asheville-2017",
+name: "WordCamp Asheville",
+year: 2017,
+dates: { start: "2017-06-02", end: "2017-06-04" },
+city: "Asheville, NC",
+venue: "Mission Health / A-B Tech Conference Center",
+url: "https:
+topics: ["WordPress", "Community"],
+coverImage: "/conferences/WordCamp-Asheville-2017.webp",
+summary:
+"Regional WordCamp covering WordPress development, content, and design, held at the A-B Tech campus conference center.",
+},
+{
+slug: "echo-conference-2013",
+name: "Echo Conference",
+year: 2013,
+dates: { start: "2013-07-24", end: "2013-07-26" },
+city: "Dallas, TX",
+venue: "Watermark Community Church",
+url: "https:
+topics: ["Church Media", "Creative Tech"],
+coverImage: "/conferences/Echohub-Media-Conference-Dallas-2013.webp",
+summary:
+"A church media/creative conference for artists, geeks, and storytellers, hosted at Watermark Community Church in Dallas.",
+},
+];
+

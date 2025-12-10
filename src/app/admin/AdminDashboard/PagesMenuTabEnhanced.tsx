@@ -453,7 +453,7 @@ const PagesMenuTabEnhanced = () => {
           <div className="space-y-3">
             {/* Add Header Item Button - Homepage style */}
             <Button
-              variant="accent"
+              variant="outline"
               className="w-full gap-2"
               onClick={handleAddHeaderItem}
             >
@@ -488,7 +488,7 @@ const PagesMenuTabEnhanced = () => {
           <div className="space-y-3">
             {/* Add Section Button - Homepage style */}
             <Button
-              variant="accent"
+              variant="outline"
               className="w-full gap-2"
               onClick={handleAddFooterSection}
             >

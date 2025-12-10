@@ -1,0 +1,1794 @@
+
+===== FILE: src/app/blog/[slug]/BlogPostPage.tsx =====
+"use client";
+import { useState, useEffect } from "react";
+import { notFound } from "next/navigation";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import Link from "next/link";
+import Image from "next/image";
+import {
+Calendar,
+Heart,
+MessageCircle,
+ArrowLeft,
+User,
+Mail,
+} from "lucide-react";
+import type { Id } from "../../../../convex/_generated/dataModel";
+const getBadgeVariant = (index: number) => {
+const variants = [
+"blue",
+"green",
+"purple",
+"orange",
+"pink",
+"cyan",
+"yellow",
+"red",
+] as const;
+return variants[index % variants.length];
+};
+function getUserIdentifier() {
+if (typeof window === "undefined") return "anonymous";
+let identifier = localStorage.getItem("blog-user-id");
+if (!identifier) {
+identifier = `user-${Math.random().toString(36).substr(2, 9)}-${Date.now()}`;
+localStorage.setItem("blog-user-id", identifier);
+}
+return identifier;
+}
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+const [userIdentifier, setUserIdentifier] = useState<string>("");
+const [commentForm, setCommentForm] = useState({
+authorName: "",
+authorEmail: "",
+content: "",
+});
+const [showCommentForm, setShowCommentForm] = useState(false);
+const post = useQuery(api.blogPosts.getPostBySlug, { slug: params.slug });
+const userLikeStatus = useQuery(
+api.blogPosts.getUserLikeStatus,
+userIdentifier && post?._id ? { postId: post._id, userIdentifier } : "skip"
+);
+const comments = useQuery(
+api.blogPosts.getComments,
+post?._id ? { postId: post._id } : "skip"
+);
+const toggleLike = useMutation(api.blogPosts.toggleLike);
+const addComment = useMutation(api.blogPosts.addComment);
+useEffect(() => {
+setUserIdentifier(getUserIdentifier());
+}, []);
+if (post === null) {
+notFound();
+}
+if (!post || !userIdentifier) {
+return (
+<>
+<Header />
+<main className="site-container py-12">
+<div className="flex justify-center items-center py-12">
+<div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+</div>
+</main>
+<Footer />
+</>
+);
+}
+const handleLike = async () => {
+if (!post?._id) return;
+await toggleLike({ postId: post._id, userIdentifier });
+};
+const handleCommentSubmit = async (e: React.FormEvent) => {
+e.preventDefault();
+if (
+!post?._id ||
+!commentForm.authorName ||
+!commentForm.authorEmail ||
+!commentForm.content
+)
+return;
+await addComment({
+postId: post._id,
+authorName: commentForm.authorName,
+authorEmail: commentForm.authorEmail,
+content: commentForm.content,
+});
+setCommentForm({ authorName: "", authorEmail: "", content: "" });
+setShowCommentForm(false);
+};
+const renderContent = (content: string) => {
+return content.split("\n").map((line, index) => {
+if (line.startsWith("
+return (
+<h1 key={index} className="mb-4 mt-8">
+{line.substring(2)}
+</h1>
+);
+}
+if (line.startsWith("
+return (
+<h2 key={index} className="mb-3 mt-6">
+{line.substring(3)}
+</h2>
+);
+}
+if (line.startsWith("
+return (
+<h3 key={index} className="mb-2 mt-4">
+{line.substring(4)}
+</h3>
+);
+}
+if (line.startsWith("- ")) {
+return (
+<li key={index} className="ml-4 mb-1">
+{line.substring(2)}
+</li>
+);
+}
+if (line.trim() === "") {
+return <br key={index} />;
+}
+return (
+<p key={index} className="mb-4 leading-relaxed">
+{line}
+</p>
+);
+});
+};
+return (
+<>
+<Header />
+<main className="site-container py-12">
+<div className="flex flex-wrap items-center gap-4 text-muted mb-8 pb-6 border-b border-(--color-border)">
+<div className="flex items-center gap-2">
+<Calendar className="w-4 h-4" />
+<time dateTime={new Date(post.createdAt).toISOString()}>
+{new Date(post.createdAt).toLocaleDateString("en-US", {
+year: "numeric",
+month: "long",
+day: "numeric",
+})}
+</time>
+</div>
+<div className="flex items-center gap-2">
+<Heart
+className={`w-4 h-4 ${userLikeStatus?.liked ? "fill-current text-red-500" : ""}`}
+/>
+<span>{post.likesCount || 0} likes</span>
+</div>
+<div className="flex items-center gap-2">
+<MessageCircle className="w-4 h-4" />
+<span>{comments?.length || 0} comments</span>
+</div>
+</div>
+{post.tags && post.tags.length > 0 && (
+<div className="mb-8 pb-6 border-b border-(--color-border)">
+<div className="flex flex-wrap gap-2">
+{post.tags.map((tag, index) => (
+<Badge key={tag} variant={getBadgeVariant(index)}>
+{tag}
+</Badge>
+))}
+</div>
+</div>
+)}
+<div className="space-y-6">
+<div className="flex items-center justify-between">
+<h3 className="">Comments ({comments?.length || 0})</h3>
+<Button
+onClick={() => setShowCommentForm(!showCommentForm)}
+variant="outline"
+size="sm"
+>
+Add Comment
+</Button>
+</div>
+{comments && comments.length > 0 ? (
+<div className="space-y-4">
+{comments.map((comment) => (
+<Card key={comment._id} className="p-6">
+<div className="flex items-start gap-4">
+<div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+<User className="w-5 h-5 text-accent" />
+</div>
+<div className="flex-1">
+<div className="flex items-center gap-2 mb-2">
+<span className="">{comment.authorName}</span>
+<span className="text-muted">
+{new Date(comment.createdAt).toLocaleDateString()}
+</span>
+</div>
+<p className="leading-relaxed">{comment.content}</p>
+</div>
+</div>
+</Card>
+))}
+</div>
+) : (
+<Card className="p-6 text-center">
+<p className="text-muted">
+No comments yet. Be the first to share your thoughts!
+</p>
+</Card>
+)}
+</div>
+</div>
+</Card>
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/blog/[slug]/page.tsx =====
+import BlogPostPage from "./BlogPostPage";
+export default function Page({
+params,
+}: {
+params: { slug: string };
+}) {
+return <BlogPostPage params={params} />;
+}
+
+===== FILE: src/app/browser-tabs/BrowserTabs.tsx =====
+"use client";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import BrowserCard from "@/components/page/browser-card";
+export type BrowserLinkItem = {
+href: string;
+label: string;
+domain: string;
+favicon?: string;
+};
+export default function BrowserTabs() {
+const allLinks = useQuery(api.browserLinks.getAll) ?? [];
+const categories = useQuery(api.browserLinks.getCategories) ?? [];
+const linkCategories = categories.map((cat) => ({
+title: cat.category,
+color: cat.color as
+| "blue"
+| "red"
+| "yellow"
+| "green"
+| "pink"
+| "purple"
+| "cyan"
+| "orange",
+links: allLinks
+.filter((link) => link.category === cat.category)
+.sort((a, b) => a.order - b.order)
+.map<BrowserLinkItem>((link) => ({
+href: link.href,
+label: link.label,
+domain: link.domain,
+favicon: link.favicon,
+})),
+}));
+if (!allLinks.length) {
+return (
+<>
+<div className="flex items-center justify-center py-12">
+<div className="text-center">
+<div className="w-16 h-16 border-4 border-[
+<p>Loading links...</p>
+</div>
+</div>
+</>
+);
+}
+return (
+<>
+<div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6 mt-10">
+{linkCategories.map((category, categoryIndex) => (
+<BrowserCard
+key={category.title}
+title={category.title}
+color={category.color}
+links={category.links}
+delay={0.05 + categoryIndex * 0.05}
+/>
+))}
+</div>
+</TooltipProvider>
+</>
+);
+}
+
+===== FILE: src/app/browser-tabs/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import BrowserTabs from "./BrowserTabs";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/browser-tabs");
+}
+export default function BrowserTabsPage() {
+const headerData = getPageHeader("/browser-tabs");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<BrowserTabs />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/career/CareerPage.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
+import { timelineEvents } from "@/data/career-timeline";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import React from "react";
+import {
+GraduationCap,
+Video,
+Star,
+Lightbulb,
+Mountain,
+Home,
+Users,
+Code2,
+Briefcase,
+Award,
+BookOpen,
+Coffee,
+Rocket,
+Target,
+} from "lucide-react";
+const cn = (...classes: Array<string | undefined | null | false>) =>
+classes.filter(Boolean).join(" ");
+const iconMap: Record<string, React.ComponentType<any>> = {
+GraduationCap,
+Video,
+Star,
+Lightbulb,
+Mountain,
+Home,
+Users,
+Code2,
+Briefcase,
+Award,
+BookOpen,
+Coffee,
+Rocket,
+Target,
+GradIcon: GraduationCap,
+VideoIcon: Video,
+StarIcon: Star,
+BulbIcon: Lightbulb,
+MountainsIcon: Mountain,
+HomeIcon: Home,
+MeetupIcon: Users,
+ReactWPIcon: Code2,
+};
+const photos: GalleryPhoto[] = [
+{
+src: "/setups/Samsung-49-inch-Odyssey-G9.webp",
+alt: "Samsung 49-inch Odyssey G9 monitor setup",
+description: "Samsung 49-inch Odyssey G9 Gaming Monitor Setup",
+},
+{
+src: "/gallery/FCC-2017-Bold-Bean.webp",
+alt: "Coding at Bold Bean Jacksonville 2017",
+description: "Coding with Friends in Bold Bean Jax 2017",
+},
+{
+src: "/setups/Post-Pandemic-Dual-Monitor-Setup.webp",
+alt: "Post-pandemic dual monitor workstation",
+description: "Post-Pandemic Dual Monitor Setup",
+},
+{
+src: "/setups/Pandemic-Office-Setup-2021.webp",
+alt: "Home office setup during pandemic",
+description: "Pandemic Office Setup 2021",
+},
+{
+src: "/setups/Parents-House-Setup.webp",
+alt: "Temporary setup at parents house",
+description: "Parents House Setup During Transition",
+},
+];
+function TimelineTrail() {
+const convexEvents = useQuery(api.careerTimeline.getAllEvents);
+const events =
+convexEvents && convexEvents.length > 0
+? convexEvents.map((event) => {
+const IconComponent = iconMap[event.iconName] || iconMap["Star"];
+return {
+year: event.year,
+title: event.title,
+description: event.description,
+location: event.location,
+icon: React.createElement(IconComponent, { className: "w-6 h-6" }),
+};
+})
+: timelineEvents;
+return (
+<div className="mb-12">
+<h2 className="mb-8 text-center">Career Journey</h2>
+<div className="absolute top-0 bottom-0 left-[23px] md:left-1/2 md:-translate-x-1/2 border-l-4 border-dotted border-green-500 z-0" />
+<div className="flex items-start md:grid md:grid-cols-[1fr_48px_1fr] md:gap-8">
+<div className="relative z-10 shrink-0 w-12 h-12 rounded-full bg-green-500 dark:border-[
+{event.icon}
+</div>
+<TimelineTrail />
+</>
+);
+};
+export default CareerPage;
+
+===== FILE: src/app/career/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import CareerPage from "@/app/career/CareerPage";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/career");
+}
+export default function Career() {
+const headerData = getPageHeader("/career");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<CareerPage />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/conferences/ConferencesPage.tsx =====
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { conferences, type Conference } from "@/data/conferences";
+export default function ConferencesPage() {
+const availableYears = [...new Set(conferences.map((c) => c.year))].sort(
+(a, b) => b - a
+);
+return (
+<>
+<TabsContent value="all" className="mt-8">
+<ConferenceGrid
+conferences={conferences.sort((a, b) => b.year - a.year)}
+/>
+</TabsContent>
+<div className="relative w-full aspect-[16/9] bg-white/5">
+{c.coverImage && (
+<Link
+href={`/conferences/${c.year}/${c.slug}`}
+className="block"
+>
+<div className="relative w-full aspect-[16/9] bg-white/5">
+<Image
+src={c.coverImage}
+alt={`${c.name} ${c.year}`}
+fill
+className="object-contain"
+sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+priority={i < 3}
+/>
+</div>
+</Link>
+)}
+</div>
+<Link
+href={`/conferences/${c.year}/${c.slug}`}
+className="nav-link inline-block mb-2"
+>
+<h2 className="text-ink tracking-tight text-left">
+{c.name} {c.year}
+</h2>
+</Link>
+{c.summary && (
+<p className="text-ink mt-4 line-clamp-3">{c.summary}</p>
+)}
+
+===== FILE: src/app/conferences/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import ConferencesPage from "./ConferencesPage";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/conferences");
+}
+export default function ConferencesRoute() {
+const headerData = getPageHeader("/conferences");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<ConferencesPage />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/conferences/[year]/ConferenceYearPage.tsx =====
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import type { Conference } from "@/data/conferences";
+interface ConferenceYearPageProps {
+conferences: Conference[];
+year: string;
+}
+export default function ConferenceYearPage({
+conferences,
+year,
+}: ConferenceYearPageProps) {
+return (
+<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<section
+className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+aria-label="Conferences grid"
+>
+{conferences.map((c, i) => (
+<Card
+key={`${c.year}-${c.slug}`}
+size="small"
+height="large"
+delay={0.05 + i * 0.05}
+className="overflow-hidden"
+>
+<div className="group flex h-full flex-col">
+<div className="flex-1 p-5 flex flex-col">
+<h2 className="group-hover:text-accent transition-colors">
+{c.name}
+</h2>
+<p className="text-muted mt-2">
+{[c.dates?.start, c.city, c.venue]
+.filter(Boolean)
+.join(" â€¢ ")}
+</p>
+{c.summary && <p className="mt-3 line-clamp-3">{c.summary}</p>}
+<div className="mt-auto pt-4">
+<Button variant="outline" asChild className="w-full">
+<Link href={`/conferences/${c.year}/${c.slug}`}>
+View Details
+</Link>
+</Button>
+</div>
+</div>
+</div>
+</Card>
+))}
+</section>
+
+===== FILE: src/app/conferences/[year]/page.tsx =====
+import type { Metadata } from "next";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import ConferenceYearPage from "./ConferenceYearPage";
+import { conferences } from "@/data/conferences";
+type Params = { year: string };
+export function generateStaticParams() {
+const years = Array.from(new Set(conferences.map((c) => String(c.year))));
+return years.map((year) => ({ year }));
+}
+export async function generateMetadata({
+params,
+}: {
+params: Params;
+}): Promise<Metadata> {
+const year = params.year;
+const yearConferences = conferences.filter((c) => String(c.year) === year);
+const count = yearConferences.length;
+return {
+title: `Conferences ${year} | Chris Lane Jones`,
+description: `${count} conference${
+count !== 1 ? "s" : ""
+} attended in ${year} - ${yearConferences.map((c) => c.name).join(", ")}`,
+};
+}
+export default function ConferencesByYearRoute({ params }: { params: Params }) {
+const items = conferences
+.filter((c) => String(c.year) === params.year)
+.sort((a, b) => a.name.localeCompare(b.name));
+return (
+<>
+<Header />
+<ConferenceYearPage conferences={items} year={params.year} />
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/conferences/[year]/[slug]/ConferenceDetailPage.tsx =====
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import type { Conference } from "@/data/conferences";
+interface ConferenceDetailPageProps {
+conference: Conference;
+}
+export default function ConferenceDetailPage({
+conference: conf,
+}: ConferenceDetailPageProps) {
+const dateRange = conf.dates?.end
+? `${conf.dates.start} â†’ ${conf.dates.end}`
+: conf.dates?.start;
+const jsonLd = {
+"@context": "https:
+"@type": "Event",
+name: `${conf.name} ${conf.year}`,
+startDate: conf.dates?.start,
+endDate: conf.dates?.end,
+location: conf.city
+? { "@type": "Place", name: conf.venue ?? conf.city, address: conf.city }
+: undefined,
+url: conf.url,
+};
+return (
+<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-16">
+<script
+type="application/ld+json"
+dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+/>
+<div className="flex-1">
+<h1 className="mb-4">{conf.name}</h1>
+<div className="flex items-center gap-2 text-muted">
+<Link href="/" className="hover:text-foreground">
+Home
+</Link>
+<span>/</span>
+<Link href="/conferences" className="hover:text-foreground">
+Conferences
+</Link>
+<span>/</span>
+<Link
+href={`/conferences/${conf.year}`}
+className="text-foreground hover:text-accent"
+>
+{conf.year}
+</Link>
+</div>
+</div>
+<Card size="full" className="overflow-hidden">
+<div className="grid md:grid-cols-2 gap-0 h-full">
+<div className="flex flex-col justify-center p-6 sm:p-8">
+{conf.url && (
+<div className="mb-6">
+<Button variant="accent" showExternalIcon asChild>
+<a href={conf.url} target="_blank" rel="noopener noreferrer">
+Visit Official Website
+</a>
+</Button>
+</div>
+)}
+{conf.talkLinks && conf.talkLinks.length > 0 && (
+<Card size="full" className="mt-6">
+<h2 className="mb-4">Talks & Resources</h2>
+<ul className="space-y-3">
+{conf.talkLinks.map((talk, i) => (
+<li key={i}>
+<Button variant="base" showExternalIcon asChild>
+<a href={talk.url} target="_blank" rel="noopener noreferrer">
+{talk.label}
+</a>
+</Button>
+</li>
+))}
+</ul>
+</Card>
+)}
+</main>
+);
+}
+
+===== FILE: src/app/conferences/[year]/[slug]/page.tsx =====
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import ConferenceDetailPage from "./ConferenceDetailPage";
+import { conferences } from "@/data/conferences";
+type Params = { year: string; slug: string };
+export function generateStaticParams() {
+return conferences.map((c) => ({ year: String(c.year), slug: c.slug }));
+}
+export async function generateMetadata({
+params,
+}: {
+params: Params;
+}): Promise<Metadata> {
+const conf = conferences.find(
+(c) => String(c.year) === params.year && c.slug === params.slug
+);
+if (!conf) return {};
+const title = `${conf.name} ${conf.year} â€” Notes`;
+const description =
+conf.summary ??
+`Notes and highlights from ${conf.name} ${conf.year}${
+conf.city ? ` in ${conf.city}` : ""
+}.`;
+return {
+title,
+description,
+openGraph: {
+title,
+description,
+images: conf.coverImage ? [conf.coverImage] : undefined,
+},
+twitter: {
+card: "summary_large_image",
+title,
+description,
+images: conf.coverImage ? [conf.coverImage] : undefined,
+},
+};
+}
+export default function ConferenceDetailRoute({ params }: { params: Params }) {
+const conf = conferences.find(
+(c) => String(c.year) === params.year && c.slug === params.slug
+);
+if (!conf) notFound();
+return (
+<>
+<Header />
+<ConferenceDetailPage conference={conf} />
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/contact/ContactForm.tsx =====
+"use client";
+import ContactForm from "@/components/page/contact-form";
+export default function PageContactForm() {
+return <ContactForm variant="full" />;
+}
+
+===== FILE: src/app/contact/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import ContactForm from "./ContactForm";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/contact");
+}
+export default function ContactPage() {
+const headerData = getPageHeader("/contact");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<ContactForm />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/favicon.ico =====
+  ¨( @  #(((((((((((((((( fÂäèèèèèèèèèèèèèèèèß¯G
+’úÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿíb`ùÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿâ0 
+*¹w>ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿw=ÿ{?ÿ_1ÿ€ e4ÛV-ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ ÿ 
+"ÿ!Aÿ ª }Aà *ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ ÿx>ÿ ± #‡Fàÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ
+ÿ z?ÿ±x>à6ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ 0ÿj7ÿ±;à!‚Cÿ ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿQ*ÿO)ÿ±à< ÿ x>ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ ~Aÿ "ÿ±àÿl8ÿC#ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿR+ÿZ/ÿÿ±àÿÿ!€Bÿ 
+ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿo9ÿ -ÿÿ±àÿÿU,ÿ\/ÿÿÿÿÿÿÿÿÿÿÿÿÿ *ÿÿÿÿÿ"Cÿ ÿÿ±àÿÿÿy>ÿ\/ÿÿÿÿÿÿÿÿÿÿÿÿ'™Nÿ!AÿQ)ÿ 0ÿ {@ÿ?!ÿÿÿ±àÿÿÿ ÿW-ÿ!€Bÿ> ÿÿÿÿÿÿÿÿÿ;ÿg5ÿ 
+ÿV,ÿl7ÿD#ÿÿÿÿ±àÿÿÿÿÿ ÿp:ÿk7ÿ ÿÿÿÿÿÿ
+ÿz?ÿ 1ÿÿÿÿÿÿÿÿ±àÿÿÿÿÿÿÿd4ÿT,ÿÿÿÿÿÿ\0ÿ_2ÿÿÿÿÿÿÿÿÿ±àÿÿÿÿÿÿÿ ÿ!Bÿ *ÿÿÿÿ@!ÿx>ÿ ÿÿÿÿÿÿÿÿÿ±àÿÿÿÿÿÿÿÿ /ÿ"‚Cÿÿÿ ÿ"‚Cÿÿÿÿÿ
+ÿ#ÿÿÿÿÿ±àÿÿÿÿÿÿÿÿÿ:ÿ!Bÿ ÿM(ÿX-ÿÿÿÿ ÿ @ÿ*ÿ 2ÿ
+7ÿÿÿ±ßÿÿÿÿÿÿÿÿÿÿA"ÿ"‚Cÿ#‡Fÿ ÿÿÿÿ*ÿ%ÿÿÿ
+8ÿ ÿÿ¯Êÿÿÿÿÿÿÿÿÿÿÿ -ÿ .ÿÿÿÿÿ(ÿ'ÿÿÿ
+9ÿ ÿÿ”„ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ
+ÿ ?ÿ/ÿ
+6ÿ 4ÿÿõLÅÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ ÿÿş˜ )ªñÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿıæˆ
+:bjjjjjjjjjjjjjjjjZ+ÿÿÿÿÿÿÿÿü?ğààÀÀÀÀÀÀÀÀÀÀÀÀÀÀÀÀÀÀÀààğøÿÿÿÿÿÿÿÿÿÿÿÿ
+
+===== FILE: src/app/globals.css =====
+@import "tailwindcss";
+:root {
+--color-base:
+--color-panel:
+--color-ink:
+--color-foreground:
+--color-muted:
+--color-muted-accent: rgba(107, 114, 128, 0.08);
+--color-surface-hover:
+--color-accent:
+--color-accent-alt:
+--color-on-accent:
+--color-border:
+--radius: 12px;
+--focus-ring: 2px solid var(--color-accent-alt);
+--sidebar:
+--sidebar-foreground:
+--sidebar-primary:
+--sidebar-primary-foreground:
+--sidebar-accent:
+--sidebar-accent-foreground:
+--sidebar-border:
+--sidebar-ring:
+}
+.dark {
+--color-base:
+--color-panel:
+--color-ink:
+--color-foreground:
+--color-muted:
+--color-muted-accent: rgba(255, 255, 255, 0.05);
+--color-surface-hover:
+--color-accent:
+--color-accent-alt:
+--color-on-accent:
+--color-border:
+.site-title {
+font-size: var(--step-2);
+line-height: 1.2;
+font-weight: var(--weight-semibold);
+}
+h1 {
+font-size: var(--step-4);
+line-height: 1.1;
+letter-spacing: -0.01em;
+font-weight: var(--weight-semibold);
+}
+h2 {
+font-size: var(--step-3);
+line-height: 1.15;
+font-weight: var(--weight-semibold);
+}
+h3 {
+font-size: var(--step-2);
+line-height: 1.2;
+font-weight: var(--weight-semibold);
+}
+h4 {
+font-size: var(--step-1);
+line-height: 1.3;
+font-weight: var(--weight-regular);
+}
+p {
+font-size: var(--step-0);
+line-height: 1.6;
+font-weight: var(--weight-regular);
+}
+.text-sm {
+font-size: var(--step--1);
+line-height: 1.5;
+font-weight: var(--weight-regular);
+}
+.shadow-soft {
+box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+.shadow-glow {
+box-shadow:
+0 0 0 2px rgba(141, 227, 107, 0.25),
+0 12px 40px rgba(141, 227, 107, 0.15);
+}
+box-shadow:
+0 0 0 0 rgba(0, 0, 0, 0),
+0 0 0 0 rgba(0, 0, 0, 0),
+0 0 0 0.340185px color-mix(in srgb, var(--color-accent) 4.3%, transparent),
+0 2.04111px 6.80371px 0
+color-mix(in srgb, var(--color-accent) 2.4%, transparent);
+}
+.focus-ring:focus-visible {
+outline: none;
+box-shadow:
+0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
+0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+.bg-panel {
+background-color: var(--color-panel);
+}
+.rounded-lg {
+border-radius: var(--radius, 12px);
+}
+.card {
+border: 1px solid rgba(255, 255, 255, 0.06);
+border-radius: var(--radius, 12px);
+background: var(--color-panel);
+}
+}
+width: 100%;
+color:
+min-height: 280px;
+}
+html.dark .speech-bubble--compact {
+color:
+}
+.speech-bubble--compact * {
+.speech-bubble-container.speech-bubble--compact {
+grid-template-columns: 1fr !important;
+gap: 0 !important;
+font-weight: 500;
+.client-logo {
+filter: grayscale(1) brightness(0.3) contrast(1.25);
+}
+html.dark .client-logo,
+.dark .client-logo {
+filter: brightness(0) invert(1);
+}
+}
+.client-logo {
+filter: grayscale(1) brightness(0.3) contrast(1.25);
+}
+html.dark .client-logo {
+filter: brightness(0) invert(1);
+}
+
+===== FILE: src/app/layout.tsx =====
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
+import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
+import { Suspense } from "react";
+const interphases = localFont({
+src: [
+{
+path: "../../public/fonts/TT-Interphases-Pro-Regular.ttf",
+weight: "400",
+style: "normal",
+},
+{
+path: "../../public/fonts/TT-Interphases-Pro-DemiBold.ttf",
+weight: "600",
+style: "normal",
+},
+{
+path: "../../public/fonts/TT-Interphases-Pro-Bold.ttf",
+weight: "700",
+style: "normal",
+},
+{
+path: "../../public/fonts/TT-Interphases-Pro-Black.ttf",
+weight: "900",
+style: "normal",
+},
+],
+variable: "--font-interphases",
+});
+export default function RootLayout({
+children,
+}: {
+children: React.ReactNode;
+}) {
+return (
+<ClerkProvider
+appearance={{
+baseTheme: dark,
+variables: {
+colorPrimary: "
+colorBackground: "
+colorInputBackground: "
+colorInputText: "
+},
+}}
+>
+<html lang="en" suppressHydrationWarning>
+<body
+className={`${interphases.className} ${interphases.variable} antialiased`}
+suppressHydrationWarning
+style={{
+backgroundColor: "var(--color-base)",
+color: "var(--color-ink)",
+}}
+>
+<PHProvider>
+<ConvexClientProvider>
+<Suspense fallback={null}>
+<PostHogPageView />
+</Suspense>
+
+===== FILE: src/app/link-page/LinkGrid.tsx =====
+"use client";
+import {
+FaGithub,
+FaTwitter,
+FaLinkedin,
+FaYoutube,
+FaTiktok,
+FaCodepen,
+FaDev,
+FaHome,
+FaWordpress,
+FaChrome,
+FaAtom,
+FaStar,
+FaExternalLinkAlt,
+} from "react-icons/fa";
+import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
+import { Button } from "@/components/ui/button";
+import Card from "@/components/page/card";
+import Image from "next/image";
+import { SiteLogo } from "@/components/page/links";
+import Link from "next/link";
+import { SimpleModeToggle } from "@/components/simple-mode-toggle";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+interface FeaturedLink {
+_id: string;
+href: string;
+label: string;
+domain: string;
+favicon?: string;
+category: string;
+color: string;
+featured?: boolean;
+}
+export default function LinkGrid() {
+const featuredLinks = useQuery(api.browserLinks.getFeatured) as
+| FeaturedLink[]
+| undefined;
+return (
+<>
+<div className="grid md:grid-cols-2 grid-cols-1 sm:grid-cols-1 md:grid-rows-2 gap-6 md:auto-rows-fr">
+<Card size="small" delay={0.2} className="h-full">
+<h3 className="mb-6 text-center flex items-center justify-center space-x-2">
+Connect With Me
+</h3>
+<div className="grid grid-cols-2 gap-3">
+<Button variant="base" className="justify-center" asChild>
+<a href="/">
+<FaHome className="w-4 h-4 mr-2" />
+Home
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaTwitter className="w-4 h-4 mr-2" />
+ğ•
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<SiBluesky className="w-4 h-4 mr-2" />
+BlueSky
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaGithub className="w-4 h-4 mr-2" />
+GitHub
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaLinkedin className="w-4 h-4 mr-2" />
+LinkedIn
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaYoutube className="w-4 h-4 mr-2" />
+YouTube
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaTiktok className="w-4 h-4 mr-2" />
+TikTok
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaCodepen className="w-4 h-4 mr-2" />
+CodePen
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<FaDev className="w-4 h-4 mr-2" />
+Dev.to
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a
+href="https:
+target="_blank"
+rel="noopener noreferrer"
+>
+<SiBuymeacoffee className="w-4 h-4 mr-2" />
+Coffee
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a href="/react-maintenance">
+<FaAtom className="w-4 h-4 mr-2" />
+React Services
+</a>
+</Button>
+<Button
+variant="base"
+showExternalIcon={true}
+className="justify-center"
+asChild
+>
+<a href="/wordpress-maintenance">
+<FaWordpress className="w-4 h-4 mr-2" />
+WordPress Services
+</a>
+</Button>
+</div>
+</Card>
+<div className="mt-6 pt-4 border-t border-border">
+<Button variant="base" className="w-full justify-center" asChild>
+<a href="/browser-tabs">
+<FaChrome className="w-4 h-4 mr-2" />
+View All Browser Tabs
+</a>
+</Button>
+</div>
+</div>
+</Card>
+</div>
+</>
+);
+}
+
+===== FILE: src/app/link-page/page.tsx =====
+import LinkGrid from "./LinkGrid";
+import { getPageSEO } from "@/lib/seo";
+export async function generateMetadata() {
+const metadata = await getPageSEO("/link-page");
+console.log("Link page metadata:", metadata);
+return metadata;
+}
+export default function LinksPage() {
+return (
+<main>
+<LinkGrid />
+</main>
+);
+}
+
+===== FILE: src/app/logo-page/LogoPage.tsx =====
+"use client";
+import Image from "next/image";
+import Card from "@/components/page/card";
+import { logoVariants, type LogoVariant } from "@/data/logo-variants";
+const cn = (...classes: Array<string | undefined | null | false>) =>
+classes.filter(Boolean).join(" ");
+function LogoCard({ variant, index }: { variant: LogoVariant; index: number }) {
+return (
+<Card size="small" className="overflow-hidden" delay={0.1 + index * 0.1}>
+<div className="flex flex-col h-full">
+<div className="p-6 flex-1 flex flex-col">
+<h3 className="mb-3">{variant.title}</h3>
+<p className="text-muted leading-relaxed">{variant.description}</p>
+</div>
+</div>
+</Card>
+);
+}
+const LogoPage: React.FC = () => {
+return (
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+{logoVariants.map((variant, index) => (
+<LogoCard key={variant.title} variant={variant} index={index} />
+))}
+</div>
+);
+};
+export default LogoPage;
+
+===== FILE: src/app/logo-page/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import LogoPage from "./LogoPage";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/logo-page");
+}
+export default function Logo() {
+const headerData = getPageHeader("/logo-page");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<LogoPage />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/not-found.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+export default function NotFound() {
+return (
+<>
+<Header />
+<main className="site-container py-12">
+<Banner
+title="404 Music Lounge"
+breadcrumbPage="404"
+description="This page could not be found but you can play Japanese Breakfast"
+/>
+<Card size="full" delay={0.1} className="text-center mt-10">
+<div className="space-y-6">
+<h3 className="">
+Japanese Breakfast â€“ Live on SNL â€“ "Be Sweet" and "Paprika"
+</h3>
+<div className="relative" style={{ paddingTop: "56.25%" }}>
+<iframe
+src="https:
+title="Japanese Breakfast â€“ Live on SNL â€“ Be Sweet and Paprika"
+allowFullScreen
+className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+style={{ border: "none" }}
+></iframe>
+</div>
+<div className="pt-6">
+<Button variant="accent" asChild>
+<Link href="/">Return to Homepage</Link>
+</Button>
+</div>
+</div>
+</Card>
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Card from "@/components/page/card";
+import HeroContent from "@/components/main/hero-content";
+import QuoteContent from "@/components/main/quote-content";
+import ProjectsContent from "@/components/main/projects-content";
+import MusicPlayerContent from "@/components/main/music-player-content";
+import BlogContent from "@/components/main/blog-content";
+import ImageGalleryContent from "@/components/main/image-gallery-content";
+import ClientSliderContent from "@/components/main/client-slider-content";
+import TechStackContent from "@/components/main/tech-stack-content";
+import { getPageSEO } from "@/lib/seo";
+export async function generateMetadata() {
+return await getPageSEO("/");
+}
+export default function Home() {
+return (
+<>
+<Header />
+<main>
+<section className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-5 auto-rows-min">
+<Card size="hero" height="large" delay={0.1}>
+<HeroContent />
+</Card>
+<Card size="large" height="large" delay={0.2}>
+<QuoteContent />
+</Card>
+<Card size="full" height="large" layout="split" delay={0.3}>
+<ProjectsContent />
+</Card>
+<Card size="large" height="large" layout="media-top" delay={0.4}>
+<MusicPlayerContent />
+</Card>
+<Card size="large" height="large" delay={0.5}>
+<BlogContent />
+</Card>
+<Card size="large" height="large" layout="media-top" delay={0.6}>
+<ImageGalleryContent />
+</Card>
+<Card size="full" height="medium" delay={0.7}>
+<ClientSliderContent />
+</Card>
+<Card size="full" height="medium" delay={0.8}>
+<TechStackContent />
+</Card>
+</section>
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/projects/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import ProjectGrid from "@/app/projects/ProjectGrid";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/projects");
+}
+export default function ProjectsPage() {
+const headerData = getPageHeader("/projects");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<ProjectGrid />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/projects/ProjectGrid.tsx =====
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import Banner from "@/components/page/banner";
+import { Card } from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+const isValidUrl = (url: string | undefined): boolean =>
+typeof url === "string" && url.trim() !== "" && url.trim() !== "
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+const hasGithubUrl = isValidUrl(project.githubUrl);
+const hasVercelUrl = isValidUrl(project.vercelUrl);
+const hasCustomUrl = isValidUrl(project.customUrl);
+const primaryLink =
+project.githubUrl || project.customUrl || project.vercelUrl;
+const hasPrimaryLink = isValidUrl(primaryLink);
+return (
+<Card
+size="small"
+height="xl"
+delay={0.05 + index * 0.05}
+className="overflow-hidden"
+>
+<div className="group flex h-full flex-col">
+<div className="flex-1 p-5 flex flex-col">
+<p className="text-ink mt-2 line-clamp-3">{project.description}</p>
+<div className="flex gap-2 mt-auto pt-6">
+{hasGithubUrl && (
+<Button
+asChild
+size="icon"
+round={true}
+variant="outline"
+title="View Code on GitHub"
+>
+<a
+href={project.githubUrl}
+target="_blank"
+rel="noopener noreferrer"
+>
+<svg
+aria-hidden="true"
+xmlns="http:
+viewBox="0 0 24 24"
+width="20"
+height="20"
+fill="currentColor"
+>
+<path
+fillRule="evenodd"
+clipRule="evenodd"
+d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 
+0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 
+2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 
+2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 
+.267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
+/>
+</svg>
+</a>
+</Button>
+)}
+{hasVercelUrl && (
+<Button
+asChild
+size="icon"
+round={true}
+variant="outline"
+title="View Live Demo"
+>
+<a
+href={project.vercelUrl}
+target="_blank"
+rel="noopener noreferrer"
+>
+<svg
+aria-hidden="true"
+xmlns="http:
+viewBox="0 0 24 24"
+width="18"
+height="18"
+fill="currentColor"
+>
+<path d="m12 0 12 21H0z" />
+</svg>
+</a>
+</Button>
+)}
+{hasCustomUrl && (
+<Button
+asChild
+size="icon"
+round={true}
+variant="outline"
+title="View Project Link"
+>
+<a
+href={project.customUrl}
+target="_blank"
+rel="noopener noreferrer"
+>
+<svg
+aria-hidden="true"
+xmlns="http:
+viewBox="0 0 24 24"
+width="18"
+height="18"
+fill="currentColor"
+>
+<path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z" />
+</svg>
+</a>
+</Button>
+)}
+</div>
+</div>
+</div>
+</Card>
+);
+}
+function ProjectGridSection({ projects }: { projects: Project[] }) {
+return (
+<section
+className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+aria-label="Projects grid"
+>
+{projects.map((project, index) => (
+<ProjectCard key={project.title} project={project} index={index} />
+))}
+</section>
+);
+}
+<Tabs
+value={activeTab}
+onValueChange={(v) => setActiveTab(v as "apps" | "clients")}
+className="py-8"
+>
+<TabsList variant="pills">
+<TabsTrigger variant="pills" value="apps">
+App Projects
+</TabsTrigger>
+<TabsTrigger variant="pills" value="clients">
+Website Projects
+</TabsTrigger>
+</TabsList>
+
+===== FILE: src/app/react-maintenance/page.tsx =====
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import Banner from "@/components/page/banner";
+import ReactMaintenanceContent from "./ReactMaintenanceContent";
+import { getPageSEO } from "@/lib/seo";
+import { getPageHeader } from "@/data/header-data";
+export async function generateMetadata() {
+return await getPageSEO("/react-maintenance");
+}
+export default function ReactMaintenancePage() {
+const headerData = getPageHeader("/react-maintenance");
+return (
+<>
+<Header />
+<Banner
+title={headerData.title}
+breadcrumbPage={headerData.breadcrumbPage}
+description={headerData.description}
+/>
+<main>
+<ReactMaintenanceContent />
+</main>
+<Footer />
+</>
+);
+}
+
+===== FILE: src/app/react-maintenance/ReactMaintenanceContent.tsx =====
+"use client";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import Card from "@/components/page/card";
+import { Button } from "@/components/ui/button";
+import ClientSliderContent from "@/components/main/client-slider-content";
+import ContactForm from "@/components/page/contact-form";
+const actionPlanItems = [
+{
+icon: "âš›ï¸",
+title: "React App Consulting & Feature Updates",
+description:
+"Three hours of application changes (components, UI/UX updates, API integrations, routing improvements, and performance tweaks) and/or React consulting a month.",
+details:
+"Whether it's refactoring components or modernizing the UI; improving the user experience increases engagement and retention.",
+},
+{
+icon: "ğŸ›¡ï¸",
+title: "Security, Maintenance & Code Backups",
+description:
+"Your application's security isn't just about protectionâ€”it's about peace of mind and reliability.",
+details:
+"Monthly security audits, vulnerability testing, updating npm dependencies, React version migrations, and automated Git-based backups with disaster recovery plans.",
+},
+{
+icon: "ğŸš‘",
+title: "Technical Support & Bug Fixes",
+description:
+"Fixing runtime errors, resolving hooks conflicts, debugging component lifecycles, and troubleshooting third-party library integration issues.",
+details:
+"We also resolve deployment and hosting issues. This includes an initial review of your build pipeline and hosting environment.",
+},
+{
+icon: "âš¡",
+title: "App Performance Optimization",
+description:
+"Improving performance bottlenecks by crushing ğŸ’ª Google's Core Web Vitals and Lighthouse scores.",
+details:
+"Bundle optimization, code splitting, lazy loading, image optimization, Vite/Webpack tuning, and server-side rendering improvements make up the majority of performance wins. Faster apps improve SEO 
+and user retention.",
+},
+{
+icon: "ğŸ“Š",
+title: "Quarterly Performance Reviews",
+description:
+"Stay ahead of the curve and capture new opportunities with data-driven insights and metrics.",
+details:
+"Improvements to bundle size, runtime performance, and Lighthouse scores through strategic React optimizations and dependency management.",
+},
+{
+icon: "ğŸ‡ºğŸ‡¸",
+title: "Based in the USA",
+description: "Our skilled US-based professionals handle every project.",
+details:
+"We understand modern JavaScript ecosystems and share a similar time zone. We take pride in our work and your app's success.",
+},
+];
+export default function ReactServicesPage() {
+return (
+<>
+<motion.section
+initial={{ opacity: 0 }}
+animate={{ opacity: 1 }}
+transition={{ duration: 0.6, delay: 0.3 }}
+className="mb-16"
+>
+<h2 className="text-center mb-12">
+The Full Maintenance Action Plan ğŸ¯
+</h2>
+<div className="grid md:grid-cols-12 gap-4">
+{actionPlanItems.map((item, index) => (
+<Card key={index} size="full" delay={index * 0.1}>
+<div className="flex items-start gap-4">
+<div className="shrink-0">{item.icon}</div>
+<div>
+<h3 className="mb-2">{item.title}</h3>
+<p className="mb-2">{item.description}</p>
+<p className="opacity-80">{item.details}</p>
+</div>
+</div>
+</Card>
+))}
+</div>
+</motion.section>
+<div className="grid md:grid-cols-2 gap-6">
+{" "}
+<Card
+size="small"
+className="flex flex-col"
+>
+<h3 className="mb-6">The Action Plan</h3>
+<ul className="space-y-3 mb-8 flex-1">
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">
+Three hours of app changes and consulting monthly
+</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">99.9% application uptime</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">
+Monthly security audits & vulnerability testing
+</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">
+npm dependency updates & React migrations
+</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">Daily Git repository backups</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">Fix broken features & API integrations</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">Resolve dependency conflicts & bugs</span>
+</li>
+<li className="flex items-start gap-2">
+<span className="text-green-500 mt-1">âœ“</span>
+<span className="">Bundle optimization & code splitting</span>
+</li>
+</ul>
+<div className="text-center mt-auto pt-6 border-t border-(--color-border)">
+<div className="text-accent mb-6">$200 / month</div>
+<Button asChild variant="base" size="lg" className="w-full">
+<Link href="
+</Button>
+</div>
+</Card>
+<motion.section
+initial={{ opacity: 0 }}
+whileInView={{ opacity: 1 }}
+transition={{ duration: 0.6 }}
+viewport={{ once: true }}
+className="mb-16"
+>
+<Card size="hero" height="large" delay={0.1}>
+<ClientSliderContent />
+</Card>
+</motion.section>
+<ContactForm
+id="contact"
+variant="maintenance"
+serviceType="React"
+plusPlanLabel="Performance"
+/>{" "}
+
