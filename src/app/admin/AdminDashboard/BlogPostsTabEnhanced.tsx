@@ -686,7 +686,7 @@ const BlogPostsTabEnhanced = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDelete(deleteConfirm as Id<"blogPosts">)}
-                variant="disabled"
+                variant="outline"
                 className="flex-1"
               >
                 Delete

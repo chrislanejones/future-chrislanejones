@@ -1,0 +1,1822 @@
+
+===== FILE: convex/siteSettings.ts =====
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+export const getProfile = query({
+args: {},
+handler: async (ctx) => {
+const profile = await ctx.db.query("siteSettings").first();
+return profile;
+},
+});
+export const updateProfile = mutation({
+args: {
+name: v.string(),
+bio: v.string(),
+avatar: v.optional(v.string()),
+email: v.optional(v.string()),
+location: v.optional(v.string()),
+socialLinks: v.optional(
+v.object({
+github: v.optional(v.string()),
+linkedin: v.optional(v.string()),
+twitter: v.optional(v.string()),
+codepen: v.optional(v.string()),
+youtube: v.optional(v.string()),
+})
+),
+},
+handler: async (ctx, args) => {
+const existing = await ctx.db.query("siteSettings").first();
+if (existing) {
+await ctx.db.patch(existing._id, {
+...args,
+updatedAt: Date.now(),
+});
+return existing._id;
+} else {
+return await ctx.db.insert("siteSettings", {
+...args,
+updatedAt: Date.now(),
+});
+}
+},
+});
+export const updateAvatar = mutation({
+args: {
+avatar: v.string(),
+},
+handler: async (ctx, args) => {
+const existing = await ctx.db.query("siteSettings").first();
+if (existing) {
+await ctx.db.patch(existing._id, {
+avatar: args.avatar,
+updatedAt: Date.now(),
+});
+return existing._id;
+} else {
+return await ctx.db.insert("siteSettings", {
+name: "",
+bio: "",
+avatar: args.avatar,
+updatedAt: Date.now(),
+});
+}
+},
+});
+export const removeAvatar = mutation({
+args: {},
+handler: async (ctx) => {
+const existing = await ctx.db.query("siteSettings").first();
+if (existing) {
+await ctx.db.patch(existing._id, {
+avatar: undefined,
+updatedAt: Date.now(),
+});
+}
+},
+});
+export const seedProfile = mutation({
+args: {},
+handler: async (ctx) => {
+const existing = await ctx.db.query("siteSettings").first();
+if (existing) {
+return { success: true, message: "Profile already exists" };
+}
+await ctx.db.insert("siteSettings", {
+name: "Chris Lane Jones",
+bio: "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+email: "",
+location: "Louisa, Virginia",
+socialLinks: {
+github: "https:
+linkedin: "https:
+twitter: "https:
+codepen: "https:
+},
+updatedAt: Date.now(),
+});
+return { success: true, message: "Profile seeded successfully" };
+},
+});
+
+===== FILE: eslint.config.mjs =====
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const compat = new FlatCompat({
+baseDirectory: __dirname,
+});
+const eslintConfig = [
+...compat.extends("next/core-web-vitals", "next/typescript"),
+{
+ignores: [
+
+===== FILE: .gitignore =====
+/node_modules
+/.pnp
+.pnp.*
+
+===== FILE: LICENCE =====
+MIT License
+Copyright (c) 2025 Chris Lane Jones
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===== FILE: middleware.ts =====
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+const isProtectedRoute = createRouteMatcher(["/admin(.*)"]);
+export default clerkMiddleware(async (auth, req) => {
+if (isProtectedRoute(req)) {
+await auth.protect();
+}
+});
+export const config = {
+matcher: [
+"/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+"/(api|trpc)(.*)",
+],
+};
+
+===== FILE: next.config.mjs =====
+
+
+===== FILE: .npmrc =====
+legacy-peer-deps=true
+
+===== FILE: package.json =====
+{
+"name": "nextjs-portfolio",
+"version": "0.1.0",
+"private": true,
+"scripts": {
+"dev": "next dev",
+"build": "next build",
+"start": "next start",
+"lint": "next lint",
+"seed-seo": "node scripts/seed-seo.js",
+"check-seo": "node scripts/check-seo.js"
+},
+"dependencies": {
+"@clerk/nextjs": "6.36.1",
+"@clerk/themes": "^2.4.43",
+"@radix-ui/react-alert-dialog": "^1.1.15",
+"@radix-ui/react-dialog": "^1.1.15",
+"@radix-ui/react-dropdown-menu": "^2.1.16",
+"@radix-ui/react-label": "^2.1.8",
+"@radix-ui/react-navigation-menu": "^1.2.14",
+"@radix-ui/react-separator": "^1.1.8",
+"@radix-ui/react-slot": "^1.2.4",
+"@radix-ui/react-switch": "^1.2.6",
+"@radix-ui/react-tabs": "^1.1.13",
+"@radix-ui/react-tooltip": "^1.2.8",
+"@react-three/drei": "^10.7.7",
+"@react-three/fiber": "^9.4.2",
+"@uploadthing/react": "^7.3.3",
+"class-variance-authority": "^0.7.1",
+"clsx": "^2.1.1",
+"convex": "^1.30.0",
+"effect": "^3.19.10",
+"framer-motion": "^12.23.25",
+"lucide-react": "^0.556.0",
+"next": "16.0.8",
+"next-themes": "^0.4.6",
+"posthog-js": "^1.302.2",
+"react": "^19.2.1",
+"react-dnd": "^16.0.1",
+"react-dnd-html5-backend": "^16.0.1",
+"react-dom": "^19.2.1",
+"react-icons": "^5.5.0",
+"simple-icons": "^16.1.0",
+"tailwind-merge": "^3.4.0",
+"tailwindcss-animate": "^1.0.7",
+"three": "^0.181.2",
+"uploadthing": "^7.7.4",
+"vaul": "^1.1.2"
+},
+"devDependencies": {
+"@tailwindcss/postcss": "^4.1.17",
+"@types/node": "^24.10.2",
+"@types/react": "^19.2.7",
+"@types/react-dom": "^19.2.3",
+"autoprefixer": "^10.4.22",
+"eslint": "^9.39.1",
+"eslint-config-next": "16.0.8",
+"postcss": "^8.5.6",
+"tailwindcss": "^4.1.17",
+"typescript": "^5.9.3"
+}
+}
+
+===== FILE: postcss.config.js =====
+module.exports = {
+plugins: {
+"@tailwindcss/postcss": {},
+autoprefixer: {},
+},
+};
+
+===== FILE: README.md =====
+Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard for content management.
+![Image of Light and Dark Mode](public/Github-Cover-V2.jpg)
+- **Framework:** [Next.js](https:
+- **Language:** [TypeScript](https:
+- **Styling:** [Tailwind CSS](https:
+- **Animations:** [Framer Motion](https:
+- **Database:** [Convex](https:
+- **File Uploads:** [UploadThing](https:
+- **Authentication:** [Clerk](https:
+- **Error Handling:** [Effect.ts](https:
+- **Analytics:** [PostHog](https:
+- **UI Components:** [Radix UI](https:
+- **Drag & Drop:** [@dnd-kit](https:
+- **Icons:** [Lucide React](https:
+- **Package Manager:** [Bun](https:
+- Modern bento grid homepage layout
+- Dark mode with system preference detection
+- Smooth animations with Framer Motion
+- Fully responsive design
+- Interactive music player
+- Photo gallery with Polaroid-style drawer
+- Project showcase with carousel
+- Blog post pages with rich content
+- Clerk authentication
+- **Media Manager** - Drag-and-drop image assignment to pages and blog posts
+- **Blog Post Manager** - Create and edit blog posts with UploadThing media uploads
+- **Career Timeline Manager** - Manage work history and experiences
+- **Links Manager** - Curate and organize browser tabs/resource links
+- **Settings Manager** - Update site metadata and SEO
+- Real-time updates with Convex
+- Effect.ts for type-safe error handling
+- Functional pipelines for data transformations
+- Composable effects for async operations
+- Explicit error types for better debugging
+- PostHog analytics with session recording
+- User behavior tracking
+- Performance monitoring
+- [Node.js](https:
+- [Clerk](https:
+- [Convex](https:
+- [UploadThing](https:
+- [PostHog](https:
+1. Clone the repository:
+```bash
+git clone https:
+cd future-chrislanejones
+```
+2. Install dependencies:
+```bash
+bun install
+npm install
+```
+3. Set up environment variables:
+Create a `.env.local` file in the root directory:
+```bash
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+UPLOADTHING_API_KEY=your_uploadthing_api_key
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_api_key
+NEXT_PUBLIC_POSTHOG_HOST=https:
+```
+4. Initialize Convex:
+```bash
+npx convex dev
+```
+5. Seed the database (optional):
+```bash
+npx convex run settings:seed
+npx convex run blogPosts:seedBlogPosts
+npx convex run browserLinks:seedBrowserLinks
+```
+6. Run the development server:
+```bash
+bun dev
+npm run dev
+```
+Open [http:
+```json
+{
+"next": "14.1.4",
+"react": "^18.3.1",
+"typescript": "^5.9.3",
+"tailwindcss": "^3.4.18",
+"framer-motion": "^10.18.0",
+"convex": "^1.28.2",
+"@clerk/nextjs": "5.7.4",
+"effect": "^3.12.5",
+"uploadthing": "^7.7.4",
+"@uploadthing/react": "^7.3.3",
+"@dnd-kit/core": "^6.3.1",
+"@dnd-kit/sortable": "^10.0.0",
+"@radix-ui/react-*": "latest",
+"lucide-react": "^0.552.0",
+"posthog-js": "^1.285.1"
+}
+```
+Access the admin dashboard at `/admin` (requires authentication via Clerk):
+- Upload images to UploadThing CDN
+- Organize media by pages and blog posts
+- Drag-and-drop to assign images to content
+- Search and filter capabilities
+- Real-time preview
+- **Blog Posts**: Create, edit, and publish blog posts with rich content
+- **Career Timeline**: Manage work experience and career milestones
+- **Browser Links**: Curate resource collections and bookmarks
+- **Settings**: Update site metadata, SEO, and configuration
+All changes are saved in real-time to Convex and immediately reflected on the live site.
+This project is open source and available under the [MIT License](LICENSE).
+**Chris Lane Jones**
+- Website: [chrislanejones.com](https:
+- GitHub: [@chrislanejones](https:
+- LinkedIn: [/in/chrislanejones](https:
+- Twitter: [@cljwebdev](https:
+
+===== FILE: roll_repo_for_ai.sh =====
+set -uo pipefail
+export TERM="${TERM:-xterm}"
+safe_clear() { clear 2>/dev/null || true; }
+safe_tput() { tput "$@" 2>/dev/null || true; }
+REPO_DIR="${1:-.}"
+MAX_SIZE_KB="${2:-40}"
+MAX_SIZE_BYTES=$((MAX_SIZE_KB * 1024))
+OUT_DIR="rolled_repo"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+WHITE='\033[1;37m'
+DIM='\033[2m'
+NC='\033[0m'
+BOLD='\033[1m'
+declare -A SELECTED
+declare -a TREE_ITEMS
+declare -a TREE_PATHS
+declare -a TREE_DEPTHS
+declare -a TREE_TYPES
+CURSOR=0
+cd "$REPO_DIR"
+mkdir -p "$OUT_DIR"
+get_files() {
+git ls-files --cached --others --exclude-standard | \
+grep -vE '(\.lock$|bun\.lockb|package-lock\.json|yarn\.lock|pnpm-lock\.yaml)' | \
+grep -vE '(^\.env$|\.env\..*)' | \
+grep -vE '(^\.git/|\.next/|\.cache/)' | \
+grep -vE '(node_modules/|dist/|build/|out/|coverage/|public/)' | \
+sort
+}
+build_tree() {
+local files="$1"
+declare -A dirs_added
+TREE_ITEMS=()
+TREE_PATHS=()
+TREE_DEPTHS=()
+TREE_TYPES=()
+while IFS= read -r file; do
+[[ -z "$file" ]] && continue
+local dir_path=""
+IFS='/' read -ra parts <<< "$file"
+local depth=0
+for ((i=0; i<${
+if [[ -z "$dir_path" ]]; then
+dir_path="${parts[i]}"
+else
+dir_path="$dir_path/${parts[i]}"
+fi
+if [[ -z "${dirs_added[$dir_path]:-}" ]]; then
+dirs_added[$dir_path]=1
+TREE_ITEMS+=("${parts[i]}")
+TREE_PATHS+=("$dir_path")
+TREE_DEPTHS+=($depth)
+TREE_TYPES+=("dir")
+SELECTED["$dir_path"]=1
+fi
+((depth++))
+done
+TREE_ITEMS+=("${parts[-1]}")
+TREE_PATHS+=("$file")
+TREE_DEPTHS+=($depth)
+TREE_TYPES+=("file")
+SELECTED["$file"]=1
+done <<< "$files"
+}
+toggle_selection() {
+local idx=$1
+local path="${TREE_PATHS[$idx]}"
+local type="${TREE_TYPES[$idx]}"
+if [[ "${SELECTED[$path]:-0}" == "1" ]]; then
+SELECTED["$path"]=0
+if [[ "$type" == "dir" ]]; then
+for ((i=0; i<${
+if [[ "${TREE_PATHS[$i]}" == "$path/"* ]]; then
+SELECTED["${TREE_PATHS[$i]}"]=0
+fi
+done
+fi
+else
+SELECTED["$path"]=1
+if [[ "$type" == "dir" ]]; then
+for ((i=0; i<${
+if [[ "${TREE_PATHS[$i]}" == "$path/"* ]]; then
+SELECTED["${TREE_PATHS[$i]}"]=1
+fi
+done
+fi
+local parent_path="$path"
+-e 's/[[:space:]]\+/ /g' \
+-e 's/^[ \t]*
+-e 's/[ \t]*$
+if [[ "$ext" != "css" ]]; then
+content="$(echo "$content" | sed 's/data:[a-zA-Z0-9\/+;=,.%-]*base64,[a-zA-Z0-9\/+=]*
+fi
+echo "$content" | fold -s -w 200
+}
+run_text() {
+local files="$1"
+local part=1
+local out="$OUT_DIR/ai_context_${part}.txt"
+echo "" > "$out"
+local total=$(echo "$files" | grep -c . || echo 0)
+local count=0
+echo ""
+while IFS= read -r f; do
+[[ -z "$f" ]] && continue
+((count++))
+progress $count $total "$f"
+[[ -f "$f" ]] || continue
+file "$f" 2>/dev/null | grep -qi binary && continue
+header="===== FILE: $f ====="
+content="$(clean_file_for_ai "$f")"
+local current_size=$(stat -f%z "$out" 2>/dev/null || stat -c%s "$out" 2>/dev/null || echo 0)
+if (( current_size + ${
+part=$((part+1))
+out="$OUT_DIR/ai_context_${part}.txt"
+echo "" > "$out"
+fi
+echo "$header" >> "$out"
+echo "$content" >> "$out"
+echo "" >> "$out"
+done <<< "$files"
+echo ""
+echo ""
+echo -e "${GREEN}✓ Created ${part} file(s) in ${OUT_DIR}/${NC}"
+}
+run_sh() {
+local files="$1"
+local part=1
+local out="$OUT_DIR/ai_restore_${part}.sh"
+init() {
+echo "
+echo "
+echo "" >> "$out"
+chmod +x "$out"
+}
+init
+local total=$(echo "$files" | grep -c . || echo 0)
+local count=0
+echo ""
+while IFS= read -r f; do
+[[ -z "$f" ]] && continue
+((count++))
+progress $count $total "$f"
+[[ -f "$f" ]] || continue
+file "$f" 2>/dev/null | grep -qi binary && continue
+d="EOF_$(echo "$f" | md5sum | cut -c1-6)"
+header="mkdir -p \"$(dirname "$f")\" && cat << '$d' > \"$f\""
+local current_size=$(stat -f%z "$out" 2>/dev/null || stat -c%s "$out" 2>/dev/null || echo 0)
+if (( current_size + ${
+part=$((part+1))
+out="$OUT_DIR/ai_restore_${part}.sh"
+init
+fi
+echo "$header" >> "$out"
+cat "$f" >> "$out"
+echo "$d" >> "$out"
+echo "" >> "$out"
+done <<< "$files"
+echo ""
+echo ""
+echo -e "${GREEN}✓ Created ${part} restore script(s) in ${OUT_DIR}/${NC}"
+}
+main_menu() {
+safe_clear
+echo -e "${BOLD}${CYAN} 🤖 Roll Repo For AI 🤖${NC}"
+echo -e "${DIM}==============================================${NC}"
+echo ""
+echo -e " ${WHITE}1)${NC} Roll AI Version ${DIM}(.txt minimal - most common)${NC}"
+echo ""
+echo -e " ${WHITE}2)${NC} Pick files from tree view ${DIM}(interactive select)${NC}"
+echo ""
+echo -e " ${WHITE}3)${NC} Roll Restorable Version ${DIM}(.sh heredoc - large)${NC}"
+echo ""
+echo -e "${DIM}==============================================${NC}"
+echo ""
+read -p "Select mode [1, 2, or 3]: " MODE
+case "$MODE" in
+1)
+echo ""
+echo -e "${CYAN}Rolling all files to AI-ready text...${NC}"
+FILES=$(get_files)
+run_text "$FILES"
+;;
+2)
+tree_select
+if [[ -n "$SELECTED_FILES" ]]; then
+safe_clear
+echo -e "${CYAN}Rolling selected files to AI-ready text...${NC}"
+run_text "$SELECTED_FILES"
+else
+echo "No files selected."
+fi
+;;
+3)
+echo ""
+echo -e "${CYAN}Rolling all files to restore scripts...${NC}"
+FILES=$(get_files)
+run_sh "$FILES"
+;;
+*)
+echo -e "${RED}Invalid selection${NC}"
+exit 1
+;;
+esac
+}
+main_menu
+
+===== FILE: scripts/check-seo.js =====
+const { ConvexHttpClient } = require("convex/browser");
+async function checkSEOData() {
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https:
+const convex = new ConvexHttpClient(convexUrl);
+try {
+console.log("🔍 Checking SEO data in Convex...\n");
+const allSEO = await convex.query("seo:getAllSEO");
+console.log(`📊 Total SEO entries: ${allSEO.length}\n`);
+const reactMaintenance = allSEO.find(entry => entry.path === "/react-maintenance");
+if (reactMaintenance) {
+console.log("✅ React Maintenance page found!");
+console.log(` Path: ${reactMaintenance.path}`);
+console.log(` Title: ${reactMaintenance.title}`);
+console.log(` Description: ${reactMaintenance.description}`);
+console.log(` Updated: ${new Date(reactMaintenance.updatedAt).toLocaleString()}\n`);
+} else {
+console.log("❌ React Maintenance page NOT found\n");
+}
+console.log("📋 All pages in database:");
+allSEO.sort((a, b) => a.path.localeCompare(b.path)).forEach(entry => {
+console.log(` ${entry.path} - ${entry.title}`);
+});
+} catch (error) {
+console.error("❌ Error checking SEO data:", error);
+}
+}
+checkSEOData();
+
+===== FILE: scripts/seed-seo.js =====
+const { ConvexHttpClient } = require("convex/browser");
+async function seedSEOData() {
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+if (!convexUrl) {
+console.error("❌ NEXT_PUBLIC_CONVEX_URL environment variable is required");
+process.exit(1);
+}
+const convex = new ConvexHttpClient(convexUrl);
+try {
+console.log("🌱 Seeding SEO data...");
+const result = await convex.mutation("seo:seedSEOData");
+console.log("✅ SEO data seeded successfully!");
+console.log(`📊 Result: ${result.message}`);
+console.log(` - Total pages: ${result.total}`);
+console.log(` - New pages inserted: ${result.inserted}`);
+console.log(` - Existing pages: ${result.updated}`);
+} catch (error) {
+console.error("❌ Error seeding SEO data:", error);
+process.exit(1);
+}
+}
+seedSEOData();
+
+===== FILE: src/app/admin/AdminDashboard/AdminDashboard.tsx =====
+"use client";
+import React from "react";
+import type { LucideIcon } from "lucide-react";
+import {
+Settings,
+Image,
+FileText,
+LogOut,
+List,
+Link,
+Calendar,
+MessageSquare,
+Heart,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useClerk, useUser } from "@clerk/nextjs";
+import {
+Sidebar,
+SidebarContent,
+SidebarFooter,
+SidebarHeader,
+SidebarMenu,
+SidebarMenuItem,
+SidebarProvider,
+SidebarInset,
+SidebarTrigger,
+useSidebar,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { SimpleModeToggle } from "@/components/simple-mode-toggle";
+import { SeoTabEnhanced } from "./SeoTabEnhanced";
+import SettingsTabEnhanced from "./SettingsTabEnhanced";
+import MediaTabEnhanced from "./MediaTabEnhanced";
+import BlogPostsTabEnhanced from "./BlogPostsTabEnhanced";
+import PagesMenuTabEnhanced from "./PagesMenuTabEnhanced";
+import LinksManagerTabEnhanced from "./LinksManagerTabEnhanced";
+import CareerTimelineTabEnhanced from "./CareerTimelineTabEnhanced";
+import MessagesTabEnhanced from "./MessagesTabEnhanced";
+import EngagementTabEnhanced from "./EngagementTabEnhanced";
+const AdminSidebarContent = ({
+tabs,
+activeTab,
+onTabChange,
+onSignOut,
+}: {
+tabs: { id: string; label: string; icon: LucideIcon }[];
+activeTab: string;
+onTabChange: (tabId: string) => void;
+onSignOut: () => void;
+}) => {
+const { state } = useSidebar();
+const isCollapsed = state === "collapsed";
+return (
+<Sidebar collapsible="icon" className="border-r border-border bg-panel">
+<SidebarHeader className="flex flex-col gap-2 p-4">
+<div className="px-2">
+{!isCollapsed && (
+<h2 className="font-bold text-ink text-lg">Admin Dashboard</h2>
+)}
+</div>
+</SidebarHeader>
+<SidebarContent className="overflow-hidden flex-1 overflow-y-auto p-2 space-y-1">
+<SidebarMenu>
+{tabs.map((tab) => (
+<SidebarMenuItem key={tab.id}>
+<Button
+variant={activeTab === tab.id ? "accent" : "outline"}
+size="sm"
+onClick={() => onTabChange(tab.id)}
+className={`w-full justify-start gap-3 ${
+isCollapsed ? "justify-center px-0" : ""
+}`}
+>
+<tab.icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+{!isCollapsed && <span>{tab.label}</span>}
+</Button>
+</SidebarMenuItem>
+))}
+</SidebarMenu>
+</SidebarContent>
+<SidebarFooter className="flex flex-col gap-2 mt-auto p-4">
+<SidebarMenu>
+<SidebarMenuItem>
+<div className={`flex ${isCollapsed ? "justify-center" : "px-2"}`}>
+1
+</div>
+</SidebarMenuItem>
+</SidebarMenu>
+</SidebarFooter>
+</Sidebar>
+);
+};
+const AdminDashboard = () => {
+const { user } = useUser();
+const { signOut } = useClerk();
+const router = useRouter();
+const searchParams = useSearchParams();
+const activeTab = searchParams.get("tab") || "pages";
+const handleSignOut = async () => {
+await signOut();
+router.push("/");
+};
+const handleTabChange = (tabId: string) => {
+router.push(`/admin?tab=${tabId}`);
+};
+const tabs = [
+{ id: "pages", label: "Pages & Menu", icon: List },
+{ id: "seo", label: "SEO Manager", icon: FileText },
+{ id: "media", label: "Media Manager", icon: Image },
+{ id: "links", label: "Links Manager", icon: Link },
+{ id: "career", label: "Career Timeline", icon: Calendar },
+{ id: "messages", label: "Messages", icon: MessageSquare },
+{ id: "blog-posts", label: "Blog Posts", icon: FileText },
+{ id: "engagement", label: "Comments & Likes", icon: Heart },
+{ id: "settings", label: "Settings", icon: Settings },
+];
+const renderTabContent = () => {
+switch (activeTab) {
+case "pages":
+return <PagesMenuTabEnhanced />;
+case "seo":
+return <SeoTabEnhanced />;
+case "media":
+return <MediaTabEnhanced />;
+case "links":
+return <LinksManagerTabEnhanced />;
+case "career":
+return <CareerTimelineTabEnhanced />;
+case "messages":
+return <MessagesTabEnhanced />;
+case "blog-posts":
+return <BlogPostsTabEnhanced />;
+case "engagement":
+return <EngagementTabEnhanced />;
+case "settings":
+return <SettingsTabEnhanced />;
+default:
+return <PagesMenuTabEnhanced />;
+}
+};
+return (
+<SidebarProvider defaultOpen={true}>
+<div className="flex h-screen w-full bg-panel border-border text-ink">
+<AdminSidebarContent
+tabs={tabs}
+activeTab={activeTab}
+onTabChange={handleTabChange}
+onSignOut={handleSignOut}
+/>
+<SidebarInset className="flex flex-col flex-1 overflow-hidden">
+<header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-panel px-6 py-3">
+<div className="flex items-center gap-2">
+<SidebarTrigger />
+<h1 className="text-ink">
+{tabs.find((t) => t.id === activeTab)?.label || "Admin"}
+</h1>
+</div>
+<div className="flex items-center gap-4">
+{user && (
+<span className="text-sm text-muted">
+{user.emailAddresses[0]?.emailAddress}
+</span>
+)}
+<Button variant="outline" size="sm" onClick={handleSignOut}>
+<LogOut className="w-4 h-4" />
+Sign Out
+</Button>
+<SimpleModeToggle />
+</div>
+</header>
+<main className="flex-1 overflow-auto p-6">{renderTabContent()}</main>
+</SidebarInset>
+</div>
+</SidebarProvider>
+);
+};
+export default AdminDashboard;
+
+===== FILE: src/app/admin/AdminDashboard/BlogPostsTabEnhanced.tsx =====
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+Search,
+Plus,
+Edit2,
+Trash2,
+Eye,
+EyeOff,
+Save,
+X,
+AlertCircle,
+CheckCircle,
+Tag,
+Image as ImageIcon,
+Calendar,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import type { Id } from "../../../../convex/_generated/dataModel";
+import { useUploadThing } from "@/utils/uploadthing";
+import { HtmlEditorEnhanced } from "../components/HtmlEditorEnhanced";
+import { MediaDrawer } from "../components/MediaDrawer";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+import Image from "next/image";
+interface BlogPost {
+_id: Id<"blogPosts">;
+title: string;
+slug: string;
+excerpt: string;
+content: string;
+coverImage?: string;
+tags?: string[];
+published: boolean;
+likesCount?: number;
+createdAt: number;
+updatedAt: number;
+}
+const BlogPostsTabEnhanced = () => {
+const posts = useQuery(api.blogPosts.getAllPostsAdmin) ?? [];
+const createPost = useMutation(api.blogPosts.createPost);
+const updatePost = useMutation(api.blogPosts.updatePost);
+const deletePost = useMutation(api.blogPosts.deletePost);
+const createMedia = useMutation(api.media.create);
+const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+const [isEditing, setIsEditing] = useState(false);
+const [isCreating, setIsCreating] = useState(false);
+const [searchQuery, setSearchQuery] = useState("");
+const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
+null
+);
+const [isUploading, setIsUploading] = useState(false);
+const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
+const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+const [isSaving, setIsSaving] = useState(false);
+const { startUpload } = useUploadThing("mediaUploader", {
+onClientUploadComplete: async (res) => {
+if (res && res[0]) {
+await createMedia({
+url: res[0].url,
+filename: res[0].name || "Blog cover image",
+size: res[0].size,
+});
+setFormData({ ...formData, coverImage: res[0].url });
+setIsUploading(false);
+}
+},
+onUploadError: (error: Error) => {
+console.error("Upload error:", error);
+setIsUploading(false);
+},
+});
+const [formData, setFormData] = useState({
+title: "",
+slug: "",
+excerpt: "",
+content: "",
+coverImage: "",
+tags: [] as string[],
+published: false,
+createdAt: Date.now(),
+});
+const [tagInput, setTagInput] = useState("");
+useEffect(() => {
+if (posts.length > 0 && !selectedPost && !isCreating) {
+setSelectedPost(posts[0] as BlogPost);
+}
+}, [posts, selectedPost, isCreating]);
+useEffect(() => {
+if (selectedPost && !isCreating) {
+setFormData({
+title: selectedPost.title,
+slug: selectedPost.slug,
+excerpt: selectedPost.excerpt,
+content: selectedPost.content,
+coverImage: selectedPost.coverImage || "",
+tags: selectedPost.tags || [],
+published: selectedPost.published,
+createdAt: selectedPost.createdAt,
+});
+setIsEditing(false);
+}
+}, [selectedPost, isCreating]);
+const handleCreateNew = () => {
+setIsCreating(true);
+setSelectedPost(null);
+setFormData({
+title: "",
+slug: "",
+excerpt: "",
+content: "",
+coverImage: "",
+tags: [],
+published: false,
+createdAt: Date.now(),
+});
+setIsEditing(true);
+};
+const generateSlug = (title: string) => {
+return title
+.toLowerCase()
+.replace(/[^a-z0-9]+/g, "-")
+.replace(/(^-|-$)/g, "");
+};
+const handleTitleChange = (title: string) => {
+setFormData({
+...formData,
+title,
+slug: generateSlug(title),
+});
+setIsEditing(true);
+};
+const handleAddTag = () => {
+if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+setFormData({
+...formData,
+tags: [...formData.tags, tagInput.trim()],
+});
+setTagInput("");
+setIsEditing(true);
+}
+};
+const handleRemoveTag = (tag: string) => {
+setFormData({
+...formData,
+tags: formData.tags.filter((t) => t !== tag),
+});
+setIsEditing(true);
+};
+const handleSave = async () => {
+if (!formData.title.trim() || !formData.slug.trim()) {
+setSaveStatus("error");
+return;
+}
+setIsSaving(true);
+try {
+if (isCreating) {
+await createPost({
+title: formData.title,
+slug: formData.slug,
+excerpt: formData.excerpt,
+content: formData.content,
+coverImage: formData.coverImage || undefined,
+tags: formData.tags,
+published: formData.published,
+});
+setSaveStatus("success");
+setIsCreating(false);
+} else if (selectedPost) {
+await updatePost({
+id: selectedPost._id,
+title: formData.title,
+slug: formData.slug,
+excerpt: formData.excerpt,
+content: formData.content,
+coverImage: formData.coverImage || undefined,
+tags: formData.tags,
+published: formData.published,
+createdAt: formData.createdAt,
+});
+setSaveStatus("success");
+}
+setIsEditing(false);
+setTimeout(() => setSaveStatus(null), 3000);
+} catch (error) {
+console.error("Failed to save post:", error);
+setSaveStatus("error");
+} finally {
+setIsSaving(false);
+}
+};
+const handleDelete = async (id: Id<"blogPosts">) => {
+try {
+await deletePost({ id });
+setDeleteConfirm(null);
+if (selectedPost?._id === id) {
+setSelectedPost(null);
+}
+setSaveStatus("success");
+setTimeout(() => setSaveStatus(null), 3000);
+} catch (error) {
+console.error("Failed to delete post:", error);
+setSaveStatus("error");
+}
+};
+const handleCancel = () => {
+if (isCreating) {
+setIsCreating(false);
+if (posts.length > 0) {
+setSelectedPost(posts[0] as BlogPost);
+}
+} else if (selectedPost) {
+setFormData({
+title: selectedPost.title,
+slug: selectedPost.slug,
+excerpt: selectedPost.excerpt,
+content: selectedPost.content,
+coverImage: selectedPost.coverImage || "",
+tags: selectedPost.tags || [],
+published: selectedPost.published,
+createdAt: selectedPost.createdAt,
+});
+}
+setIsEditing(false);
+};
+const handleMediaSelect = (imageUrl: string) => {
+setFormData({ ...formData, coverImage: imageUrl });
+setIsEditing(true);
+};
+const filteredPosts = posts.filter(
+(post) =>
+post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+post.slug.toLowerCase().includes(searchQuery.toLowerCase())
+);
+const formatDate = (timestamp: number) => {
+return new Date(timestamp).toLocaleDateString("en-US", {
+month: "short",
+day: "numeric",
+year: "numeric",
+});
+};
+return (
+<div className="grid grid-cols-3 gap-6 h-full">
+<div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+<div className="flex items-center justify-between mb-4">
+<h3 className="font-semibold text-(--color-ink)">Blog Posts</h3>
+</div>
+<div className="relative mb-4">
+<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+<input
+type="text"
+placeholder="Search posts..."
+value={searchQuery}
+onChange={(e) => setSearchQuery(e.target.value)}
+className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+/>
+</div>
+<div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+{selectedPost || isCreating ? (
+<>
+<div className="flex-1 overflow-y-auto p-6 space-y-6">
+<div>
+<label className="block mb-2 text-ink font-medium">Slug</label>
+<input
+type="text"
+value={formData.slug}
+onChange={(e) => {
+setFormData({ ...formData, slug: e.target.value });
+setIsEditing(true);
+}}
+disabled={!isEditing}
+className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+placeholder="post-url-slug"
+/>
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">
+Excerpt
+</label>
+<textarea
+value={formData.excerpt}
+onChange={(e) => {
+setFormData({ ...formData, excerpt: e.target.value });
+setIsEditing(true);
+}}
+disabled={!isEditing}
+rows={2}
+className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent resize-none disabled:opacity-60"
+placeholder="Brief description of the post..."
+/>
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">Tags</label>
+<div className="flex flex-wrap gap-2 mb-2">
+{formData.tags.map((tag) => (
+<span
+key={tag}
+className="flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm"
+>
+<Tag className="w-3 h-3" />
+{tag}
+{isEditing && (
+<button
+onClick={() => handleRemoveTag(tag)}
+className="ml-1 hover:text-red-500 transition"
+>
+<X className="w-3 h-3" />
+</button>
+)}
+</span>
+))}
+</div>
+{isEditing && (
+<div className="flex gap-2">
+<input
+type="text"
+value={tagInput}
+onChange={(e) => setTagInput(e.target.value)}
+onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
+className="flex-1 px-3 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+placeholder="Add a tag..."
+/>
+<Button onClick={handleAddTag} variant="outline" size="sm">
+Add
+</Button>
+</div>
+)}
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">
+Content
+</label>
+{isEditing ? (
+<HtmlEditorEnhanced
+value={formData.content}
+onChange={(content) => {
+setFormData({ ...formData, content });
+}}
+placeholder="Write your post content..."
+/>
+) : (
+<div
+className="p-4 bg-base border border-border rounded-xl prose prose-sm dark:prose-invert max-w-none min-h-[200px]"
+dangerouslySetInnerHTML={{
+__html: formData.content || "<p>No content yet...</p>",
+}}
+/>
+)}
+</div>
+</div>
+<MediaDrawer
+isOpen={isMediaDrawerOpen}
+onClose={() => setIsMediaDrawerOpen(false)}
+onSelect={handleMediaSelect}
+title="Select Cover Image"
+description="Choose a cover image for your blog post"
+/>
+</>
+) : (
+<div className="flex-1 flex items-center justify-center text-muted">
+<div className="text-center">
+<Tag className="w-12 h-12 mx-auto opacity-40 mb-4" />
+<p>Select a post to view or edit</p>
+</div>
+</div>
+)}
+</div>
+
+===== FILE: src/app/admin/AdminDashboard/CareerTimelineTabEnhanced.tsx =====
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+Plus,
+Edit2,
+Trash2,
+Save,
+X,
+GripVertical,
+Calendar,
+MapPin,
+Briefcase,
+GraduationCap,
+Video,
+Star,
+Lightbulb,
+Mountain,
+Home,
+Users,
+Code2,
+Award,
+BookOpen,
+Coffee,
+Rocket,
+Target,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "@/components/ui/button";
+interface CareerEvent {
+_id: Id<"careerTimeline">;
+year: string;
+title: string;
+description: string;
+location?: string;
+iconName: string;
+order: number;
+createdAt: number;
+updatedAt: number;
+}
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+GraduationCap,
+Video,
+Star,
+Lightbulb,
+Mountain,
+Home,
+Users,
+Code2,
+Briefcase,
+Award,
+BookOpen,
+Coffee,
+Rocket,
+Target,
+};
+const VALID_ICONS = Object.keys(ICON_MAP);
+const CareerTimelineTabEnhanced = () => {
+const events = useQuery(api.careerTimeline.getAllEvents) ?? [];
+const addEvent = useMutation(api.careerTimeline.addEvent);
+const updateEvent = useMutation(api.careerTimeline.updateEvent);
+const deleteEvent = useMutation(api.careerTimeline.deleteEvent);
+const [selectedEvent, setSelectedEvent] = useState<CareerEvent | null>(null);
+const [isEditing, setIsEditing] = useState(false);
+const [isCreating, setIsCreating] = useState(false);
+const [error, setError] = useState<Error | null>(null);
+const [success, setSuccess] = useState<string | null>(null);
+const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+const [isSaving, setIsSaving] = useState(false);
+const [formData, setFormData] = useState({
+year: "",
+title: "",
+description: "",
+location: "",
+iconName: "Briefcase",
+});
+useEffect(() => {
+if (events.length > 0 && !selectedEvent && !isCreating) {
+setSelectedEvent(events[0] as CareerEvent);
+}
+}, [events, selectedEvent, isCreating]);
+useEffect(() => {
+if (selectedEvent && !isCreating) {
+setFormData({
+year: selectedEvent.year,
+title: selectedEvent.title,
+description: selectedEvent.description,
+location: selectedEvent.location || "",
+iconName: selectedEvent.iconName,
+});
+setIsEditing(false);
+}
+}, [selectedEvent, isCreating]);
+const handleCreateNew = () => {
+setIsCreating(true);
+setSelectedEvent(null);
+setFormData({
+year: new Date().getFullYear().toString(),
+title: "",
+description: "",
+location: "",
+iconName: "Briefcase",
+});
+setIsEditing(true);
+};
+const handleSave = async () => {
+setIsSaving(true);
+try {
+if (isCreating) {
+await addEvent({
+year: formData.year,
+title: formData.title,
+description: formData.description,
+location: formData.location || undefined,
+iconName: formData.iconName,
+order: events.length,
+});
+setSuccess("Event created successfully!");
+setIsCreating(false);
+} else if (selectedEvent) {
+await updateEvent({
+id: selectedEvent._id,
+year: formData.year,
+title: formData.title,
+description: formData.description,
+location: formData.location || undefined,
+iconName: formData.iconName,
+order: selectedEvent.order,
+});
+setSuccess("Event updated successfully!");
+}
+setIsEditing(false);
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(err instanceof Error ? err : new Error("Failed to save event"));
+} finally {
+setIsSaving(false);
+}
+};
+const handleDelete = async (id: Id<"careerTimeline">) => {
+try {
+await deleteEvent({ id });
+setSuccess("Event deleted successfully!");
+setDeleteConfirm(null);
+if (selectedEvent?._id === id) {
+setSelectedEvent(null);
+}
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(
+err instanceof Error ? err : new Error("Failed to delete event")
+);
+}
+};
+const handleCancel = () => {
+if (isCreating) {
+setIsCreating(false);
+if (events.length > 0) {
+setSelectedEvent(events[0] as CareerEvent);
+}
+} else if (selectedEvent) {
+setFormData({
+year: selectedEvent.year,
+title: selectedEvent.title,
+description: selectedEvent.description,
+location: selectedEvent.location || "",
+iconName: selectedEvent.iconName,
+});
+}
+setIsEditing(false);
+};
+const renderIcon = (iconName: string, className?: string) => {
+const IconComponent = ICON_MAP[iconName] || Briefcase;
+return <IconComponent className={className} />;
+};
+const sortedEvents = [...events].sort((a, b) => a.order - b.order);
+if (events === undefined) {
+return <LoadingSpinner message="Loading timeline..." />;
+}
+return (
+<div className="grid grid-cols-3 gap-6 h-full">
+<div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+<div className="flex items-center justify-between mb-4">
+<h3 className="font-semibold text-(--color-ink)">Timeline Events</h3>
+</div>
+<div className="flex-1 overflow-y-auto space-y-2">
+{sortedEvents.length === 0 ? (
+<p className="text-sm text-muted text-center py-8">
+No events yet. Add your first career milestone!
+</p>
+) : (
+sortedEvents.map((event) => (
+<button
+key={event._id}
+onClick={() => {
+setIsCreating(false);
+setSelectedEvent(event as CareerEvent);
+}}
+className={`w-full text-left p-3 rounded-lg transition ${
+selectedEvent?._id === event._id && !isCreating
+? "bg-(--color-foreground) text-(--color-panel)"
+: "hover:bg-(--color-surface-hover) text-(--color-ink)"
+}`}
+>
+<div className="flex items-start gap-3">
+<div
+className={`mt-0.5 ${
+selectedEvent?._id === event._id && !isCreating
+? "text-(--color-panel)"
+: "text-accent"
+}`}
+>
+{renderIcon(event.iconName, "w-4 h-4")}
+</div>
+<div className="flex-1 min-w-0">
+<div className="flex items-center justify-between gap-2">
+<span className="font-medium truncate">
+{event.title}
+</span>
+<span
+className={`text-xs shrink-0 ${
+selectedEvent?._id === event._id && !isCreating
+? "opacity-70"
+: "text-muted"
+}`}
+>
+{event.year}
+</span>
+</div>
+{event.location && (
+<p
+className={`text-xs truncate ${
+selectedEvent?._id === event._id && !isCreating
+? "opacity-70"
+: "text-muted"
+}`}
+>
+{event.location}
+</p>
+)}
+</div>
+</div>
+</button>
+))
+)}
+</div>
+</div>
+<div className="flex items-center justify-between px-6 py-4 border-b border-border">
+<div className="flex items-center gap-3">
+<div className="p-2 bg-accent/10 rounded-lg">
+{renderIcon(formData.iconName, "w-5 h-5 text-accent")}
+</div>
+<div>
+<h2 className="font-bold text-ink">
+{isCreating ? "New Event" : formData.title || "Untitled"}
+</h2>
+<p className="text-sm text-muted">
+{formData.year}
+{formData.location && ` • ${formData.location}`}
+</p>
+</div>
+</div>
+<div className="flex items-center gap-2">
+{isEditing ? (
+<>
+<Button onClick={handleCancel} variant="outline" size="sm">
+Cancel
+</Button>
+<Button
+onClick={handleSave}
+variant="accent"
+size="sm"
+className="gap-2"
+disabled={isSaving}
+>
+<Save className="w-4 h-4" />
+{isSaving ? "Saving..." : "Save"}
+</Button>
+</>
+) : (
+<>
+<Button
+onClick={() => setIsEditing(true)}
+variant="outline"
+size="sm"
+className="gap-2"
+>
+<Edit2 className="w-4 h-4" />
+Edit
+</Button>
+{selectedEvent && (
+<Button
+onClick={() => setDeleteConfirm(selectedEvent._id)}
+variant="outline"
+size="sm"
+className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+>
+<Trash2 className="w-4 h-4" />
+</Button>
+)}
+</>
+)}
+</div>
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">Year</label>
+<input
+type="text"
+value={formData.year}
+onChange={(e) => {
+setFormData({ ...formData, year: e.target.value });
+setIsEditing(true);
+}}
+disabled={!isEditing}
+className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+placeholder="2024 or 2020-2024"
+/>
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">
+Description
+</label>
+<textarea
+value={formData.description}
+onChange={(e) => {
+setFormData({ ...formData, description: e.target.value });
+setIsEditing(true);
+}}
+disabled={!isEditing}
+rows={4}
+className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent resize-none disabled:opacity-60"
+placeholder="Describe this milestone..."
+/>
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">Icon</label>
+<div className="grid grid-cols-7 gap-2">
+{VALID_ICONS.map((iconName) => (
+<button
+key={iconName}
+type="button"
+onClick={() => {
+if (isEditing) {
+setFormData({ ...formData, iconName });
+}
+}}
+disabled={!isEditing}
+className={`p-3 rounded-lg border transition ${
+formData.iconName === iconName
+? "border-accent bg-accent/10 text-accent"
+: "border-border text-muted hover:border-accent/50 hover:text-ink disabled:opacity-40"
+}`}
+title={iconName}
+>
+{renderIcon(iconName, "w-5 h-5")}
+</button>
+))}
+</div>
+</div>
+</div>
+</>
+) : (
+<div className="flex-1 flex items-center justify-center text-muted">
+<div className="text-center">
+<Calendar className="w-12 h-12 mx-auto opacity-40 mb-4" />
+<p>Select an event to view or edit</p>
+</div>
+</div>
+)}
+</div>
+
+===== FILE: src/app/admin/AdminDashboard/EngagementTabEnhanced.tsx =====
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+Search,
+Heart,
+MessageCircle,
+CheckCircle,
+X,
+Trash2,
+ExternalLink,
+Filter,
+ThumbsUp,
+ThumbsDown,
+Eye,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "@/components/ui/button";
+interface BlogComment {
+_id: Id<"blogComments">;
+postId: Id<"blogPosts">;
+postTitle: string;
+postSlug: string;
+parentId?: Id<"blogComments">;
+authorName: string;
+authorEmail: string;
+content: string;
+approved: boolean;
+createdAt: number;
+updatedAt: number;
+}
+interface LikesStats {
+total: number;
+byPost: {
+postId: string;
+postTitle: string;
+postSlug: string;
+likesCount: number;
+}[];
+}
+const EngagementTabEnhanced = () => {
+const comments = useQuery(api.blogPosts.getAllCommentsAdmin) ?? [];
+const likesData = useQuery(api.blogPosts.getAllLikesAdmin) as
+| LikesStats
+| undefined;
+const pendingCount = useQuery(api.blogPosts.getPendingCommentsCount) ?? 0;
+const approveComment = useMutation(api.blogPosts.approveComment);
+const deleteComment = useMutation(api.blogPosts.deleteComment);
+const [activeTab, setActiveTab] = useState<"comments" | "likes">("comments");
+const [selectedComment, setSelectedComment] = useState<BlogComment | null>(
+null
+);
+const [searchQuery, setSearchQuery] = useState("");
+const [filterStatus, setFilterStatus] = useState<
+"all" | "pending" | "approved"
+>("all");
+const [error, setError] = useState<Error | null>(null);
+const [success, setSuccess] = useState<string | null>(null);
+const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+useEffect(() => {
+if (comments.length > 0 && !selectedComment) {
+const pendingComment = comments.find((c) => !c.approved);
+setSelectedComment((pendingComment || comments[0]) as BlogComment);
+}
+}, [comments, selectedComment]);
+const handleApprove = async (commentId: Id<"blogComments">) => {
+try {
+await approveComment({ commentId });
+setSuccess("Comment approved successfully");
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(
+err instanceof Error ? err : new Error("Failed to approve comment")
+);
+}
+};
+const handleDelete = async (commentId: Id<"blogComments">) => {
+try {
+await deleteComment({ commentId });
+setSuccess("Comment deleted successfully");
+setDeleteConfirm(null);
+if (selectedComment?._id === commentId) {
+setSelectedComment(null);
+}
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(
+err instanceof Error ? err : new Error("Failed to delete comment")
+);
+}
+};
+const filteredComments = comments.filter((comment) => {
+const matchesSearch =
+comment.authorName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+comment.authorEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+comment.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+comment.postTitle.toLowerCase().includes(searchQuery.toLowerCase());
+const matchesFilter =
+filterStatus === "all" ||
+(filterStatus === "pending" && !comment.approved) ||
+(filterStatus === "approved" && comment.approved);
+return matchesSearch && matchesFilter;
+});
+const formatDate = (timestamp: number) => {
+const date = new Date(timestamp);
+const now = new Date();
+const diff = now.getTime() - date.getTime();
+const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+if (days === 0) {
+return date.toLocaleTimeString("en-US", {
+hour: "numeric",
+minute: "2-digit",
+});
+} else if (days === 1) {
+return "Yesterday";
+} else if (days < 7) {
+return date.toLocaleDateString("en-US", { weekday: "long" });
+} else {
+return date.toLocaleDateString("en-US", {
+month: "short",
+day: "numeric",
+});
+}
+};
+const formatFullDate = (timestamp: number) => {
+return new Date(timestamp).toLocaleDateString("en-US", {
+weekday: "long",
+year: "numeric",
+month: "long",
+day: "numeric",
+hour: "numeric",
+minute: "2-digit",
+});
+};
+if (comments === undefined || likesData === undefined) {
+return <LoadingSpinner message="Loading engagement data..." />;
+}
+return (
+<div className="space-y-6 h-full flex flex-col">
+<div className="flex items-center gap-4 border-b border-border pb-4">
+<button
+onClick={() => setActiveTab("comments")}
+className={`flex items-center gap-2 px-4 py-2 rounded-lg transition font-medium ${
+activeTab === "comments"
+? "bg-(--color-foreground) text-(--color-panel)"
+: "text-muted hover:text-ink hover:bg-surface-hover"
+}`}
+>
+<MessageCircle className="w-4 h-4" />
+Comments
+{pendingCount > 0 && (
+<span className="px-2 py-0.5 bg-accent text-on-accent text-xs font-bold rounded-full">
+{pendingCount}
+</span>
+)}
+</button>
+<button
+onClick={() => setActiveTab("likes")}
+className={`flex items-center gap-2 px-4 py-2 rounded-lg transition font-medium ${
+activeTab === "likes"
+? "bg-(--color-foreground) text-(--color-panel)"
+: "text-muted hover:text-ink hover:bg-surface-hover"
+}`}
+>
+<Heart className="w-4 h-4" />
+Likes
+<span className="px-2 py-0.5 bg-muted-accent text-muted text-xs rounded-full">
+{likesData?.total ?? 0}
+</span>
+</button>
+</div>
+<div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+<div className="flex items-center justify-between mb-4">
+<h3 className="font-semibold text-(--color-ink)">Comments</h3>
+</div>
+<div className="flex gap-1 mb-4 p-1 bg-base rounded-lg">
+{(["all", "pending", "approved"] as const).map((status) => (
+<button
+key={status}
+onClick={() => setFilterStatus(status)}
+className={`flex-1 px-3 py-1.5 text-sm rounded-md transition ${
+filterStatus === status
+? "bg-(--color-foreground) text-(--color-panel)"
+: "text-muted hover:text-ink"
+}`}
+>
+{status.charAt(0).toUpperCase() + status.slice(1)}
+</button>
+))}
+</div>
+<div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+{selectedComment ? (
+<>
+<div className="flex-1 overflow-y-auto p-6 space-y-6">
+<div className="p-3 bg-base border border-border rounded-lg">
+<p className="text-xs text-muted mb-1">Comment on:</p>
+<a
+href={`/blog/${selectedComment.postSlug}`}
+target="_blank"
+rel="noopener noreferrer"
+className="flex items-center gap-2 text-ink hover:text-accent transition"
+>
+<span className="font-medium">
+{selectedComment.postTitle}
+</span>
+<ExternalLink className="w-4 h-4" />
+</a>
+</div>
+{activeTab === "likes" && (
+<div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6 flex-1 overflow-auto">
+<div className="flex items-center justify-between mb-6">
+<div>
+<h3 className="font-semibold text-(--color-ink) text-lg">
+Likes Overview
+</h3>
+<p className="text-muted text-sm">
+Total likes across all posts: {likesData?.total ?? 0}
+</p>
+</div>
+</div>
+{likesData && likesData.byPost.length > 0 ? (
+<div className="space-y-3">
+{likesData.byPost.map((post, index) => (
+<div
+key={post.postId}
+className="flex items-center gap-4 p-4 bg-base border border-border rounded-xl hover:border-accent transition"
+>
+<div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold">
+{index + 1}
+</div>
+<div className="flex-1 min-w-0">
+<a
+href={`/blog/${post.postSlug}`}
+target="_blank"
+rel="noopener noreferrer"
+className="font-medium text-ink hover:text-accent transition truncate flex items-center gap-2"
+>
+{post.postTitle}
+<ExternalLink className="w-3 h-3 shrink-0" />
+</a>
+</div>
+<div className="flex items-center gap-2 text-accent">
+<Heart className="w-5 h-5" fill="currentColor" />
+<span className="font-bold">{post.likesCount}</span>
+</div>
+{deleteConfirm && (
+<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+<div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+<h3 className="text-lg font-bold text-ink mb-4">Delete Comment?</h3>
+<p className="text-muted mb-6">This action cannot be undone.</p>
+<div className="flex gap-2">
+<Button
+onClick={() =>
+handleDelete(deleteConfirm as Id<"blogComments">)
+}
+variant="disabled"
+className="flex-1"
+>
+Delete
+</Button>
+<Button
+onClick={() => setDeleteConfirm(null)}
+variant="outline"
+className="flex-1"
+>
+Cancel
+</Button>
+</div>
+</div>
+</div>
+)}
+</div>
+);
+};
+export default EngagementTabEnhanced;
+

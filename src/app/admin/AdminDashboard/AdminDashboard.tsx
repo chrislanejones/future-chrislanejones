@@ -67,7 +67,7 @@ const AdminSidebarContent = ({
           {tabs.map((tab) => (
             <SidebarMenuItem key={tab.id}>
               <Button
-                variant={activeTab === tab.id ? "accent" : "ghost"}
+                variant={activeTab === tab.id ? "accent" : "outline"}
                 size="sm"
                 onClick={() => onTabChange(tab.id)}
                 className={`w-full justify-start gap-3 ${
@@ -85,7 +85,7 @@ const AdminSidebarContent = ({
         <SidebarMenu>
           <SidebarMenuItem>
             <div className={`flex ${isCollapsed ? "justify-center" : "px-2"}`}>
-              <SimpleModeToggle />
+              1
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -160,7 +160,7 @@ const AdminDashboard = () => {
           <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-panel px-6 py-3">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
-              <h1 className="text-lg font-semibold text-ink">
+              <h1 className="text-ink">
                 {tabs.find((t) => t.id === activeTab)?.label || "Admin"}
               </h1>
             </div>
@@ -170,15 +170,11 @@ const AdminDashboard = () => {
                   {user.emailAddresses[0]?.emailAddress}
                 </span>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleSignOut}
-                className="gap-2"
-              >
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4" />
                 Sign Out
               </Button>
+              <SimpleModeToggle />
             </div>
           </header>
           <main className="flex-1 overflow-auto p-6">{renderTabContent()}</main>

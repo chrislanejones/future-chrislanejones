@@ -2,6 +2,24 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  siteSettings: defineTable({
+    name: v.string(),
+    bio: v.string(),
+    avatar: v.optional(v.string()),
+    email: v.optional(v.string()),
+    location: v.optional(v.string()),
+    socialLinks: v.optional(
+      v.object({
+        github: v.optional(v.string()),
+        linkedin: v.optional(v.string()),
+        twitter: v.optional(v.string()),
+        codepen: v.optional(v.string()),
+        youtube: v.optional(v.string()),
+      })
+    ),
+    updatedAt: v.number(),
+  }),
+
   seoMetadata: defineTable({
     path: v.string(),
     title: v.string(),
@@ -29,7 +47,7 @@ export default defineSchema({
     category: v.string(),
     color: v.string(),
     order: v.number(),
-    featured: v.optional(v.boolean()), // NEW: featured field for link-page display
+    featured: v.optional(v.boolean()),
     createdAt: v.number(),
     updatedAt: v.number(),
     screenshotUrl: v.optional(v.string()),
@@ -37,7 +55,7 @@ export default defineSchema({
   })
     .index("by_category", ["category"])
     .index("by_order", ["order"])
-    .index("by_featured", ["featured"]), // NEW: index for querying featured links
+    .index("by_featured", ["featured"]),
 
   blogPosts: defineTable({
     title: v.string(),

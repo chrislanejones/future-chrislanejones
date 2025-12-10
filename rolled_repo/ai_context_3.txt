@@ -1,0 +1,1653 @@
+
+===== FILE: src/app/admin/AdminDashboard/LinksManagerTabEnhanced.tsx =====
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+Search,
+Plus,
+Edit2,
+Trash2,
+Save,
+X,
+Star,
+GripVertical,
+ExternalLink,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+interface BrowserLink {
+_id: Id<"browserLinks">;
+href: string;
+label: string;
+domain: string;
+favicon?: string;
+category: string;
+color: string;
+order: number;
+featured?: boolean;
+createdAt: number;
+updatedAt: number;
+}
+interface Category {
+category: string;
+color: string;
+count: number;
+}
+const LinksManagerTabEnhanced = () => {
+const allLinks = (useQuery(api.browserLinks.getAll) ?? []) as BrowserLink[];
+const categories = (useQuery(api.browserLinks.getCategories) ??
+[]) as Category[];
+const createLink = useMutation(api.browserLinks.create);
+const updateLink = useMutation(api.browserLinks.update);
+const deleteLink = useMutation(api.browserLinks.deleteLink);
+const deleteCategory = useMutation(api.browserLinks.deleteCategory);
+const [selectedCategory, setSelectedCategory] = useState<string>("");
+const [showModal, setShowModal] = useState(false);
+const [isEditing, setIsEditing] = useState(false);
+const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
+const [error, setError] = useState<Error | null>(null);
+const [success, setSuccess] = useState<string | null>(null);
+const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+const [formData, setFormData] = useState({
+href: "",
+label: "",
+domain: "",
+favicon: "",
+category: "",
+color: "blue",
+});
+useEffect(() => {
+if (categories.length > 0 && !selectedCategory) {
+setSelectedCategory(categories[0].category);
+setFormData((prev) => ({ ...prev, category: categories[0].category }));
+}
+}, [categories, selectedCategory]);
+const CHROME_COLORS = [
+{ id: "blue", name: "Blue", class: "bg-blue-500" },
+{ id: "red", name: "Red", class: "bg-red-500" },
+{ id: "yellow", name: "Yellow", class: "bg-yellow-500" },
+{ id: "green", name: "Green", class: "bg-green-500" },
+{ id: "pink", name: "Pink", class: "bg-pink-500" },
+{ id: "purple", name: "Purple", class: "bg-purple-500" },
+{ id: "cyan", name: "Cyan", class: "bg-cyan-500" },
+{ id: "orange", name: "Orange", class: "bg-orange-500" },
+];
+const getLinksInCategory = (category: string) => {
+return allLinks.filter((link) => link.category === category);
+};
+const handleOpenModal = (linkId?: string) => {
+if (linkId) {
+const link = allLinks.find((l) => l._id === (linkId as any));
+if (link) {
+setFormData({
+href: link.href,
+label: link.label,
+domain: link.domain,
+favicon: link.favicon || "",
+category: link.category,
+color: link.color,
+});
+setEditingLinkId(linkId);
+setIsEditing(true);
+}
+} else {
+setFormData({
+href: "",
+label: "",
+domain: "",
+favicon: "",
+category: selectedCategory,
+color: "blue",
+});
+setEditingLinkId(null);
+setIsEditing(false);
+}
+setShowModal(true);
+};
+const handleSaveLink = async () => {
+try {
+setError(null);
+if (!formData.href.trim() || !formData.label.trim()) {
+setError(new Error("URL and Label are required"));
+return;
+}
+const url = new URL(formData.href);
+const domain = url.hostname;
+if (isEditing && editingLinkId) {
+await updateLink({
+id: editingLinkId as Id<"browserLinks">,
+href: formData.href,
+label: formData.label,
+domain,
+favicon: formData.favicon || undefined,
+category: formData.category,
+color: formData.color,
+order: 0,
+});
+setSuccess("Link updated successfully!");
+} else {
+await createLink({
+href: formData.href,
+label: formData.label,
+domain,
+favicon: formData.favicon || undefined,
+category: formData.category,
+color: formData.color,
+order: getLinksInCategory(formData.category).length,
+});
+setSuccess("Link created successfully!");
+}
+setShowModal(false);
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(err instanceof Error ? err : new Error("Failed to save link"));
+}
+};
+const handleDeleteLink = async (linkId: string) => {
+try {
+await deleteLink({ id: linkId as Id<"browserLinks"> });
+setSuccess("Link deleted successfully!");
+setDeleteConfirm(null);
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(err instanceof Error ? err : new Error("Failed to delete link"));
+}
+};
+const handleDeleteCategory = async (category: string) => {
+try {
+const count = getLinksInCategory(category).length;
+if (
+confirm(
+`Delete "${category}" and all ${count} link(s)? This cannot be undone.`
+)
+) {
+await deleteCategory({ category });
+setSelectedCategory(
+categories.find((c) => c.category !== category)?.category || ""
+);
+setSuccess(`Category "${category}" deleted!`);
+setTimeout(() => setSuccess(null), 3000);
+}
+} catch (err) {
+setError(
+err instanceof Error ? err : new Error("Failed to delete category")
+);
+}
+};
+const handleToggleFeatured = async (link: BrowserLink) => {
+try {
+await updateLink({
+id: link._id,
+featured: !link.featured,
+});
+setSuccess(
+link.featured
+? `"${link.label}" removed from featured`
+: `"${link.label}" added to featured`
+);
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(
+err instanceof Error
+? err
+: new Error("Failed to update featured status")
+);
+}
+};
+const currentCategoryLinks = getLinksInCategory(selectedCategory);
+return (
+<div className="space-y-6 h-full flex flex-col">
+{showModal && (
+<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+<div className="bg-panel rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-border">
+<div className="flex items-center justify-between mb-4">
+<h3 className="text-lg font-bold text-ink">
+{isEditing ? "Edit Link" : "Add Link"}
+</h3>
+<button
+onClick={() => setShowModal(false)}
+className="p-2 text-muted hover:text-ink transition"
+>
+<X className="w-5 h-5" />
+</button>
+</div>
+<div className="space-y-4">
+<div>
+<label className="block text-sm font-medium text-ink mb-2">
+URL *
+</label>
+<input
+type="url"
+value={formData.href}
+onChange={(e) =>
+setFormData({ ...formData, href: e.target.value })
+}
+placeholder="https:
+className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+/>
+</div>
+<div>
+<label className="block text-sm font-medium text-ink mb-2">
+Label *
+</label>
+<input
+type="text"
+value={formData.label}
+onChange={(e) =>
+setFormData({ ...formData, label: e.target.value })
+}
+placeholder="My Link"
+className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+/>
+</div>
+<div>
+<label className="block text-sm font-medium text-ink mb-2">
+Favicon URL
+</label>
+<input
+type="url"
+value={formData.favicon}
+onChange={(e) =>
+setFormData({ ...formData, favicon: e.target.value })
+}
+placeholder="https:
+className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+/>
+</div>
+<div>
+<label className="block text-sm font-medium text-ink mb-2">
+Category
+</label>
+<select
+value={formData.category}
+onChange={(e) =>
+setFormData({ ...formData, category: e.target.value })
+}
+className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+>
+{categories.map((cat) => (
+<option key={cat.category} value={cat.category}>
+{cat.category}
+</option>
+))}
+</select>
+</div>
+<div>
+<label className="block text-sm font-medium text-ink mb-2">
+Color
+</label>
+<div className="grid grid-cols-4 gap-2">
+{CHROME_COLORS.map((color) => (
+<button
+key={color.id}
+onClick={() =>
+setFormData({ ...formData, color: color.id })
+}
+className={`${color.class} px-3 py-2 rounded-lg transition ${
+formData.color === color.id
+? "ring-2 ring-accent"
+: "opacity-70 hover:opacity-100"
+}`}
+title={color.name}
+/>
+))}
+</div>
+</div>
+<div className="flex gap-2 pt-4">
+<Button
+onClick={handleSaveLink}
+variant="accent"
+className="flex-1 gap-2"
+>
+<Save className="w-4 h-4" />
+Save
+</Button>
+<Button
+onClick={() => setShowModal(false)}
+variant="outline"
+className="flex-1"
+>
+Cancel
+</Button>
+</div>
+</div>
+</div>
+</div>
+)}
+<div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
+<div className="col-span-2 bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+<div className="flex items-center justify-between mb-4">
+<h3 className="font-semibold text-(--color-ink)">
+{selectedCategory || "Select a category"}
+</h3>
+<div className="flex items-center gap-2">
+{selectedCategory && (
+<Button
+onClick={() => handleDeleteCategory(selectedCategory)}
+className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition"
+title="Delete category"
+variant="outline"
+>
+<Trash2 className="w-4 h-4" />
+</Button>
+)}
+<Button
+onClick={() => handleOpenModal()}
+variant="outline"
+className="gap-2"
+disabled={!selectedCategory}
+>
+<Plus className="w-4 h-4" />
+Add Link
+</Button>
+</div>
+</div>
+<div className="flex-1 overflow-y-auto space-y-2">
+{currentCategoryLinks.length === 0 ? (
+<p className="text-sm text-muted text-center py-8">
+No links in this category
+</p>
+) : (
+currentCategoryLinks.map((link) => (
+<div
+key={link._id}
+className="p-3 bg-(--color-base) border border-(--color-border) rounded-lg group hover:border-accent transition"
+>
+<div className="flex items-center gap-3">
+<GripVertical className="w-4 h-4 text-muted shrink-0 cursor-move" />
+{link.favicon && (
+<img
+src={link.favicon}
+alt=""
+className="w-4 h-4 shrink-0"
+/>
+)}
+<div className="flex-1 min-w-0">
+<p className="font-medium text-(--color-ink) truncate">
+{link.label}
+</p>
+<p className="text-xs text-muted truncate">
+{link.domain}
+</p>
+</div>
+<div className="flex items-center gap-1">
+<div className="flex items-center gap-4 pr-3 mr-1 border-r border-border/50">
+<Switch
+checked={!!link.featured}
+onCheckedChange={() => handleToggleFeatured(link)}
+id={`featured-${link._id}`}
+className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-zinc-600 [&>span]:bg-white [&>span]:shadow-md"
+/>
+<label
+htmlFor={`featured-${link._id}`}
+className={`text-xs font-medium cursor-pointer select-none whitespace-nowrap ${
+link.featured ? "text-emerald-500" : "text-muted"
+}`}
+>
+Featured On Ohter Pages
+</label>
+</div>
+<a
+href={link.href}
+target="_blank"
+rel="noopener noreferrer"
+className="p-2 text-muted hover:text-ink transition"
+>
+<ExternalLink className="w-4 h-4" />
+</a>
+<Button
+onClick={() => handleOpenModal(link._id)}
+variant="ghost"
+size="sm"
+className="p-2"
+>
+<Edit2 className="w-4 h-4" />
+</Button>
+<Button
+onClick={() => setDeleteConfirm(link._id)}
+variant="ghost"
+size="sm"
+className="p-2 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+>
+<Trash2 className="w-4 h-4" />
+</Button>
+</div>
+</div>
+</div>
+))
+)}
+</div>
+</div>
+</div>
+</div>
+);
+};
+export default LinksManagerTabEnhanced;
+
+===== FILE: src/app/admin/AdminDashboard/MediaTabEnhanced.tsx =====
+"use client";
+import { useState, useEffect } from "react";
+import {
+Search,
+Upload,
+Trash2,
+Download,
+LayoutGrid,
+List,
+ChevronDown,
+ChevronRight,
+Filter,
+ImageIcon,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import type { Id } from "../../../../convex/_generated/dataModel";
+import { useUploadThing } from "@/utils/uploadthing";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+interface MediaFile {
+_id: Id<"media">;
+url: string;
+filename: string;
+altText?: string;
+size?: number;
+assignedToType?: string;
+assignedToId?: string;
+assignedToTitle?: string;
+uploadedAt: number;
+}
+const MediaTabEnhanced = () => {
+const organizedMedia = useQuery(api.media.getOrganized);
+const deleteMediaMutation = useMutation(api.media.deleteMedia);
+const createMedia = useMutation(api.media.create);
+const assignMedia = useMutation(api.media.assign);
+const unassignMedia = useMutation(api.media.unassign);
+const [searchQuery, setSearchQuery] = useState("");
+const [selectedView, setSelectedView] = useState<string>("all");
+const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set());
+const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+const [isUploading, setIsUploading] = useState(false);
+const [error, setError] = useState<Error | null>(null);
+const [success, setSuccess] = useState<string | null>(null);
+const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+const { startUpload } = useUploadThing("mediaUploader", {
+onClientUploadComplete: async (res) => {
+if (res) {
+for (const file of res) {
+await createMedia({
+url: file.url,
+filename: file.name || "Untitled",
+size: file.size,
+});
+}
+setSuccess(`Successfully uploaded ${res.length} file(s)`);
+setTimeout(() => setSuccess(null), 3000);
+}
+setIsUploading(false);
+},
+onUploadError: (error: Error) => {
+setError(error);
+setIsUploading(false);
+},
+});
+const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const files = e.target.files;
+if (!files || files.length === 0) return;
+setIsUploading(true);
+await startUpload(Array.from(files));
+};
+const handleDeleteImage = async (mediaId: Id<"media">) => {
+try {
+await deleteMediaMutation({ id: mediaId });
+setSuccess("Image deleted successfully");
+setDeleteConfirm(null);
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(
+err instanceof Error ? err : new Error("Failed to delete image")
+);
+}
+};
+const togglePageExpanded = (pageId: string) => {
+const newExpanded = new Set(expandedPages);
+if (newExpanded.has(pageId)) {
+newExpanded.delete(pageId);
+} else {
+newExpanded.add(pageId);
+}
+setExpandedPages(newExpanded);
+};
+const togglePostExpanded = (postId: string) => {
+const newExpanded = new Set(expandedPosts);
+if (newExpanded.has(postId)) {
+newExpanded.delete(postId);
+} else {
+newExpanded.add(postId);
+}
+setExpandedPosts(newExpanded);
+};
+if (!organizedMedia) {
+return <LoadingSpinner message="Loading media..." />;
+}
+const getCurrentImages = (): MediaFile[] => {
+if (selectedView === "all") {
+return [
+...organizedMedia.pages.flatMap((p) => p.images),
+...organizedMedia.blogPosts.flatMap((p) => p.images),
+...organizedMedia.unassigned,
+];
+} else if (selectedView === "unassigned") {
+return organizedMedia.unassigned;
+} else if (selectedView.startsWith("page-")) {
+const pageId = selectedView.replace("page-", "");
+const page = organizedMedia.pages.find((p) => p.id === pageId);
+return page?.images || [];
+} else if (selectedView.startsWith("post-")) {
+const postId = selectedView.replace("post-", "");
+const post = organizedMedia.blogPosts.find((p) => p.id === postId);
+return post?.images || [];
+}
+return [];
+};
+const currentImages = getCurrentImages();
+const filteredImages = currentImages.filter((img) => {
+if (!searchQuery) return true;
+const query = searchQuery.toLowerCase();
+return (
+img.filename.toLowerCase().includes(query) ||
+img.altText?.toLowerCase().includes(query) ||
+img.assignedToTitle?.toLowerCase().includes(query)
+);
+});
+const totalImages =
+organizedMedia.pages.reduce((sum, p) => sum + p.images.length, 0) +
+organizedMedia.blogPosts.reduce((sum, p) => sum + p.images.length, 0) +
+organizedMedia.unassigned.length;
+return (
+<div className="space-y-6 h-full flex flex-col">
+<div className="grid grid-cols-12 items-center gap-4">
+<div className="col-span-4 flex items-center gap-4 flex-wrap">
+<div className="flex items-center gap-2 text-ink font-medium">
+<ImageIcon className="w-5 h-5 text-accent" />
+<span>{totalImages} images</span>
+</div>
+<div className="relative col-span-6">
+<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+<input
+type="text"
+placeholder="Search images..."
+value={searchQuery}
+onChange={(e) => setSearchQuery(e.target.value)}
+className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+/>
+</div>
+{isUploading && (
+<div className="flex items-center gap-2 text-accent">
+<div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+<span>Uploading...</span>
+</div>
+)}
+<div className="w-64 border border-border rounded-lg bg-panel overflow-hidden flex flex-col shrink-0">
+<div className="p-4 border-b border-border">
+<h3 className="font-semibold text-ink">Library</h3>
+</div>
+<div className="flex-1 overflow-y-auto p-2 space-y-1">
+<button
+onClick={() => setSelectedView("unassigned")}
+className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
+selectedView === "unassigned"
+? "bg-(--color-foreground) text-(--color-panel)"
+: "hover:bg-surface-hover text-ink"
+}`}
+>
+Unassigned
+<span
+className={`text-xs ml-2 ${
+selectedView === "unassigned" ? "opacity-70" : "opacity-70"
+}`}
+>
+({organizedMedia.unassigned.length})
+</span>
+</button>
+{organizedMedia.blogPosts.length > 0 && (
+<div>
+<button
+onClick={() => togglePostExpanded("posts")}
+className="w-full text-left px-3 py-2 flex items-center gap-2 text-sm font-medium text-muted hover:text-ink transition"
+>
+{expandedPosts.has("posts") ? (
+<ChevronDown className="w-4 h-4" />
+) : (
+<ChevronRight className="w-4 h-4" />
+)}
+Blog Posts
+</button>
+{expandedPosts.has("posts") && (
+<div className="space-y-1 pl-2">
+{organizedMedia.blogPosts.map((post) => (
+<button
+key={post.id}
+onClick={() => setSelectedView(`post-${post.id}`)}
+className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
+selectedView === `post-${post.id}`
+? "bg-(--color-foreground) text-(--color-panel)"
+: "hover:bg-surface-hover text-ink"
+}`}
+>
+{post.title}
+<span
+className={`text-xs ml-2 ${
+selectedView === `post-${post.id}`
+? "opacity-70"
+: "text-muted"
+}`}
+>
+({post.images.length})
+</span>
+</button>
+))}
+</div>
+)}
+</div>
+)}
+</div>
+</div>
+{filteredImages.length === 0 ? (
+<div className="text-center py-12">
+<ImageIcon className="w-12 h-12 mx-auto text-muted opacity-50 mb-4" />
+<p className="text-muted">
+{searchQuery ? "No images found" : "No images in this view"}
+</p>
+</div>
+) : viewMode === "grid" ? (
+<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+{filteredImages.map((image) => (
+<div
+key={image._id}
+className="group relative aspect-square rounded-lg overflow-hidden border border-border hover:border-accent transition"
+>
+<Image
+src={image.url}
+alt={image.altText || image.filename}
+fill
+className="object-cover"
+sizes="200px"
+/>
+<div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+<a
+href={image.url}
+target="_blank"
+rel="noopener noreferrer"
+className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
+>
+<Download className="w-4 h-4 text-white" />
+</a>
+<button
+onClick={() => setDeleteConfirm(image._id)}
+className="p-2 bg-red-500/80 rounded-lg hover:bg-red-500 transition"
+>
+<Trash2 className="w-4 h-4 text-white" />
+</button>
+</div>
+<div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 opacity-0 group-hover:opacity-100 transition">
+<p className="text-xs text-white truncate">
+{image.filename}
+</p>
+</div>
+</div>
+))}
+</div>
+) : (
+<div className="space-y-2">
+{filteredImages.map((image) => (
+<div
+key={image._id}
+className="flex items-center gap-4 p-3 border border-border rounded-lg hover:border-accent transition"
+>
+<div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
+<Image
+src={image.url}
+alt={image.altText || image.filename}
+fill
+className="object-cover"
+sizes="64px"
+/>
+</div>
+<div className="flex-1 min-w-0">
+<p className="text-ink font-medium truncate">
+{image.filename}
+</p>
+{image.assignedToTitle && (
+<p className="text-sm text-muted truncate">
+Assigned to: {image.assignedToTitle}
+</p>
+)}
+{image.size && (
+<p className="text-xs text-muted">
+{(image.size / 1024).toFixed(1)} KB
+</p>
+)}
+</div>
+<div className="flex items-center gap-2">
+<a
+href={image.url}
+target="_blank"
+rel="noopener noreferrer"
+className="p-2 text-muted hover:text-ink transition"
+>
+<Download className="w-4 h-4" />
+</a>
+<button
+onClick={() => setDeleteConfirm(image._id)}
+className="p-2 text-red-500 hover:bg-red-500/10 rounded transition"
+>
+<Trash2 className="w-4 h-4" />
+</button>
+</div>
+</div>
+))}
+</div>
+)}
+</div>
+</div>
+
+===== FILE: src/app/admin/AdminDashboard/MessagesTabEnhanced.tsx =====
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+Search,
+Mail,
+MailOpen,
+Trash2,
+Phone,
+Calendar,
+ExternalLink,
+CheckCircle,
+X,
+Filter,
+RefreshCw,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Button } from "@/components/ui/button";
+interface ContactMessage {
+_id: Id<"contactMessages">;
+name: string;
+email: string;
+phone?: string;
+message: string;
+createdAt: number;
+read: boolean;
+source: string;
+}
+const MessagesTabEnhanced = () => {
+const messages = useQuery(api.contactMessages.getAll) ?? [];
+const markAsRead = useMutation(api.contactMessages.markAsRead);
+const deleteMessage = useMutation(api.contactMessages.deleteMessage);
+const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(
+null
+);
+const [searchQuery, setSearchQuery] = useState("");
+const [filterStatus, setFilterStatus] = useState<"all" | "unread" | "read">(
+"all"
+);
+const [error, setError] = useState<Error | null>(null);
+const [success, setSuccess] = useState<string | null>(null);
+const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+useEffect(() => {
+if (messages.length > 0 && !selectedMessage) {
+const unreadMessage = messages.find((m) => !m.read);
+setSelectedMessage((unreadMessage || messages[0]) as ContactMessage);
+}
+}, [messages, selectedMessage]);
+useEffect(() => {
+if (selectedMessage && !selectedMessage.read) {
+handleMarkAsRead(selectedMessage._id);
+}
+}, [selectedMessage?._id]);
+const handleMarkAsRead = async (id: Id<"contactMessages">) => {
+try {
+await markAsRead({ id });
+} catch (err) {
+console.error("Failed to mark as read:", err);
+}
+};
+const handleDelete = async (id: Id<"contactMessages">) => {
+try {
+await deleteMessage({ id });
+setSuccess("Message deleted successfully");
+setDeleteConfirm(null);
+if (selectedMessage?._id === id) {
+setSelectedMessage(null);
+}
+setTimeout(() => setSuccess(null), 3000);
+} catch (err) {
+setError(
+err instanceof Error ? err : new Error("Failed to delete message")
+);
+}
+};
+const handleSelectMessage = (message: ContactMessage) => {
+setSelectedMessage(message);
+};
+const filteredMessages = messages.filter((message) => {
+const matchesSearch =
+message.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+message.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+message.message.toLowerCase().includes(searchQuery.toLowerCase());
+const matchesFilter =
+filterStatus === "all" ||
+(filterStatus === "unread" && !message.read) ||
+(filterStatus === "read" && message.read);
+return matchesSearch && matchesFilter;
+});
+const unreadCount = messages.filter((m) => !m.read).length;
+const formatDate = (timestamp: number) => {
+const date = new Date(timestamp);
+const now = new Date();
+const diff = now.getTime() - date.getTime();
+const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+if (days === 0) {
+return date.toLocaleTimeString("en-US", {
+hour: "numeric",
+minute: "2-digit",
+});
+} else if (days === 1) {
+return "Yesterday";
+} else if (days < 7) {
+return date.toLocaleDateString("en-US", { weekday: "long" });
+} else {
+return date.toLocaleDateString("en-US", {
+month: "short",
+day: "numeric",
+});
+}
+};
+const formatFullDate = (timestamp: number) => {
+return new Date(timestamp).toLocaleDateString("en-US", {
+weekday: "long",
+year: "numeric",
+month: "long",
+day: "numeric",
+hour: "numeric",
+minute: "2-digit",
+});
+};
+if (messages === undefined) {
+return <LoadingSpinner message="Loading messages..." />;
+}
+return (
+<div className="grid grid-cols-3 gap-6 h-full">
+<div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+<div className="flex items-center justify-between mb-4">
+<h3 className="font-semibold text-(--color-ink)">Messages</h3>
+{unreadCount > 0 && (
+<span className="px-2 py-1 bg-accent text-on-accent text-xs font-bold rounded-full">
+{unreadCount} new
+</span>
+)}
+</div>
+<div className="flex gap-1 mb-4 p-1 bg-base rounded-lg">
+{(["all", "unread", "read"] as const).map((status) => (
+<button
+key={status}
+onClick={() => setFilterStatus(status)}
+className={`flex-1 px-3 py-1.5 text-sm rounded-md transition ${
+filterStatus === status
+? "bg-(--color-foreground) text-(--color-panel)"
+: "text-muted hover:text-ink"
+}`}
+>
+{status.charAt(0).toUpperCase() + status.slice(1)}
+</button>
+))}
+</div>
+<div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+{selectedMessage ? (
+<>
+<div className="flex-1 overflow-y-auto p-6 space-y-6">
+<div className="p-4 bg-base border border-border rounded-xl">
+<p className="text-ink whitespace-pre-wrap leading-relaxed">
+{selectedMessage.message}
+</p>
+</div>
+{deleteConfirm && (
+<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+<div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+<h3 className="text-lg font-bold text-ink mb-4">Delete Message?</h3>
+<p className="text-muted mb-6">This action cannot be undone.</p>
+<div className="flex gap-2">
+<Button
+onClick={() =>
+handleDelete(deleteConfirm as Id<"contactMessages">)
+}
+variant="disabled"
+className="flex-1"
+>
+Delete
+</Button>
+<Button
+onClick={() => setDeleteConfirm(null)}
+variant="outline"
+className="flex-1"
+>
+Cancel
+</Button>
+</div>
+</div>
+</div>
+)}
+</div>
+);
+};
+export default MessagesTabEnhanced;
+
+===== FILE: src/app/admin/AdminDashboard/PagesMenuTabEnhanced.tsx =====
+"use client";
+import React, { useState } from "react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { GripVertical, Trash2, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+interface SEOPage {
+_id: Id<"seoMetadata">;
+path: string;
+title: string;
+description: string;
+}
+interface HeaderNavItem {
+_id: Id<"headerNavItems">;
+label: string;
+href?: string;
+isExternal?: boolean;
+order: number;
+parentId?: Id<"headerNavItems">;
+children?: HeaderNavItem[];
+}
+interface FooterNavLink {
+_id: Id<"footerNavLinks">;
+sectionId: Id<"footerNavSections">;
+label: string;
+href: string;
+isExternal?: boolean;
+order: number;
+}
+interface FooterNavSection {
+_id: Id<"footerNavSections">;
+title: string;
+order: number;
+links: FooterNavLink[];
+}
+const getPageName = (path: string): string => {
+if (path === "/") return "Home";
+const name = path
+.replace(/^\
+.replace(/-/g, " ")
+.replace(/\b\w/g, (char) => char.toUpperCase());
+return name;
+};
+const DraggablePageItem = ({ page }: { page: SEOPage }) => {
+const handleDragStart = (e: React.DragEvent) => {
+e.dataTransfer.setData(
+"application/json",
+JSON.stringify({
+type: "page",
+title: page.title,
+path: page.path,
+})
+);
+e.dataTransfer.effectAllowed = "copy";
+};
+return (
+<div
+draggable
+onDragStart={handleDragStart}
+className="p-2 bg-(--color-muted-accent) rounded-lg text-sm text-(--color-ink) cursor-move group hover:opacity-80 transition-opacity"
+>
+<div className="flex items-center justify-between gap-2">
+<div className="flex items-center gap-2 flex-1">
+<GripVertical
+className="w-4 h-4 text-muted shrink-0"
+aria-hidden="true"
+/>
+<span>{getPageName(page.path)}</span>
+</div>
+</div>
+</div>
+);
+};
+const HeaderNavItemComponent = ({
+item,
+onDelete,
+onDeleteChild,
+onDrop,
+}: {
+item: HeaderNavItem;
+onDelete: () => void;
+onDeleteChild: (childId: Id<"headerNavItems">) => void;
+onDrop: (e: React.DragEvent) => void;
+}) => {
+const [isDragOver, setIsDragOver] = useState(false);
+const handleDragOver = (e: React.DragEvent) => {
+e.preventDefault();
+e.stopPropagation();
+setIsDragOver(true);
+};
+const handleDragLeave = () => {
+setIsDragOver(false);
+};
+const handleDrop = (e: React.DragEvent) => {
+e.preventDefault();
+e.stopPropagation();
+setIsDragOver(false);
+onDrop(e);
+};
+return (
+<div
+className={`p-3 bg-(--color-base) border rounded-lg group hover:border-accent/30 transition-colors ${
+isDragOver ? "border-accent bg-accent/5" : "border-(--color-border)"
+}`}
+onDragOver={handleDragOver}
+onDragLeave={handleDragLeave}
+onDrop={handleDrop}
+>
+<div className="flex items-center justify-between gap-2 mb-2">
+<div className="flex items-center gap-2 flex-1">
+<GripVertical
+className="w-4 h-4 text-muted shrink-0 cursor-move"
+aria-hidden="true"
+/>
+<span className="font-medium text-(--color-ink)">{item.label}</span>
+</div>
+<button
+onClick={onDelete}
+className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+title={`Delete "${item.label}"`}
+>
+<Trash2 className="w-4 h-4" aria-hidden="true" />
+</button>
+</div>
+{item.children && item.children.length > 0 && (
+<div className="ml-2 space-y-2 pt-2 border-t border-(--color-border)">
+{item.children.map((child) => (
+<div
+key={child._id}
+className="p-2 bg-(--color-muted-accent) rounded-lg text-sm text-(--color-ink) group"
+>
+<div className="flex items-center justify-between gap-2">
+<div className="flex items-center gap-2 flex-1">
+<GripVertical
+className="w-4 h-4 text-muted shrink-0"
+aria-hidden="true"
+/>
+<span>{child.label}</span>
+</div>
+<button
+onClick={() => onDeleteChild(child._id)}
+className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+title={`Delete "${child.label}"`}
+>
+<Trash2 className="w-3 h-3" aria-hidden="true" />
+</button>
+</div>
+</div>
+))}
+</div>
+)}
+</div>
+);
+};
+const FooterSectionComponent = ({
+section,
+onDelete,
+onDeleteLink,
+onDrop,
+}: {
+section: FooterNavSection;
+onDelete: () => void;
+onDeleteLink: (linkId: Id<"footerNavLinks">) => void;
+onDrop: (e: React.DragEvent) => void;
+}) => {
+const [isDragOver, setIsDragOver] = useState(false);
+const handleDragOver = (e: React.DragEvent) => {
+e.preventDefault();
+e.stopPropagation();
+setIsDragOver(true);
+};
+const handleDragLeave = () => {
+setIsDragOver(false);
+};
+const handleDrop = (e: React.DragEvent) => {
+e.preventDefault();
+e.stopPropagation();
+setIsDragOver(false);
+onDrop(e);
+};
+return (
+<div
+className={`p-3 bg-(--color-base) border rounded-lg group hover:border-accent/30 transition-colors ${
+isDragOver ? "border-accent bg-accent/5" : "border-(--color-border)"
+}`}
+onDragOver={handleDragOver}
+onDragLeave={handleDragLeave}
+onDrop={handleDrop}
+>
+<div className="flex items-center justify-between gap-2 mb-2">
+<div className="flex items-center gap-2 flex-1">
+<GripVertical
+className="w-4 h-4 text-muted shrink-0 cursor-move"
+aria-hidden="true"
+/>
+<span className="font-medium text-(--color-ink)">
+{section.title}
+</span>
+</div>
+<button
+onClick={onDelete}
+className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+title={`Delete "${section.title}"`}
+>
+<Trash2 className="w-4 h-4" aria-hidden="true" />
+</button>
+</div>
+{section.links && section.links.length > 0 && (
+<div className="ml-2 space-y-2 pt-2 border-t border-(--color-border)">
+{section.links.map((link) => (
+<div
+key={link._id}
+className="p-2 bg-(--color-muted-accent) rounded-lg text-sm text-(--color-ink) group"
+>
+<div className="flex items-center justify-between gap-2">
+<div className="flex items-center gap-2 flex-1">
+<GripVertical
+className="w-4 h-4 text-muted shrink-0"
+aria-hidden="true"
+/>
+<span>{link.label}</span>
+</div>
+<button
+onClick={() => onDeleteLink(link._id)}
+className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+title={`Delete "${link.label}"`}
+>
+<Trash2 className="w-3 h-3" aria-hidden="true" />
+</button>
+</div>
+</div>
+))}
+</div>
+)}
+</div>
+);
+};
+const PagesMenuTabEnhanced = () => {
+const seoPages = useQuery(api.seo.getAllSEO) as SEOPage[] | undefined;
+const headerItems = useQuery(api.navigation.getHeaderNavItems) as
+| HeaderNavItem[]
+| undefined;
+const footerSections = useQuery(api.navigation.getFooterNavSections) as
+| FooterNavSection[]
+| undefined;
+const addHeaderNavItem = useMutation(api.navigation.addHeaderNavItem);
+const deleteHeaderNavItem = useMutation(api.navigation.deleteHeaderNavItem);
+const addFooterNavSection = useMutation(api.navigation.addFooterNavSection);
+const deleteFooterNavSection = useMutation(
+api.navigation.deleteFooterNavSection
+);
+const addFooterNavLink = useMutation(api.navigation.addFooterNavLink);
+const deleteFooterNavLink = useMutation(api.navigation.deleteFooterNavLink);
+const getNextHeaderOrder = () => {
+if (!headerItems || headerItems.length === 0) return 0;
+return Math.max(...headerItems.map((item) => item.order)) + 1;
+};
+const getNextFooterSectionOrder = () => {
+if (!footerSections || footerSections.length === 0) return 0;
+return Math.max(...footerSections.map((section) => section.order)) + 1;
+};
+const getNextFooterLinkOrder = (sectionId: Id<"footerNavSections">) => {
+const section = footerSections?.find((s) => s._id === sectionId);
+if (!section || section.links.length === 0) return 0;
+return Math.max(...section.links.map((link) => link.order)) + 1;
+};
+const handleAddHeaderItem = async () => {
+try {
+await addHeaderNavItem({
+label: "New Item",
+href: "/",
+order: getNextHeaderOrder(),
+});
+} catch (err) {
+console.error("Failed to add header item:", err);
+}
+};
+const handleAddFooterSection = async () => {
+try {
+await addFooterNavSection({
+title: "New Section",
+order: getNextFooterSectionOrder(),
+});
+} catch (err) {
+console.error("Failed to add footer section:", err);
+}
+};
+const handleDeleteHeaderItem = async (id: Id<"headerNavItems">) => {
+try {
+await deleteHeaderNavItem({ id });
+} catch (err) {
+console.error("Failed to delete header item:", err);
+}
+};
+const handleDeleteFooterSection = async (id: Id<"footerNavSections">) => {
+try {
+await deleteFooterNavSection({ id });
+} catch (err) {
+console.error("Failed to delete footer section:", err);
+}
+};
+const handleDeleteFooterLink = async (id: Id<"footerNavLinks">) => {
+try {
+await deleteFooterNavLink({ id });
+} catch (err) {
+console.error("Failed to delete footer link:", err);
+}
+};
+const handleDropOnHeaderItem = async (
+parentId: Id<"headerNavItems">,
+e: React.DragEvent
+) => {
+try {
+const data = JSON.parse(e.dataTransfer.getData("application/json"));
+if (data.type === "page") {
+const parent = headerItems?.find((item) => item._id === parentId);
+const childOrder = parent?.children?.length ?? 0;
+await addHeaderNavItem({
+label: data.title,
+href: data.path,
+parentId: parentId,
+order: childOrder,
+});
+}
+} catch (err) {
+console.error("Drop error:", err);
+}
+};
+const handleDropOnFooterSection = async (
+sectionId: Id<"footerNavSections">,
+e: React.DragEvent
+) => {
+try {
+const data = JSON.parse(e.dataTransfer.getData("application/json"));
+if (data.type === "page") {
+await addFooterNavLink({
+sectionId: sectionId,
+label: data.title,
+href: data.path,
+order: getNextFooterLinkOrder(sectionId),
+});
+}
+} catch (err) {
+console.error("Drop error:", err);
+}
+};
+const handleDropOnHeaderColumn = async (e: React.DragEvent) => {
+try {
+const data = JSON.parse(e.dataTransfer.getData("application/json"));
+if (data.type === "page") {
+await addHeaderNavItem({
+label: data.title,
+href: data.path,
+order: getNextHeaderOrder(),
+});
+}
+} catch (err) {
+console.error("Drop error:", err);
+}
+};
+if (
+seoPages === undefined ||
+headerItems === undefined ||
+footerSections === undefined
+) {
+return (
+<div className="flex items-center justify-center h-full">
+<div className="animate-pulse text-muted">Loading...</div>
+</div>
+);
+}
+const sortedPages = [...seoPages].sort((a, b) => {
+if (a.path === "/") return -1;
+if (b.path === "/") return 1;
+return a.path.localeCompare(b.path);
+});
+return (
+<div className="grid grid-cols-3 gap-6 h-full">
+<div
+className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col transition-colors"
+onDragOver={(e) => {
+e.preventDefault();
+e.currentTarget.classList.add("border-accent");
+}}
+onDragLeave={(e) => {
+e.currentTarget.classList.remove("border-accent");
+}}
+onDrop={(e) => {
+e.currentTarget.classList.remove("border-accent");
+const target = e.target as HTMLElement;
+if (!target.closest(".group")) {
+handleDropOnHeaderColumn(e);
+}
+}}
+>
+<h3 className="font-semibold text-(--color-ink) mb-4">
+Header Navigation
+</h3>
+<div className="flex-1 overflow-y-auto">
+<div className="space-y-3">
+<div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
+<h3 className="font-semibold text-(--color-ink) mb-4">
+Footer Sections
+</h3>
+<div className="flex-1 overflow-y-auto">
+<div className="space-y-3">
+
+===== FILE: src/app/admin/AdminDashboard/SeoTabEnhanced.tsx =====
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+Search,
+Save,
+Plus,
+CheckCircle,
+AlertCircle,
+Globe,
+FileText,
+Image as ImageIcon,
+Trash2,
+X,
+} from "lucide-react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { MediaDrawer } from "../components/MediaDrawer";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ErrorDisplay } from "../components/ErrorDisplay";
+import { SuccessDisplay } from "../components/SuccessDisplay";
+interface SEOEntry {
+_id: Id<"seoMetadata">;
+_creationTime: number;
+path: string;
+title: string;
+description: string;
+canonicalUrl?: string;
+ogImage?: string;
+updatedAt: number;
+}
+export const SeoTabEnhanced = () => {
+const seoEntries = useQuery(api.seo.getAllSEO) ?? [];
+const updateSEO = useMutation(api.seo.updateSEO);
+const [selectedPage, setSelectedPage] = useState<SEOEntry | null>(null);
+const [searchQuery, setSearchQuery] = useState("");
+const [isEditing, setIsEditing] = useState(false);
+const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
+null
+);
+const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
+const [isSaving, setIsSaving] = useState(false);
+const [formData, setFormData] = useState({
+path: "",
+title: "",
+description: "",
+canonicalUrl: "",
+ogImage: "",
+});
+useEffect(() => {
+if (seoEntries.length > 0 && !selectedPage) {
+const homePage = seoEntries.find((entry) => entry.path === "/");
+const firstEntry = (homePage || seoEntries[0]) as SEOEntry;
+setSelectedPage(firstEntry);
+}
+}, [seoEntries, selectedPage]);
+useEffect(() => {
+if (selectedPage) {
+setFormData({
+path: selectedPage.path,
+title: selectedPage.title,
+description: selectedPage.description,
+canonicalUrl: selectedPage.canonicalUrl || "",
+ogImage:
+(selectedPage as SEOEntry & { ogImage?: string }).ogImage || "",
+});
+setIsEditing(false);
+}
+}, [selectedPage]);
+const filteredPages = seoEntries.filter(
+(entry) =>
+entry.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
+entry.title.toLowerCase().includes(searchQuery.toLowerCase())
+);
+const sortedFilteredPages = [...filteredPages].sort((a, b) => {
+if (a.path === "/") return -1;
+if (b.path === "/") return 1;
+return a.path.localeCompare(b.path);
+});
+const handlePageSelect = (page: SEOEntry) => {
+setSelectedPage(page);
+setSaveStatus(null);
+};
+const handleSave = async () => {
+if (!selectedPage) return;
+setIsSaving(true);
+try {
+await updateSEO({
+path: formData.path,
+title: formData.title,
+description: formData.description,
+canonicalUrl: formData.canonicalUrl || undefined,
+ogImage: formData.ogImage || undefined,
+});
+setIsEditing(false);
+setSaveStatus("success");
+setTimeout(() => setSaveStatus(null), 3000);
+} catch (error) {
+console.error("Failed to save SEO:", error);
+setSaveStatus("error");
+} finally {
+setIsSaving(false);
+}
+};
+const handleMediaSelect = (imageUrl: string) => {
+setFormData({ ...formData, ogImage: imageUrl });
+setIsEditing(true);
+};
+const handleRemoveOgImage = () => {
+setFormData({ ...formData, ogImage: "" });
+setIsEditing(true);
+};
+const calculateSEOScore = () => {
+let score = 0;
+if (formData.title.length >= 30 && formData.title.length <= 60) {
+score += 25;
+} else if (formData.title.length >= 50 && formData.title.length <= 60) {
+score += 25;
+} else if (formData.title.length > 0) {
+score += 10;
+}
+if (
+formData.description.length >= 120 &&
+formData.description.length <= 160
+) {
+score += 25;
+} else if (
+formData.description.length >= 150 &&
+formData.description.length <= 160
+) {
+score += 25;
+} else if (formData.description.length > 0) {
+score += 10;
+}
+if (formData.canonicalUrl) {
+score += 25;
+}
+if (formData.ogImage) {
+score += 25;
+}
+return Math.min(score, 100);
+};
+const seoScore = calculateSEOScore();
+const getScoreColor = (score: number) => {
+if (score >= 80) return "text-green-500";
+if (score >= 50) return "text-yellow-500";
+return "text-red-500";
+};
+const getScoreBgColor = (score: number) => {
+if (score >= 80) return "bg-green-500";
+if (score >= 50) return "bg-yellow-500";
+return "bg-red-500";
+};
+const getPageName = (path: string): string => {
+if (path === "/") return "Home";
+const name = path
+.replace(/^\
+.replace(/-/g, " ")
+.replace(/\b\w/g, (char) => char.toUpperCase());
+return name;
+};
+return (
+<div className="grid grid-cols-3 gap-6 h-full">
+<div className="relative mb-4">
+<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+<input
+type="text"
+placeholder="Search pages..."
+value={searchQuery}
+onChange={(e) => setSearchQuery(e.target.value)}
+className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+/>
+</div>
+<div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+{selectedPage ? (
+<>
+<div className="flex items-center gap-2">
+<div
+className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBgColor(seoScore)}`}
+>
+<span className="text-sm font-bold text-white">
+{seoScore}
+</span>
+</div>
+<span
+className={`text-sm font-medium ${getScoreColor(seoScore)}`}
+>
+SEO Score
+</span>
+</div>
+{saveStatus === "success" && (
+<div className="mx-6 mt-4">
+<SuccessDisplay
+message="SEO settings saved successfully!"
+onDismiss={() => setSaveStatus(null)}
+compact
+/>
+</div>
+)}
+{saveStatus === "error" && (
+<div className="mx-6 mt-4">
+<ErrorDisplay
+error={new Error("Failed to save SEO settings")}
+onDismiss={() => setSaveStatus(null)}
+compact
+/>
+</div>
+)}
+<div>
+<label className="block mb-2 text-ink font-medium">
+Page Title
+<span className="ml-2 text-sm text-muted">
+({formData.title.length}/60 chars)
+</span>
+</label>
+<input
+type="text"
+value={formData.title}
+onChange={(e) => {
+setFormData({ ...formData, title: e.target.value });
+setIsEditing(true);
+}}
+className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent"
+placeholder="Enter page title..."
+/>
+{formData.title.length > 60 && (
+<p className="mt-1 text-sm text-yellow-500">
+Title may be truncated in search results
+</p>
+)}
+</div>
+<div>
+<label className="block mb-2 text-ink font-medium">
+Canonical URL
+</label>
+<input
+type="url"
+value={formData.canonicalUrl}
+onChange={(e) => {
+setFormData({ ...formData, canonicalUrl: e.target.value });
+setIsEditing(true);
+}}
+className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent"
+placeholder="https:
+/>
+</div>
+<div className="p-4 bg-base border border-border rounded-xl">
+<h3 className="mb-3 text-ink font-semibold flex items-center gap-2">
+<Search className="w-4 h-4" />
+Search Preview
+</h3>
+<div className="p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+<p className="text-blue-600 dark:text-blue-400 text-lg hover:underline cursor-pointer font-medium">
+{formData.title || "Page Title"}
+</p>
+<p className="text-green-700 dark:text-green-400 text-sm">
+{formData.canonicalUrl ||
+`https:
+</p>
+<p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
+{formData.description ||
+"Meta description will appear here..."}
+</p>
+</div>
+</div>
+</div>
+<MediaDrawer
+isOpen={isMediaDrawerOpen}
+onClose={() => setIsMediaDrawerOpen(false)}
+onSelect={handleMediaSelect}
+title="Select OpenGraph Image"
+description="Choose an image for social media sharing (1200×630px recommended)"
+/>
+</>
+) : (
+<div className="flex-1 flex items-center justify-center text-muted">
+Select a page to edit SEO settings
+</div>
+)}
+</div>
+</div>
+);
+};
+export default SeoTabEnhanced;
+

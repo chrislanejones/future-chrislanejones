@@ -283,7 +283,7 @@ export const SeoTabEnhanced = () => {
                 <Button
                   onClick={handleSave}
                   disabled={!isEditing || isSaving}
-                  variant="accent"
+                  variant="outline"
                   className="gap-2"
                 >
                   <Save className="w-4 h-4" />

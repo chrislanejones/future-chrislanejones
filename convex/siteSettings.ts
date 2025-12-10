@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation } from "../../../../convex/_generated/server";
+import { query, mutation } from "./_generated/server";
 
 // Get the profile (there should only be one)
 export const getProfile = query({
