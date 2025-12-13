@@ -20,16 +20,17 @@ export default function HeroContent() {
   return (
     <div className="relative h-full">
       {/* Background Decoration */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <svg
-          className="absolute -right-10 -top-10 opacity-70"
-          viewBox="0 0 800 500"
+          className="absolute inset-x-0 bottom-0 w-full opacity-70"
+          viewBox="0 0 800 400"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
         >
           <path
             className={`transition-none ${isAnimated ? "animate-draw" : ""}`}
-            d="M-9.05,235.51c52.17-15.14,138.62,217.07,239.05,200.49,52.13-8.61,82.91-80.11,118-67,25.08,9.37,17.97,49.11,46,63,33.34,16.52,86.6-18.27,117-47,58.81-55.56,42.05-97.81,100-198,32.61-56.37,67.11-116.03,126-127,60.12-11.2,113.75,34.29,118,38,108.76,94.91,92.44,393.71-60,546-214.44,214.23-674.9,115.23-802-111-68.57-122.05-42.68-285.69-2.05-297.49Z"
+            d="M-9.05,180.51c52.17-15.14,138.62,217.07,239.05,200.49,52.13-8.61,82.91-80.11,118-67,25.08,9.37,17.97,49.11,46,63,33.34,16.52,86.6-18.27,117-47,58.81-55.56,42.05-97.81,100-198,32.61-56.37,67.11-116.03,126-127,60.12-11.2,113.75,34.29,118,38,108.76,94.91,92.44,393.71-60,546-214.44,214.23-674.9,115.23-802-111-68.57-122.05-42.68-285.69-2.05-297.49Z"
             fill="transparent"
             stroke="#8de36b"
             strokeWidth="2"
@@ -39,7 +40,7 @@ export default function HeroContent() {
             pathLength="1150"
             style={{
               transition: isAnimated
-                ? "stroke-dashoffset 5000ms ease-in-out"
+                ? "stroke-dashoffset 2000ms ease-in-out"
                 : "none",
             }}
           />
@@ -59,7 +60,7 @@ export default function HeroContent() {
         </div>
 
         <div className="mt-auto flex items-center gap-3">
-          <Button asChild variant="neutral">
+          <Button asChild variant="accent">
             <a href="/contact">Contact Me</a>
           </Button>
           <Button

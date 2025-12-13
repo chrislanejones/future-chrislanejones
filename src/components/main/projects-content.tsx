@@ -11,8 +11,9 @@ type Project = {
   description: string;
   features: string[];
   image: string;
-  githubUrl: string;
-  vercelUrl: string;
+  githubUrl?: string;
+  codebergUrl?: string;
+  vercelUrl?: string;
 };
 
 const projects: Project[] = [
@@ -73,8 +74,12 @@ export default function ProjectsContent() {
   const prev = () => setProject(-1);
   const next = () => setProject(1);
 
-  const hasGithub = currentProject.githubUrl.trim() !== "";
-  const hasVercel = currentProject.vercelUrl.trim() !== "";
+  const hasGithub =
+    currentProject.githubUrl?.trim() !== "" && currentProject.githubUrl;
+  const hasCodeberg =
+    currentProject.codebergUrl?.trim() !== "" && currentProject.codebergUrl;
+  const hasVercel =
+    currentProject.vercelUrl?.trim() !== "" && currentProject.vercelUrl;
 
   return (
     <>
@@ -107,40 +112,67 @@ export default function ProjectsContent() {
         </AnimatePresence>
 
         {/* ACTION BAR – sits at bottom on desktop */}
-        <div className="flex flex-wrap items-center gap-3 mt-6 md:mt-auto">
-          <Button asChild variant="neutral" className="min-w-[140px]">
+        <div className="flex flex-col md:flex-row md:flex-wrap md:items-center gap-3 mt-6 md:mt-auto">
+          <Button
+            asChild
+            variant="accent"
+            className="w-full md:w-auto md:min-w-[140px]"
+          >
             <a href="/projects">View All Projects</a>
           </Button>
 
-          <Button onClick={prev} variant="neutral" size="icon" round>
-            <ArrowLeft />
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button onClick={prev} variant="neutral" size="icon" round>
+              <ArrowLeft />
+            </Button>
 
-          <Button
-            onClick={() => hasGithub && window.open(currentProject.githubUrl)}
-            variant="neutral"
-            size="icon"
-            round
-            disabled={!hasGithub}
-            aria-label="GitHub"
-          >
-            <Github className="w-5 h-5" aria-hidden="true" />
-          </Button>
+            <Button
+              onClick={() => hasGithub && window.open(currentProject.githubUrl)}
+              variant="neutral"
+              size="icon"
+              round
+              disabled={!hasGithub}
+              aria-label="GitHub"
+            >
+              <Github className="w-5 h-5" aria-hidden="true" />
+            </Button>
 
-          <Button
-            onClick={() => hasVercel && window.open(currentProject.vercelUrl)}
-            variant="neutral"
-            size="icon"
-            round
-            disabled={!hasVercel}
-            aria-label="Live demo"
-          >
-            <ExternalLink className="w-5 h-5" aria-hidden="true" />
-          </Button>
+            {hasCodeberg && (
+              <Button
+                onClick={() => window.open(currentProject.codebergUrl)}
+                variant="neutral"
+                size="icon"
+                round
+                aria-label="Codeberg"
+              >
+                <svg
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                >
+                  <path d="M11.955.49A12 12 0 0 0 0 12.49a12 12 0 0 0 1.832 6.373L11.838 5.928a.187.187 0 0 1 .324 0l10.006 12.935A12 12 0 0 0 24 12.49a12 12 0 0 0-12-12 12 12 0 0 0-.045 0zm.375 6.467 4.416 16.553a12 12 0 0 0 5.137-4.213z" />
+                </svg>
+              </Button>
+            )}
 
-          <Button onClick={next} variant="neutral" size="icon" round>
-            <ArrowRight />
-          </Button>
+            <Button
+              onClick={() => hasVercel && window.open(currentProject.vercelUrl)}
+              variant="neutral"
+              size="icon"
+              round
+              disabled={!hasVercel}
+              aria-label="Live demo"
+            >
+              <ExternalLink className="w-5 h-5" aria-hidden="true" />
+            </Button>
+
+            <Button onClick={next} variant="neutral" size="icon" round>
+              <ArrowRight />
+            </Button>
+          </div>
         </div>
       </div>
 

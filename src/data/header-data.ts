@@ -45,6 +45,18 @@ export const pageHeaders = {
     description:
       "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience.",
   },
+  "/projects/apps": {
+    title: "Projects",
+    breadcrumbPage: "Projects",
+    description:
+      "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience.",
+  },
+  "/projects/websites": {
+    title: "Projects",
+    breadcrumbPage: "Projects",
+    description:
+      "Professional websites and web applications built for clients across various industries, featuring custom design and functionality.",
+  },
   "/react-maintenance": {
     title: "React Site Maintenance",
     breadcrumbPage: "React Services",

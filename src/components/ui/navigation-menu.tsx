@@ -46,7 +46,7 @@ const NavigationMenuTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       buttonVariants({ variant: "neutral", size: "sm" }),
-      "group inline-flex items-center justify-center gap-1 font-medium transition-colors focus-ring hover:shadow-glow",
+      "group font-medium",
       className
     )}
     {...props}

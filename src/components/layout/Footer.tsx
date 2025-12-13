@@ -23,7 +23,7 @@ export default function Footer() {
 
   return (
     <>
-      <motion.footer className="relative site-container py-10 overflow-hidden">
+      <motion.footer className="relative site-container py-10">
         <WireframeTerrain variant="left" />
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-5 gap-8 md:items-start">
           {/* Branding */}

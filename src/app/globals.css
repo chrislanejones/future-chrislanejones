@@ -8,10 +8,11 @@
   --color-foreground: #374151; /* gray-700 for icons/headings/buttons */
   --color-muted: #6b7280; /* gray-500, *only* for small footnotes */
   --color-muted-accent: rgba(107, 114, 128, 0.08);
+  --color-inner-card: #e8e9e9;
 
   --color-surface-hover: #f3f4f6; /* gray-100, super pale for hover */
 
-  --color-accent: #22c55e; /* green-500, brighter & fresher */
+  --color-accent: #6ea34d; /* green-500, brighter & fresher */
   --color-accent-alt: #3b82f6; /* blue-500 */
   --color-on-accent: #ffffff;
 
@@ -49,10 +50,11 @@
   --color-foreground: #d1d5db; /* gray-300 for icons/headings */
   --color-muted: #9ca3af; /* gray-400 muted */
   --color-muted-accent: rgba(255, 255, 255, 0.05);
+  --color-inner-card: #1f242b;
 
   --color-surface-hover: #1a1e24;
 
-  --color-accent: #4ade80; /* Tailwind green-400, softer neon */
+  --color-accent: #6ea34d; /* Tailwind green-400, softer neon */
   --color-accent-alt: #60a5fa; /* Tailwind blue-400 */
   --color-on-accent: #0b0d10; /* dark text on accent */
 
@@ -125,8 +127,8 @@ p {
 
 .shadow-glow {
   box-shadow:
-    0 0 0 2px rgba(141, 227, 107, 0.25),
-    0 12px 40px rgba(141, 227, 107, 0.15);
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent),
+    0 12px 40px color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 /* Subtle, accent-tinted passive shadow (no green background) */
@@ -143,8 +145,8 @@ p {
 /* Your hover glow, driven by --color-accent (green glow only on hover) */
 .hover\:shadow-glow:hover {
   box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
-    0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
+    0 0 0 2px color-mix(in srgb, var(--color-accent) 100%, transparent),
+    0 12px 40px color-mix(in srgb, var(--color-accent) 40%, transparent);
 }
 
 /* Focus-visible ring uses the same recipe as hover glow */
@@ -226,20 +228,10 @@ p {
 /* Speech bubble component */
 .speech-bubble-container {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 1rem;
   align-items: center;
-  padding: 1rem 1rem 1rem 1rem;
   position: relative;
-  background: linear-gradient(
-    135deg,
-    rgba(47, 125, 50, 0.8) 0%,
-    rgba(47, 125, 50, 0.6) 50%,
-    rgba(47, 125, 50, 0.3) 100%
-  );
-  border: 1px solid #2f7d32;
+  background: var(--color-inner-card);
   border-radius: 1rem;
-  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
 }
 
 .speech-bubble--compact {
@@ -248,11 +240,8 @@ p {
   justify-content: center;
   /* prevent row stretching; bubble sizes to content */
   width: 100%;
-  color: #fff; /* white text in light */
+  color: var(--color-ink);
   min-height: 280px;
-}
-html.dark .speech-bubble--compact {
-  color: #fff; /* white text in dark */
 }
 .speech-bubble--compact * {
   color: inherit; /* force inner text/links to white */
@@ -275,21 +264,7 @@ html.dark .speech-bubble--compact {
   height: 0;
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
-  border-top: 12px solid rgba(47, 125, 50, 0.8);
-}
-
-.speech-bubble-container::before {
-  content: "";
-  position: absolute;
-  bottom: -13px;
-  left: 7%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 13px solid transparent;
-  border-right: 13px solid transparent;
-  border-top: 13px solid #2f7d32;
-  z-index: -1;
+  border-top: 12px solid var(--color-inner-card);
 }
 
 .image-overlay-text {
@@ -323,10 +298,6 @@ html.dark .speech-bubble--compact {
   }
 }
 
-* {
-  border-color: var(--color-border);
-}
-
 body {
   background-color: var(--color-base);
   color: var(--color-ink);
@@ -340,23 +311,6 @@ body {
 html.dark .client-logo,
 .dark .client-logo {
   filter: brightness(0) invert(1);
-}
-
-/* Dark mode card shadow enhancement */
-html.dark .card {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--color-accent) 8%, transparent),
-    /* subtle accent border */ 0 6px 24px rgba(0, 0, 0, 0.4),
-    /* stronger drop shadow */ 0 2px 8px
-      color-mix(in srgb, var(--color-accent) 5%, transparent); /* faint glow */
-}
-
-/* Optional: intensify on hover */
-html.dark .card:hover {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--color-accent) 15%, transparent),
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 3px 12px color-mix(in srgb, var(--color-accent) 8%, transparent);
 }
 
 /* Client logo filters - dark in light mode, white in dark mode */
