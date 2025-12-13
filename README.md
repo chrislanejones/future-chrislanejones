@@ -1,8 +1,10 @@
 # Chris Lane Jones Portfolio
 
-Modern portfolio website built with Next.js 14, React, TypeScript, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard for content management.
+Modern portfolio website built with Next.js 14, React, TypeScript, Effect, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard with Convex database for content management.
 
-![Image of Light and Dark Mode](public/Github-Cover-V2.jpg)
+[Vercel Live Link - https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)
+
+![Image of Light and Dark Mode](public/Repo-Cover-V3.webp)
 
 ## 🚀 Tech Stack
 

@@ -7,6 +7,7 @@ import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getPageHeader } from "@/data/header-data";
 
 /* ---------------------------------- Types --------------------------------- */
 
@@ -16,6 +17,7 @@ type Project = {
   features: string[];
   image: string;
   githubUrl?: string;
+  codebergUrl?: string;
   vercelUrl?: string;
   customUrl?: string;
 };
@@ -134,12 +136,13 @@ const clientProjects: Project[] = [
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const hasGithubUrl = isValidUrl(project.githubUrl);
+  const hasCodebergUrl = isValidUrl(project.codebergUrl);
   const hasVercelUrl = isValidUrl(project.vercelUrl);
   const hasCustomUrl = isValidUrl(project.customUrl);
 
-  // Determine the primary link (prefer GitHub, then custom, then Vercel)
+  // Determine the primary link (prefer GitHub, then Codeberg, then custom, then Vercel)
   const primaryLink =
-    project.githubUrl || project.customUrl || project.vercelUrl;
+    project.githubUrl || project.codebergUrl || project.customUrl || project.vercelUrl;
   const hasPrimaryLink = isValidUrl(primaryLink);
 
   return (
@@ -235,7 +238,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 asChild
                 size="icon"
                 round={true}
-                variant="outline"
+                variant="neutral"
                 title="View Code on GitHub"
               >
                 <a
@@ -261,12 +264,39 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               </Button>
             )}
 
+            {hasCodebergUrl && (
+              <Button
+                asChild
+                size="icon"
+                round={true}
+                variant="neutral"
+                title="View Code on Codeberg"
+              >
+                <a
+                  href={project.codebergUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                  >
+                    <path d="M11.955.49A12 12 0 0 0 0 12.49a12 12 0 0 0 1.832 6.373L11.838 5.928a.187.187 0 0 1 .324 0l10.006 12.935A12 12 0 0 0 24 12.49a12 12 0 0 0-12-12 12 12 0 0 0-.045 0zm.375 6.467 4.416 16.553a12 12 0 0 0 5.137-4.213z" />
+                  </svg>
+                </a>
+              </Button>
+            )}
+
             {hasVercelUrl && (
               <Button
                 asChild
                 size="icon"
                 round={true}
-                variant="outline"
+                variant="neutral"
                 title="View Live Demo"
               >
                 <a
@@ -293,7 +323,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 asChild
                 size="icon"
                 round={true}
-                variant="outline"
+                variant="neutral"
                 title="View Project Link"
               >
                 <a
@@ -338,17 +368,16 @@ function ProjectGridSection({ projects }: { projects: Project[] }) {
 
 export default function ProjectGrid() {
   const [activeTab, setActiveTab] = useState<"apps" | "clients">("apps");
+  const headerData = getPageHeader(
+    activeTab === "apps" ? "/projects/apps" : "/projects/websites"
+  );
 
   return (
     <main className="site-container py-12">
       <Banner
-        title="Projects"
-        breadcrumbPage="Projects"
-        description={
-          activeTab === "apps"
-            ? "A collection of full-stack applications, tools, and experiments built with modern technologies and a focus on performance and user experience."
-            : "Professional websites and web applications built for clients across various industries, featuring custom design and functionality."
-        }
+        title={headerData.title}
+        breadcrumbPage={headerData.breadcrumbPage}
+        description={headerData.description}
       />
 
       {/* Tabs - Left aligned with padding */}

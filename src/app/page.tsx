@@ -50,11 +50,11 @@ export default function Home() {
             <ImageGalleryContent />
           </Card>
 
-          <Card size="full" height="medium" delay={0.7}>
+          <Card size="full" height="large" delay={0.7}>
             <ClientSliderContent />
           </Card>
 
-          <Card size="full" height="medium" delay={0.8}>
+          <Card size="full" height="large" delay={0.8}>
             <TechStackContent />
           </Card>
         </section>

@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 // ✅ Exported now so NavigationMenu can import it
 export const buttonVariants = cva(
   [
-    "inline-flex items-center justify-center gap-2 p-4 rounded-lg",
-    "transition shadow-passive focus-ring hover:shadow-glow",
+    "inline-flex items-center justify-center gap-2 rounded-lg",
+    "transition focus-ring hover:shadow-glow",
     "select-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:shadow-none",
     "disabled:opacity-40 disabled:saturate-50",
   ].join(" "),
@@ -18,9 +18,10 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         neutral: [
-          "bg-panel border border-(--color-border)",
+          "bg-(--color-surface-hover) shadow-glow",
           "text-foreground",
-          "hover:bg-(--color-surface-hover)",
+          "hover:bg-(--color-surface-hover) hover:border-(--color-border)",
+          "focus-visible:ring-2 focus-visible:ring-(--color-accent) focus-visible:ring-offset-2",
         ].join(" "),
         base: [
           "bg-(--color-muted-accent)",
@@ -29,9 +30,9 @@ export const buttonVariants = cva(
           "border border-transparent",
         ].join(" "),
         accent: [
-          "bg-(--color-foreground)",
-          "hover:bg-(--color-muted)",
-          "text-(--color-on-accent)",
+          "bg-(--color-accent) shadow-glow",
+          "hover:bg-(--color-accent)/90",
+          "text-black",
           "border border-transparent",
         ].join(" "),
         outline: [
@@ -49,9 +50,9 @@ export const buttonVariants = cva(
         ].join(" "),
       },
       size: {
-        sm: "h-9 text-sm",
-        md: "h-10 text-sm",
-        lg: "h-11 text-base",
+        sm: "h-9 px-4 py-2 text-sm",
+        md: "h-10 px-4 py-2 text-sm",
+        lg: "h-11 px-5 py-3 text-base",
         icon: "h-10 w-10 p-0",
       },
       round: { true: "rounded-full", false: "" },
@@ -92,7 +93,13 @@ export function Button({
   const enhancedChildren = React.useMemo(() => {
     if (!showExternalIcon) return children;
 
-    if (React.isValidElement<{ children?: React.ReactNode; onFocus?: (e: React.FocusEvent<HTMLElement>) => void; onBlur?: (e: React.FocusEvent<HTMLElement>) => void }>(children)) {
+    if (
+      React.isValidElement<{
+        children?: React.ReactNode;
+        onFocus?: (e: React.FocusEvent<HTMLElement>) => void;
+        onBlur?: (e: React.FocusEvent<HTMLElement>) => void;
+      }>(children)
+    ) {
       const originalChildren = children.props.children;
 
       return React.cloneElement(children, {

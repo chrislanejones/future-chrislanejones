@@ -3,6 +3,7 @@ import React from "react"; // Add this import
 import Link from "next/link";
 import Image from "next/image";
 import { FaXTwitter, FaGithub, FaLinkedin, FaCodepen } from "react-icons/fa6";
+import { SiCodeberg } from "react-icons/si";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
@@ -179,6 +180,11 @@ export const socialLinks: SocialLink[] = [
     icon: <FaGithub size={18} />,
   },
   {
+    href: "https://codeberg.org/chrislanejones",
+    label: "Codeburg",
+    icon: <SiCodeberg size={18} />,
+  },
+  {
     href: "https://www.linkedin.com/in/chrislanejones",
     label: "LinkedIn",
     icon: <FaLinkedin size={18} />,
@@ -195,6 +201,11 @@ export const footerSocialLinks: SocialLink[] = [
     href: "https://github.com/chrislanejones",
     label: "GitHub",
     icon: <FaGithub size={18} />,
+  },
+  {
+    href: "https://codeberg.org/chrislanejones",
+    label: "Codeburg",
+    icon: <SiCodeberg size={18} />,
   },
   {
     href: "https://www.linkedin.com/in/chrislanejones",

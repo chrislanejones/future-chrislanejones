@@ -64,7 +64,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center rounded-lg bg-(--color-base) hover:bg-(--color-muted-accent) p-2 transition-all duration-300 border border-transparent hover:border-(--color-accent) hover:shadow-glow"
+              className="group flex items-center justify-center rounded-lg bg-(--color-inner-card) hover:bg-(--color-muted-accent) p-2 transition-all duration-300 border border-transparent hover:border-(--color-accent) hover:shadow-glow"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 1, scale: 0.95 }}
               animate={{
@@ -165,7 +165,7 @@ export default function IconSlider({
           <div className="w-10" />
         )}
 
-        <div className="flex-1 relative h-[30rem] md:h-[32rem] overflow-hidden">
+        <div className="flex-1 relative h-120 md:h-128 overflow-hidden">
           <AnimatePresence custom={direction} initial={false} mode="wait">
             <ItemGroup
               key={selectedGroup}
@@ -205,8 +205,8 @@ export default function IconSlider({
               }}
               className={`w-3 h-3 rounded-full transition-all duration-200 ${
                 i === selectedGroup
-                  ? "bg-ink scale-110"
-                  : "bg-gray-800/50 dark:bg-gray-300/50 hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
+                  ? "bg-(--color-ink) scale-110"
+                  : "bg-(--color-inner-card) hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />

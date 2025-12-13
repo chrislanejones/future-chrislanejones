@@ -17,7 +17,7 @@ export default function IconBlock({
     <div
       className={`group flex flex-col items-center justify-center
         rounded-lg border border-transparent
-        bg-(--color-base)
+        bg-(--color-inner-card)
         hover:bg-(--color-muted-accent)
         hover:border-(--color-accent)
         hover:shadow-glow

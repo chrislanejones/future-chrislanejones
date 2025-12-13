@@ -2,10 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { SimpleModeToggle } from "../simple-mode-toggle";
 import { useHeaderNavItems, socialLinks, SiteLogo } from "../page/links";
 import {
@@ -19,8 +20,14 @@ import {
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const headerNavItems = useHeaderNavItems();
+
+  // Prevent hydration mismatch with Radix UI NavigationMenu
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -68,66 +75,69 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4 ms-auto">
-            <NavigationMenu>
-              <NavigationMenuList className="flex items-center gap-3">
-                {headerNavItems.map((item) => (
-                  <NavigationMenuItem key={item.label}>
-                    {item.children ? (
-                      <>
-                        <NavigationMenuTrigger>
-                          {item.label}
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <div className="w-56 p-2">
-                            <ul className="space-y-1">
-                              {item.children.map((child) => (
-                                <li key={child.href}>
-                                  <NavigationMenuLink asChild>
-                                    <Link
-                                      href={child.href!}
-                                      className={`block w-full rounded-md px-3 py-2 hover:bg-(--color-surface-hover) focus-ring ${
-                                        pathname === child.href
-                                          ? "bg-(--color-surface-hover)"
-                                          : ""
-                                      }`}
-                                      target={
-                                        child.isExternal ? "_blank" : undefined
-                                      }
-                                      rel={
-                                        child.isExternal
-                                          ? "noopener noreferrer"
-                                          : undefined
-                                      }
-                                    >
-                                      {child.label}
-                                    </Link>
-                                  </NavigationMenuLink>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <NavigationMenuLink asChild>
-                        <Link
-                          href={item.href!}
-                          className={`h-9 px-4 py-2 bg-panel card shadow-passive hover:shadow-glow rounded-lg transition hover:bg-(--color-surface-hover) ${
-                            isActive(item) ? "bg-(--color-surface-hover)" : ""
-                          }`}
-                          target={item.isExternal ? "_blank" : undefined}
-                          rel={
-                            item.isExternal ? "noopener noreferrer" : undefined
-                          }
-                        >
-                          {item.label}
-                        </Link>
-                      </NavigationMenuLink>
-                    )}
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
+            {isMounted && (
+              <NavigationMenu>
+                <NavigationMenuList className="flex items-center gap-3">
+                  {headerNavItems.map((item) => (
+                    <NavigationMenuItem key={item.label}>
+                      {item.children ? (
+                        <>
+                          <NavigationMenuTrigger>
+                            {item.label}
+                          </NavigationMenuTrigger>
+                          <NavigationMenuContent>
+                            <div className="w-56 p-2">
+                              <ul className="space-y-1">
+                                {item.children.map((child) => (
+                                  <li key={child.href}>
+                                    <NavigationMenuLink asChild>
+                                      <Link
+                                        href={child.href!}
+                                        className={`block w-full rounded-md px-3 py-2 hover:bg-(--color-surface-hover) focus-ring ${
+                                          pathname === child.href
+                                            ? "bg-(--color-surface-hover)"
+                                            : ""
+                                        }`}
+                                        target={
+                                          child.isExternal ? "_blank" : undefined
+                                        }
+                                        rel={
+                                          child.isExternal
+                                            ? "noopener noreferrer"
+                                            : undefined
+                                        }
+                                      >
+                                        {child.label}
+                                      </Link>
+                                    </NavigationMenuLink>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </NavigationMenuContent>
+                        </>
+                      ) : (
+                        <NavigationMenuLink asChild>
+                          <Link
+                            href={item.href!}
+                            className={cn(
+                              buttonVariants({ variant: "neutral", size: "sm" }),
+                              isActive(item) && "bg-(--color-surface-hover)"
+                            )}
+                            target={item.isExternal ? "_blank" : undefined}
+                            rel={
+                              item.isExternal ? "noopener noreferrer" : undefined
+                            }
+                          >
+                            {item.label}
+                          </Link>
+                        </NavigationMenuLink>
+                      )}
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
+            )}
 
             {/* Social buttons (desktop) */}
             <div className="flex items-center gap-3" role="list">
