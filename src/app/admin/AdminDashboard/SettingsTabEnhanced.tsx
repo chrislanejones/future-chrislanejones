@@ -364,7 +364,7 @@ const SettingsTabEnhanced = () => {
 
       {/* Sidebar Menu */}
       <div className="w-56 shrink-0">
-        <div className="bg-panel border border-border rounded-2xl p-3 sticky top-0">
+        <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-3 sticky top-0">
           <nav className="space-y-1">
             {menuItems.map((item) => (
               <button
@@ -373,7 +373,7 @@ const SettingsTabEnhanced = () => {
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   activeSection === item.id
                     ? "bg-accent text-on-accent"
-                    : "text-muted hover:text-ink hover:bg-surface-hover"
+                    : "bg-(--color-muted-accent) text-muted hover:text-ink hover:bg-(--color-surface-hover)"
                 }`}
               >
                 <item.icon className="w-4 h-4 shrink-0" />
@@ -397,7 +397,7 @@ const SettingsTabEnhanced = () => {
           }}
           className="scroll-mt-6"
         >
-          <div className="bg-panel border border-border rounded-2xl p-6">
+          <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-accent/10 rounded-lg">
                 <User className="w-5 h-5 text-accent" />
@@ -414,7 +414,7 @@ const SettingsTabEnhanced = () => {
               {/* Avatar */}
               <div className="flex items-start gap-6">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-base border-2 border-border">
+                  <div className="w-24 h-24 rounded-full overflow-hidden bg-(--color-muted-accent)">
                     {profileData.avatar ? (
                       <Image
                         src={profileData.avatar}
@@ -504,7 +504,7 @@ const SettingsTabEnhanced = () => {
                   }
                   placeholder="A short bio about yourself"
                   rows={4}
-                  className="w-full px-3 py-2 bg-base border border-border rounded-lg text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                  className="w-full px-3 py-2 bg-(--color-muted-accent) rounded-lg text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
                 />
                 <p className="text-xs text-muted">
                   {profileData.bio.length}/300 characters
@@ -539,7 +539,7 @@ const SettingsTabEnhanced = () => {
           }}
           className="scroll-mt-6"
         >
-          <div className="bg-panel border border-border rounded-2xl p-6">
+          <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-accent/10 rounded-lg">
                 <Database className="w-5 h-5 text-accent" />
@@ -578,10 +578,10 @@ const SettingsTabEnhanced = () => {
                   <button
                     key={source.id}
                     onClick={() => toggleSource(source.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    className={`p-4 rounded-xl text-left transition-all ${
                       selectedSources.has(source.id)
-                        ? "border-accent bg-accent/5"
-                        : "border-border hover:border-accent/50"
+                        ? "ring-2 ring-accent bg-accent/10"
+                        : "bg-(--color-muted-accent) hover:ring-2 hover:ring-accent/50"
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -589,7 +589,7 @@ const SettingsTabEnhanced = () => {
                         className={`p-2 rounded-lg ${
                           selectedSources.has(source.id)
                             ? "bg-accent/20 text-accent"
-                            : "bg-base text-muted"
+                            : "bg-(--color-panel) text-muted"
                         }`}
                       >
                         <source.icon className="w-4 h-4" />
@@ -642,7 +642,7 @@ const SettingsTabEnhanced = () => {
                       Clear
                     </button>
                   </div>
-                  <div className="max-h-48 overflow-y-auto bg-base rounded-lg p-3 space-y-1 font-mono text-xs">
+                  <div className="max-h-48 overflow-y-auto bg-(--color-muted-accent) rounded-lg p-3 space-y-1 font-mono text-xs">
                     {logs.map((log, i) => (
                       <div
                         key={i}

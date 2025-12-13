@@ -1,10 +1,12 @@
 // src/components/main/image-gallery-content.tsx
 "use client";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
-const photos: GalleryPhoto[] = [
+// Fallback photos for when Convex data is loading or empty
+const fallbackPhotos: GalleryPhoto[] = [
   {
     src: "/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp",
     alt: "Theo Browne and Chris at Render 2024",
@@ -33,13 +35,22 @@ const photos: GalleryPhoto[] = [
 ];
 
 export default function ImageGalleryContent() {
+  const galleryData = useQuery(api.homeGallery.getGalleryPhotos);
+
+  // Use Convex data if available and has items, otherwise use fallback
+  const photos: GalleryPhoto[] = galleryData && galleryData.length > 0
+    ? galleryData
+    : fallbackPhotos;
+
+  const featuredPhoto = photos[0];
+
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden">
       {/* Image */}
       <div className="relative flex-1 min-h-0">
         <Image
-          src={photos[0].src}
-          alt={photos[0].alt}
+          src={featuredPhoto.src}
+          alt={featuredPhoto.alt}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"

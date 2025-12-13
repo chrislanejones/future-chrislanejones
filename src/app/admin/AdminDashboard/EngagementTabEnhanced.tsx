@@ -166,7 +166,7 @@ const EngagementTabEnhanced = () => {
       )}
 
       {/* Tab Navigation */}
-      <div className="flex items-center gap-4 border-b border-border pb-4">
+      <div className="flex items-center gap-4 pb-4">
         <button
           onClick={() => setActiveTab("comments")}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg transition font-medium ${
@@ -216,12 +216,12 @@ const EngagementTabEnhanced = () => {
                 placeholder="Search comments..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+                className="w-full pl-10 pr-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:outline-none"
               />
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex gap-1 mb-4 p-1 bg-base rounded-lg">
+            <div className="flex gap-1 mb-4 p-1 bg-(--color-muted-accent) rounded-lg">
               {(["all", "pending", "approved"] as const).map((status) => (
                 <button
                   key={status}
@@ -251,7 +251,7 @@ const EngagementTabEnhanced = () => {
                     className={`w-full text-left p-3 rounded-lg transition ${
                       selectedComment?._id === comment._id
                         ? "bg-(--color-foreground) text-(--color-panel)"
-                        : "hover:bg-(--color-surface-hover) text-(--color-ink)"
+                        : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -312,11 +312,11 @@ const EngagementTabEnhanced = () => {
           </div>
 
           {/* Right Panel - Comment Detail */}
-          <div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+          <div className="col-span-2 bg-(--color-panel) border border-(--color-border) rounded-2xl overflow-hidden flex flex-col">
             {selectedComment ? (
               <>
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                <div className="flex items-center justify-between px-6 py-4 bg-(--color-muted-accent)">
                   <div>
                     <h2 className="font-bold text-ink">
                       {selectedComment.authorName}
@@ -367,7 +367,7 @@ const EngagementTabEnhanced = () => {
                   </div>
 
                   {/* Post Link */}
-                  <div className="p-3 bg-base border border-border rounded-lg">
+                  <div className="p-3 bg-(--color-muted-accent) rounded-lg">
                     <p className="text-xs text-muted mb-1">Comment on:</p>
                     <a
                       href={`/blog/${selectedComment.postSlug}`}
@@ -383,7 +383,7 @@ const EngagementTabEnhanced = () => {
                   </div>
 
                   {/* Comment Body */}
-                  <div className="p-4 bg-base border border-border rounded-xl">
+                  <div className="p-4 bg-(--color-muted-accent) rounded-xl">
                     <p className="text-ink whitespace-pre-wrap leading-relaxed">
                       {selectedComment.content}
                     </p>
@@ -421,7 +421,7 @@ const EngagementTabEnhanced = () => {
               {likesData.byPost.map((post, index) => (
                 <div
                   key={post.postId}
-                  className="flex items-center gap-4 p-4 bg-base border border-border rounded-xl hover:border-accent transition"
+                  className="flex items-center gap-4 p-4 bg-(--color-muted-accent) rounded-xl hover:ring-2 hover:ring-accent transition"
                 >
                   <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent font-bold">
                     {index + 1}
@@ -465,7 +465,7 @@ const EngagementTabEnhanced = () => {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
             <h3 className="text-lg font-bold text-ink mb-4">Delete Comment?</h3>
             <p className="text-muted mb-6">This action cannot be undone.</p>
             <div className="flex gap-2">

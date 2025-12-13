@@ -200,7 +200,7 @@ export const SeoTabEnhanced = () => {
             placeholder="Search pages..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+            className="w-full pl-10 pr-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:outline-none"
           />
         </div>
 
@@ -213,7 +213,7 @@ export const SeoTabEnhanced = () => {
               className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                 selectedPage?._id === entry._id
                   ? "bg-(--color-foreground) text-(--color-panel)"
-                  : "hover:bg-(--color-surface-hover) text-(--color-ink)"
+                  : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -246,11 +246,11 @@ export const SeoTabEnhanced = () => {
       </div>
 
       {/* Right Panel - SEO Editor */}
-      <div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+      <div className="col-span-2 bg-(--color-panel) border border-(--color-border) rounded-2xl overflow-hidden flex flex-col">
         {selectedPage ? (
           <>
             {/* Header with Save Button */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <div className="flex items-center justify-between px-6 py-4 bg-(--color-muted-accent)">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-accent/10 rounded-lg">
                   <FileText className="w-5 h-5 text-accent" />
@@ -329,7 +329,7 @@ export const SeoTabEnhanced = () => {
                     setFormData({ ...formData, title: e.target.value });
                     setIsEditing(true);
                   }}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none"
                   placeholder="Enter page title..."
                 />
                 {formData.title.length > 60 && (
@@ -354,7 +354,7 @@ export const SeoTabEnhanced = () => {
                     setIsEditing(true);
                   }}
                   rows={3}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent resize-none"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none resize-none"
                   placeholder="Enter meta description..."
                 />
                 {formData.description.length > 160 && (
@@ -376,7 +376,7 @@ export const SeoTabEnhanced = () => {
                     setFormData({ ...formData, canonicalUrl: e.target.value });
                     setIsEditing(true);
                   }}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none"
                   placeholder="https://example.com/page"
                 />
               </div>
@@ -387,7 +387,7 @@ export const SeoTabEnhanced = () => {
                   OpenGraph Image
                 </label>
                 {formData.ogImage ? (
-                  <div className="relative rounded-xl overflow-hidden border border-border">
+                  <div className="relative rounded-xl overflow-hidden bg-(--color-muted-accent)">
                     <Image
                       src={formData.ogImage}
                       alt="OG Image"
@@ -405,7 +405,7 @@ export const SeoTabEnhanced = () => {
                 ) : (
                   <button
                     onClick={() => setIsMediaDrawerOpen(true)}
-                    className="w-full px-4 py-8 border-2 border-dashed border-border rounded-xl text-muted hover:border-accent hover:text-accent transition flex flex-col items-center gap-2"
+                    className="w-full px-4 py-8 border-2 border-dashed border-(--color-muted-accent) rounded-xl text-muted hover:border-accent hover:text-accent transition flex flex-col items-center gap-2 bg-(--color-muted-accent)/30"
                   >
                     <ImageIcon className="w-8 h-8" />
                     <span>Click to select an image</span>
@@ -415,12 +415,12 @@ export const SeoTabEnhanced = () => {
               </div>
 
               {/* Search Preview - Dark Mode Fixed */}
-              <div className="p-4 bg-base border border-border rounded-xl">
+              <div className="p-4 bg-(--color-muted-accent) rounded-xl">
                 <h3 className="mb-3 text-ink font-semibold flex items-center gap-2">
                   <Search className="w-4 h-4" />
                   Search Preview
                 </h3>
-                <div className="p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="p-4 bg-white dark:bg-gray-900 rounded-lg">
                   <p className="text-blue-600 dark:text-blue-400 text-lg hover:underline cursor-pointer font-medium">
                     {formData.title || "Page Title"}
                   </p>
