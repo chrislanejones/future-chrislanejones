@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Search,
   Upload,
@@ -12,6 +12,10 @@ import {
   ChevronRight,
   Filter,
   ImageIcon,
+  Home,
+  Star,
+  X,
+  Loader2,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -22,6 +26,7 @@ import { SuccessDisplay } from "../components/SuccessDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { MediaDrawer } from "../components/MediaDrawer";
 
 interface MediaFile {
   _id: Id<"media">;
@@ -35,6 +40,14 @@ interface MediaFile {
   uploadedAt: number;
 }
 
+interface GalleryItem {
+  _id: Id<"homeGallery">;
+  position: number;
+  url: string;
+  alt: string;
+  description?: string;
+}
+
 const MediaTabEnhanced = () => {
   const organizedMedia = useQuery(api.media.getOrganized);
   const deleteMediaMutation = useMutation(api.media.deleteMedia);
@@ -42,15 +55,37 @@ const MediaTabEnhanced = () => {
   const assignMedia = useMutation(api.media.assign);
   const unassignMedia = useMutation(api.media.unassign);
 
+  // Home Gallery
+  const galleryItems = useQuery(api.homeGallery.getAll) as
+    | GalleryItem[]
+    | undefined;
+  const setGalleryPosition = useMutation(api.homeGallery.setPosition);
+  const removeGalleryPosition = useMutation(api.homeGallery.removePosition);
+  const updateGalleryMetadata = useMutation(api.homeGallery.updateMetadata);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedView, setSelectedView] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set());
   const [expandedPosts, setExpandedPosts] = useState<Set<string>>(new Set());
+  const [expandedGalleries, setExpandedGalleries] = useState<Set<string>>(
+    new Set(["galleries"])
+  );
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+  // Gallery management state
+  const [selectedGallerySlot, setSelectedGallerySlot] = useState<number | null>(
+    null
+  );
+  const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
+  const [editingGallerySlot, setEditingGallerySlot] = useState<number | null>(
+    null
+  );
+  const [galleryAltText, setGalleryAltText] = useState("");
+  const [galleryDescription, setGalleryDescription] = useState("");
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
@@ -114,6 +149,89 @@ const MediaTabEnhanced = () => {
     setExpandedPosts(newExpanded);
   };
 
+  const toggleGalleriesExpanded = (id: string) => {
+    const newExpanded = new Set(expandedGalleries);
+    if (newExpanded.has(id)) {
+      newExpanded.delete(id);
+    } else {
+      newExpanded.add(id);
+    }
+    setExpandedGalleries(newExpanded);
+  };
+
+  // Gallery handlers
+  const handleGallerySlotClick = (position: number) => {
+    setSelectedGallerySlot(position);
+    setIsMediaDrawerOpen(true);
+  };
+
+  const handleGalleryImageSelect = async (imageUrl: string) => {
+    if (selectedGallerySlot === null) return;
+    try {
+      await setGalleryPosition({
+        position: selectedGallerySlot,
+        url: imageUrl,
+        alt: `Gallery image ${selectedGallerySlot}`,
+        description: undefined,
+      });
+      setSuccess(
+        `Image added to slot ${selectedGallerySlot === 1 ? "Featured" : selectedGallerySlot}`
+      );
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to set gallery image")
+      );
+    }
+    setSelectedGallerySlot(null);
+    setIsMediaDrawerOpen(false);
+  };
+
+  const handleRemoveGalleryImage = async (position: number) => {
+    try {
+      await removeGalleryPosition({ position });
+      setSuccess("Image removed from gallery");
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to remove gallery image")
+      );
+    }
+  };
+
+  const handleEditGalleryMetadata = (position: number) => {
+    const item = galleryItems?.find((i) => i.position === position);
+    if (item) {
+      setEditingGallerySlot(position);
+      setGalleryAltText(item.alt);
+      setGalleryDescription(item.description || "");
+    }
+  };
+
+  const handleSaveGalleryMetadata = async () => {
+    if (editingGallerySlot === null) return;
+    try {
+      await updateGalleryMetadata({
+        position: editingGallerySlot,
+        alt: galleryAltText,
+        description: galleryDescription || undefined,
+      });
+      setSuccess("Gallery metadata updated");
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to update metadata")
+      );
+    }
+    setEditingGallerySlot(null);
+  };
+
+  const getGalleryItemByPosition = (
+    position: number
+  ): GalleryItem | undefined => {
+    return galleryItems?.find((item) => item.position === position);
+  };
+
   if (!organizedMedia) {
     return <LoadingSpinner message="Loading media..." />;
   }
@@ -173,7 +291,7 @@ const MediaTabEnhanced = () => {
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center gap-1 bg-base rounded-lg p-1 border border-border">
+          <div className="flex items-center gap-1 bg-(--color-muted-accent) rounded-lg p-1">
             <button
               onClick={() => setViewMode("grid")}
               className={`p-2 rounded transition ${
@@ -204,7 +322,7 @@ const MediaTabEnhanced = () => {
             placeholder="Search images..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+            className="w-full pl-10 pr-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:outline-none"
           />
         </div>
 
@@ -243,8 +361,8 @@ const MediaTabEnhanced = () => {
       {/* Main Content */}
       <div className="flex gap-6 flex-1 min-h-0">
         {/* Sidebar - Library */}
-        <div className="w-64 border border-border rounded-lg bg-panel overflow-hidden flex flex-col shrink-0">
-          <div className="p-4 border-b border-border">
+        <div className="w-64 bg-(--color-panel) border border-(--color-border) rounded-2xl overflow-hidden flex flex-col shrink-0">
+          <div className="p-4 bg-(--color-muted-accent)">
             <h3 className="font-semibold text-ink">Library</h3>
           </div>
 
@@ -255,7 +373,7 @@ const MediaTabEnhanced = () => {
               className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                 selectedView === "all"
                   ? "bg-(--color-foreground) text-(--color-panel)"
-                  : "hover:bg-surface-hover text-ink"
+                  : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-ink"
               }`}
             >
               All Images
@@ -274,7 +392,7 @@ const MediaTabEnhanced = () => {
               className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                 selectedView === "unassigned"
                   ? "bg-(--color-foreground) text-(--color-panel)"
-                  : "hover:bg-surface-hover text-ink"
+                  : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-ink"
               }`}
             >
               Unassigned
@@ -310,7 +428,7 @@ const MediaTabEnhanced = () => {
                         className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                           selectedView === `page-${page.id}`
                             ? "bg-(--color-foreground) text-(--color-panel)"
-                            : "hover:bg-surface-hover text-ink"
+                            : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-ink"
                         }`}
                       >
                         {page.title}
@@ -353,7 +471,7 @@ const MediaTabEnhanced = () => {
                         className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
                           selectedView === `post-${post.id}`
                             ? "bg-(--color-foreground) text-(--color-panel)"
-                            : "hover:bg-surface-hover text-ink"
+                            : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-ink"
                         }`}
                       >
                         {post.title}
@@ -372,13 +490,169 @@ const MediaTabEnhanced = () => {
                 )}
               </div>
             )}
+
+            {/* Galleries Section */}
+            <div className="mt-4 pt-4 border-t border-(--color-border)">
+              <button
+                onClick={() => toggleGalleriesExpanded("galleries")}
+                className="w-full text-left px-3 py-2 flex items-center gap-2 text-sm font-medium text-muted hover:text-ink transition"
+              >
+                {expandedGalleries.has("galleries") ? (
+                  <ChevronDown className="w-4 h-4" />
+                ) : (
+                  <ChevronRight className="w-4 h-4" />
+                )}
+                Galleries
+              </button>
+              {expandedGalleries.has("galleries") && (
+                <div className="space-y-1 pl-2">
+                  <button
+                    onClick={() => setSelectedView("home-gallery")}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition text-sm flex items-center gap-2 ${
+                      selectedView === "home-gallery"
+                        ? "bg-(--color-foreground) text-(--color-panel)"
+                        : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-ink"
+                    }`}
+                  >
+                    <Home className="w-4 h-4" />
+                    Home Page Gallery
+                    <span
+                      className={`text-xs ml-auto ${
+                        selectedView === "home-gallery"
+                          ? "opacity-70"
+                          : "text-muted"
+                      }`}
+                    >
+                      ({galleryItems?.length || 0}/6)
+                    </span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Main Image Grid/List */}
         <div className="flex-1 min-w-0 overflow-auto">
-          {/* Images */}
-          {filteredImages.length === 0 ? (
+          {/* Home Page Gallery View */}
+          {selectedView === "home-gallery" ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-bold text-ink">
+                    Home Page Gallery
+                  </h2>
+                  <p className="text-sm text-muted">
+                    Click on a slot to add or replace an image
+                  </p>
+                </div>
+              </div>
+
+              {/* Gallery Grid - 1 Featured + 5 Others */}
+              <div className="grid grid-cols-3 gap-4">
+                {/* Featured Image (Position 1) - full width */}
+                <div className="col-span-3">
+                  <p className="text-xs text-muted mb-2 flex items-center gap-1">
+                    <Star className="w-3 h-3 text-accent" />
+                    Featured Image
+                  </p>
+                  {(() => {
+                    const item = getGalleryItemByPosition(1);
+                    return (
+                      <button
+                        onClick={() => handleGallerySlotClick(1)}
+                        className={`relative w-full aspect-[4/3] rounded-xl overflow-hidden transition group ${
+                          item
+                            ? "bg-(--color-muted-accent)"
+                            : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
+                        }`}
+                      >
+                        {item ? (
+                          <>
+                            <Image
+                              src={item.url}
+                              alt={item.alt}
+                              fill
+                              className="object-cover"
+                              sizes="600px"
+                            />
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                              <span className="px-3 py-1 bg-accent text-black rounded-lg text-sm font-medium">
+                                Replace
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveGalleryImage(1);
+                                }}
+                                className="p-2 bg-red-500 rounded-lg hover:bg-red-600 transition"
+                              >
+                                <Trash2 className="w-4 h-4 text-white" />
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-full text-muted">
+                            <ImageIcon className="w-12 h-12 mb-2 opacity-50" />
+                            <span>Click to add featured image</span>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })()}
+                </div>
+
+                {/* Slots 2–6 (3 × 2 grid) */}
+                {[2, 3, 4, 5, 6].map((position) => {
+                  const item = getGalleryItemByPosition(position);
+                  return (
+                    <div key={position}>
+                      <p className="text-xs text-muted mb-2">Slot {position}</p>
+                      <button
+                        onClick={() => handleGallerySlotClick(position)}
+                        className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
+                          item
+                            ? "bg-(--color-muted-accent)"
+                            : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
+                        }`}
+                      >
+                        {item ? (
+                          <>
+                            <Image
+                              src={item.url}
+                              alt={item.alt}
+                              fill
+                              className="object-cover"
+                              sizes="200px"
+                            />
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                              <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
+                                Replace
+                              </span>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveGalleryImage(position);
+                                }}
+                                className="p-1.5 bg-red-500 rounded hover:bg-red-600 transition"
+                              >
+                                <Trash2 className="w-3 h-3 text-white" />
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-full text-muted">
+                            <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
+                            <span className="text-xs">Add image</span>
+                          </div>
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : filteredImages.length === 0 ? (
             <div className="text-center py-12">
               <ImageIcon className="w-12 h-12 mx-auto text-muted opacity-50 mb-4" />
               <p className="text-muted">
@@ -390,7 +664,7 @@ const MediaTabEnhanced = () => {
               {filteredImages.map((image) => (
                 <div
                   key={image._id}
-                  className="group relative aspect-square rounded-lg overflow-hidden border border-border hover:border-accent transition"
+                  className="group relative aspect-square rounded-lg overflow-hidden bg-(--color-muted-accent) hover:ring-2 hover:ring-accent transition"
                 >
                   <Image
                     src={image.url}
@@ -399,14 +673,14 @@ const MediaTabEnhanced = () => {
                     className="object-cover"
                     sizes="200px"
                   />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
                     <a
                       href={image.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
+                      className="p-2 bg-accent/80 rounded-lg hover:bg-accent transition"
                     >
-                      <Download className="w-4 h-4 text-white" />
+                      <Download className="w-4 h-4 text-black" />
                     </a>
                     <button
                       onClick={() => setDeleteConfirm(image._id)}
@@ -415,7 +689,7 @@ const MediaTabEnhanced = () => {
                       <Trash2 className="w-4 h-4 text-white" />
                     </button>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 opacity-0 group-hover:opacity-100 transition">
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/80 p-2 opacity-0 group-hover:opacity-100 transition">
                     <p className="text-xs text-white truncate">
                       {image.filename}
                     </p>
@@ -428,7 +702,7 @@ const MediaTabEnhanced = () => {
               {filteredImages.map((image) => (
                 <div
                   key={image._id}
-                  className="flex items-center gap-4 p-3 border border-border rounded-lg hover:border-accent transition"
+                  className="flex items-center gap-4 p-3 bg-(--color-muted-accent) rounded-lg hover:ring-2 hover:ring-accent transition"
                 >
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
                     <Image
@@ -480,14 +754,14 @@ const MediaTabEnhanced = () => {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
             <h3 className="text-lg font-bold text-ink mb-4">Delete Image?</h3>
             <p className="text-muted mb-6">This action cannot be undone.</p>
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDeleteImage(deleteConfirm as Id<"media">)}
-                variant="disabled"
-                className="flex-1"
+                variant="outline"
+                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-400 border-red-500/30"
               >
                 Delete
               </Button>
@@ -502,6 +776,18 @@ const MediaTabEnhanced = () => {
           </div>
         </div>
       )}
+
+      {/* Media Drawer for Gallery Image Selection */}
+      <MediaDrawer
+        isOpen={isMediaDrawerOpen}
+        onClose={() => {
+          setIsMediaDrawerOpen(false);
+          setSelectedGallerySlot(null);
+        }}
+        onSelect={handleGalleryImageSelect}
+        title={`Select Image for ${selectedGallerySlot === 1 ? "Featured Slot" : `Slot ${selectedGallerySlot}`}`}
+        description="Choose an image from your media library or upload a new one"
+      />
     </div>
   );
 };

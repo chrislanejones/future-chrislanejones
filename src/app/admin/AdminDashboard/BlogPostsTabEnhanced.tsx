@@ -314,7 +314,7 @@ const BlogPostsTabEnhanced = () => {
             placeholder="Search posts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+            className="w-full pl-10 pr-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:outline-none"
           />
         </div>
 
@@ -337,7 +337,7 @@ const BlogPostsTabEnhanced = () => {
                 className={`w-full text-left p-3 rounded-lg transition ${
                   selectedPost?._id === post._id && !isCreating
                     ? "bg-(--color-foreground) text-(--color-panel)"
-                    : "hover:bg-(--color-surface-hover) text-(--color-ink)"
+                    : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -378,11 +378,11 @@ const BlogPostsTabEnhanced = () => {
       </div>
 
       {/* Right Panel - Post Editor */}
-      <div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+      <div className="col-span-2 bg-(--color-panel) border border-(--color-border) rounded-2xl overflow-hidden flex flex-col">
         {selectedPost || isCreating ? (
           <>
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <div className="flex items-center justify-between px-6 py-4 bg-(--color-muted-accent)">
               <div>
                 <h2 className="font-bold text-ink">
                   {isCreating ? "New Post" : formData.title || "Untitled"}
@@ -444,7 +444,7 @@ const BlogPostsTabEnhanced = () => {
                   value={formData.title}
                   onChange={(e) => handleTitleChange(e.target.value)}
                   disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
                   placeholder="Enter post title..."
                 />
               </div>
@@ -460,7 +460,7 @@ const BlogPostsTabEnhanced = () => {
                     setIsEditing(true);
                   }}
                   disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
                   placeholder="post-url-slug"
                 />
               </div>
@@ -488,7 +488,7 @@ const BlogPostsTabEnhanced = () => {
                     }
                   }}
                   disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
                 />
               </div>
 
@@ -505,7 +505,7 @@ const BlogPostsTabEnhanced = () => {
                   }}
                   disabled={!isEditing}
                   rows={2}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent resize-none disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none resize-none disabled:opacity-60"
                   placeholder="Brief description of the post..."
                 />
               </div>
@@ -516,7 +516,7 @@ const BlogPostsTabEnhanced = () => {
                   Cover Image
                 </label>
                 {formData.coverImage ? (
-                  <div className="relative rounded-xl overflow-hidden border border-border">
+                  <div className="relative rounded-xl overflow-hidden bg-(--color-muted-accent)">
                     <Image
                       src={formData.coverImage}
                       alt="Cover"
@@ -550,7 +550,7 @@ const BlogPostsTabEnhanced = () => {
                   <button
                     onClick={() => isEditing && setIsMediaDrawerOpen(true)}
                     disabled={!isEditing}
-                    className="w-full px-4 py-8 border-2 border-dashed border-border rounded-xl text-muted hover:border-accent hover:text-accent transition flex flex-col items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-8 border-2 border-dashed border-(--color-muted-accent) rounded-xl text-muted hover:border-accent hover:text-accent transition flex flex-col items-center gap-2 bg-(--color-muted-accent)/30 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     <ImageIcon className="w-8 h-8" />
                     <span>Click to select a cover image</span>
@@ -587,7 +587,7 @@ const BlogPostsTabEnhanced = () => {
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
-                      className="flex-1 px-3 py-2 bg-base border border-border rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:border-accent"
+                      className="flex-1 px-3 py-2 bg-(--color-muted-accent) rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:outline-none"
                       placeholder="Add a tag..."
                     />
                     <Button onClick={handleAddTag} variant="outline" size="sm">
@@ -598,7 +598,7 @@ const BlogPostsTabEnhanced = () => {
               </div>
 
               {/* Published Toggle */}
-              <div className="flex items-center justify-between p-4 bg-base border border-border rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-(--color-muted-accent) rounded-xl">
                 <div className="flex items-center gap-3">
                   {formData.published ? (
                     <Eye className="w-5 h-5 text-green-500" />
@@ -650,7 +650,7 @@ const BlogPostsTabEnhanced = () => {
                   />
                 ) : (
                   <div
-                    className="p-4 bg-base border border-border rounded-xl prose prose-sm dark:prose-invert max-w-none min-h-[200px]"
+                    className="p-4 bg-(--color-muted-accent) rounded-xl prose prose-sm dark:prose-invert max-w-none min-h-[200px]"
                     dangerouslySetInnerHTML={{
                       __html: formData.content || "<p>No content yet...</p>",
                     }}
@@ -680,7 +680,7 @@ const BlogPostsTabEnhanced = () => {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
             <h3 className="text-lg font-bold text-ink mb-4">Delete Post?</h3>
             <p className="text-muted mb-6">This action cannot be undone.</p>
             <div className="flex gap-2">

@@ -153,4 +153,13 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_section_order", ["sectionId", "order"]),
+
+  homeGallery: defineTable({
+    position: v.number(), // 1 = featured, 2-6 = other slots
+    url: v.string(),
+    alt: v.string(),
+    description: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_position", ["position"]),
 });

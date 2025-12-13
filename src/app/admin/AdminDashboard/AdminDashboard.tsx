@@ -54,7 +54,7 @@ const AdminSidebarContent = ({
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-panel">
+    <Sidebar collapsible="icon" className="admin-border-right admin-panel-glow bg-panel">
       <SidebarHeader className="flex flex-col gap-2 p-4">
         <div className="px-2">
           {!isCollapsed && (
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
           onSignOut={handleSignOut}
         />
         <SidebarInset className="flex flex-col flex-1 overflow-hidden">
-          <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-panel px-6 py-3">
+          <header className="sticky top-0 z-10 flex items-center justify-between admin-border-bottom bg-panel px-6 py-3">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
               <h1 className="text-ink">

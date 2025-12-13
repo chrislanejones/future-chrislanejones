@@ -251,7 +251,7 @@ const CareerTimelineTabEnhanced = () => {
                 className={`w-full text-left p-3 rounded-lg transition ${
                   selectedEvent?._id === event._id && !isCreating
                     ? "bg-(--color-foreground) text-(--color-panel)"
-                    : "hover:bg-(--color-surface-hover) text-(--color-ink)"
+                    : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -299,11 +299,11 @@ const CareerTimelineTabEnhanced = () => {
       </div>
 
       {/* Right Panel - Event Editor */}
-      <div className="col-span-2 bg-panel border border-border rounded-2xl overflow-hidden flex flex-col">
+      <div className="col-span-2 bg-(--color-panel) border border-(--color-border) rounded-2xl overflow-hidden flex flex-col">
         {selectedEvent || isCreating ? (
           <>
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <div className="flex items-center justify-between px-6 py-4 bg-(--color-muted-accent)">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-accent/10 rounded-lg">
                   {renderIcon(formData.iconName, "w-5 h-5 text-accent")}
@@ -374,7 +374,7 @@ const CareerTimelineTabEnhanced = () => {
                     setIsEditing(true);
                   }}
                   disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
                   placeholder="2024 or 2020-2024"
                 />
               </div>
@@ -390,7 +390,7 @@ const CareerTimelineTabEnhanced = () => {
                     setIsEditing(true);
                   }}
                   disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
                   placeholder="Job title or milestone"
                 />
               </div>
@@ -408,7 +408,7 @@ const CareerTimelineTabEnhanced = () => {
                   }}
                   disabled={!isEditing}
                   rows={4}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent resize-none disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none resize-none disabled:opacity-60"
                   placeholder="Describe this milestone..."
                 />
               </div>
@@ -426,7 +426,7 @@ const CareerTimelineTabEnhanced = () => {
                     setIsEditing(true);
                   }}
                   disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-base border border-border rounded-xl text-ink focus:ring-2 focus:ring-accent focus:border-accent disabled:opacity-60"
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
                   placeholder="City, State or Company"
                 />
               </div>
@@ -445,10 +445,10 @@ const CareerTimelineTabEnhanced = () => {
                         }
                       }}
                       disabled={!isEditing}
-                      className={`p-3 rounded-lg border transition ${
+                      className={`p-3 rounded-lg transition ${
                         formData.iconName === iconName
-                          ? "border-accent bg-accent/10 text-accent"
-                          : "border-border text-muted hover:border-accent/50 hover:text-ink disabled:opacity-40"
+                          ? "bg-accent/20 text-accent ring-2 ring-accent"
+                          : "bg-(--color-muted-accent) text-muted hover:text-ink disabled:opacity-40"
                       }`}
                       title={iconName}
                     >
@@ -472,7 +472,7 @@ const CareerTimelineTabEnhanced = () => {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-sm w-full border border-border">
+          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
             <h3 className="text-lg font-bold text-ink mb-4">Delete Event?</h3>
             <p className="text-muted mb-6">This action cannot be undone.</p>
             <div className="flex gap-2">

@@ -362,3 +362,33 @@ html.dark .client-logo {
   background-color: #ff9800;
   color: white;
 }
+
+/* Admin panel gradient borders */
+.admin-border-right {
+  border-right: 1px solid transparent;
+  border-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--color-accent) 30%, var(--color-border)) 15%,
+    color-mix(in srgb, var(--color-accent) 40%, var(--color-border)) 50%,
+    color-mix(in srgb, var(--color-accent) 30%, var(--color-border)) 85%,
+    transparent 100%
+  ) 1;
+}
+
+.admin-border-bottom {
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(
+    to right,
+    transparent 0%,
+    color-mix(in srgb, var(--color-accent) 30%, var(--color-border)) 10%,
+    color-mix(in srgb, var(--color-accent) 40%, var(--color-border)) 50%,
+    color-mix(in srgb, var(--color-accent) 30%, var(--color-border)) 90%,
+    transparent 100%
+  ) 1;
+}
+
+/* Panel glow for admin */
+.admin-panel-glow {
+  box-shadow: inset -1px 0 12px -6px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
