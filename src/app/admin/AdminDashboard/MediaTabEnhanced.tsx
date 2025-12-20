@@ -561,7 +561,7 @@ const MediaTabEnhanced = () => {
                     return (
                       <button
                         onClick={() => handleGallerySlotClick(1)}
-                        className={`relative w-full aspect-[4/3] rounded-xl overflow-hidden transition group ${
+                        className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
                           item
                             ? "bg-(--color-muted-accent)"
                             : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
@@ -664,7 +664,7 @@ const MediaTabEnhanced = () => {
               {filteredImages.map((image) => (
                 <div
                   key={image._id}
-                  className="group relative aspect-square rounded-lg overflow-hidden bg-(--color-muted-accent) hover:ring-2 hover:ring-accent transition"
+                  className="group relative aspect-square rounded-lg overflow-hidden bg-(--color-muted-accent) hover:ring-2 hover:ring-offset-2 hover:ring-offset-base hover:ring-accent transition"
                 >
                   <Image
                     src={image.url}
