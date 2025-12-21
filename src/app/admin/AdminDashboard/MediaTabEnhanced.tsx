@@ -16,6 +16,7 @@ import {
   Star,
   X,
   Loader2,
+  Edit2,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -54,6 +55,7 @@ const MediaTabEnhanced = () => {
   const createMedia = useMutation(api.media.create);
   const assignMedia = useMutation(api.media.assign);
   const unassignMedia = useMutation(api.media.unassign);
+  const updateMedia = useMutation(api.media.update);
 
   // Home Gallery
   const galleryItems = useQuery(api.homeGallery.getAll) as
@@ -86,6 +88,14 @@ const MediaTabEnhanced = () => {
   );
   const [galleryAltText, setGalleryAltText] = useState("");
   const [galleryDescription, setGalleryDescription] = useState("");
+
+  // Image metadata editing state
+  const [editingImageId, setEditingImageId] = useState<Id<"media"> | null>(
+    null
+  );
+  const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
+  const [editImageAlt, setEditImageAlt] = useState("");
+  const [editImageFilename, setEditImageFilename] = useState("");
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
@@ -127,6 +137,32 @@ const MediaTabEnhanced = () => {
         err instanceof Error ? err : new Error("Failed to delete image")
       );
     }
+  };
+
+  const handleEditImage = (image: MediaFile) => {
+    setEditingImageId(image._id);
+    setEditImageAlt(image.altText || "");
+    setEditImageFilename(image.filename);
+    setIsEditDrawerOpen(true);
+  };
+
+  const handleSaveImageMetadata = async () => {
+    if (!editingImageId) return;
+    try {
+      await updateMedia({
+        id: editingImageId,
+        altText: editImageAlt,
+        filename: editImageFilename,
+      });
+      setSuccess("Image metadata updated");
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to update image")
+      );
+    }
+    setIsEditDrawerOpen(false);
+    setEditingImageId(null);
   };
 
   const togglePageExpanded = (pageId: string) => {
@@ -664,13 +700,13 @@ const MediaTabEnhanced = () => {
               {filteredImages.map((image) => (
                 <div
                   key={image._id}
-                  className="group relative aspect-square rounded-lg overflow-hidden bg-(--color-muted-accent) hover:ring-2 hover:ring-offset-2 hover:ring-offset-base hover:ring-accent transition"
+                  className="group relative aspect-square rounded-lg overflow-hidden bg-(--color-muted-accent) transition"
                 >
                   <Image
                     src={image.url}
                     alt={image.altText || image.filename}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:brightness-50 transition"
                     sizes="200px"
                   />
                   <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
@@ -680,8 +716,14 @@ const MediaTabEnhanced = () => {
                       rel="noopener noreferrer"
                       className="p-2 bg-accent/80 rounded-lg hover:bg-accent transition"
                     >
-                      <Download className="w-4 h-4 text-black" />
+                      <Download className="w-4 h-4 text-white" />
                     </a>
+                    <button
+                      onClick={() => handleEditImage(image)}
+                      className="p-2 bg-blue-500/80 rounded-lg hover:bg-blue-500 transition"
+                    >
+                      <Edit2 className="w-4 h-4 text-white" />
+                    </button>
                     <button
                       onClick={() => setDeleteConfirm(image._id)}
                       className="p-2 bg-red-500/80 rounded-lg hover:bg-red-500 transition"
@@ -738,6 +780,12 @@ const MediaTabEnhanced = () => {
                       <Download className="w-4 h-4" />
                     </a>
                     <button
+                      onClick={() => handleEditImage(image)}
+                      className="p-2 text-blue-500 hover:bg-blue-500/10 rounded transition"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => setDeleteConfirm(image._id)}
                       className="p-2 text-red-500 hover:bg-red-500/10 rounded transition"
                     >
@@ -767,6 +815,65 @@ const MediaTabEnhanced = () => {
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
+                variant="outline"
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Image Metadata Modal */}
+      {isEditDrawerOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
+            <h3 className="text-lg font-bold text-ink mb-4">
+              Edit Image Metadata
+            </h3>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-ink mb-2">
+                  Alt Text
+                </label>
+                <input
+                  type="text"
+                  value={editImageAlt}
+                  onChange={(e) => setEditImageAlt(e.target.value)}
+                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+                  placeholder="Describe the image..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-ink mb-2">
+                  Filename
+                </label>
+                <input
+                  type="text"
+                  value={editImageFilename}
+                  onChange={(e) => setEditImageFilename(e.target.value)}
+                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+                  placeholder="Image filename..."
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-2 mt-6">
+              <Button
+                onClick={handleSaveImageMetadata}
+                variant="accent"
+                className="flex-1"
+              >
+                Save
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsEditDrawerOpen(false);
+                  setEditingImageId(null);
+                }}
                 variant="outline"
                 className="flex-1"
               >

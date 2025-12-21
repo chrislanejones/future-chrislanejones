@@ -16,6 +16,7 @@ import type * as homeGallery from "../homeGallery.js";
 import type * as http from "../http.js";
 import type * as media from "../media.js";
 import type * as navigation from "../navigation.js";
+import type * as projects from "../projects.js";
 import type * as seo from "../seo.js";
 import type * as siteSettings from "../siteSettings.js";
 
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   media: typeof media;
   navigation: typeof navigation;
+  projects: typeof projects;
   seo: typeof seo;
   siteSettings: typeof siteSettings;
 }>;

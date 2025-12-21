@@ -142,7 +142,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
   // Determine the primary link (prefer GitHub, then Codeberg, then custom, then Vercel)
   const primaryLink =
-    project.githubUrl || project.codebergUrl || project.customUrl || project.vercelUrl;
+    project.githubUrl ||
+    project.codebergUrl ||
+    project.customUrl ||
+    project.vercelUrl;
   const hasPrimaryLink = isValidUrl(primaryLink);
 
   return (
@@ -154,7 +157,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     >
       <div className="group flex h-full flex-col">
         {/* Project Image */}
-        <div className="relative w-full aspect-[16/9] bg-white/5">
+        <div className="relative w-full aspect-video bg-white/5">
           {hasPrimaryLink ? (
             <Link
               href={primaryLink!}
@@ -162,7 +165,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               rel="noopener noreferrer"
               className="block"
             >
-              <div className="relative w-full aspect-[16/9] bg-white/5">
+              <div className="relative w-full aspect-video bg-white/5">
                 <Image
                   src={project.image}
                   alt={`${project.title} preview`}

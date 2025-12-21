@@ -12,6 +12,7 @@ import {
   Calendar,
   MessageSquare,
   Heart,
+  Briefcase,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useClerk, useUser } from "@clerk/nextjs";
@@ -38,6 +39,7 @@ import LinksManagerTabEnhanced from "./LinksManagerTabEnhanced";
 import CareerTimelineTabEnhanced from "./CareerTimelineTabEnhanced";
 import MessagesTabEnhanced from "./MessagesTabEnhanced";
 import EngagementTabEnhanced from "./EngagementTabEnhanced";
+import ProjectsTabEnhanced from "./ProjectsTabEnhanced";
 
 const AdminSidebarContent = ({
   tabs,
@@ -54,7 +56,10 @@ const AdminSidebarContent = ({
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon" className="admin-border-right admin-panel-glow bg-panel">
+    <Sidebar
+      collapsible="icon"
+      className="admin-border-right admin-panel-glow bg-panel"
+    >
       <SidebarHeader className="flex flex-col gap-2 p-4">
         <div className="px-2">
           {!isCollapsed && (
@@ -114,8 +119,9 @@ const AdminDashboard = () => {
     { id: "pages", label: "Pages & Menu", icon: List },
     { id: "seo", label: "SEO Manager", icon: FileText },
     { id: "media", label: "Media Manager", icon: Image },
-    { id: "links", label: "Links Manager", icon: Link },
+    { id: "projects", label: "Projects", icon: Briefcase },
     { id: "career", label: "Career Timeline", icon: Calendar },
+    { id: "links", label: "Links Manager", icon: Link },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "blog-posts", label: "Blog Posts", icon: FileText },
     { id: "engagement", label: "Comments & Likes", icon: Heart },
@@ -130,10 +136,12 @@ const AdminDashboard = () => {
         return <SeoTabEnhanced />;
       case "media":
         return <MediaTabEnhanced />;
-      case "links":
-        return <LinksManagerTabEnhanced />;
+      case "projects":
+        return <ProjectsTabEnhanced />;
       case "career":
         return <CareerTimelineTabEnhanced />;
+      case "links":
+        return <LinksManagerTabEnhanced />;
       case "messages":
         return <MessagesTabEnhanced />;
       case "blog-posts":
