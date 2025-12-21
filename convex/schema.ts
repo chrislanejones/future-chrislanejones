@@ -162,4 +162,23 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index("by_position", ["position"]),
+
+  projects: defineTable({
+    title: v.string(),
+    description: v.string(),
+    category: v.string(), // "app" or "website"
+    image: v.optional(v.string()),
+    githubUrl: v.optional(v.string()),
+    codebergUrl: v.optional(v.string()),
+    vercelUrl: v.optional(v.string()),
+    customUrl: v.optional(v.string()),
+    featured: v.boolean(),
+    order: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_featured", ["featured"])
+    .index("by_category", ["category"])
+    .index("by_order", ["order"])
+    .index("by_created", ["createdAt"]),
 });
