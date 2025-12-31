@@ -261,7 +261,7 @@ function PhotoGalleryCard() {
           animationDelay={0.2}
         />
         <div>
-          <h3 className="">Setup Photo Gallery</h3>
+          <span className="">Setup Photo Gallery</span>
           <p className="text-muted">Desk Setups Throughout the Years</p>
         </div>
       </div>
