@@ -107,4 +107,9 @@ export const clients: Client[] = [
     logo: "/client-icons/Provision-Partners-Logo.webp",
     url: "https://www.provisionpartners.com/",
   },
+  {
+    name: "Marko & Partners",
+    logo: "/client-icons/Marko-and-Partners-Logo.webp",
+    url: "https://markoandpartners.com/",
+  },
 ];

@@ -250,7 +250,7 @@ function PhotoGalleryCard() {
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-base/80 via-base/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-t from-base/80 via-base/20 to-transparent"></div>
       </div>
 
       <div className="grid grid-cols-[auto_1fr] items-start gap-4">

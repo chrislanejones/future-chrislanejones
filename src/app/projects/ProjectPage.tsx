@@ -7,7 +7,9 @@ import Banner from "@/components/page/banner";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getPageHeader } from "@/data/header-data";
+import { getPageHeader } from "@/lib/page-headers";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
 /* ---------------------------------- Types --------------------------------- */
 
@@ -371,16 +373,24 @@ function ProjectGridSection({ projects }: { projects: Project[] }) {
 
 export default function ProjectGrid() {
   const [activeTab, setActiveTab] = useState<"apps" | "clients">("apps");
-  const headerData = getPageHeader(
-    activeTab === "apps" ? "/projects/apps" : "/projects/websites"
-  );
+
+  const appsConvex = useQuery(api.pageHeaders.getPageHeaderByPath, {
+    path: "/projects/apps",
+  });
+  const websitesConvex = useQuery(api.pageHeaders.getPageHeaderByPath, {
+    path: "/projects/websites",
+  });
+
+  const appsHeader = appsConvex ?? getPageHeader("/projects/apps");
+  const websitesHeader = websitesConvex ?? getPageHeader("/projects/websites");
+  const activeHeader = activeTab === "apps" ? appsHeader : websitesHeader;
 
   return (
     <main className="site-container py-12">
       <Banner
-        title={headerData.title}
-        breadcrumbPage={headerData.breadcrumbPage}
-        description={headerData.description}
+        title={activeHeader.title}
+        breadcrumbPage={activeHeader.breadcrumbPage}
+        description={activeHeader.description}
       />
 
       {/* Tabs - Left aligned with padding */}

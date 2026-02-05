@@ -117,7 +117,7 @@ const AdminDashboard = () => {
 
   const tabs = [
     { id: "pages", label: "Pages & Menu", icon: List },
-    { id: "seo", label: "SEO Manager", icon: FileText },
+    { id: "seo", label: "SEO & Title Manager", icon: FileText },
     { id: "media", label: "Media Manager", icon: Image },
     { id: "projects", label: "Projects", icon: Briefcase },
     { id: "career", label: "Career Timeline", icon: Calendar },

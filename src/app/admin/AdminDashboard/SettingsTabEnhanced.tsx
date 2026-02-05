@@ -13,6 +13,7 @@ import {
   Save,
   Trash2,
   FileText,
+  Layout,
   type LucideIcon,
 } from "lucide-react";
 import { useMutation, useQuery } from "convex/react";
@@ -91,18 +92,20 @@ const SettingsTabEnhanced = () => {
   const seedNavigation = useMutation(api.navigation.seedNavigationData);
   const seedSEO = useMutation(api.seo.seedSEOData);
   const seedProfile = useMutation(api.siteSettings.seedProfile);
+  const seedPageHeaders = useMutation(api.pageHeaders.seedPageHeaders);
 
   const mutationMap: Record<string, () => Promise<unknown>> = {
     links: seedLinks,
     "career-timeline": seedTimeline,
     "blog-posts": seedBlogPosts,
+    "page-headers": seedPageHeaders,
     navigation: seedNavigation,
     seo: seedSEO,
     profile: seedProfile,
   };
 
   const [selectedSources, setSelectedSources] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [isReseeding, setIsReseeding] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -201,7 +204,7 @@ const SettingsTabEnhanced = () => {
 
   const addLog = (
     message: string,
-    type: "info" | "success" | "error" = "info"
+    type: "info" | "success" | "error" = "info",
   ) => {
     setLogs((prev) => [
       ...prev,
@@ -225,6 +228,12 @@ const SettingsTabEnhanced = () => {
       label: "SEO Metadata",
       icon: FileText,
       description: "Page titles and meta descriptions",
+    },
+    {
+      id: "page-headers",
+      label: "Page Headers",
+      icon: Layout,
+      description: "Banner titles, breadcrumb labels, and page descriptions",
     },
     {
       id: "links",
@@ -303,7 +312,7 @@ const SettingsTabEnhanced = () => {
     setIsReseeding(true);
     addLog(
       `Starting reseed for ${selectedSources.size} data source(s)...`,
-      "info"
+      "info",
     );
 
     let successCount = 0;

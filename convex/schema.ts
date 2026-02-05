@@ -15,7 +15,7 @@ export default defineSchema({
         twitter: v.optional(v.string()),
         codepen: v.optional(v.string()),
         youtube: v.optional(v.string()),
-      })
+      }),
     ),
     updatedAt: v.number(),
   }),
@@ -26,6 +26,14 @@ export default defineSchema({
     description: v.string(),
     canonicalUrl: v.optional(v.string()),
     ogImage: v.optional(v.string()),
+    updatedAt: v.number(),
+  }).index("by_path", ["path"]),
+
+  pageHeaders: defineTable({
+    path: v.string(),
+    title: v.string(),
+    breadcrumbPage: v.string(),
+    description: v.string(),
     updatedAt: v.number(),
   }).index("by_path", ["path"]),
 
