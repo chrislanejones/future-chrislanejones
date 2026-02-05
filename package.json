@@ -48,6 +48,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@effect/language-service": "^0.63.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^24.10.3",
     "@types/react": "^19.2.7",

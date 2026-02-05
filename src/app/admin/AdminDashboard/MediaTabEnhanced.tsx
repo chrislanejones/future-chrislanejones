@@ -58,6 +58,7 @@ const MediaTabEnhanced = () => {
   const updateMedia = useMutation(api.media.update);
 
   // Home Gallery
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryItems = useQuery(api.homeGallery.getAll) as
     | GalleryItem[]
     | undefined;
@@ -368,21 +369,22 @@ const MediaTabEnhanced = () => {
             variant="accent"
             className="gap-2 w-full md:w-auto"
             disabled={isUploading}
-            asChild
+            onClick={() => fileInputRef.current?.click()}
           >
-            <label className="cursor-pointer">
-              <Upload className="w-4 h-4" />
-              {isUploading ? "Uploading..." : "Upload Images"}
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                disabled={isUploading}
-              />
-            </label>
+            <Upload className="w-4 h-4" />
+            {isUploading ? "Uploading..." : "Upload Images"}
           </Button>
+
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+            disabled={isUploading}
+          />
         </div>
       </div>
 
@@ -570,232 +572,57 @@ const MediaTabEnhanced = () => {
 
         {/* Main Image Grid/List */}
         <div className="flex-1 min-w-0 overflow-auto">
-          {/* Home Page Gallery View */}
-          {selectedView === "home-gallery" ? (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-bold text-ink">
-                    Home Page Gallery
-                  </h2>
-                  <p className="text-sm text-muted">
-                    Click on a slot to add or replace an image
+          <div className="grid grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((position) => {
+              const item = getGalleryItemByPosition(position);
+              return (
+                <div key={position}>
+                  <p className="text-xs text-muted mb-2">
+                    {position === 1 ? "Featured Image" : `Slot ${position}`}
                   </p>
-                </div>
-              </div>
-
-              {/* Gallery Grid - 1 Featured + 5 Others */}
-              <div className="grid grid-cols-3 gap-4">
-                {/* Featured Image (Position 1) - full width */}
-                <div className="col-span-3">
-                  <p className="text-xs text-muted mb-2 flex items-center gap-1">
-                    <Star className="w-3 h-3 text-accent" />
-                    Featured Image
-                  </p>
-                  {(() => {
-                    const item = getGalleryItemByPosition(1);
-                    return (
-                      <button
-                        onClick={() => handleGallerySlotClick(1)}
-                        className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
-                          item
-                            ? "bg-(--color-muted-accent)"
-                            : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
-                        }`}
-                      >
-                        {item ? (
-                          <>
-                            <Image
-                              src={item.url}
-                              alt={item.alt}
-                              fill
-                              className="object-cover"
-                              sizes="600px"
-                            />
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                              <span className="px-3 py-1 bg-accent text-black rounded-lg text-sm font-medium">
-                                Replace
-                              </span>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRemoveGalleryImage(1);
-                                }}
-                                className="p-2 bg-red-500 rounded-lg hover:bg-red-600 transition"
-                              >
-                                <Trash2 className="w-4 h-4 text-white" />
-                              </button>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center h-full text-muted">
-                            <ImageIcon className="w-12 h-12 mb-2 opacity-50" />
-                            <span>Click to add featured image</span>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })()}
-                </div>
-
-                {/* Slots 2–6 (3 × 2 grid) */}
-                {[2, 3, 4, 5, 6].map((position) => {
-                  const item = getGalleryItemByPosition(position);
-                  return (
-                    <div key={position}>
-                      <p className="text-xs text-muted mb-2">Slot {position}</p>
-                      <button
-                        onClick={() => handleGallerySlotClick(position)}
-                        className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
-                          item
-                            ? "bg-(--color-muted-accent)"
-                            : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
-                        }`}
-                      >
-                        {item ? (
-                          <>
-                            <Image
-                              src={item.url}
-                              alt={item.alt}
-                              fill
-                              className="object-cover"
-                              sizes="200px"
-                            />
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                              <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
-                                Replace
-                              </span>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRemoveGalleryImage(position);
-                                }}
-                                className="p-1.5 bg-red-500 rounded hover:bg-red-600 transition"
-                              >
-                                <Trash2 className="w-3 h-3 text-white" />
-                              </button>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="flex flex-col items-center justify-center h-full text-muted">
-                            <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
-                            <span className="text-xs">Add image</span>
-                          </div>
-                        )}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ) : filteredImages.length === 0 ? (
-            <div className="text-center py-12">
-              <ImageIcon className="w-12 h-12 mx-auto text-muted opacity-50 mb-4" />
-              <p className="text-muted">
-                {searchQuery ? "No images found" : "No images in this view"}
-              </p>
-            </div>
-          ) : viewMode === "grid" ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {filteredImages.map((image) => (
-                <div
-                  key={image._id}
-                  className="group relative aspect-square rounded-lg overflow-hidden bg-(--color-muted-accent) transition"
-                >
-                  <Image
-                    src={image.url}
-                    alt={image.altText || image.filename}
-                    fill
-                    className="object-cover group-hover:brightness-50 transition"
-                    sizes="200px"
-                  />
-                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                    <a
-                      href={image.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-accent/80 rounded-lg hover:bg-accent transition"
-                    >
-                      <Download className="w-4 h-4 text-white" />
-                    </a>
-                    <button
-                      onClick={() => handleEditImage(image)}
-                      className="p-2 bg-blue-500/80 rounded-lg hover:bg-blue-500 transition"
-                    >
-                      <Edit2 className="w-4 h-4 text-white" />
-                    </button>
-                    <button
-                      onClick={() => setDeleteConfirm(image._id)}
-                      className="p-2 bg-red-500/80 rounded-lg hover:bg-red-500 transition"
-                    >
-                      <Trash2 className="w-4 h-4 text-white" />
-                    </button>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/80 p-2 opacity-0 group-hover:opacity-100 transition">
-                    <p className="text-xs text-white truncate">
-                      {image.filename}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {filteredImages.map((image) => (
-                <div
-                  key={image._id}
-                  className="flex items-center gap-4 p-3 bg-(--color-muted-accent) rounded-lg hover:ring-2 hover:ring-accent transition"
-                >
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
-                    <Image
-                      src={image.url}
-                      alt={image.altText || image.filename}
-                      fill
-                      className="object-cover"
-                      sizes="64px"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-ink font-medium truncate">
-                      {image.filename}
-                    </p>
-                    {image.assignedToTitle && (
-                      <p className="text-sm text-muted truncate">
-                        Assigned to: {image.assignedToTitle}
-                      </p>
+                  <button
+                    onClick={() => handleGallerySlotClick(position)}
+                    className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
+                      item
+                        ? "bg-(--color-muted-accent)"
+                        : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
+                    }`}
+                  >
+                    {item ? (
+                      <>
+                        <Image
+                          src={item.url}
+                          alt={item.alt}
+                          fill
+                          className="object-cover"
+                          sizes="200px"
+                        />
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                          <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
+                            Replace
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveGalleryImage(position);
+                            }}
+                            className="p-1.5 bg-red-500 rounded hover:bg-red-600 transition"
+                          >
+                            <Trash2 className="w-3 h-3 text-white" />
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-muted">
+                        <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
+                        <span className="text-xs">Add image</span>
+                      </div>
                     )}
-                    {image.size && (
-                      <p className="text-xs text-muted">
-                        {(image.size / 1024).toFixed(1)} KB
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <a
-                      href={image.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-muted hover:text-ink transition"
-                    >
-                      <Download className="w-4 h-4" />
-                    </a>
-                    <button
-                      onClick={() => handleEditImage(image)}
-                      className="p-2 text-blue-500 hover:bg-blue-500/10 rounded transition"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setDeleteConfirm(image._id)}
-                      className="p-2 text-red-500 hover:bg-red-500/10 rounded transition"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
       </div>
 

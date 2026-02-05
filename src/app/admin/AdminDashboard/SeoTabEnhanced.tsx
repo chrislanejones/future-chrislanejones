@@ -4,14 +4,11 @@ import React, { useState, useEffect } from "react";
 import {
   Search,
   Save,
-  Plus,
-  CheckCircle,
-  AlertCircle,
   Globe,
   FileText,
   Image as ImageIcon,
   Trash2,
-  X,
+  Layout,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -33,15 +30,35 @@ interface SEOEntry {
   updatedAt: number;
 }
 
+interface PageHeaderEntry {
+  _id: Id<"pageHeaders">;
+  _creationTime: number;
+  path: string;
+  title: string;
+  breadcrumbPage: string;
+  description: string;
+  updatedAt: number;
+}
+
+// Combined page entry for the list
+interface PageEntry {
+  path: string;
+  title: string;
+  seoEntry?: SEOEntry;
+  headerEntry?: PageHeaderEntry;
+}
+
 export const SeoTabEnhanced = () => {
   const seoEntries = useQuery(api.seo.getAllSEO) ?? [];
+  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
+  const updatePageHeader = useMutation(api.pageHeaders.updatePageHeader);
 
-  const [selectedPage, setSelectedPage] = useState<SEOEntry | null>(null);
+  const [selectedPage, setSelectedPage] = useState<PageEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
-    null
+    null,
   );
   const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -54,33 +71,107 @@ export const SeoTabEnhanced = () => {
     ogImage: "",
   });
 
+  // Header/Title form data
+  const [headerFormData, setHeaderFormData] = useState({
+    title: "",
+    breadcrumbPage: "",
+    description: "",
+  });
+
+  // Merge SEO entries and page headers into a unified list
+  const mergedPages: PageEntry[] = React.useMemo(() => {
+    const pageMap = new Map<string, PageEntry>();
+
+    // Add all SEO entries
+    for (const seo of seoEntries) {
+      pageMap.set(seo.path, {
+        path: seo.path,
+        title: seo.title,
+        seoEntry: seo as SEOEntry,
+      });
+    }
+
+    // Add/merge page headers
+    for (const header of pageHeaders) {
+      const existing = pageMap.get(header.path);
+      if (existing) {
+        existing.headerEntry = header as PageHeaderEntry;
+      } else {
+        pageMap.set(header.path, {
+          path: header.path,
+          title: header.title,
+          headerEntry: header as PageHeaderEntry,
+        });
+      }
+    }
+
+    return Array.from(pageMap.values());
+  }, [seoEntries, pageHeaders]);
+
   // Auto-select homepage (/) first, or first entry if no homepage
   useEffect(() => {
-    if (seoEntries.length > 0 && !selectedPage) {
-      const homePage = seoEntries.find((entry) => entry.path === "/");
-      const firstEntry = (homePage || seoEntries[0]) as SEOEntry;
+    if (mergedPages.length > 0 && !selectedPage) {
+      const homePage = mergedPages.find((entry) => entry.path === "/");
+      const firstEntry = homePage || mergedPages[0];
       setSelectedPage(firstEntry);
     }
-  }, [seoEntries, selectedPage]);
+  }, [mergedPages, selectedPage]);
+
+  // Sync selectedPage with latest Convex data
+  useEffect(() => {
+    if (selectedPage && mergedPages.length > 0) {
+      const updatedPage = mergedPages.find((p) => p.path === selectedPage.path);
+      if (updatedPage) {
+        // Update selectedPage reference if data changed
+        setSelectedPage(updatedPage);
+      }
+    }
+  }, [mergedPages]);
 
   useEffect(() => {
     if (selectedPage) {
-      setFormData({
-        path: selectedPage.path,
-        title: selectedPage.title,
-        description: selectedPage.description,
-        canonicalUrl: selectedPage.canonicalUrl || "",
-        ogImage:
-          (selectedPage as SEOEntry & { ogImage?: string }).ogImage || "",
-      });
+      // Load SEO data
+      if (selectedPage.seoEntry) {
+        setFormData({
+          path: selectedPage.path,
+          title: selectedPage.seoEntry.title,
+          description: selectedPage.seoEntry.description,
+          canonicalUrl: selectedPage.seoEntry.canonicalUrl || "",
+          ogImage: selectedPage.seoEntry.ogImage || "",
+        });
+      } else {
+        setFormData({
+          path: selectedPage.path,
+          title: "",
+          description: "",
+          canonicalUrl: "",
+          ogImage: "",
+        });
+      }
+
+      // Load page header data from Convex
+      if (selectedPage.headerEntry) {
+        setHeaderFormData({
+          title: selectedPage.headerEntry.title,
+          breadcrumbPage: selectedPage.headerEntry.breadcrumbPage,
+          description: selectedPage.headerEntry.description,
+        });
+      } else {
+        setHeaderFormData({
+          title: "",
+          breadcrumbPage: "",
+          description: "",
+        });
+      }
+
       setIsEditing(false);
     }
   }, [selectedPage]);
 
-  const filteredPages = seoEntries.filter(
+  const filteredPages = mergedPages.filter(
     (entry) =>
       entry.path.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.title.toLowerCase().includes(searchQuery.toLowerCase())
+      entry.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Sort to ensure homepage is first
@@ -90,7 +181,7 @@ export const SeoTabEnhanced = () => {
     return a.path.localeCompare(b.path);
   });
 
-  const handlePageSelect = (page: SEOEntry) => {
+  const handlePageSelect = (page: PageEntry) => {
     setSelectedPage(page);
     setSaveStatus(null);
   };
@@ -100,6 +191,7 @@ export const SeoTabEnhanced = () => {
 
     setIsSaving(true);
     try {
+      // Save SEO data
       await updateSEO({
         path: formData.path,
         title: formData.title,
@@ -107,11 +199,26 @@ export const SeoTabEnhanced = () => {
         canonicalUrl: formData.canonicalUrl || undefined,
         ogImage: formData.ogImage || undefined,
       });
+
+      // Save page header data (only if any header field has been filled)
+      if (
+        headerFormData.title ||
+        headerFormData.breadcrumbPage ||
+        headerFormData.description
+      ) {
+        await updatePageHeader({
+          path: formData.path,
+          title: headerFormData.title,
+          breadcrumbPage: headerFormData.breadcrumbPage,
+          description: headerFormData.description,
+        });
+      }
+
       setIsEditing(false);
       setSaveStatus("success");
       setTimeout(() => setSaveStatus(null), 3000);
     } catch (error) {
-      console.error("Failed to save SEO:", error);
+      console.error("Failed to save:", error);
       setSaveStatus("error");
     } finally {
       setIsSaving(false);
@@ -208,10 +315,10 @@ export const SeoTabEnhanced = () => {
         <div className="flex-1 overflow-y-auto space-y-2">
           {sortedFilteredPages.map((entry) => (
             <button
-              key={entry._id}
-              onClick={() => handlePageSelect(entry as SEOEntry)}
+              key={entry.path}
+              onClick={() => handlePageSelect(entry)}
               className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${
-                selectedPage?._id === entry._id
+                selectedPage?.path === entry.path
                   ? "bg-(--color-foreground) text-(--color-panel)"
                   : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
               }`}
@@ -219,16 +326,39 @@ export const SeoTabEnhanced = () => {
               <div className="flex items-center gap-2">
                 <Globe
                   className={`w-4 h-4 ${
-                    selectedPage?._id === entry._id
+                    selectedPage?.path === entry.path
                       ? "text-(--color-panel)"
                       : "text-muted"
                   }`}
                 />
                 <span className="truncate">{getPageName(entry.path)}</span>
+                {/* Data indicators */}
+                <div className="flex gap-1 ml-auto">
+                  {entry.seoEntry && (
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedPage?.path === entry.path
+                          ? "bg-(--color-panel)/50"
+                          : "bg-blue-500"
+                      }`}
+                      title="Has SEO data"
+                    />
+                  )}
+                  {entry.headerEntry && (
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedPage?.path === entry.path
+                          ? "bg-(--color-panel)/50"
+                          : "bg-green-500"
+                      }`}
+                      title="Has header data"
+                    />
+                  )}
+                </div>
               </div>
               <p
                 className={`text-xs truncate mt-1 ${
-                  selectedPage?._id === entry._id
+                  selectedPage?.path === entry.path
                     ? "text-(--color-panel)/70"
                     : "text-muted"
                 }`}
@@ -256,9 +386,7 @@ export const SeoTabEnhanced = () => {
                   <FileText className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-ink">
-                    {getPageName(selectedPage.path)}
-                  </h2>
+                  <h2 className="font-bold text-ink">SEO and Title Manager</h2>
                   <p className="text-sm text-muted">{selectedPage.path}</p>
                 </div>
               </div>
@@ -279,7 +407,7 @@ export const SeoTabEnhanced = () => {
                   </span>
                 </div>
 
-                {/* Save Button - Homepage style */}
+                {/* Save Button */}
                 <Button
                   onClick={handleSave}
                   disabled={!isEditing || isSaving}
@@ -287,7 +415,7 @@ export const SeoTabEnhanced = () => {
                   className="gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  {isSaving ? "Saving..." : "Save"}
+                  {isSaving ? "Saving..." : "Save All"}
                 </Button>
               </div>
             </div>
@@ -296,7 +424,7 @@ export const SeoTabEnhanced = () => {
             {saveStatus === "success" && (
               <div className="mx-6 mt-4">
                 <SuccessDisplay
-                  message="SEO settings saved successfully!"
+                  message="SEO and header settings saved successfully!"
                   onDismiss={() => setSaveStatus(null)}
                   compact
                 />
@@ -305,7 +433,7 @@ export const SeoTabEnhanced = () => {
             {saveStatus === "error" && (
               <div className="mx-6 mt-4">
                 <ErrorDisplay
-                  error={new Error("Failed to save SEO settings")}
+                  error={new Error("Failed to save settings")}
                   onDismiss={() => setSaveStatus(null)}
                   compact
                 />
@@ -414,8 +542,8 @@ export const SeoTabEnhanced = () => {
                 )}
               </div>
 
-              {/* Search Preview - Dark Mode Fixed */}
-              <div className="p-4 bg-(--color-muted-accent) rounded-xl">
+              {/* Search Preview Card */}
+              <div className="p-4 bg-(--color-muted-accent) rounded-xl border border-(--color-border)">
                 <h3 className="mb-3 text-ink font-semibold flex items-center gap-2">
                   <Search className="w-4 h-4" />
                   Search Preview
@@ -432,6 +560,104 @@ export const SeoTabEnhanced = () => {
                     {formData.description ||
                       "Meta description will appear here..."}
                   </p>
+                </div>
+              </div>
+
+              {/* === PAGE HEADER / TITLE FIELDS === */}
+              <div className="pt-4 border-t border-(--color-border)">
+                <h3 className="mb-1 text-ink font-semibold flex items-center gap-2">
+                  <Layout className="w-4 h-4" />
+                  Page Header &amp; Banner
+                </h3>
+                <p className="text-xs text-muted mb-4">
+                  Controls the banner title, breadcrumb label, and description
+                  shown on the page itself.
+                </p>
+              </div>
+
+              {/* Banner Title */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  Banner Title
+                </label>
+                <input
+                  type="text"
+                  value={headerFormData.title}
+                  onChange={(e) => {
+                    setHeaderFormData({
+                      ...headerFormData,
+                      title: e.target.value,
+                    });
+                    setIsEditing(true);
+                  }}
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+                  placeholder="e.g. About, Projects, Career"
+                />
+              </div>
+
+              {/* Breadcrumb Label */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  Breadcrumb Label
+                </label>
+                <input
+                  type="text"
+                  value={headerFormData.breadcrumbPage}
+                  onChange={(e) => {
+                    setHeaderFormData({
+                      ...headerFormData,
+                      breadcrumbPage: e.target.value,
+                    });
+                    setIsEditing(true);
+                  }}
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+                  placeholder="e.g. About, Apps, Websites"
+                />
+                <p className="text-xs text-muted mt-1">
+                  Shown in breadcrumb as: Home /{" "}
+                  {headerFormData.breadcrumbPage || "Page"}
+                </p>
+              </div>
+
+              {/* Banner Description */}
+              <div>
+                <label className="block mb-2 text-ink font-medium">
+                  Banner Description
+                </label>
+                <textarea
+                  value={headerFormData.description}
+                  onChange={(e) => {
+                    setHeaderFormData({
+                      ...headerFormData,
+                      description: e.target.value,
+                    });
+                    setIsEditing(true);
+                  }}
+                  rows={2}
+                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none resize-none"
+                  placeholder="Short description shown in the page banner"
+                />
+              </div>
+
+              {/* Banner Preview Card */}
+              <div className="p-4 bg-(--color-muted-accent) rounded-xl border border-(--color-border)">
+                <h3 className="mb-3 text-ink font-semibold flex items-center gap-2">
+                  <Layout className="w-4 h-4" />
+                  Banner Preview
+                </h3>
+                <div className="bg-(--color-panel) rounded-lg overflow-hidden">
+                  <div className="bg-linear-to-r from-accent/10 to-transparent px-6 py-5">
+                    <p className="text-xs text-muted mb-1">
+                      Home / {headerFormData.breadcrumbPage || "Page"}
+                    </p>
+                    <h4 className="text-lg font-bold text-ink">
+                      {headerFormData.title || "Page Title"}
+                    </h4>
+                    <p className="text-sm text-muted mt-1">
+                      {headerFormData.description ||
+                        "Page description will appear here..."}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

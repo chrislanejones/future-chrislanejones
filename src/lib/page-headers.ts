@@ -1,8 +1,11 @@
 /**
- * Centralized header data for all pages using the Banner component
- * Key should match the page route exactly (e.g., '/about', '/career')
+ * Static page header data - used as fallback while Convex loads
+ * and for seeding the Convex database.
  */
-export const pageHeaders = {
+export const staticPageHeaders: Record<
+  string,
+  { title: string; breadcrumbPage: string; description: string }
+> = {
   "/about": {
     title: "About Me",
     breadcrumbPage: "About",
@@ -37,7 +40,7 @@ export const pageHeaders = {
     title: "About the Logo",
     breadcrumbPage: "Logo",
     description:
-      "The mountain in my logo represents more than just a visual element—it’s a symbol of the journey. Each peak conquered in code, each valley navigated through debugging, mirrors the trails I hike in the Shenandoah Mountains.",
+      "The mountain in my logo represents more than just a visual element—it's a symbol of the journey. Each peak conquered in code, each valley navigated through debugging, mirrors the trails I hike in the Shenandoah Mountains.",
   },
   "/projects": {
     title: "Projects",
@@ -87,58 +90,24 @@ export const pageHeaders = {
     description:
       "Get in touch about web development projects, WordPress meetups, or hiking trails.",
   },
-
-  /**
-   * Fallback header used when a path has no explicit entry.
-   * This route is internal-only and not an actual page.
-   */
   "/fallback": {
     title: "Page",
     breadcrumbPage: "Page",
     description:
       "Content coming soon. In the meantime, enjoy exploring the rest of the site.",
   },
-} as const;
+};
 
-// Derived types from the data itself
-export type PageRoute = keyof typeof pageHeaders;
-export type PageHeaderData = (typeof pageHeaders)[PageRoute];
-
-/**
- * Metadata for layout.tsx files
- */
-export const layoutMetadata = {
-  "/admin": {
-    title: "Admin Dashboard | Chris Lane Jones",
-    description: "Manage portfolio content and SEO",
-  },
-} as const;
-
-export type LayoutRoute = keyof typeof layoutMetadata;
-export type LayoutMetadata = (typeof layoutMetadata)[LayoutRoute];
-
-// Helper functions
+export type PageHeaderData = {
+  title: string;
+  breadcrumbPage: string;
+  description: string;
+};
 
 /**
  * Get the header for a given path.
  * Falls back to the '/fallback' header when the path is unknown.
  */
 export function getPageHeader(path: string): PageHeaderData {
-  if (path in pageHeaders) {
-    return pageHeaders[path as PageRoute];
-  }
-
-  return pageHeaders["/fallback"];
-}
-
-/**
- * Get layout metadata for a given path.
- * Returns undefined if no metadata is defined for the route.
- */
-export function getLayoutMeta(path: string): LayoutMetadata | undefined {
-  if (path in layoutMetadata) {
-    return layoutMetadata[path as LayoutRoute];
-  }
-
-  return undefined;
+  return staticPageHeaders[path] ?? staticPageHeaders["/fallback"];
 }

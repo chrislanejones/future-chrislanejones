@@ -4,22 +4,27 @@ import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
 import BlogPage from "./BlogPage";
 import { getPageSEO } from "@/lib/seo";
-import { getPageHeader } from "@/data/header-data";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { getPageHeader } from "@/lib/page-headers";
 
 export async function generateMetadata() {
   return await getPageSEO("/blog");
 }
 
 export default function Page() {
-  const headerData = getPageHeader("/blog");
+  const headerConvex = useQuery(api.pageHeaders.getPageHeaderByPath, {
+    path: "/blog",
+  });
+  const header = headerConvex ?? getPageHeader("/blog");
 
   return (
     <>
       <Header />
       <Banner
-        title={headerData.title}
-        breadcrumbPage={headerData.breadcrumbPage}
-        description={headerData.description}
+        title={header.title}
+        breadcrumbPage={header.breadcrumbPage}
+        description={header.description}
       />
       <main>
         <BlogPage />

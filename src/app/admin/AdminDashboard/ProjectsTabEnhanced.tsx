@@ -40,7 +40,8 @@ interface Project {
 }
 
 const ProjectsTabEnhanced = () => {
-  const projects = useQuery(api.projects.getAll) ?? [];
+  const projects = useQuery(api.projects.getAll);
+  const projectList = projects ?? []; // always an array
   const createProject = useMutation(api.projects.create);
   const updateProject = useMutation(api.projects.update);
   const deleteProjectMutation = useMutation(api.projects.deleteProject);
@@ -84,8 +85,8 @@ const ProjectsTabEnhanced = () => {
   });
 
   useEffect(() => {
-    if (projects.length > 0 && !selectedProject && !isCreating) {
-      const projectData = projects[0];
+    if (projectList.length > 0 && !selectedProject && !isCreating) {
+      const projectData = projectList[0];
       setSelectedProject({
         ...projectData,
         category: (projectData.category as "app" | "website") || "app",
@@ -193,19 +194,18 @@ const ProjectsTabEnhanced = () => {
     }
   };
 
-  const handleToggleFeatured = async (id: Id<"projects">) => {
-    try {
-      await toggleFeatured({ id });
-    } catch (error) {
-      console.error("Failed to toggle featured:", error);
-    }
+  const handleToggleFeatured = async () => {
+    if (!selectedProject) return;
+    const { featured } = await toggleFeatured({ id: selectedProject._id });
+    // Optimistically update local state so UI snaps without re-fetch
+    setSelectedProject({ ...selectedProject, featured });
   };
 
   const handleCancel = () => {
     if (isCreating) {
       setIsCreating(false);
-      if (projects.length > 0) {
-        const projectData = projects[0];
+      if (projectList.length > 0) {
+        const projectData = projectList[0];
         setSelectedProject({
           ...projectData,
           category: (projectData.category as "app" | "website") || "app",
@@ -251,7 +251,7 @@ const ProjectsTabEnhanced = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto space-y-2">
-          {projects.map((project) => (
+          {projectList.map((project) => (
             <button
               key={project._id}
               onClick={() => {
@@ -262,7 +262,7 @@ const ProjectsTabEnhanced = () => {
               }}
               className={`w-full text-left p-3 rounded-lg transition ${
                 selectedProject?._id === project._id
-                  ? "bg-accent text-on-accent"
+                  ? "bg-(--color-foreground) text-(--color-panel)"
                   : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover)"
               }`}
             >
@@ -335,17 +335,17 @@ const ProjectsTabEnhanced = () => {
               <select
                 value={formData.category}
                 onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
+                  setFormData({
+                    ...formData,
                     category: e.target.value as "app" | "website",
-                  }));
+                  });
                   setIsEditing(true);
                 }}
                 disabled={!isEditing}
                 className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
               >
-                <option value="app">App Project</option>
-                <option value="website">Website Project</option>
+                <option value="app">App / Tool</option>
+                <option value="website">Client Website</option>
               </select>
             </div>
 
@@ -462,31 +462,21 @@ const ProjectsTabEnhanced = () => {
             </div>
 
             {/* Featured Toggle */}
-            <div className="flex items-center justify-between p-4 bg-(--color-muted-accent) rounded-xl">
-              <label className="text-ink font-medium flex items-center gap-2">
-                <Star className="w-4 h-4" />
-                Featured
-              </label>
-              {isEditing ? (
-                <Switch
-                  checked={formData.featured}
-                  onCheckedChange={(checked) => {
-                    setFormData((prev) => ({ ...prev, featured: checked }));
-                    setIsEditing(true);
-                  }}
-                />
-              ) : (
-                <span
-                  className={
-                    formData.featured
-                      ? "text-accent font-semibold"
-                      : "text-muted"
-                  }
+            {selectedProject && (
+              <div className="flex items-center justify-between p-4 bg-(--color-muted-accent) rounded-xl">
+                <label className="text-ink font-medium flex items-center gap-2">
+                  <Star className="w-4 h-4" aria-hidden="true" />
+                  Featured
+                </label>
+                <Button
+                  variant={selectedProject.featured ? "accent" : "outline"}
+                  size="sm"
+                  onClick={handleToggleFeatured}
                 >
-                  {formData.featured ? "Yes" : "No"}
-                </span>
-              )}
-            </div>
+                  {selectedProject.featured ? "Yes" : "No"}
+                </Button>
+              </div>
+            )}
 
             {/* Order */}
             <div>
@@ -520,12 +510,7 @@ const ProjectsTabEnhanced = () => {
                   </Button>
                   {selectedProject && (
                     <>
-                      <Button
-                        onClick={() =>
-                          handleToggleFeatured(selectedProject._id)
-                        }
-                        variant="neutral"
-                      >
+                      <Button onClick={handleToggleFeatured} variant="neutral">
                         {selectedProject.featured ? "Unfeature" : "Feature"}
                       </Button>
                       <Button
