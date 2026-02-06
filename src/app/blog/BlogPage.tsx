@@ -48,13 +48,14 @@ export default function BlogPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post, index) => (
             <Card
+              key={post._id}
               size="small"
               delay={0.1 + index * 0.05}
               className="overflow-hidden flex flex-col"
             >
               {post.coverImage && (
                 <Link href={`/blog/${post.slug}`} className="block">
-                  <div className="relative w-full aspect-[16/9] bg-white/5">
+                  <div className="relative w-full aspect-video bg-white/5">
                     <Image
                       src={post.coverImage}
                       alt={post.title}
