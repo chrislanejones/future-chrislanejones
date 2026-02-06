@@ -14,7 +14,7 @@ import {
   CheckCircle,
   Tag,
   Image as ImageIcon,
-  Calendar,
+  Calendar as CalendarIcon,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -26,6 +26,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
 import Image from "next/image";
 
 interface BlogPost {
@@ -250,6 +257,7 @@ const BlogPostsTabEnhanced = () => {
   const handleMediaSelect = (imageUrl: string) => {
     setFormData({ ...formData, coverImage: imageUrl });
     setIsEditing(true);
+    setIsMediaDrawerOpen(false);
   };
 
   const filteredPosts = posts.filter(
@@ -469,27 +477,44 @@ const BlogPostsTabEnhanced = () => {
               <div>
                 <label className="block mb-2 text-ink font-medium">
                   <span className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
+                    <CalendarIcon className="w-4 h-4" />
                     Publish Date
                   </span>
                 </label>
-                <input
-                  type="datetime-local"
-                  value={
-                    formData.createdAt && !isNaN(formData.createdAt)
-                      ? new Date(formData.createdAt).toISOString().slice(0, 16)
-                      : new Date().toISOString().slice(0, 16)
-                  }
-                  onChange={(e) => {
-                    const newDate = new Date(e.target.value).getTime();
-                    if (!isNaN(newDate)) {
-                      setFormData({ ...formData, createdAt: newDate });
-                      setIsEditing(true);
-                    }
-                  }}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      disabled={!isEditing}
+                      className="w-full justify-start text-left font-normal px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink disabled:opacity-60"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.createdAt && !isNaN(formData.createdAt)
+                        ? format(new Date(formData.createdAt), "PPP")
+                        : "Pick a date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        formData.createdAt && !isNaN(formData.createdAt)
+                          ? new Date(formData.createdAt)
+                          : undefined
+                      }
+                      onSelect={(date) => {
+                        if (date) {
+                          // Preserve existing time, just update the date
+                          const existing = new Date(formData.createdAt);
+                          date.setHours(existing.getHours(), existing.getMinutes(), existing.getSeconds());
+                          setFormData({ ...formData, createdAt: date.getTime() });
+                          setIsEditing(true);
+                        }
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* Excerpt */}

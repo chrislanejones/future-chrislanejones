@@ -1,10 +1,11 @@
 // src/app/blog/[slug]/page.tsx
 import BlogPostPage from "./BlogPostPage";
 
-export default function Page({
+export default async function Page({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  return <BlogPostPage params={params} />;
+  const { slug } = await params; // Add this line to await params
+  return <BlogPostPage params={{ slug }} />;
 }
