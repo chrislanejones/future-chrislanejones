@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
@@ -59,7 +58,10 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  const post = useQuery(api.blogPosts.getPostBySlug, { slug: params.slug });
+  const post = useQuery(
+    api.blogPosts.getPostBySlug,
+    params.slug ? { slug: params.slug } : "skip"
+  );
   const userLikeStatus = useQuery(
     api.blogPosts.getUserLikeStatus,
     userIdentifier && post?._id ? { postId: post._id, userIdentifier } : "skip"
@@ -77,7 +79,26 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   }, []);
 
   if (post === null) {
-    notFound();
+    return (
+      <>
+        <Header />
+        <main className="site-container py-12">
+          <div className="text-center py-12">
+            <h1 className="text-2xl font-bold text-ink mb-4">Post Not Found</h1>
+            <p className="text-muted mb-8">
+              The blog post you&apos;re looking for doesn&apos;t exist.
+            </p>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/blog">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Blog
+              </Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
   }
 
   if (!post || !userIdentifier) {
