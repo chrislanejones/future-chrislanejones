@@ -12,12 +12,6 @@ import {
 import dynamic from "next/dynamic";
 import WireframeTerrain from "../page/wireframe-terrain";
 
-// Dynamically import the 3D component (client-side only)
-const Bighorn3D = dynamic(() => import("./Bighorn3D"), {
-  ssr: false,
-  loading: () => <div className="w-full h-full" />,
-});
-
 export default function Footer() {
   const footerNavSections = useFooterNavSections(); // Use the hook for dynamic data
 
