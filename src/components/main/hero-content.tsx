@@ -51,7 +51,7 @@ export default function HeroContent() {
       <div className="flex flex-col h-full">
         <div className="flex flex-col gap-4">
           <h1 className="h1 tracking-tight text-ink">
-            UX/UI Web Design and Development
+            Senior Web Engineer | AI Automation & CMS Architect
           </h1>
           <h2 className="h2 text-ink">
             I Consult, Design, and Develop Web Interfaces for Businesses and

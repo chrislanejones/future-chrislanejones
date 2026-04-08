@@ -24,7 +24,7 @@ export async function getPageSEO(path: string): Promise<Metadata> {
       return metadata;
     }
 
-    console.log(`No SEO data found for path: ${path}, using defaults`);
+    // No Convex SEO entry for this path — fall back to hardcoded defaults
     return getDefaultSEO(path);
   } catch (error) {
     console.error("Error fetching SEO from Convex:", error);

@@ -18,9 +18,9 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "Image Editor & Optimizer",
+    title: "Multi Image Annotator and Compressor",
     description:
-      "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
+      "A browser-based image annotation and editing tool powered by Rust/WASM for pixel-level operations and React + TypeScript for the UI.",
     features: [
       "Offline-friendly and keyboard-navigable",
       "Undo/redo, rotation/flip, pagination",
@@ -29,7 +29,8 @@ const projects: Project[] = [
     image: "/projects/Image-Horse-App.webp",
     githubUrl:
       "https://github.com/chrislanejones/multi-image-compress-and-edit",
-    vercelUrl: "",
+    codebergUrl: "",
+    vercelUrl: "https://rust-wasm-photo-tool.netlify.app/",
   },
   {
     title: "Golang Web Crawler",
