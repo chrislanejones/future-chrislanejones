@@ -66,7 +66,9 @@ export default function LinkGrid() {
               className="h-30 w-30 rounded-2xl ring-2 ring-white/5 object-cover"
               src="/Professional-Photo-of-Chris-Lane-Jones.webp"
             />
-            <h1 className="text-center">UX/UI Web Design and Development</h1>
+            <h1 className="text-center">
+              Senior Web Engineer | AI Automation & CMS Architect
+            </h1>
             <h2 className="text-center">
               I Consult, Design, and Develop Web Interfaces for Businesses and
               Government Agencies.
