@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
 import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
@@ -73,6 +74,13 @@ export default function RootLayout({
               </div>
             </ConvexClientProvider>
           </PHProvider>
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-4RZ5XQXZ9Y" strategy="afterInteractive" />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-4RZ5XQXZ9Y');`}
+          </Script>
         </body>
       </html>
     </ClerkProvider>
