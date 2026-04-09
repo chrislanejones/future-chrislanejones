@@ -14,10 +14,11 @@ import { api } from "../../../convex/_generated/api";
 /* ---------------------------------- Types --------------------------------- */
 
 type Project = {
+  _id?: string;
   title: string;
   description: string;
-  features: string[];
-  image: string;
+  features?: string[];
+  image?: string;
   githubUrl?: string;
   codebergUrl?: string;
   vercelUrl?: string;
@@ -29,9 +30,8 @@ type Project = {
 const isValidUrl = (url: string | undefined): boolean =>
   typeof url === "string" && url.trim() !== "" && url.trim() !== "#";
 
-/* --------------------------------- Data ----------------------------------- */
-
-const appProjects: Project[] = [
+/* Static fallback data (shown while Convex loads or if DB is empty) */
+const FALLBACK_APPS: Project[] = [
   {
     title: "Image Editor & Optimizer",
     description:
@@ -46,8 +46,7 @@ const appProjects: Project[] = [
     image: "/projects/Image-Horse-App.webp",
     githubUrl:
       "https://github.com/chrislanejones/multi-image-compress-and-edit",
-    vercelUrl: "",
-    customUrl: "",
+    vercelUrl: "https://rust-wasm-photo-tool.netlify.app/",
   },
   {
     title: "Go Web Crawler",
@@ -62,8 +61,6 @@ const appProjects: Project[] = [
     ],
     image: "/projects/Web-Crawler-Golang-App.webp",
     githubUrl: "https://github.com/chrislanejones/webcrawler-go",
-    vercelUrl: "",
-    customUrl: "",
   },
   {
     title: "Vim/Neovim Shortcut Finder",
@@ -79,11 +76,10 @@ const appProjects: Project[] = [
     image: "/projects/MPC-Vim-Filter-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
     vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
-    customUrl: "",
   },
 ];
 
-const clientProjects: Project[] = [
+const FALLBACK_WEBSITES: Project[] = [
   {
     title: "Alembic - AI Marketing Analytics Platform",
     description:
@@ -96,8 +92,6 @@ const clientProjects: Project[] = [
       "Optimized image delivery and performance",
     ],
     image: "/projects/Get-Alembic-Website.webp",
-    githubUrl: "",
-    vercelUrl: "",
     customUrl: "https://getalembic.com/",
   },
   {
@@ -113,8 +107,6 @@ const clientProjects: Project[] = [
     ],
     image: "/projects/Job-Listing-WordPress-Plugin.webp",
     githubUrl: "https://github.com/chrislanejones/job-listing-plugin",
-    vercelUrl: "",
-    customUrl: "",
   },
   {
     title: "Wheelock Communities - Real Estate Development",
@@ -128,8 +120,6 @@ const clientProjects: Project[] = [
       "Optimized image delivery and lazy loading",
     ],
     image: "/projects/Wheelock-Communities.webp",
-    githubUrl: "",
-    vercelUrl: "",
     customUrl: "https://wheel.chrislanejones.com/",
   },
 ];
@@ -142,7 +132,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   const hasVercelUrl = isValidUrl(project.vercelUrl);
   const hasCustomUrl = isValidUrl(project.customUrl);
 
-  // Determine the primary link (prefer GitHub, then Codeberg, then custom, then Vercel)
   const primaryLink =
     project.githubUrl ||
     project.codebergUrl ||
@@ -169,7 +158,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             >
               <div className="relative w-full aspect-video bg-white/5">
                 <Image
-                  src={project.image}
+                  src={project.image ?? "/projects/Image-Horse-App.webp"}
                   alt={`${project.title} preview`}
                   fill
                   className="object-cover"
@@ -180,7 +169,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             </Link>
           ) : (
             <Image
-              src={project.image}
+              src={project.image ?? "/projects/Image-Horse-App.webp"}
               alt={`${project.title} preview`}
               fill
               className="object-cover"
@@ -192,7 +181,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         {/* Project Info */}
         <div className="flex-1 p-5 flex flex-col">
-          {/* Title */}
           {hasPrimaryLink ? (
             <Link
               href={primaryLink!}
@@ -208,19 +196,16 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             <h3 className="text-ink tracking-tight mb-2">{project.title}</h3>
           )}
 
-          {/* Description */}
           <p className="text-ink mt-2 line-clamp-3">{project.description}</p>
 
-          {/* Features */}
           <ul className="space-y-2 mt-4 flex-1">
-            {project.features.slice(0, 3).map((feature, i) => (
+            {(project.features ?? []).slice(0, 3).map((feature, i) => (
               <li key={i} className="flex items-start gap-2">
                 <svg
                   className="w-4 h-4 text-accent shrink-0 mt-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
                     strokeLinecap="round"
@@ -236,114 +221,38 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             ))}
           </ul>
 
-          {/* Action Buttons */}
           <div className="flex gap-2 mt-auto pt-6">
             {hasGithubUrl && (
-              <Button
-                asChild
-                size="icon"
-                round={true}
-                variant="neutral"
-                title="View Code on GitHub"
-              >
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z"
-                    />
+              <Button asChild size="icon" round={true} variant="neutral" title="View Code on GitHub">
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.486 2 12.018c0 4.427 2.865 8.184 6.839 9.504.5.092.682-.218.682-.483 0-.237-.009-.866-.014-1.7-2.782.605-3.37-1.343-3.37-1.343-.455-1.158-1.11-1.467-1.11-1.467-.908-.621.069-.609.069-.609 1.004.07 1.532 1.032 1.532 1.032.893 1.532 2.343 1.089 2.914.833.09-.647.35-1.089.636-1.34-2.221-.253-4.555-1.113-4.555-4.949 0-1.093.39-1.987 1.029-2.688-.103-.254-.446-1.273.097-2.653 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.503.337 1.909-1.296 2.748-1.026 2.748-1.026.544 1.38.201 2.399.099 2.653.64.701 1.028 1.595 1.028 2.688 0 3.846-2.338 4.693-4.566 4.941.36.31.68.92.68 1.852 0 1.336-.013 2.416-.013 2.744 0 .267.18.579.688.481A10.02 10.02 0 0 0 22 12.018C22 6.486 17.523 2 12 2Z" />
                   </svg>
                 </a>
               </Button>
             )}
-
             {hasCodebergUrl && (
-              <Button
-                asChild
-                size="icon"
-                round={true}
-                variant="neutral"
-                title="View Code on Codeberg"
-              >
-                <a
-                  href={project.codebergUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                  >
+              <Button asChild size="icon" round={true} variant="neutral" title="View Code on Codeberg">
+                <a href={project.codebergUrl} target="_blank" rel="noopener noreferrer">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                     <path d="M11.955.49A12 12 0 0 0 0 12.49a12 12 0 0 0 1.832 6.373L11.838 5.928a.187.187 0 0 1 .324 0l10.006 12.935A12 12 0 0 0 24 12.49a12 12 0 0 0-12-12 12 12 0 0 0-.045 0zm.375 6.467 4.416 16.553a12 12 0 0 0 5.137-4.213z" />
                   </svg>
                 </a>
               </Button>
             )}
-
             {hasVercelUrl && (
-              <Button
-                asChild
-                size="icon"
-                round={true}
-                variant="neutral"
-                title="View Live Demo"
-              >
-                <a
-                  href={project.vercelUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                    fill="currentColor"
-                  >
+              <Button asChild size="icon" round={true} variant="neutral" title="View Live Demo">
+                <a href={project.vercelUrl} target="_blank" rel="noopener noreferrer">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="m12 0 12 21H0z" />
                   </svg>
                 </a>
               </Button>
             )}
-
             {hasCustomUrl && (
-              <Button
-                asChild
-                size="icon"
-                round={true}
-                variant="neutral"
-                title="View Project Link"
-              >
-                <a
-                  href={project.customUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                    fill="currentColor"
-                  >
+              <Button asChild size="icon" round={true} variant="neutral" title="View Project">
+                <a href={project.customUrl} target="_blank" rel="noopener noreferrer">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                     <path d="M10 6v2H5v11h11v-5h2v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6zm11-3v8h-2V6.413l-7.793 7.794-1.414-1.414L17.585 5H13V3h8z" />
                   </svg>
                 </a>
@@ -363,7 +272,7 @@ function ProjectGridSection({ projects }: { projects: Project[] }) {
       aria-label="Projects grid"
     >
       {projects.map((project, index) => (
-        <ProjectCard key={project.title} project={project} index={index} />
+        <ProjectCard key={project._id ?? project.title} project={project} index={index} />
       ))}
     </section>
   );
@@ -381,6 +290,15 @@ export default function ProjectGrid() {
     path: "/projects/websites",
   });
 
+  const convexApps = useQuery(api.projects.getByCategory, { category: "app" });
+  const convexWebsites = useQuery(api.projects.getByCategory, { category: "website" });
+
+  // Use Convex data when available, fall back to static
+  const appProjects: Project[] =
+    convexApps && convexApps.length > 0 ? convexApps : FALLBACK_APPS;
+  const clientProjects: Project[] =
+    convexWebsites && convexWebsites.length > 0 ? convexWebsites : FALLBACK_WEBSITES;
+
   const appsHeader = appsConvex ?? getPageHeader("/projects/apps");
   const websitesHeader = websitesConvex ?? getPageHeader("/projects/websites");
   const activeHeader = activeTab === "apps" ? appsHeader : websitesHeader;
@@ -393,7 +311,6 @@ export default function ProjectGrid() {
         description={activeHeader.description}
       />
 
-      {/* Tabs - Left aligned with padding */}
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "apps" | "clients")}
@@ -408,7 +325,6 @@ export default function ProjectGrid() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Content */}
         <TabsContent value="apps" className="mt-8">
           <ProjectGridSection projects={appProjects} />
         </TabsContent>

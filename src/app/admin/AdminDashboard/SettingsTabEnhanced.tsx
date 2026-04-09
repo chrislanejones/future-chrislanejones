@@ -14,6 +14,7 @@ import {
   Trash2,
   FileText,
   Layout,
+  Briefcase,
   type LucideIcon,
 } from "lucide-react";
 import { useMutation, useQuery } from "convex/react";
@@ -93,6 +94,7 @@ const SettingsTabEnhanced = () => {
   const seedSEO = useMutation(api.seo.seedSEOData);
   const seedProfile = useMutation(api.siteSettings.seedProfile);
   const seedPageHeaders = useMutation(api.pageHeaders.seedPageHeaders);
+  const seedProjects = useMutation(api.projects.seedProjects);
 
   const mutationMap: Record<string, () => Promise<unknown>> = {
     links: seedLinks,
@@ -102,6 +104,7 @@ const SettingsTabEnhanced = () => {
     navigation: seedNavigation,
     seo: seedSEO,
     profile: seedProfile,
+    projects: seedProjects,
   };
 
   const [selectedSources, setSelectedSources] = useState<Set<string>>(
@@ -258,6 +261,12 @@ const SettingsTabEnhanced = () => {
       label: "Navigation",
       icon: Navigation,
       description: "Header and footer menu items",
+    },
+    {
+      id: "projects",
+      label: "Projects",
+      icon: Briefcase,
+      description: "App and website project portfolio",
     },
   ];
 

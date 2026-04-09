@@ -22,6 +22,8 @@ import {
   siRust,
   siConvex,
   siN8n,
+  siPosthog,
+  siSentry,
 } from "simple-icons";
 
 type TechItem = { name: string; icon: { path: string } };
@@ -47,6 +49,8 @@ const techStack: TechItem[] = [
   { name: "Shell", icon: siGnubash },
   { name: "ShadUI", icon: siShadcnui },
   { name: "Convex", icon: siConvex },
+  { name: "Posthog", icon: siPosthog },
+  { name: "Sentry", icon: siSentry },
 ];
 
 const techStackFuture: TechItem[] = [
@@ -152,7 +156,7 @@ export default function TechStackContent() {
     <div className="flex flex-col gap-3 h-full">
       <div className="p-3">
         <h3 className="text-ink tracking-tight mb-3">Tech I Love 💖</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStack.map((tech) => (
             <IconBlock key={tech.name} label={tech.name}>
               <svg
@@ -172,7 +176,7 @@ export default function TechStackContent() {
         <h3 className="text-ink tracking-tight mb-3">
           Learning & Exploring 🧪
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {techStackFuture.map((tech) => (
             <IconBlock key={tech.name} label={tech.name}>
               <svg
@@ -190,7 +194,7 @@ export default function TechStackContent() {
 
       <div className="p-3">
         <h3 className="text-ink tracking-tight mb-3">Current AI Tools 🤖</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-3">
           {aiTools.map((tool) => (
             <IconBlock key={tool.name} label={tool.name}>
               {tool.svg ||

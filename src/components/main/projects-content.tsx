@@ -6,21 +6,15 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
-type Project = {
-  title: string;
-  description: string;
-  features: string[];
-  image: string;
-  githubUrl?: string;
-  codebergUrl?: string;
-  vercelUrl?: string;
-};
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 
-const projects: Project[] = [
+// Static fallback shown while Convex loads
+const FALLBACK = [
   {
-    title: "Multi Image Annotator and Compressor",
+    title: "Image Editor & Optimizer",
     description:
-      "A browser-based image annotation and editing tool powered by Rust/WASM for pixel-level operations and React + TypeScript for the UI.",
+      "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
     features: [
       "Offline-friendly and keyboard-navigable",
       "Undo/redo, rotation/flip, pagination",
@@ -31,19 +25,22 @@ const projects: Project[] = [
       "https://github.com/chrislanejones/multi-image-compress-and-edit",
     codebergUrl: "",
     vercelUrl: "https://rust-wasm-photo-tool.netlify.app/",
+    customUrl: "",
   },
   {
-    title: "Golang Web Crawler",
+    title: "Go Web Crawler",
     description:
-      "This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content, while detecting connectivity issues, network errors, and anti-bot protections.",
+      "This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content.",
     features: [
-      "Built in Go (Golang) for high concurrency and efficient network operations.",
+      "Built in Go (Golang) for high concurrency and efficient network operations",
       "Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
       "Features bot protection detection for systems like Cloudflare, Incapsula, and Sucuri",
     ],
     image: "/projects/Web-Crawler-Golang-App.webp",
-    githubUrl: "git@github.com:chrislanejones/webcrawler-go.git",
+    githubUrl: "https://github.com/chrislanejones/webcrawler-go",
+    codebergUrl: "",
     vercelUrl: "",
+    customUrl: "",
   },
   {
     title: "Vim/Neovim Shortcut Finder",
@@ -56,18 +53,27 @@ const projects: Project[] = [
     ],
     image: "/projects/MPC-Vim-Filter-Tool.webp",
     githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
+    codebergUrl: "",
     vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
+    customUrl: "",
   },
 ];
 
 export default function ProjectsContent() {
+  const convexProjects = useQuery(api.projects.getFeatured);
+  // Use Convex data when available; fall back to static while loading
+  const projects =
+    convexProjects && convexProjects.length > 0 ? convexProjects : FALLBACK;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const currentProject = projects[currentIndex];
+  // Reset index if it's now out of range (e.g. Convex returned fewer items)
+  const safeIndex = Math.min(currentIndex, projects.length - 1);
+  const currentProject = projects[safeIndex];
 
   const setProject = (dir: 1 | -1) => {
-    const nextIndex = wrap(0, projects.length, currentIndex + dir);
+    const nextIndex = wrap(0, projects.length, safeIndex + dir);
     setCurrentIndex(nextIndex);
     setDirection(dir);
   };
@@ -78,7 +84,8 @@ export default function ProjectsContent() {
   const hasGithub =
     currentProject.githubUrl?.trim() !== "" && currentProject.githubUrl;
   const hasCodeberg =
-    currentProject.codebergUrl?.trim() !== "" && currentProject.codebergUrl;
+    (currentProject as any).codebergUrl?.trim() !== "" &&
+    (currentProject as any).codebergUrl;
   const hasVercel =
     currentProject.vercelUrl?.trim() !== "" && currentProject.vercelUrl;
 
@@ -88,7 +95,7 @@ export default function ProjectsContent() {
       <div className="order-2 md:order-1 flex flex-col min-w-0 h-full">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
-            key={currentIndex}
+            key={safeIndex}
             custom={direction}
             initial={{ opacity: 0, x: direction * 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -105,7 +112,7 @@ export default function ProjectsContent() {
             </p>
 
             <ul className="text-ink mt-6 space-y-2 break-words">
-              {currentProject.features.map((f, i) => (
+              {(currentProject.features ?? []).slice(0, 3).map((f, i) => (
                 <li key={i}>• {f}</li>
               ))}
             </ul>
@@ -128,7 +135,7 @@ export default function ProjectsContent() {
             </Button>
 
             <Button
-              onClick={() => hasGithub && window.open(currentProject.githubUrl)}
+              onClick={() => hasGithub && window.open(currentProject.githubUrl!)}
               variant="neutral"
               size="icon"
               round
@@ -140,7 +147,9 @@ export default function ProjectsContent() {
 
             {hasCodeberg && (
               <Button
-                onClick={() => window.open(currentProject.codebergUrl)}
+                onClick={() =>
+                  window.open((currentProject as any).codebergUrl)
+                }
                 variant="neutral"
                 size="icon"
                 round
@@ -160,7 +169,7 @@ export default function ProjectsContent() {
             )}
 
             <Button
-              onClick={() => hasVercel && window.open(currentProject.vercelUrl)}
+              onClick={() => hasVercel && window.open(currentProject.vercelUrl!)}
               variant="neutral"
               size="icon"
               round
@@ -182,7 +191,7 @@ export default function ProjectsContent() {
         {/* MOBILE: TALLER IMAGE */}
         <div className="relative md:hidden w-full aspect-[4/3]">
           <Image
-            src={currentProject.image}
+            src={currentProject.image ?? "/projects/Image-Horse-App.webp"}
             alt={`${currentProject.title} preview`}
             fill
             className="object-cover"
@@ -194,7 +203,7 @@ export default function ProjectsContent() {
         <div className="hidden md:block absolute inset-0">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
-              key={`${currentIndex}-image`}
+              key={`${safeIndex}-image`}
               custom={direction}
               initial={{ opacity: 0, scale: 0.9, x: direction * 40 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -203,7 +212,7 @@ export default function ProjectsContent() {
               className="absolute inset-0"
             >
               <Image
-                src={currentProject.image}
+                src={currentProject.image ?? "/projects/Image-Horse-App.webp"}
                 alt={`${currentProject.title} preview`}
                 fill
                 className="object-cover"
@@ -214,7 +223,7 @@ export default function ProjectsContent() {
         </div>
 
         <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/40 backdrop-blur-sm image-overlay-text text-sm">
-          {currentIndex + 1} / {projects.length}
+          {safeIndex + 1} / {projects.length}
         </div>
       </div>
     </>

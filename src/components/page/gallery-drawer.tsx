@@ -413,7 +413,7 @@ export default function GalleryDrawer({
         <div className="mx-auto w-full max-w-7xl">
           <DrawerHeader className="pb-2">
             <DrawerTitle className="text-center">
-              <h3>{title}</h3>
+              {title}
             </DrawerTitle>
             <DrawerDescription className="text-center">
               {adjustedDescription}
