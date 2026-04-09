@@ -5,8 +5,6 @@ import Footer from "@/components/layout/Footer";
 import ConferenceYearPage from "./ConferenceYearPage";
 import { conferences } from "@/data/conferences";
 
-type Params = { year: string };
-
 export function generateStaticParams() {
   const years = Array.from(new Set(conferences.map((c) => String(c.year))));
   return years.map((year) => ({ year }));
@@ -15,9 +13,9 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Params;
+  params: Promise<{ year: string }>;
 }): Promise<Metadata> {
-  const year = params.year;
+  const { year } = await params;
   const yearConferences = conferences.filter((c) => String(c.year) === year);
   const count = yearConferences.length;
 
@@ -29,15 +27,20 @@ export async function generateMetadata({
   };
 }
 
-export default function ConferencesByYearRoute({ params }: { params: Params }) {
+export default async function ConferencesByYearRoute({
+  params,
+}: {
+  params: Promise<{ year: string }>;
+}) {
+  const { year } = await params;
   const items = conferences
-    .filter((c) => String(c.year) === params.year)
+    .filter((c) => String(c.year) === year)
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <>
       <Header />
-      <ConferenceYearPage conferences={items} year={params.year} />
+      <ConferenceYearPage conferences={items} year={year} />
       <Footer />
     </>
   );

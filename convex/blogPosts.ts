@@ -2,6 +2,11 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 // Helper to get media for a blog post
 async function getPostMedia(ctx: any, postId: string) {
   const media = await ctx.db
@@ -17,8 +22,9 @@ export const getAllPosts = query({
   handler: async (ctx) => {
     const posts = await ctx.db
       .query("blogPosts")
-      .filter((q) => q.eq(q.field("published"), true))
+      .withIndex("by_created")
       .order("desc")
+      .filter((q) => q.eq(q.field("published"), true))
       .collect();
 
     // Enrich with media URLs
@@ -38,6 +44,7 @@ export const getAllPosts = query({
 export const getAllPostsAdmin = query({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const posts = await ctx.db
       .query("blogPosts")
       .order("desc")
@@ -91,6 +98,7 @@ export const createPost = mutation({
     published: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.insert("blogPosts", {
       ...args,
       published: args.published ?? false,
@@ -113,6 +121,7 @@ export const updatePost = mutation({
     createdAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const { id, ...updateData } = args;
     return await ctx.db.patch(id, {
       ...updateData,
@@ -124,6 +133,7 @@ export const updatePost = mutation({
 export const deletePost = mutation({
   args: { id: v.id("blogPosts") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.delete(args.id);
   },
 });
@@ -227,6 +237,7 @@ export const getComments = query({
 export const getAllCommentsAdmin = query({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const comments = await ctx.db
       .query("blogComments")
       .order("desc")
@@ -252,6 +263,7 @@ export const getAllCommentsAdmin = query({
 export const getPendingCommentsCount = query({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const pendingComments = await ctx.db
       .query("blogComments")
       .filter((q) => q.eq(q.field("approved"), false))
@@ -264,6 +276,7 @@ export const getPendingCommentsCount = query({
 export const getAllLikesAdmin = query({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const likes = await ctx.db
       .query("blogLikes")
       .order("desc")
@@ -301,6 +314,7 @@ export const getAllLikesAdmin = query({
 export const approveComment = mutation({
   args: { commentId: v.id("blogComments") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.patch(args.commentId, {
       approved: true,
       updatedAt: Date.now(),
@@ -311,6 +325,7 @@ export const approveComment = mutation({
 export const deleteComment = mutation({
   args: { commentId: v.id("blogComments") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.delete(args.commentId);
   },
 });
@@ -319,6 +334,7 @@ export const deleteComment = mutation({
 export const seedBlogPosts = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     // Check if blog posts already exist
     const existingPosts = await ctx.db.query("blogPosts").collect();
     if (existingPosts.length > 0) {

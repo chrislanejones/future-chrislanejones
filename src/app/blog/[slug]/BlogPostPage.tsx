@@ -1,7 +1,8 @@
 // src/app/blog/[slug]/BlogPostPage.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { marked } from "marked";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
@@ -141,47 +142,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     setShowCommentForm(false);
   };
 
-  // Simple markdown-like content rendering
-  const renderContent = (content: string) => {
-    return content.split("\n").map((line, index) => {
-      if (line.startsWith("# ")) {
-        return (
-          <h1 key={index} className="mb-4 mt-8">
-            {line.substring(2)}
-          </h1>
-        );
-      }
-      if (line.startsWith("## ")) {
-        return (
-          <h2 key={index} className="mb-3 mt-6">
-            {line.substring(3)}
-          </h2>
-        );
-      }
-      if (line.startsWith("### ")) {
-        return (
-          <h3 key={index} className="mb-2 mt-4">
-            {line.substring(4)}
-          </h3>
-        );
-      }
-      if (line.startsWith("- ")) {
-        return (
-          <li key={index} className="ml-4 mb-1">
-            {line.substring(2)}
-          </li>
-        );
-      }
-      if (line.trim() === "") {
-        return <br key={index} />;
-      }
-      return (
-        <p key={index} className="mb-4 leading-relaxed">
-          {line}
-        </p>
-      );
-    });
-  };
+  const renderedContent = useMemo(() => {
+    if (!post?.content) return "";
+    const trimmed = post.content.trim();
+    // If content looks like HTML, pass through; otherwise treat as Markdown
+    const isHtml = /^<[a-z][\s\S]*>/i.test(trimmed);
+    if (isHtml) return trimmed;
+    return marked.parse(trimmed) as string;
+  }, [post?.content]);
 
   return (
     <>
@@ -239,9 +207,10 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             </div>
 
             {/* Content */}
-            <article className="prose prose-lg max-w-none mb-8">
-              {renderContent(post.content)}
-            </article>
+            <article
+              className="prose prose-lg max-w-none mb-8"
+              dangerouslySetInnerHTML={{ __html: renderedContent }}
+            />
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (

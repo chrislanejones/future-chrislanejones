@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 
 export default function BlogContent() {
   const posts = useQuery(api.blogPosts.getAllPosts);
-  const recentPosts = posts?.slice(0, 2) || [];
+  const sortedPosts = [...(posts || [])].sort((a, b) => b.createdAt - a.createdAt);
+  const recentPosts = sortedPosts.slice(0, 2);
 
   const getDaysAgo = (timestamp: number): string => {
     const now = Date.now();
@@ -22,15 +23,14 @@ export default function BlogContent() {
   return (
     <div className="flex flex-col h-full">
       {/* Blog Posts Container */}
-      <div className="relative flex-1">
-        <div className="absolute inset-0 flex flex-col items-center justify-evenly gap-4 p-3">
+      <div className="flex-1 flex flex-col justify-between gap-4 p-3">
           {recentPosts.map((post) => (
             <Link
               key={post._id}
               href={`/blog/${post.slug}`}
-              className="group flex flex-col items-center justify-center relative transition-all duration-300 opacity-90 hover:opacity-100 bg-(--color-inner-card) rounded-lg p-4 border border-transparent hover:border-(--color-accent) hover:shadow-glow w-full min-h-[50px]"
+              className="group flex flex-col items-center justify-center flex-1 transition-all duration-300 opacity-90 hover:opacity-100 bg-(--color-inner-card) rounded-lg p-4 border border-transparent hover:border-(--color-accent) hover:shadow-glow w-full min-h-0"
             >
-              <div className="flex-1 text-center">
+              <div className="flex-1 flex items-center justify-center text-center">
                 <h4 className="text-ink group-hover:text-accent transition-colors">
                   {post.title}
                 </h4>
@@ -41,7 +41,6 @@ export default function BlogContent() {
             </Link>
           ))}
         </div>
-      </div>
 
       {/* Footer */}
       <div className="grid grid-cols-[1fr_auto] items-center gap-4">
