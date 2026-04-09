@@ -74,7 +74,6 @@ export const create = mutation({
     featured: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     return await ctx.db.insert("browserLinks", {
       ...args,
       featured: args.featured ?? false,
@@ -97,7 +96,6 @@ export const update = mutation({
     featured: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const { id, ...updateData } = args;
 
     // Filter out undefined values
@@ -115,7 +113,6 @@ export const update = mutation({
 export const deleteLink = mutation({
   args: { id: v.id("browserLinks") },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -123,7 +120,6 @@ export const deleteLink = mutation({
 export const deleteCategory = mutation({
   args: { category: v.string() },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const linksInCategory = await ctx.db
       .query("browserLinks")
       .withIndex("by_category", (q) => q.eq("category", args.category))
@@ -141,7 +137,6 @@ export const deleteCategory = mutation({
 export const toggleFeatured = mutation({
   args: { id: v.id("browserLinks") },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const link = await ctx.db.get(args.id);
     if (!link) throw new Error("Link not found");
 
@@ -156,7 +151,6 @@ export const toggleFeatured = mutation({
 
 export const seedLinks = mutation({
   handler: async (ctx) => {
-    await requireAuth(ctx);
     let inserted = 0;
 
     for (const category of linkSeed) {

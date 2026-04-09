@@ -79,6 +79,15 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     setUserIdentifier(getUserIdentifier());
   }, []);
 
+  const renderedContent = useMemo(() => {
+    if (!post?.content) return "";
+    const trimmed = post.content.trim();
+    // If content looks like HTML, pass through; otherwise treat as Markdown
+    const isHtml = /^<[a-z][\s\S]*>/i.test(trimmed);
+    if (isHtml) return trimmed;
+    return marked.parse(trimmed) as string;
+  }, [post?.content]);
+
   if (post === null) {
     return (
       <>
@@ -142,15 +151,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     setShowCommentForm(false);
   };
 
-  const renderedContent = useMemo(() => {
-    if (!post?.content) return "";
-    const trimmed = post.content.trim();
-    // If content looks like HTML, pass through; otherwise treat as Markdown
-    const isHtml = /^<[a-z][\s\S]*>/i.test(trimmed);
-    if (isHtml) return trimmed;
-    return marked.parse(trimmed) as string;
-  }, [post?.content]);
-
   return (
     <>
       <Header />
@@ -208,7 +208,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
             {/* Content */}
             <article
-              className="prose prose-lg max-w-none mb-8"
+              className="prose prose-lg max-w-none mb-8 dark:prose-invert"
               dangerouslySetInnerHTML={{ __html: renderedContent }}
             />
 

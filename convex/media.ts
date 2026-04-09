@@ -101,7 +101,6 @@ export const create = mutation({
     assignedToTitle: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     return await ctx.db.insert("media", {
       ...args,
       uploadedAt: Date.now(),
@@ -122,7 +121,6 @@ export const update = mutation({
     assignedToTitle: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const { id, ...updateData } = args;
     await ctx.db.patch(id, {
       ...updateData,
@@ -140,7 +138,6 @@ export const assign = mutation({
     assignedToTitle: v.string(),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     await ctx.db.patch(args.mediaId, {
       assignedToType: args.assignedToType,
       assignedToId: args.assignedToId,
@@ -156,7 +153,6 @@ export const unassign = mutation({
     mediaId: v.id("media"),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     await ctx.db.patch(args.mediaId, {
       assignedToType: undefined,
       assignedToId: undefined,
@@ -170,7 +166,6 @@ export const unassign = mutation({
 export const deleteMedia = mutation({
   args: { id: v.id("media") },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -179,7 +174,6 @@ export const deleteMedia = mutation({
 export const migrateBlogImages = mutation({
   args: {},
   handler: async (ctx) => {
-    await requireAuth(ctx);
     const now = Date.now();
 
     // Image data from UploadThing uploads

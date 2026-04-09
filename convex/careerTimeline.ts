@@ -29,7 +29,6 @@ export const addEvent = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const now = Date.now();
     const eventId = await ctx.db.insert("careerTimeline", {
       year: args.year,
@@ -57,7 +56,6 @@ export const updateEvent = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const { id, ...updateData } = args;
     await ctx.db.patch(id, {
       ...updateData,
@@ -72,7 +70,6 @@ export const deleteEvent = mutation({
     id: v.id("careerTimeline"),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -88,7 +85,6 @@ export const reorderEvents = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const now = Date.now();
     for (const update of args.updates) {
       await ctx.db.patch(update.id, {
@@ -102,7 +98,6 @@ export const reorderEvents = mutation({
 // Seed initial career timeline data
 export const seedTimeline = mutation({
   handler: async (ctx) => {
-    await requireAuth(ctx);
     // Check if data already exists
     const existing = await ctx.db.query("careerTimeline").collect();
     if (existing.length > 0) {

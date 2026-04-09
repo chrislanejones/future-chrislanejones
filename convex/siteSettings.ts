@@ -34,7 +34,6 @@ export const updateProfile = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {
@@ -58,7 +57,6 @@ export const updateAvatar = mutation({
     avatar: v.string(),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {
@@ -83,7 +81,6 @@ export const updateAvatar = mutation({
 export const removeAvatar = mutation({
   args: {},
   handler: async (ctx) => {
-    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {
@@ -99,7 +96,6 @@ export const removeAvatar = mutation({
 export const seedProfile = mutation({
   args: {},
   handler: async (ctx) => {
-    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {

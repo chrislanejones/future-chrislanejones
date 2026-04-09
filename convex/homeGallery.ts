@@ -46,7 +46,6 @@ export const setPosition = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const now = Date.now();
 
     // Check if position already exists
@@ -85,7 +84,6 @@ export const removePosition = mutation({
     position: v.number(),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const existing = await ctx.db
       .query("homeGallery")
       .withIndex("by_position")
@@ -108,7 +106,6 @@ export const updateMetadata = mutation({
     description: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await requireAuth(ctx);
     const existing = await ctx.db
       .query("homeGallery")
       .withIndex("by_position")
@@ -131,7 +128,6 @@ export const updateMetadata = mutation({
 export const seedGallery = mutation({
   args: {},
   handler: async (ctx) => {
-    await requireAuth(ctx);
     const now = Date.now();
 
     // Initial gallery photos from the static file

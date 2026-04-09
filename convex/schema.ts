@@ -175,6 +175,7 @@ export default defineSchema({
     title: v.string(),
     description: v.string(),
     category: v.string(), // "app" or "website"
+    features: v.optional(v.array(v.string())),
     image: v.optional(v.string()),
     githubUrl: v.optional(v.string()),
     codebergUrl: v.optional(v.string()),
