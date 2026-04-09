@@ -2,6 +2,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 export const getAll = query({
   handler: async (ctx) => {
     return ctx.db.query("projects").order("desc").collect();
@@ -43,6 +48,7 @@ export const create = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return ctx.db.insert("projects", {
       ...args,
       createdAt: Date.now(),
@@ -66,6 +72,7 @@ export const update = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, { id, ...updateData }) => {
+    await requireAuth(ctx);
     await ctx.db.patch(id, {
       ...updateData,
       updatedAt: Date.now(),
@@ -76,6 +83,7 @@ export const update = mutation({
 export const deleteProject = mutation({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -83,6 +91,7 @@ export const deleteProject = mutation({
 export const toggleFeatured = mutation({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const project = await ctx.db.get(args.id);
     if (!project) throw new Error("Project not found");
     await ctx.db.patch(args.id, {
@@ -95,6 +104,7 @@ export const toggleFeatured = mutation({
 
 export const seedProjects = mutation({
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("projects").collect();
     if (existing.length > 0) {
       return { message: "Projects already exist", count: existing.length };

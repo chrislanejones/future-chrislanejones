@@ -7,6 +7,11 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { staticPageHeaders } from "../src/lib/page-headers";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 // Get all page headers
 export const getAllPageHeaders = query({
   args: {},
@@ -35,6 +40,7 @@ export const updatePageHeader = mutation({
     description: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db
       .query("pageHeaders")
       .withIndex("by_path", (q) => q.eq("path", args.path))
@@ -69,6 +75,7 @@ export const createPageHeader = mutation({
     description: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db
       .query("pageHeaders")
       .withIndex("by_path", (q) => q.eq("path", args.path))
@@ -92,6 +99,7 @@ export const createPageHeader = mutation({
 export const deletePageHeader = mutation({
   args: { id: v.id("pageHeaders") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -100,6 +108,7 @@ export const deletePageHeader = mutation({
 export const seedPageHeaders = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const paths = Object.keys(staticPageHeaders);
     let inserted = 0;
     let updated = 0;

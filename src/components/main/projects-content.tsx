@@ -4,8 +4,8 @@ import { useState, SVGProps } from "react";
 import { motion, AnimatePresence, wrap } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Github, ExternalLink } from "lucide-react";
-
+import { ExternalLink } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
 type Project = {
   title: string;
   description: string;
@@ -135,7 +135,7 @@ export default function ProjectsContent() {
               disabled={!hasGithub}
               aria-label="GitHub"
             >
-              <Github className="w-5 h-5" aria-hidden="true" />
+              <FaGithub className="w-5 h-5" aria-hidden="true" />
             </Button>
 
             {hasCodeberg && (

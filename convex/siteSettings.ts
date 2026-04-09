@@ -1,6 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 // Get the profile (there should only be one)
 export const getProfile = query({
   args: {},
@@ -29,6 +34,7 @@ export const updateProfile = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {
@@ -52,6 +58,7 @@ export const updateAvatar = mutation({
     avatar: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {
@@ -76,6 +83,7 @@ export const updateAvatar = mutation({
 export const removeAvatar = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {
@@ -91,6 +99,7 @@ export const removeAvatar = mutation({
 export const seedProfile = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("siteSettings").first();
 
     if (existing) {

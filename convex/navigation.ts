@@ -1,6 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
 // CORRECTED IMPORT PATH: Use the path alias "@/data/navigation-seed"
 import {
   staticHeaderNavItems,
@@ -43,6 +48,7 @@ export const addHeaderNavItem = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.insert("headerNavItems", {
       ...args,
       createdAt: Date.now(),
@@ -61,6 +67,7 @@ export const updateHeaderNavItem = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const { id, ...updateData } = args;
     await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
   },
@@ -69,6 +76,7 @@ export const updateHeaderNavItem = mutation({
 export const deleteHeaderNavItem = mutation({
   args: { id: v.id("headerNavItems") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     // Delete children first if it's a parent
     const children = await ctx.db
       .query("headerNavItems")
@@ -92,6 +100,7 @@ export const reorderHeaderNavItems = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const now = Date.now();
     for (const update of args.updates) {
       await ctx.db.patch(update.id, {
@@ -136,6 +145,7 @@ export const addFooterNavSection = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.insert("footerNavSections", {
       ...args,
       createdAt: Date.now(),
@@ -151,6 +161,7 @@ export const updateFooterNavSection = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const { id, ...updateData } = args;
     await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
   },
@@ -159,6 +170,7 @@ export const updateFooterNavSection = mutation({
 export const deleteFooterNavSection = mutation({
   args: { id: v.id("footerNavSections") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     // Delete all links in this section first
     const links = await ctx.db
       .query("footerNavLinks")
@@ -180,6 +192,7 @@ export const addFooterNavLink = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.insert("footerNavLinks", {
       ...args,
       createdAt: Date.now(),
@@ -198,6 +211,7 @@ export const updateFooterNavLink = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const { id, ...updateData } = args;
     await ctx.db.patch(id, { ...updateData, updatedAt: Date.now() });
   },
@@ -206,6 +220,7 @@ export const updateFooterNavLink = mutation({
 export const deleteFooterNavLink = mutation({
   args: { id: v.id("footerNavLinks") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -221,6 +236,7 @@ export const reorderFooterNavLinks = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const now = Date.now();
     for (const update of args.updates) {
       await ctx.db.patch(update.id, {
@@ -243,6 +259,7 @@ export const reorderFooterNavSections = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const now = Date.now();
     for (const update of args.updates) {
       await ctx.db.patch(update.id, {
@@ -253,10 +270,49 @@ export const reorderFooterNavSections = mutation({
   },
 });
 
+// One-time migration: add Old Website link to Resources footer section
+export const addOldWebsiteLink = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await requireAuth(ctx);
+    const sections = await ctx.db.query("footerNavSections").collect();
+    const resourcesSection = sections.find((s) => s.title === "Resources");
+    if (!resourcesSection) return "Resources section not found";
+
+    const existingLinks = await ctx.db
+      .query("footerNavLinks")
+      .filter((q) => q.eq(q.field("sectionId"), resourcesSection._id))
+      .collect();
+
+    const alreadyExists = existingLinks.some(
+      (l) => l.href === "https://old.chrislanejones.com"
+    );
+    if (alreadyExists) return "Link already exists";
+
+    const maxOrder =
+      existingLinks.length > 0
+        ? Math.max(...existingLinks.map((l) => l.order)) + 1
+        : 0;
+
+    await ctx.db.insert("footerNavLinks", {
+      sectionId: resourcesSection._id,
+      label: "Old Website",
+      href: "https://old.chrislanejones.com",
+      isExternal: true,
+      order: maxOrder,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    });
+
+    return "Old website link added!";
+  },
+});
+
 // --- Seeding Mutations ---
 export const seedNavigationData = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existingHeaderItems = await ctx.db.query("headerNavItems").collect();
     if (existingHeaderItems.length === 0) {
       console.log("Seeding header navigation items...");

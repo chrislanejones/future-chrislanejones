@@ -2,6 +2,11 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 export const getAllSEO = query({
   handler: async (ctx) => {
     return await ctx.db.query("seoMetadata").collect();
@@ -28,6 +33,7 @@ export const updateSEO = mutation({
     ogImage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db
       .query("seoMetadata")
       .withIndex("by_path", (q) => q.eq("path", args.path))
@@ -59,6 +65,7 @@ export const updateSEO = mutation({
 
 export const seedSEOData = mutation({
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const pages = [
       {
         path: "/",

@@ -73,7 +73,16 @@ const QUOTES: ReactNode[] = [
   </>,
   <>Locked my fridge with a CAPTCHA to stop my midnight snacking.</>,
   <>
-    Dear Guy/Gal with 47 tabs open, Group tabs will change your life trust me
+    Dear Guy/Gal with 47 tabs open,{" "}
+    <a
+      href="https://blog.google/products-and-platforms/products/chrome/manage-tabs-with-google-chrome/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline hover:text-accent transition-colors"
+    >
+      Group tabs
+    </a>{" "}
+    will change your life trust me
   </>,
   <>I lock my computer at night to prevent my cats from online shopping</>,
   <>Powered by coffee and deprecated APIs since 2015</>,

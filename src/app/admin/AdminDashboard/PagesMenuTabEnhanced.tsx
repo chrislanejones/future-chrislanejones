@@ -171,14 +171,20 @@ const FooterSectionComponent = ({
   section,
   onDelete,
   onDeleteLink,
+  onAddLink,
   onDrop,
 }: {
   section: FooterNavSection;
   onDelete: () => void;
   onDeleteLink: (linkId: Id<"footerNavLinks">) => void;
+  onAddLink: (label: string, href: string, isExternal: boolean) => void;
   onDrop: (e: React.DragEvent) => void;
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newLabel, setNewLabel] = useState("");
+  const [newHref, setNewHref] = useState("");
+  const [newIsExternal, setNewIsExternal] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -195,6 +201,16 @@ const FooterSectionComponent = ({
     e.stopPropagation();
     setIsDragOver(false);
     onDrop(e);
+  };
+
+  const handleAddSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLabel.trim() || !newHref.trim()) return;
+    onAddLink(newLabel.trim(), newHref.trim(), newIsExternal);
+    setNewLabel("");
+    setNewHref("");
+    setNewIsExternal(false);
+    setShowAddForm(false);
   };
 
   return (
@@ -229,19 +245,22 @@ const FooterSectionComponent = ({
           {section.links.map((link) => (
             <div
               key={link._id}
-              className="p-2 bg-(--color-muted-accent) rounded-lg text-sm text-(--color-ink) group"
+              className="p-2 bg-(--color-muted-accent) rounded-lg text-sm text-(--color-ink) group/link"
             >
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 flex-1">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
                   <GripVertical
                     className="w-4 h-4 text-muted shrink-0"
                     aria-hidden="true"
                   />
-                  <span>{link.label}</span>
+                  <span className="truncate">{link.label}</span>
+                  {link.isExternal && (
+                    <span className="text-xs text-muted shrink-0">(ext)</span>
+                  )}
                 </div>
                 <button
                   onClick={() => onDeleteLink(link._id)}
-                  className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  className="shrink-0 p-1 text-red-500 opacity-0 group-hover/link:opacity-100 hover:bg-red-500/10 rounded transition-all"
                   title={`Delete "${link.label}"`}
                 >
                   <Trash2 className="w-3 h-3" aria-hidden="true" />
@@ -250,6 +269,72 @@ const FooterSectionComponent = ({
             </div>
           ))}
         </div>
+      )}
+
+      {/* Add Link Form */}
+      {showAddForm ? (
+        <form
+          onSubmit={handleAddSubmit}
+          className="mt-3 pt-3 border-t border-(--color-border) space-y-2"
+        >
+          <input
+            type="text"
+            placeholder="Label"
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+            className="w-full px-2 py-1 text-sm border border-(--color-border) rounded bg-(--color-panel) text-(--color-ink) focus:outline-none focus:ring-1 focus:ring-accent"
+            autoFocus
+            required
+          />
+          <input
+            type="text"
+            placeholder="URL (e.g. /page or https://...)"
+            value={newHref}
+            onChange={(e) => {
+              setNewHref(e.target.value);
+              if (e.target.value.startsWith("http")) setNewIsExternal(true);
+            }}
+            className="w-full px-2 py-1 text-sm border border-(--color-border) rounded bg-(--color-panel) text-(--color-ink) focus:outline-none focus:ring-1 focus:ring-accent"
+            required
+          />
+          <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
+            <input
+              type="checkbox"
+              checked={newIsExternal}
+              onChange={(e) => setNewIsExternal(e.target.checked)}
+              className="rounded"
+            />
+            Open in new tab (external link)
+          </label>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="flex-1 px-2 py-1 text-xs bg-accent text-white rounded hover:opacity-90 transition-opacity"
+            >
+              Add Link
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowAddForm(false);
+                setNewLabel("");
+                setNewHref("");
+                setNewIsExternal(false);
+              }}
+              className="flex-1 px-2 py-1 text-xs border border-(--color-border) rounded hover:bg-(--color-muted-accent) transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="mt-3 w-full flex items-center justify-center gap-1 px-2 py-1 text-xs text-muted border border-dashed border-(--color-border) rounded hover:border-accent hover:text-accent transition-colors"
+        >
+          <Plus className="w-3 h-3" />
+          Add Link
+        </button>
       )}
     </div>
   );
@@ -272,6 +357,7 @@ const PagesMenuTabEnhanced = () => {
   );
   const addFooterNavLink = useMutation(api.navigation.addFooterNavLink);
   const deleteFooterNavLink = useMutation(api.navigation.deleteFooterNavLink);
+  const addOldWebsiteLink = useMutation(api.navigation.addOldWebsiteLink);
 
   const getNextHeaderOrder = () => {
     if (!headerItems || headerItems.length === 0) return 0;
@@ -333,6 +419,34 @@ const PagesMenuTabEnhanced = () => {
       await deleteFooterNavLink({ id });
     } catch (err) {
       console.error("Failed to delete footer link:", err);
+    }
+  };
+
+  const handleAddFooterLink = async (
+    sectionId: Id<"footerNavSections">,
+    label: string,
+    href: string,
+    isExternal: boolean
+  ) => {
+    try {
+      await addFooterNavLink({
+        sectionId,
+        label,
+        href,
+        isExternal: isExternal || undefined,
+        order: getNextFooterLinkOrder(sectionId),
+      });
+    } catch (err) {
+      console.error("Failed to add footer link:", err);
+    }
+  };
+
+  const handleAddOldWebsiteLink = async () => {
+    try {
+      const result = await addOldWebsiteLink({});
+      alert(result);
+    } catch (err) {
+      console.error("Failed to add old website link:", err);
     }
   };
 
@@ -481,9 +595,16 @@ const PagesMenuTabEnhanced = () => {
 
       {/* Footer Sections Column */}
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
-        <h3 className="font-semibold text-(--color-ink) mb-4">
-          Footer Sections
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-(--color-ink)">Footer Sections</h3>
+          <button
+            onClick={handleAddOldWebsiteLink}
+            className="text-xs text-muted hover:text-accent transition-colors"
+            title="Add Old Website link to Resources section"
+          >
+            + Old Website
+          </button>
+        </div>
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-3">
             {/* Add Section Button - Homepage style */}
@@ -502,6 +623,9 @@ const PagesMenuTabEnhanced = () => {
                 section={section}
                 onDelete={() => handleDeleteFooterSection(section._id)}
                 onDeleteLink={handleDeleteFooterLink}
+                onAddLink={(label, href, isExternal) =>
+                  handleAddFooterLink(section._id, label, href, isExternal)
+                }
                 onDrop={(e) => handleDropOnFooterSection(section._id, e)}
               />
             ))}

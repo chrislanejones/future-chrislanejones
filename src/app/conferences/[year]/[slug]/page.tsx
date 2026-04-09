@@ -7,8 +7,6 @@ import Footer from "@/components/layout/Footer";
 import ConferenceDetailPage from "./ConferenceDetailPage";
 import { conferences } from "@/data/conferences";
 
-type Params = { year: string; slug: string };
-
 export function generateStaticParams() {
   return conferences.map((c) => ({ year: String(c.year), slug: c.slug }));
 }
@@ -16,10 +14,11 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Params;
+  params: Promise<{ year: string; slug: string }>;
 }): Promise<Metadata> {
+  const { year, slug } = await params;
   const conf = conferences.find(
-    (c) => String(c.year) === params.year && c.slug === params.slug
+    (c) => String(c.year) === year && c.slug === slug
   );
   if (!conf) return {};
   const title = `${conf.name} ${conf.year} — Notes`;
@@ -45,9 +44,14 @@ export async function generateMetadata({
   };
 }
 
-export default function ConferenceDetailRoute({ params }: { params: Params }) {
+export default async function ConferenceDetailRoute({
+  params,
+}: {
+  params: Promise<{ year: string; slug: string }>;
+}) {
+  const { year, slug } = await params;
   const conf = conferences.find(
-    (c) => String(c.year) === params.year && c.slug === params.slug
+    (c) => String(c.year) === year && c.slug === slug
   );
   if (!conf) notFound();
 
