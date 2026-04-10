@@ -2,6 +2,7 @@
 
 import { useState, SVGProps } from "react";
 import { motion, AnimatePresence, wrap } from "framer-motion";
+import { sliderTransition } from "@/lib/animations";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
@@ -100,7 +101,7 @@ export default function ProjectsContent() {
             initial={{ opacity: 0, x: direction * 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: direction * -20 }}
-            transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+            transition={sliderTransition}
             className="flex flex-col min-w-0 flex-1"
           >
             <h3 className="text-ink tracking-tight break-words">
@@ -208,7 +209,7 @@ export default function ProjectsContent() {
               initial={{ opacity: 0, scale: 0.9, x: direction * 40 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, x: direction * -40 }}
-              transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+              transition={sliderTransition}
               className="absolute inset-0"
             >
               <Image

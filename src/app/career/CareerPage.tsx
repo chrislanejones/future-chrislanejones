@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cardVariants } from "@/lib/animations";
 import Image from "next/image";
 
 import Card from "@/components/page/card";
@@ -122,10 +123,10 @@ function TimelineTrail() {
               <motion.div
                 key={`${event.year}-${index}`}
                 className="relative mb-6 md:mb-8"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
-                transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                custom={0.05 + index * 0.05}
               >
                 {/* 3-column grid on desktop: [left card] [icon] [right card] */}
                 <div className="flex items-start md:grid md:grid-cols-[1fr_48px_1fr] md:gap-8">
@@ -281,7 +282,7 @@ function ResumeDownloadCard() {
       <div className="flex flex-col gap-3">
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris-Lane-Jones-UX-UI-Engineer-Resume-December-2024.pdf"
+            href="/career-files/Chris Lane Jones UX UI Engineer Resume April 2026.pdf"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -304,7 +305,7 @@ function ResumeDownloadCard() {
 
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris-Lane-Jones-UX-UI-Engineer-Resume-December-2024.docx"
+            href="/career-files/Chris Lane Jones UX UI Engineer Resume April 2026.docx"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -325,27 +326,21 @@ function ResumeDownloadCard() {
           </a>
         </Button>
 
-        <Button asChild variant="disabled" size="lg" className="justify-start">
-          <a
-            href="/career-files/Portfolio-2025.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+        <Button variant="disabled" size="lg" className="justify-start">
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
-            Download Portfolio (PDF)
-          </a>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          Portfolio Coming Soon
         </Button>
       </div>
     </Card>

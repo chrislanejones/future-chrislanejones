@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { cardVariants as motionCardVariants } from "@/lib/animations";
 
 const cardVariants = cva(
   "card rounded-3xl bg-panel border border-(--color-border)",
@@ -85,24 +86,10 @@ export function Card({
         ...style,
         willChange: "transform, opacity",
       }}
-      initial={{
-        opacity: 0,
-        y: 20,
-        scale: 0.95,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        scale: 1,
-      }}
-      transition={{
-        duration: 0.4,
-        delay,
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      }}
-      viewport={{ once: true }}
+      variants={motionCardVariants}
+      initial="hidden"
+      animate="visible"
+      custom={delay}
     >
       {children}
     </motion.article>
