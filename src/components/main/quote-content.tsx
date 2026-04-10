@@ -109,6 +109,11 @@ export default function QuoteContent() {
     });
   };
 
+  useEffect(() => {
+    const timer = setInterval(nextQuote, 12000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="relative h-full flex flex-col">
       {/* Top: quote area */}

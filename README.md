@@ -1,6 +1,6 @@
 # Chris Lane Jones Portfolio
 
-Modern portfolio website built with Next.js 14, React, TypeScript, Effect, and Tailwind CSS. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard with Convex database for content management.
+Modern portfolio website built with Next.js 16, React 19, TypeScript, Effect, and Tailwind CSS v4. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard with Convex database for content management.
 
 [Vercel Live Link - https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)
 
@@ -20,7 +20,9 @@ Modern portfolio website built with Next.js 14, React, TypeScript, Effect, and T
 - **UI Components:** [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
 - **Drag & Drop:** [@dnd-kit](https://dndkit.com/)
 - **Icons:** [Lucide React](https://lucide.dev/guide/packages/lucide-react), [React Icons](https://react-icons.github.io/react-icons/), [Simple Icons](https://simpleicons.org/)
-- **Package Manager:** [Bun](https://bun.sh/)
+- **Package Manager:** [pnpm](https://pnpm.io/)
+- **Analytics:** [Google Analytics 4](https://analytics.google.com/) (gtag)
+- **Error Monitoring:** [Sentry](https://sentry.io/)
 
 ## ✨ Features
 
@@ -34,6 +36,12 @@ Modern portfolio website built with Next.js 14, React, TypeScript, Effect, and T
 - Photo gallery with Polaroid-style drawer
 - Project showcase with carousel
 - Blog post pages with rich content
+- Conference archive with year/talk pages
+- Career timeline with downloadable resume (PDF & DOCX)
+- Site history timeline
+- React & WordPress maintenance services pages
+- Auto-generated `/sitemap.xml` (static + Convex-sourced blog slugs, 1h revalidation)
+- Centralized animation system (`src/lib/animations.ts`) — shared spring variants used across all pages
 
 ### 🔐 Admin Dashboard
 
@@ -41,8 +49,10 @@ Modern portfolio website built with Next.js 14, React, TypeScript, Effect, and T
 - **Media Manager** - Drag-and-drop image assignment to pages and blog posts
 - **Blog Post Manager** - Create and edit blog posts with UploadThing media uploads
 - **Career Timeline Manager** - Manage work history and experiences
+- **Projects Manager** - Add and manage featured projects with GitHub/live links
 - **Links Manager** - Curate and organize browser tabs/resource links
 - **Settings Manager** - Update site metadata and SEO
+- **SEO Manager** - Per-page SEO metadata served via Convex HTTP (`/seo?path=`)
 - Real-time updates with Convex
 
 ### 🛡️ Error Handling & Data Flow
@@ -62,11 +72,12 @@ Modern portfolio website built with Next.js 14, React, TypeScript, Effect, and T
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) 18+ or [Bun](https://bun.sh/)
+- [Node.js](https://nodejs.org/en/) 18+ and [pnpm](https://pnpm.io/)
 - [Clerk](https://clerk.com/) account
 - [Convex](https://www.convex.dev/) account
 - [UploadThing](https://uploadthing.com/) account
 - [PostHog](https://posthog.com/) account (for analytics)
+- [Google Analytics](https://analytics.google.com/) property (for gtag)
 
 ### Installation
 
@@ -80,9 +91,7 @@ cd future-chrislanejones
 2. Install dependencies:
 
 ```bash
-bun install
-# or
-npm install
+pnpm install
 ```
 
 3. Set up environment variables:
@@ -91,7 +100,9 @@ Create a `.env.local` file in the root directory:
 
 ```bash
 # Convex
-NEXT_PUBLIC_CONVEX_URL=your_convex_url
+NEXT_PUBLIC_CONVEX_URL=your_convex_deployment_url
+NEXT_PUBLIC_CONVEX_SITE_URL=your_convex_site_url   # used for sitemap & SEO HTTP endpoints
+CONVEX_DEPLOYMENT=dev:your-deployment-name
 
 # Clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
@@ -100,9 +111,12 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 # UploadThing
 UPLOADTHING_API_KEY=your_uploadthing_api_key
 
-# PostHog Analytics
-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_api_key
-NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+# PostHog Analytics — must be a project key starting with phc_, NOT a personal phx_ key
+NEXT_PUBLIC_POSTHOG_KEY=phc_your_posthog_project_key
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+
+# Google Analytics
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
 4. Initialize Convex:
@@ -127,32 +141,32 @@ npx convex run browserLinks:seedBrowserLinks
 6. Run the development server:
 
 ```bash
-bun dev
-# or
-npm run dev
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the site.
+> **Note:** Run `npx convex dev` in a separate terminal alongside `pnpm dev` to keep the Convex backend in sync during development.
+
+Open [https://www.chrislanejones.com](https://www.chrislanejones.com) to view the site.
 
 ## 📦 Key Dependencies
 
 ```json
 {
-  "next": "14.1.4",
-  "react": "^18.3.1",
-  "typescript": "^5.9.3",
-  "tailwindcss": "^3.4.18",
-  "framer-motion": "^10.18.0",
-  "convex": "^1.28.2",
-  "@clerk/nextjs": "5.7.4",
-  "effect": "^3.12.5",
+  "next": "16.2.3",
+  "react": "^19.2.5",
+  "typescript": "^6.0.2",
+  "tailwindcss": "^4.2.2",
+  "framer-motion": "^12.38.0",
+  "convex": "^1.34.1",
+  "@clerk/nextjs": "7.0.12",
+  "effect": "^3.21.0",
   "uploadthing": "^7.7.4",
   "@uploadthing/react": "^7.3.3",
   "@dnd-kit/core": "^6.3.1",
   "@dnd-kit/sortable": "^10.0.0",
   "@radix-ui/react-*": "latest",
-  "lucide-react": "^0.552.0",
-  "posthog-js": "^1.285.1"
+  "lucide-react": "^1.7.0",
+  "posthog-js": "^1.365.4"
 }
 ```
 

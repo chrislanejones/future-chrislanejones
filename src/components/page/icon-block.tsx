@@ -21,10 +21,9 @@ export default function IconBlock({
         hover:bg-(--color-muted-accent)
         hover:border-(--color-accent)
         hover:shadow-glow
-        transition-all duration-300 cursor-pointer
+        transition-all duration-300
         overflow-hidden aspect-square
         ${className}`}
-      tabIndex={0}
     >
       {/* inner icon centered */}
       <div className="flex flex-col items-center justify-center h-full w-full p-3">
