@@ -30,18 +30,18 @@ export const aboutSections: AboutSection[] = [
     title: "Living in the Shenandoah Mountains",
     description:
       "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service — [Heaven's Rays Ministries](https://heavensraysministries.com/). In Louisa, I am close to several cities and the Shenandoah mountains.",
-    image: "/gallery/Me-on-a-Bike-Trail.webp",
-    imageAlt: "Me on my bike at the Bike Trails by Piney River",
-    imageDescription: "Exploring bike trails near the Piney River",
+    image: "/gallery/Me-at-Marys-Rock-Shenandoah.webp",
+    imageAlt: "Me at Marys Rock in the Shenandoah Mountains",
+    imageDescription: "Me at Marys Rock in the Shenandoah Mountains",
     imagePosition: "left",
   },
   {
     title: "Adventure & Travel",
     description:
       "I love adventure and traveling. In 2016 my wife (Becky) and I traveled to the mountains in Washington and Oregon. The trails of Cannon Beach and the cliffs were the trip's highlights.\n\nAfter this trip, we started looking for work in the towns adjacent to the Appalachian Mountains. We love hiking, biking, and exploring the outdoors. We ended up moving to Harrisonburg, Virginia in 2018 and then moved to Central Virginia in 2019.",
-    image: "/gallery/Becky-and-I-at-Glacier-National-Park.webp",
-    imageAlt: "Glacier National Park",
-    imageDescription: "Adventures at Glacier National Park",
+    image: "/gallery/Becky-and-I-In-Santorini.webp",
+    imageAlt: "Becky and I in Santorini",
+    imageDescription: "Becky and I in Santorini",
     imagePosition: "right",
   },
 ];

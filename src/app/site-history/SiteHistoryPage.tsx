@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { fadeUpVariants, viewport } from "@/lib/animations";
 import { TwoColumnCard } from "@/components/page/two-column-card";
 import { Button } from "@/components/ui/button";
 import { siteHistorySections } from "@/data/site-history-data";
@@ -31,10 +32,11 @@ export default function SiteHistoryPage() {
               {/* Links section if available */}
               {section.links && section.links.length > 0 && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.15 + index * 0.05 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  variants={fadeUpVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  custom={0.1 + index * 0.04}
+                  viewport={viewport}
                   className="mt-4 pt-4 border-t border-(--color-border)"
                 >
                   <h3 className="text-sm font-semibold text-(--color-ink) mb-3">

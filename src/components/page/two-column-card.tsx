@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import Image from "next/image";
+import { cardVariants, viewport } from "@/lib/animations";
 
 const twoColumnCardVariants = cva(
   "rounded-3xl bg-panel p-4 md:p-6 lg:p-8 border border-(--color-border)",
@@ -74,24 +75,11 @@ export function TwoColumnCard({
         ...style,
         willChange: "transform, opacity",
       }}
-      initial={{
-        opacity: 0,
-        y: 20,
-        scale: 0.95,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        scale: 1,
-      }}
-      transition={{
-        duration: 0.4,
-        delay,
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      }}
-      viewport={{ once: true, margin: "-100px" }}
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      custom={delay}
+      viewport={viewport}
     >
       {/* Content Column */}
       <div

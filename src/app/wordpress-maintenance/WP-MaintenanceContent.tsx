@@ -3,12 +3,13 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link"; // Keep Link for internal navigation within the plan cards
+import Link from "next/link";
 
 import Card from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import ClientSliderContent from "@/components/main/client-slider-content";
-import ContactForm from "@/components/page/contact-form"; // Import the consolidated ContactForm
+import ContactForm from "@/components/page/contact-form";
+import { cardVariants, fadeUpVariants } from "@/lib/animations";
 
 const WPactionPlanItems = [
   {
@@ -65,9 +66,10 @@ export default function WordPressServicesPage() {
     <>
       {/* Hero Image Section */}
       <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        custom={0.05}
         className="relative mb-16 rounded-3xl overflow-hidden h-[500px] mt-8"
       >
         <Image
@@ -80,9 +82,10 @@ export default function WordPressServicesPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            variants={fadeUpVariants}
+            initial="hidden"
+            animate="visible"
+            custom={0.15}
             className="bg-white/10 backdrop-blur-md rounded-2xl p-6 max-w-4xl"
           >
             <h2 className="text-white">
@@ -95,12 +98,7 @@ export default function WordPressServicesPage() {
       </motion.section>
 
       {/* Action Plan Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="mb-16"
-      >
+      <section className="mb-16">
         <h2 className="text-center mb-12">
           The Full Maintenance Action Plan 🎯
         </h2>
@@ -110,7 +108,7 @@ export default function WordPressServicesPage() {
             <Card
               key={index}
               size="full"
-              delay={index * 0.1}
+              delay={index * 0.05}
               style={{ minHeight: "auto" }}
             >
               <div className="flex items-start gap-4">
@@ -124,63 +122,47 @@ export default function WordPressServicesPage() {
             </Card>
           ))}
         </div>
-      </motion.section>
+      </section>
 
       {/* Pricing Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="mb-16"
-      >
-        <h2 className="text-center mb-12">Choose Your Plan</h2>{" "}
-        {/* Updated Title */}
+      <section className="mb-16">
+        <h2 className="text-center mb-12">Choose Your Plan</h2>
         <div className="grid md:grid-cols-2 gap-6">
-          {" "}
-          {/* This grid arranges the two plan cards */}
           {/* Basic Plan Card */}
-          <Card
-            size="small" // Changed from "page-half" to "page-full" to fill column
-            className="flex flex-col"
-          >
+          <Card size="small" delay={0.1} className="flex flex-col">
             <h3 className="mb-6">The Action Plan</h3>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">
-                  Three hours of site changes and consulting monthly
-                </span>
+                <span>Three hours of site changes and consulting monthly</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">99.9% website uptime</span>
+                <span>99.9% website uptime</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">
-                  Monthly security scans & vulnerability testing
-                </span>
+                <span>Monthly security scans & vulnerability testing</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Plugin/theme updates</span>
+                <span>Plugin/theme updates</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Daily WordPress offsite backups</span>
+                <span>Daily WordPress offsite backups</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Fix broken links and images</span>
+                <span>Fix broken links and images</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Resolve errors and conflicts</span>
+                <span>Resolve errors and conflicts</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Performance optimization</span>
+                <span>Performance optimization</span>
               </li>
             </ul>
 
@@ -191,44 +173,42 @@ export default function WordPressServicesPage() {
               </Button>
             </div>
           </Card>
-          {/* SEO Plan Card (Added) */}
-          <Card
-            size="small" // Changed from "page-half" to "page-full" to fill column
-            className="flex flex-col"
-          >
+
+          {/* SEO Plan Card */}
+          <Card size="small" delay={0.15} className="flex flex-col">
             <h3 className="mb-6">The Action Plan Plus (With SEO)</h3>
             <ul className="space-y-3 mb-8 flex-1">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Everything in the basic plan</span>
+                <span>Everything in the basic plan</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Quarterly SEO Reviews</span>
+                <span>Quarterly SEO Reviews</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">SEO improvements to meta tags</span>
+                <span>SEO improvements to meta tags</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Page-level content optimization</span>
+                <span>Page-level content optimization</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Keyword research and implementation</span>
+                <span>Keyword research and implementation</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Competitor analysis</span>
+                <span>Competitor analysis</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Search ranking monitoring</span>
+                <span>Search ranking monitoring</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span className="">Analytics reporting</span>
+                <span>Analytics reporting</span>
               </li>
             </ul>
 
@@ -240,39 +220,25 @@ export default function WordPressServicesPage() {
             </div>
           </Card>
         </div>
-      </motion.section>
+      </section>
 
       {/* Client Logos Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="mb-16"
-      >
+      <section className="mb-16">
         <Card size="hero" height="large" delay={0.1}>
           <ClientSliderContent />
         </Card>
-      </motion.section>
+      </section>
 
-      {/* Contact Section - Using the consolidated ContactForm */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="mb-16"
-      >
+      {/* Contact Section */}
+      <section className="mb-16">
         <h2 className="text-center mb-12">Contact Us to Get Started</h2>
-        {/* The ContactForm component itself renders a Card */}
         <ContactForm
           id="contact"
           variant="maintenance"
           serviceType="WordPress"
           plusPlanLabel="SEO"
-        />{" "}
-        {/* id prop correctly passed */}
-      </motion.section>
+        />
+      </section>
     </>
   );
 }

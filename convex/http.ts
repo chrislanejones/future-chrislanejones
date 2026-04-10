@@ -22,4 +22,22 @@ http.route({
   }),
 });
 
+http.route({
+  path: "/sitemap-data",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const [blogPosts, projects] = await Promise.all([
+      ctx.runQuery(api.blogPosts.getAllPosts),
+      ctx.runQuery(api.projects.getAll),
+    ]);
+
+    return new Response(JSON.stringify({ blogPosts, projects }), {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  }),
+});
+
 export default http;
