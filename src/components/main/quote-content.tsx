@@ -67,7 +67,7 @@ const QUOTES: ReactNode[] = [
   <>
     <Code>alias adulting='echo "not today"'</Code>
   </>,
-  <>The mountains don't judge my code. That's why I live here.</>,
+  <>Mountians and Rednecks don't judge my code. That's why I live here.</>,
   <>
     I spent way too many hours building this site, let's bring back Geocities
   </>,
@@ -90,6 +90,7 @@ const QUOTES: ReactNode[] = [
     In 2017, three people called on the same day asking me 'How can I learn to
     code tonight?
   </>,
+  <>I should have went into the business of building COVID WFH sheds.</>,
 ];
 
 export default function QuoteContent() {
