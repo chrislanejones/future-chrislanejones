@@ -1,5 +1,5 @@
 // src/app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
@@ -8,6 +8,18 @@ import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Suspense } from "react";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
+export const metadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 const interphases = localFont({
   src: [
