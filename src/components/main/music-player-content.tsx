@@ -174,6 +174,11 @@ export default function MusicPlayerContent() {
           cursor: pointer;
           outline: none;
         }
+        .volume-slider:focus-visible {
+          outline: 2px solid var(--color-focus-ring);
+          outline-offset: 3px;
+          border-radius: 5px;
+        }
 
         .volume-slider::-webkit-slider-thumb {
           -webkit-appearance: none;

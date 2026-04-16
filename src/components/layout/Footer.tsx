@@ -23,7 +23,7 @@ export default function Footer() {
           {/* Branding */}
           <div className="flex flex-col gap-4 max-w-sm md:col-span-2 md:h-full md:justify-between">
             <div>
-              <Link href="/" className="flex items-center gap-3">
+              <Link href="/" className="flex items-center gap-3 rounded-lg">
                 <div className="grid place-content-center">
                   <SiteLogo />
                 </div>
@@ -59,6 +59,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={social.label}
                   >
                     {social.icon}
                   </a>

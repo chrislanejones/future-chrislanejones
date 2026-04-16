@@ -237,7 +237,7 @@ export function NavLinkComponent({
         href={link.href}
         target="_blank"
         rel="noopener noreferrer"
-        className={className}
+        className={`nav-link ${className}`}
         onClick={onClick}
       >
         {link.label}
@@ -245,7 +245,7 @@ export function NavLinkComponent({
     );
   }
   return (
-    <Link href={link.href} className={className} onClick={onClick}>
+    <Link href={link.href} className={`nav-link ${className}`} onClick={onClick}>
       {link.label}
     </Link>
   );

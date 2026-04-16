@@ -14,7 +14,7 @@ export default function SiteHistory() {
     <>
       <Header />
       <ConvexBanner path="/site-history" />
-      <main>
+      <main id="main-content">
         <SiteHistoryPage />
       </main>
       <Footer />

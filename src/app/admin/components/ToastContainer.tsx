@@ -48,8 +48,9 @@ export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
             <button
               onClick={() => onRemove(toast.id)}
               className="p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded transition shrink-0"
+              aria-label="Close notification"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3 h-3" aria-hidden="true" />
             </button>
           )}
         </div>

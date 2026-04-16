@@ -13,7 +13,7 @@ export default function BrowserTabsPage() {
     <>
       <Header />
       <ConvexBanner path="/browser-tabs" />
-      <main>
+      <main id="main-content">
         <BrowserTabs />
       </main>
       <Footer />

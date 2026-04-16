@@ -13,7 +13,7 @@ export default function SiteMap() {
     <>
       <Header />
       <ConvexBanner path="/site-map" />
-      <main>
+      <main id="main-content">
         <SiteMapPage />
       </main>
       <Footer />

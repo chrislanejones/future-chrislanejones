@@ -13,7 +13,7 @@ export default function ContactPage() {
     <>
       <Header />
       <ConvexBanner path="/contact" />
-      <main>
+      <main id="main-content">
         <ContactForm />
       </main>
       <Footer />

@@ -13,7 +13,7 @@ export default function Career() {
     <>
       <Header />
       <ConvexBanner path="/career" />
-      <main>
+      <main id="main-content">
         <CareerPage />
       </main>
       <Footer />

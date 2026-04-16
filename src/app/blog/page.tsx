@@ -14,7 +14,7 @@ export default function Page() {
     <>
       <Header />
       <ConvexBanner path="/blog" />
-      <main>
+      <main id="main-content">
         <BlogPage />
       </main>
       <Footer />

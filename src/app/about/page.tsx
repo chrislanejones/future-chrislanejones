@@ -13,7 +13,7 @@ export default function About() {
     <>
       <Header />
       <ConvexBanner path="/about" />
-      <main>
+      <main id="main-content">
         <AboutPage />
       </main>
       <Footer />

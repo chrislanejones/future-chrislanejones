@@ -13,7 +13,7 @@ export default function WordPressMaintenancePage() {
     <>
       <Header />
       <ConvexBanner path="/wordpress-maintenance" />
-      <main>
+      <main id="main-content">
         <WPMaintenanceContent />
       </main>
       <Footer />

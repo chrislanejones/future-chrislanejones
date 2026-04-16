@@ -17,7 +17,7 @@ export default function ConferenceYearPage({
   year,
 }: ConferenceYearPageProps) {
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Banner */}
       <div className="mb-16">
         <h1 className="mb-4">Conferences in {year}</h1>

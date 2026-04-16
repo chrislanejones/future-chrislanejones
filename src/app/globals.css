@@ -19,7 +19,8 @@
 
   --color-border: #e5e7eb; /* gray-200, subtle */
   --radius: 12px;
-  --focus-ring: 2px solid var(--color-accent-alt);
+  --color-focus-ring: #111827; /* near-black — high contrast on light backgrounds */
+  --focus-ring: 2px solid var(--color-focus-ring);
 
   /* fluid typography */
   --step--1: clamp(0.82rem, 0.8rem + 0.18vw, 0.95rem); /* small text */
@@ -60,6 +61,7 @@
   --color-on-accent: #0b0d10; /* dark text on accent */
 
   --color-border: #1f242b;
+  --color-focus-ring: #ffffff; /* near-white — high contrast on dark backgrounds */
 
   /* Sidebar variables - dark mode */
   --sidebar: #111418;
@@ -150,12 +152,11 @@ p {
     0 12px 40px color-mix(in srgb, var(--color-accent) 40%, transparent);
 }
 
-/* Focus-visible ring uses the same recipe as hover glow */
+/* .focus-ring utility — solid, high-contrast outline for keyboard nav */
 .focus-ring:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--color-accent) 25%, transparent),
-    0 12px 40px color-mix(in srgb, var(--color-accent) 15%, transparent);
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+  box-shadow: none;
 }
 
 /* Your transition utility */
@@ -194,14 +195,9 @@ p {
   text-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 28%, transparent);
 }
 .nav-link:focus-visible {
-  outline: 2px dotted var(--color-accent);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
   color: var(--color-ink);
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-  text-decoration-color: var(--color-accent);
 }
 
 .bg-base {
@@ -534,4 +530,62 @@ html.dark .client-logo {
 /* Panel glow for admin */
 .admin-panel-glow {
   box-shadow: inset -1px 0 12px -6px color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RIP <marquee> — CSS tribute scrolling animation
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.marquee-container {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-inner {
+  display: block;
+  /* no white-space: nowrap — block width = container width, so translateX(100%)
+     starts the text at exactly the right edge with zero effect on layout */
+  animation: marquee-scroll 8s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCESSIBILITY — Keyboard Focus Rings
+   Black in light mode, white in dark mode. High contrast, always visible.
+   Tokens: --color-focus-ring (#111827 light / #ffffff dark)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Universal rule — every focusable element gets the ring when reached by Tab */
+*:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+/* Strip default browser outline for mouse/touch users only
+   (focus-visible fires only on keyboard nav, so mouse clicks are unaffected) */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Radix UI dropdown / popover items that use [data-highlighted] for focus */
+[data-highlighted]:focus-visible,
+[data-state="checked"]:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+/* Skip-to-content link — already visible when focused, keep it clean */
+[href="#main-content"]:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Image overlay buttons intentionally suppress focus rings (decorative) */
+.image-overlay-text:focus-visible {
+  outline: none !important;
 }

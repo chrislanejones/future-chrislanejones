@@ -13,7 +13,7 @@ export default function ReactMaintenancePage() {
     <>
       <Header />
       <ConvexBanner path="/react-maintenance" />
-      <main>
+      <main id="main-content">
         <ReactMaintenanceContent />
       </main>
       <Footer />
