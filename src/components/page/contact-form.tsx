@@ -183,8 +183,10 @@ const ContactForm: React.FC<ContactFormProps> = ({
               onChange={handleChange}
               className={errors.name ? "border-red-500" : ""}
               placeholder="John Doe"
+              aria-describedby={errors.name ? "name-error" : undefined}
+              aria-invalid={!!errors.name}
             />
-            {errors.name && <p className="mt-1 text-red-500">{errors.name}</p>}
+            {errors.name && <p id="name-error" className="mt-1 text-red-500" role="alert">{errors.name}</p>}
           </div>
           <div>
             <label htmlFor="email" className="block mb-2">
@@ -198,9 +200,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
               onChange={handleChange}
               className={errors.email ? "border-red-500" : ""}
               placeholder="john@example.com"
+              aria-describedby={errors.email ? "email-error" : undefined}
+              aria-invalid={!!errors.email}
             />
             {errors.email && (
-              <p className="mt-1 text-red-500">{errors.email}</p>
+              <p id="email-error" className="mt-1 text-red-500" role="alert">{errors.email}</p>
             )}
           </div>
           {/* Phone field only for 'full' contact form variant */}
@@ -217,9 +221,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 onChange={handleChange}
                 className={errors.phone ? "border-red-500" : ""}
                 placeholder="(123) 456-7890"
+                aria-describedby={errors.phone ? "phone-error" : undefined}
+                aria-invalid={!!errors.phone}
               />
               {errors.phone && (
-                <p className="mt-1 text-red-500">{errors.phone}</p>
+                <p id="phone-error" className="mt-1 text-red-500" role="alert">{errors.phone}</p>
               )}
             </div>
           )}
@@ -273,9 +279,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
                   ? "Tell me about your project or inquiry..."
                   : "I'm interested in your services..."
               }
+              aria-describedby={errors.message ? "message-error" : undefined}
+              aria-invalid={!!errors.message}
             />
             {errors.message && (
-              <p className="mt-1 text-red-500">{errors.message}</p>
+              <p id="message-error" className="mt-1 text-red-500" role="alert">{errors.message}</p>
             )}
             {/* Character count only for 'full' contact form variant */}
             {variant === "full" && (

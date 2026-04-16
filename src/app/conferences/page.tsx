@@ -13,7 +13,7 @@ export default function ConferencesRoute() {
     <>
       <Header />
       <ConvexBanner path="/conferences" />
-      <main>
+      <main id="main-content">
         <ConferencesPage />
       </main>
       <Footer />

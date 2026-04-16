@@ -14,6 +14,18 @@ const Code = ({ children }: { children: ReactNode }) => (
   </code>
 );
 
+// CSS tribute to the dearly departed <marquee> tag
+const MarqueeQuote = ({ children }: { children: ReactNode }) => (
+  <span
+    className="marquee-container"
+    aria-label="I still mourn the death of the marquee tag."
+  >
+    <span className="marquee-inner" aria-hidden="true">
+      {children}
+    </span>
+  </span>
+);
+
 // Helper component for quote images (250px square webp)
 const QuoteImage = ({ src, alt }: { src: string; alt: string }) => (
   <Image
@@ -25,11 +37,13 @@ const QuoteImage = ({ src, alt }: { src: string; alt: string }) => (
   />
 );
 
+const MARQUEE_INDEX = 0; // index of the scrolling marquee quote
+
 const QUOTES: ReactNode[] = [
-  <>The mountains don't judge my code. That's why I live here.</>,
-  <>
+  <MarqueeQuote>
     I still mourn the death of the <Code>&lt;marquee&gt;</Code> tag.
-  </>,
+  </MarqueeQuote>,
+  <>The mountains don't judge my code. That's why I live here.</>,
   <>
     Expected Website Completion Date: May 20, 1999
     <QuoteImage
@@ -67,7 +81,6 @@ const QUOTES: ReactNode[] = [
   <>
     <Code>alias adulting='echo "not today"'</Code>
   </>,
-  <>Mountians and Rednecks don't judge my code. That's why I live here.</>,
   <>
     I spent way too many hours building this site, let's bring back Geocities
   </>,
@@ -110,10 +123,19 @@ export default function QuoteContent() {
     });
   };
 
+  // Marquee quote gets 3 full passes (42s) before auto-advancing; others 20s
   useEffect(() => {
-    const timer = setInterval(nextQuote, 12000);
-    return () => clearInterval(timer);
-  }, []);
+    const delay = index === MARQUEE_INDEX ? 7000 * 3 : 18000;
+    const timer = setTimeout(() => {
+      setIndex((prev) => {
+        if (QUOTES.length <= 1) return prev;
+        let next = prev;
+        while (next === prev) next = Math.floor(Math.random() * QUOTES.length);
+        return next;
+      });
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [index]);
 
   return (
     <div className="relative h-full flex flex-col">
@@ -124,7 +146,7 @@ export default function QuoteContent() {
             <motion.blockquote
               key={index}
               exit={{ opacity: 0, y: -8 }}
-              className="text-center leading-relaxed m-0"
+              className="text-center leading-relaxed m-0 min-w-0 w-full"
             >
               <h4>
                 {typeof QUOTES[index] === "string"

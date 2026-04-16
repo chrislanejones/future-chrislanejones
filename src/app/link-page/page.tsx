@@ -9,7 +9,7 @@ export async function generateMetadata() {
 
 export default function LinksPage() {
   return (
-    <main>
+    <main id="main-content">
       <LinkGrid />
     </main>
   );

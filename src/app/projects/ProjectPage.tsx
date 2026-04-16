@@ -304,7 +304,7 @@ export default function ProjectGrid() {
   const activeHeader = activeTab === "apps" ? appsHeader : websitesHeader;
 
   return (
-    <main className="site-container py-12">
+    <main id="main-content" className="site-container py-12">
       <Banner
         title={activeHeader.title}
         breadcrumbPage={activeHeader.breadcrumbPage}

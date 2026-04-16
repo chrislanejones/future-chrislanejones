@@ -21,7 +21,6 @@ export const buttonVariants = cva(
           "bg-(--color-surface-hover) shadow-glow",
           "text-foreground",
           "hover:bg-(--color-surface-hover) hover:border-(--color-border)",
-          "focus-visible:ring-2 focus-visible:ring-(--color-accent) focus-visible:ring-offset-2",
         ].join(" "),
         base: [
           "bg-(--color-muted-accent)",

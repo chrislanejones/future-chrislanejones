@@ -92,7 +92,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     return (
       <>
         <Header />
-        <main className="site-container py-12">
+        <main id="main-content" className="site-container py-12">
           <div className="text-center py-12">
             <h1 className="text-2xl font-bold text-ink mb-4">Post Not Found</h1>
             <p className="text-muted mb-8">
@@ -115,7 +115,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     return (
       <>
         <Header />
-        <main className="site-container py-12">
+        <main id="main-content" className="site-container py-12">
           <div className="flex justify-center items-center py-12">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
           </div>

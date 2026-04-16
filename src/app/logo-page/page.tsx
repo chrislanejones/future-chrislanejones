@@ -13,7 +13,7 @@ export default function Logo() {
     <>
       <Header />
       <ConvexBanner path="/logo-page" />
-      <main>
+      <main id="main-content">
         <LogoPage />
       </main>
       <Footer />

@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <Header />
 
-      <main>
+      <main id="main-content">
         <section className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-5 auto-rows-min">
           <Card size="hero" height="large" delay={0.1}>
             <HeroContent />
