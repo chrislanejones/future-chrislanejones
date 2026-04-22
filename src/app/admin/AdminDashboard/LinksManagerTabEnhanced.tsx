@@ -618,7 +618,7 @@ const LinksManagerTabEnhanced = () => {
                             link.featured ? "text-emerald-500" : "text-muted"
                           }`}
                         >
-                          Featured On Ohter Pages
+                          Featured On Other Pages
                         </label>
                       </div>
 

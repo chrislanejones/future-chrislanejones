@@ -9,21 +9,31 @@ import {
   MessageSquare,
   Navigation,
   User,
-  Upload,
+  Users,
   Save,
   Trash2,
   FileText,
   Layout,
   Briefcase,
+  Activity,
+  Globe,
+  Bot,
+  Image as ImageIcon,
+  ArrowRight,
+  Plus,
+  Edit2,
+  ToggleLeft,
+  ToggleRight,
   type LucideIcon,
 } from "lucide-react";
+import type { Id } from "../../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUploadThing } from "@/utils/uploadthing";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
+import { MediaDrawer } from "../components/MediaDrawer";
 import Image from "next/image";
 
 interface DataSource {
@@ -48,6 +58,8 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { id: "profile", label: "Profile", icon: User },
   { id: "data-management", label: "Data Management", icon: Database },
+  { id: "redirects", label: "Redirects", icon: ArrowRight },
+  { id: "site-health", label: "Site Health", icon: Activity },
 ];
 
 const SettingsTabEnhanced = () => {
@@ -65,7 +77,7 @@ const SettingsTabEnhanced = () => {
     email: "",
     location: "",
   });
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isAvatarDrawerOpen, setIsAvatarDrawerOpen] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   // Sync Convex data to local state
@@ -95,6 +107,78 @@ const SettingsTabEnhanced = () => {
   const seedProfile = useMutation(api.siteSettings.seedProfile);
   const seedPageHeaders = useMutation(api.pageHeaders.seedPageHeaders);
   const seedProjects = useMutation(api.projects.seedProjects);
+  const seedClients = useMutation(api.clients.seedClients);
+  const seedClientIcons = useMutation(api.media.seedClientIcons);
+  const seedRedirects = useMutation(api.redirects.seedRedirects);
+
+  // Redirects
+  const allRedirects = useQuery(api.redirects.getAll) ?? [];
+  const createRedirect = useMutation(api.redirects.create);
+  const updateRedirect = useMutation(api.redirects.update);
+  const deleteRedirectMutation = useMutation(api.redirects.deleteRedirect);
+  const toggleRedirectActive = useMutation(api.redirects.toggleActive);
+
+  const [redirectForm, setRedirectForm] = useState({
+    from: "",
+    to: "",
+    statusCode: 301,
+    label: "",
+    isActive: true,
+  });
+  const [editingRedirectId, setEditingRedirectId] = useState<Id<"redirects"> | null>(null);
+  const [isAddingRedirect, setIsAddingRedirect] = useState(false);
+  const [deleteRedirectConfirm, setDeleteRedirectConfirm] = useState<Id<"redirects"> | null>(null);
+  const [isSavingRedirect, setIsSavingRedirect] = useState(false);
+
+  const handleOpenAddRedirect = () => {
+    setRedirectForm({ from: "", to: "", statusCode: 301, label: "", isActive: true });
+    setEditingRedirectId(null);
+    setIsAddingRedirect(true);
+  };
+
+  const handleEditRedirect = (r: typeof allRedirects[number]) => {
+    setRedirectForm({ from: r.from, to: r.to, statusCode: r.statusCode, label: r.label ?? "", isActive: r.isActive });
+    setEditingRedirectId(r._id);
+    setIsAddingRedirect(true);
+  };
+
+  const handleSaveRedirect = async () => {
+    if (!redirectForm.from.trim() || !redirectForm.to.trim()) return;
+    setIsSavingRedirect(true);
+    try {
+      if (editingRedirectId) {
+        await updateRedirect({
+          id: editingRedirectId,
+          from: redirectForm.from.trim(),
+          to: redirectForm.to.trim(),
+          statusCode: redirectForm.statusCode,
+          label: redirectForm.label || undefined,
+          isActive: redirectForm.isActive,
+        });
+        success("Redirect updated!");
+      } else {
+        await createRedirect({
+          from: redirectForm.from.trim(),
+          to: redirectForm.to.trim(),
+          statusCode: redirectForm.statusCode,
+          label: redirectForm.label || undefined,
+          isActive: redirectForm.isActive,
+        });
+        success("Redirect created!");
+      }
+      setIsAddingRedirect(false);
+      setEditingRedirectId(null);
+    } catch {
+      showError("Failed to save redirect");
+    } finally {
+      setIsSavingRedirect(false);
+    }
+  };
+
+  const handleCancelRedirect = () => {
+    setIsAddingRedirect(false);
+    setEditingRedirectId(null);
+  };
 
   const mutationMap: Record<string, () => Promise<unknown>> = {
     links: seedLinks,
@@ -105,6 +189,9 @@ const SettingsTabEnhanced = () => {
     seo: seedSEO,
     profile: seedProfile,
     projects: seedProjects,
+    clients: seedClients,
+    "client-icons": seedClientIcons,
+    redirects: seedRedirects,
   };
 
   const [selectedSources, setSelectedSources] = useState<Set<string>>(
@@ -121,21 +208,12 @@ const SettingsTabEnhanced = () => {
   } = useToast();
   const logEndRef = useRef<HTMLDivElement>(null);
 
-  const { startUpload } = useUploadThing("mediaUploader", {
-    onClientUploadComplete: async (res) => {
-      if (res && res[0]) {
-        setProfileData((prev) => ({ ...prev, avatar: res[0].url }));
-        await updateAvatar({ avatar: res[0].url });
-        setIsUploadingAvatar(false);
-        success("Avatar uploaded!");
-      }
-    },
-    onUploadError: (error: Error) => {
-      console.error("Upload error:", error);
-      setIsUploadingAvatar(false);
-      showError("Failed to upload avatar");
-    },
-  });
+  const handleAvatarSelect = async (url: string) => {
+    setProfileData((prev) => ({ ...prev, avatar: url }));
+    await updateAvatar({ avatar: url });
+    setIsAvatarDrawerOpen(false);
+    success("Avatar updated!");
+  };
 
   // Scrollspy effect
   useEffect(() => {
@@ -145,6 +223,13 @@ const SettingsTabEnhanced = () => {
     const handleScroll = () => {
       const scrollTop = container.scrollTop;
       const offset = 100;
+
+      const atBottom =
+        scrollTop + container.clientHeight >= container.scrollHeight - 5;
+      if (atBottom) {
+        setActiveSection(menuItems[menuItems.length - 1].id);
+        return;
+      }
 
       for (const item of menuItems) {
         const section = sectionRefs.current[item.id];
@@ -172,18 +257,12 @@ const SettingsTabEnhanced = () => {
   const scrollToSection = (sectionId: string) => {
     const section = sectionRefs.current[sectionId];
     if (section && contentRef.current) {
+      setActiveSection(sectionId);
       contentRef.current.scrollTo({
         top: section.offsetTop - 24,
         behavior: "smooth",
       });
     }
-  };
-
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploadingAvatar(true);
-    await startUpload([file]);
   };
 
   const handleSaveProfile = async () => {
@@ -267,6 +346,24 @@ const SettingsTabEnhanced = () => {
       label: "Projects",
       icon: Briefcase,
       description: "App and website project portfolio",
+    },
+    {
+      id: "clients",
+      label: "Clients",
+      icon: Users,
+      description: "Past and present client logos and links",
+    },
+    {
+      id: "client-icons",
+      label: "Clean Local Icons",
+      icon: ImageIcon,
+      description: "Remove static /client-icons/ entries — drawer shows UploadThing only",
+    },
+    {
+      id: "redirects",
+      label: "Redirects",
+      icon: ArrowRight,
+      description: "Seed the original /links and /docs redirects",
     },
   ];
 
@@ -432,12 +529,13 @@ const SettingsTabEnhanced = () => {
               {/* Avatar */}
               <div className="flex items-start gap-6">
                 <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-(--color-muted-accent)">
+                  <div className="relative w-24 h-24 rounded-full overflow-hidden bg-(--color-muted-accent)">
                     {profileData.avatar ? (
                       <Image
                         src={profileData.avatar}
                         alt="Avatar"
                         fill
+                        sizes="96px"
                         className="object-cover"
                       />
                     ) : (
@@ -446,23 +544,13 @@ const SettingsTabEnhanced = () => {
                       </div>
                     )}
                   </div>
-                  <label
-                    htmlFor="avatar-upload"
+                  <button
+                    onClick={() => setIsAvatarDrawerOpen(true)}
                     className="absolute -bottom-1 -right-1 p-2 bg-accent text-on-accent rounded-full cursor-pointer hover:bg-accent/90 transition shadow-md"
+                    title="Change photo"
                   >
-                    {isUploadingAvatar ? (
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Upload className="w-4 h-4" />
-                    )}
-                  </label>
-                  <input
-                    id="avatar-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarUpload}
-                    className="hidden"
-                  />
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
                 </div>
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium text-ink">Profile Photo</p>
@@ -557,6 +645,7 @@ const SettingsTabEnhanced = () => {
           }}
           className="scroll-mt-6"
         >
+
           <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-accent/10 rounded-lg">
@@ -685,7 +774,275 @@ const SettingsTabEnhanced = () => {
             </div>
           </div>
         </section>
+
+        {/* Redirects Section */}
+        <section
+          id="redirects"
+          ref={(el) => { sectionRefs.current["redirects"] = el; }}
+          className="scroll-mt-6"
+        >
+          <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-accent/10 rounded-lg">
+                  <ArrowRight className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-ink">Redirects</h2>
+                  <p className="text-sm text-muted">Dynamic URL redirects handled at runtime via Convex</p>
+                </div>
+              </div>
+              <Button onClick={handleOpenAddRedirect} variant="accent" size="sm" className="gap-2">
+                <Plus className="w-4 h-4" />
+                Add Redirect
+              </Button>
+            </div>
+
+            {/* Add / Edit Form */}
+            {isAddingRedirect && (
+              <div className="mb-6 p-4 bg-(--color-muted-accent) rounded-xl border border-(--color-border) space-y-4">
+                <h3 className="text-sm font-semibold text-ink">
+                  {editingRedirectId ? "Edit Redirect" : "New Redirect"}
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted uppercase tracking-wide">From path</label>
+                    <Input
+                      value={redirectForm.from}
+                      onChange={(e) => setRedirectForm((p) => ({ ...p, from: e.target.value }))}
+                      placeholder="/old-page"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted uppercase tracking-wide">To path / URL</label>
+                    <Input
+                      value={redirectForm.to}
+                      onChange={(e) => setRedirectForm((p) => ({ ...p, to: e.target.value }))}
+                      placeholder="/new-page or https://..."
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted uppercase tracking-wide">Label (optional)</label>
+                    <Input
+                      value={redirectForm.label}
+                      onChange={(e) => setRedirectForm((p) => ({ ...p, label: e.target.value }))}
+                      placeholder="e.g. Old blog post"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted uppercase tracking-wide">Status code</label>
+                    <div className="flex gap-2">
+                      {[301, 302].map((code) => (
+                        <button
+                          key={code}
+                          onClick={() => setRedirectForm((p) => ({ ...p, statusCode: code }))}
+                          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all border ${
+                            redirectForm.statusCode === code
+                              ? "bg-accent/20 text-accent border-accent"
+                              : "bg-(--color-panel) text-muted border-(--color-border) hover:text-ink"
+                          }`}
+                        >
+                          {code}
+                          <span className="block text-xs font-normal opacity-70">
+                            {code === 301 ? "Permanent" : "Temporary"}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-ink">
+                    <button
+                      onClick={() => setRedirectForm((p) => ({ ...p, isActive: !p.isActive }))}
+                      className="text-accent"
+                    >
+                      {redirectForm.isActive
+                        ? <ToggleRight className="w-6 h-6" />
+                        : <ToggleLeft className="w-6 h-6 text-muted" />
+                      }
+                    </button>
+                    Active
+                  </label>
+                  <div className="flex gap-2">
+                    <Button onClick={handleCancelRedirect} variant="outline" size="sm">Cancel</Button>
+                    <Button
+                      onClick={handleSaveRedirect}
+                      variant="accent"
+                      size="sm"
+                      className="gap-2"
+                      disabled={isSavingRedirect || !redirectForm.from.trim() || !redirectForm.to.trim()}
+                    >
+                      <Save className="w-4 h-4" />
+                      {isSavingRedirect ? "Saving…" : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Redirects List */}
+            {allRedirects.length === 0 ? (
+              <p className="text-sm text-muted text-center py-8">No redirects yet. Click + Add Redirect to create one.</p>
+            ) : (
+              <div className="space-y-2">
+                {allRedirects.map((r) => (
+                  <div
+                    key={r._id}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-(--color-muted-accent) border border-(--color-border) group"
+                  >
+                    <div className="flex-1 min-w-0 grid grid-cols-2 gap-2">
+                      <div className="min-w-0">
+                        <p className="text-xs text-muted mb-0.5">From</p>
+                        <code className="text-sm font-mono text-ink truncate block">{r.from}</code>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs text-muted mb-0.5">To</p>
+                        <code className="text-sm font-mono text-ink truncate block">{r.to}</code>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-(--color-panel) text-muted font-mono border border-(--color-border)">
+                        {r.statusCode}
+                      </span>
+                      <button
+                        onClick={() => toggleRedirectActive({ id: r._id })}
+                        title={r.isActive ? "Disable redirect" : "Enable redirect"}
+                        className="text-accent hover:opacity-70 transition"
+                      >
+                        {r.isActive
+                          ? <ToggleRight className="w-5 h-5" />
+                          : <ToggleLeft className="w-5 h-5 text-muted" />
+                        }
+                      </button>
+                      <button
+                        onClick={() => handleEditRedirect(r)}
+                        className="p-1.5 rounded-lg text-muted hover:text-ink hover:bg-(--color-panel) transition"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setDeleteRedirectConfirm(r._id)}
+                        className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-500/10 transition"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Delete Redirect Modal */}
+        {deleteRedirectConfirm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
+              <h3 className="text-lg font-bold text-ink mb-4">Delete Redirect?</h3>
+              <p className="text-muted mb-6">This cannot be undone.</p>
+              <div className="flex gap-2">
+                <Button
+                  onClick={async () => {
+                    await deleteRedirectMutation({ id: deleteRedirectConfirm });
+                    setDeleteRedirectConfirm(null);
+                    success("Redirect deleted");
+                  }}
+                  variant="outline"
+                  className="flex-1 text-red-500"
+                >
+                  Delete
+                </Button>
+                <Button onClick={() => setDeleteRedirectConfirm(null)} variant="outline" className="flex-1">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Site Health Section */}
+        <section
+          id="site-health"
+          ref={(el) => {
+            sectionRefs.current["site-health"] = el;
+          }}
+          className="scroll-mt-6"
+        >
+          <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <Activity className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-ink">Site Health</h2>
+                <p className="text-sm text-muted">
+                  Sitemap and crawl configuration
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {/* Sitemap Card */}
+              <div className="p-4 bg-(--color-muted-accent) rounded-xl space-y-3">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-accent" />
+                  <p className="text-sm font-medium text-ink">Sitemap</p>
+                </div>
+                <p className="text-xs text-muted">
+                  Auto-generated from all published pages, blog posts, and conferences.
+                </p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <code className="text-xs bg-(--color-panel) px-2 py-1 rounded text-accent font-mono">
+                    /sitemap.xml
+                  </code>
+                  <a
+                    href="/sitemap.xml"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-accent hover:underline flex items-center gap-1"
+                  >
+                    View sitemap ↗
+                  </a>
+                </div>
+              </div>
+
+              {/* robots.txt Card */}
+              <div className="p-4 bg-(--color-muted-accent) rounded-xl space-y-3">
+                <div className="flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-accent" />
+                  <p className="text-sm font-medium text-ink">robots.txt</p>
+                </div>
+                <p className="text-xs text-muted">
+                  Crawler access rules served from <code className="font-mono">/robots.txt</code>.
+                </p>
+                <pre className="text-xs bg-(--color-panel) rounded-lg p-3 font-mono text-(--color-ink) whitespace-pre overflow-x-auto">
+{`User-agent: *
+Allow: /
+
+Sitemap: https://www.chrislanejones.com/sitemap.xml`}
+                </pre>
+                <a
+                  href="/robots.txt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-accent hover:underline flex items-center gap-1"
+                >
+                  View robots.txt ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
+
+      <MediaDrawer
+        isOpen={isAvatarDrawerOpen}
+        onClose={() => setIsAvatarDrawerOpen(false)}
+        onSelect={handleAvatarSelect}
+        title="Select Profile Photo"
+        description="Choose a photo from your media library or upload a new one"
+      />
     </div>
   );
 };

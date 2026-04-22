@@ -42,3 +42,9 @@ next-env.d.ts
 
 # terminal ui components
 src/components/ui/terminal-alert-dialog.tsx
+
+# Added by roll_repo_for_ai.sh
+roll_repo_for_ai.sh
+
+# Added by roll_repo_for_ai.sh
+rolled_repo/

@@ -197,6 +197,7 @@ export default function ProjectsContent() {
             fill
             className="object-cover"
             sizes="100vw"
+            priority={safeIndex === 0}
           />
         </div>
 
@@ -218,6 +219,7 @@ export default function ProjectsContent() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
+                priority={safeIndex === 0}
               />
             </motion.div>
           </AnimatePresence>

@@ -171,6 +171,26 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_position", ["position"]),
 
+  redirects: defineTable({
+    from: v.string(),
+    to: v.string(),
+    statusCode: v.number(),
+    isActive: v.boolean(),
+    label: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_from", ["from"]),
+
+  clients: defineTable({
+    name: v.string(),
+    url: v.string(),
+    logo: v.string(),
+    logoAlt: v.optional(v.string()),
+    order: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_order", ["order"]),
+
   projects: defineTable({
     title: v.string(),
     description: v.string(),

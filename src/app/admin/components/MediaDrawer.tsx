@@ -253,7 +253,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                   key={media._id}
                   onClick={() => setSelectedItem(media)}
                   onDoubleClick={() => onSelect(media.url)}
-                  className={`group relative aspect-square rounded-xl transition-all duration-200 ${
+                  className={`group relative aspect-square rounded-xl transition-all duration-200 bg-(--color-muted-accent) ${
                     selectedItem?._id === media._id
                       ? "ring-4 ring-inset ring-accent"
                       : "hover:ring-2 hover:ring-inset hover:ring-accent/40"
@@ -263,7 +263,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                     src={media.url}
                     alt={media.altText || media.filename}
                     fill
-                    className="object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain rounded-xl p-2"
                     sizes="200px"
                   />
                   {selectedItem?._id === media._id && (
