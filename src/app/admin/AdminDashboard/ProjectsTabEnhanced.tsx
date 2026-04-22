@@ -9,6 +9,7 @@ import {
   Star,
   ChevronUp,
   ChevronDown,
+  Edit2,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -372,10 +373,64 @@ const ProjectsTabEnhanced = () => {
 
         {/* ── EDIT PANEL ── */}
         {activePanel === "edit" && (selectedProject || isCreating) && (
+          <>
+            {/* Banner header */}
+            <div className="flex items-center justify-between px-6 py-4 bg-(--color-muted-accent) shrink-0">
+              <div>
+                <h2 className="font-bold text-ink">
+                  {isCreating ? "New Project" : formData.title || "Untitled"}
+                </h2>
+                <p className="text-sm text-muted">
+                  {formData.category === "app" ? "App / Tool" : "Client Website"}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                {isEditing ? (
+                  <>
+                    <Button onClick={handleCancel} variant="outline" size="sm">
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSave}
+                      variant="accent"
+                      size="sm"
+                      className="gap-2"
+                      disabled={isSaving}
+                    >
+                      <Save className="w-4 h-4" />
+                      {isSaving ? "Saving..." : "Save"}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit
+                    </Button>
+                    {selectedProject && (
+                      <Button
+                        onClick={() => setDeleteConfirm(selectedProject._id)}
+                        variant="outline"
+                        size="sm"
+                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
             {formData.image && (
               <div className="relative w-full aspect-video rounded-xl overflow-hidden">
-                <Image src={formData.image} alt={formData.title} fill className="object-cover" />
+                <Image src={formData.image} alt={formData.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 66vw" />
               </div>
             )}
 
@@ -497,35 +552,8 @@ const ProjectsTabEnhanced = () => {
               />
             </div>
 
-            <div className="flex gap-2 pt-4 border-t border-(--color-border)">
-              {!isEditing ? (
-                <>
-                  <Button onClick={() => setIsEditing(true)} variant="outline" className="flex-1">
-                    Edit
-                  </Button>
-                  {selectedProject && (
-                    <Button
-                      onClick={() => setDeleteConfirm(selectedProject._id)}
-                      variant="outline"
-                      className="text-red-500"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Button onClick={handleSave} variant="accent" disabled={isSaving} className="flex-1 gap-2">
-                    <Save className="w-4 h-4" />
-                    Save
-                  </Button>
-                  <Button onClick={handleCancel} variant="outline" className="flex-1">
-                    Cancel
-                  </Button>
-                </>
-              )}
-            </div>
           </div>
+          </>
         )}
 
         {activePanel === "edit" && !selectedProject && !isCreating && (

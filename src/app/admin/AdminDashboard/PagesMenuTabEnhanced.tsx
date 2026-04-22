@@ -70,7 +70,7 @@ const DraggablePageItem = ({ page }: { page: SEOPage }) => {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData(
       "application/json",
-      JSON.stringify({ type: "page", title: page.title, path: page.path })
+      JSON.stringify({ type: "page", title: getPageName(page.path), path: page.path })
     );
     e.dataTransfer.effectAllowed = "copy";
   };

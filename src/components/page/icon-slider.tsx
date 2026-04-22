@@ -9,6 +9,7 @@ export type SliderItem = {
   name: string;
   logo: string;
   url: string;
+  alt?: string;
   year?: string;
   location?: string;
 };
@@ -41,7 +42,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
         className={`
           absolute inset-0
           grid gap-6 p-4
-          grid-cols-1 grid-rows-2          /* mobile: 1×2 */
+          grid-cols-2 grid-rows-2          /* mobile: 2×2 */
           sm:grid-cols-2 sm:grid-rows-2    /* tablet: 2×2 */
           lg:grid-cols-4 lg:grid-rows-2    /* desktop: 4×2 */
         `}
@@ -74,7 +75,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
             >
               <Image
                 src={item.logo}
-                alt={`${item.name} logo`}
+                alt={item.alt ?? `${item.name} logo`}
                 width={300}
                 height={200}
                 className="client-logo object-contain w-auto h-32 sm:h-40 lg:h-48 opacity-90 group-hover:opacity-100 transition-all duration-300"
@@ -113,7 +114,7 @@ export default function IconSlider({
     const handleResize = () => {
       const w = window.innerWidth;
       if (w < 640)
-        setItemsPerView(2); // mobile: 1×2
+        setItemsPerView(4); // mobile: 2×2
       else if (w < 1024)
         setItemsPerView(4); // tablet: 2×2
       else setItemsPerView(8); // desktop: 4×2
@@ -150,7 +151,7 @@ export default function IconSlider({
       {title && <h2 className="text-center mb-4">{title}</h2>}
 
       <div className="flex items-center justify-between gap-4">
-        {/* Left Arrow */}
+        {/* Left Arrow - desktop only */}
         {shouldShowNavigation ? (
           <Button
             variant="neutral"
@@ -158,11 +159,12 @@ export default function IconSlider({
             round={true}
             aria-label="Previous"
             onClick={() => setSlide(-1)}
+            className="hidden sm:flex"
           >
             <ArrowLeft />
           </Button>
         ) : (
-          <div className="w-10" />
+          <div className="hidden sm:block w-10" />
         )}
 
         <div className="flex-1 relative h-120 md:h-128 overflow-hidden">
@@ -177,7 +179,7 @@ export default function IconSlider({
           </AnimatePresence>
         </div>
 
-        {/* Right Arrow */}
+        {/* Right Arrow - desktop only */}
         {shouldShowNavigation ? (
           <Button
             variant="neutral"
@@ -185,17 +187,18 @@ export default function IconSlider({
             round={true}
             aria-label="Next"
             onClick={() => setSlide(1)}
+            className="hidden sm:flex"
           >
             <ArrowRight />
           </Button>
         ) : (
-          <div className="w-10" />
+          <div className="hidden sm:block w-10" />
         )}
       </div>
 
-      {/* Pagination dots */}
+      {/* Desktop pagination dots */}
       {shouldShowPagination && (
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="hidden sm:flex justify-center gap-2 mt-4">
           {itemGroups.map((_, i) => (
             <button
               key={i}
@@ -211,6 +214,53 @@ export default function IconSlider({
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
+        </div>
+      )}
+
+      {/* Mobile: prev + dots + next in one bottom row */}
+      {(shouldShowNavigation || shouldShowPagination) && (
+        <div className="flex sm:hidden justify-center items-center gap-4 mt-4">
+          {shouldShowNavigation && (
+            <Button
+              variant="neutral"
+              size="icon"
+              round={true}
+              aria-label="Previous"
+              onClick={() => setSlide(-1)}
+            >
+              <ArrowLeft />
+            </Button>
+          )}
+          {shouldShowPagination && (
+            <div className="flex gap-2 items-center">
+              {itemGroups.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setDirection(i > selectedGroup ? 1 : -1);
+                    setSelectedGroup(i);
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                    i === selectedGroup
+                      ? "bg-(--color-ink) scale-110"
+                      : "bg-(--color-inner-card) hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
+          {shouldShowNavigation && (
+            <Button
+              variant="neutral"
+              size="icon"
+              round={true}
+              aria-label="Next"
+              onClick={() => setSlide(1)}
+            >
+              <ArrowRight />
+            </Button>
+          )}
         </div>
       )}
     </div>

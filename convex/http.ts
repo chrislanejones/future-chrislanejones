@@ -40,4 +40,18 @@ http.route({
   }),
 });
 
+http.route({
+  path: "/redirects",
+  method: "GET",
+  handler: httpAction(async (ctx) => {
+    const redirects = await ctx.runQuery(api.redirects.getActive);
+    return new Response(JSON.stringify(redirects), {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  }),
+});
+
 export default http;

@@ -170,6 +170,20 @@ export const deleteMedia = mutation({
   },
 });
 
+// Removes any local /client-icons/ static paths that were previously seeded into
+// the media table — the drawer should only contain UploadThing-hosted images.
+export const seedClientIcons = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const all = await ctx.db.query("media").collect();
+    const local = all.filter((m) => m.url.startsWith("/client-icons/"));
+    for (const entry of local) {
+      await ctx.db.delete(entry._id);
+    }
+    return { success: true, removed: local.length };
+  },
+});
+
 // Migration: Create media entries for UploadThing blog images
 export const migrateBlogImages = mutation({
   args: {},

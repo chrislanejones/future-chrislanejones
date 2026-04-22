@@ -36,6 +36,7 @@ interface ContactMessage {
 const MessagesTabEnhanced = () => {
   const messages = useQuery(api.contactMessages.getAll) ?? [];
   const markAsRead = useMutation(api.contactMessages.markAsRead);
+  const markAsUnread = useMutation(api.contactMessages.markAsUnread);
   const deleteMessage = useMutation(api.contactMessages.deleteMessage);
 
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(
@@ -67,8 +68,18 @@ const MessagesTabEnhanced = () => {
   const handleMarkAsRead = async (id: Id<"contactMessages">) => {
     try {
       await markAsRead({ id });
+      setSelectedMessage((prev) => prev?._id === id ? { ...prev, read: true } : prev);
     } catch (err) {
       console.error("Failed to mark as read:", err);
+    }
+  };
+
+  const handleMarkAsUnread = async (id: Id<"contactMessages">) => {
+    try {
+      await markAsUnread({ id });
+      setSelectedMessage((prev) => prev?._id === id ? { ...prev, read: false } : prev);
+    } catch (err) {
+      console.error("Failed to mark as unread:", err);
     }
   };
 
@@ -346,7 +357,7 @@ const MessagesTabEnhanced = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 <Button variant="accent" className="gap-2" asChild>
                   <a href={`mailto:${selectedMessage.email}`}>
                     <Mail className="w-4 h-4" />
@@ -361,6 +372,14 @@ const MessagesTabEnhanced = () => {
                     </a>
                   </Button>
                 )}
+                <Button
+                  variant="outline"
+                  className="gap-2"
+                  onClick={() => handleMarkAsUnread(selectedMessage._id)}
+                >
+                  <Mail className="w-4 h-4" />
+                  Mark as Unread
+                </Button>
               </div>
             </div>
           </>

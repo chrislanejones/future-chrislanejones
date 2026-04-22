@@ -1,27 +1,20 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Upload,
   Trash2,
-  Download,
   LayoutGrid,
   List,
   ChevronDown,
   ChevronRight,
-  Filter,
   ImageIcon,
   Home,
-  Star,
-  X,
-  Loader2,
-  Edit2,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
-import { useUploadThing } from "@/utils/uploadthing";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -58,7 +51,6 @@ const MediaTabEnhanced = () => {
   const updateMedia = useMutation(api.media.update);
 
   // Home Gallery
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const galleryItems = useQuery(api.homeGallery.getAll) as
     | GalleryItem[]
     | undefined;
@@ -74,7 +66,6 @@ const MediaTabEnhanced = () => {
   const [expandedGalleries, setExpandedGalleries] = useState<Set<string>>(
     new Set(["galleries"])
   );
-  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -97,35 +88,6 @@ const MediaTabEnhanced = () => {
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [editImageAlt, setEditImageAlt] = useState("");
   const [editImageFilename, setEditImageFilename] = useState("");
-
-  const { startUpload } = useUploadThing("mediaUploader", {
-    onClientUploadComplete: async (res) => {
-      if (res) {
-        for (const file of res) {
-          await createMedia({
-            url: file.url,
-            filename: file.name || "Untitled",
-            size: file.size,
-          });
-        }
-        setSuccess(`Successfully uploaded ${res.length} file(s)`);
-        setTimeout(() => setSuccess(null), 3000);
-      }
-      setIsUploading(false);
-    },
-    onUploadError: (error: Error) => {
-      setError(error);
-      setIsUploading(false);
-    },
-  });
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    setIsUploading(true);
-    await startUpload(Array.from(files));
-  };
 
   const handleDeleteImage = async (mediaId: Id<"media">) => {
     try {
@@ -203,7 +165,10 @@ const MediaTabEnhanced = () => {
   };
 
   const handleGalleryImageSelect = async (imageUrl: string) => {
-    if (selectedGallerySlot === null) return;
+    if (selectedGallerySlot === null) {
+      setIsMediaDrawerOpen(false);
+      return;
+    }
     try {
       await setGalleryPosition({
         position: selectedGallerySlot,
@@ -363,38 +328,21 @@ const MediaTabEnhanced = () => {
           />
         </div>
 
-        {/* Upload Button - Homepage Style */}
+        {/* Upload Button */}
         <div className="col-span-2 flex justify-end">
           <Button
             variant="accent"
             className="gap-2 w-full md:w-auto"
-            disabled={isUploading}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => {
+              setSelectedGallerySlot(null);
+              setIsMediaDrawerOpen(true);
+            }}
           >
             <Upload className="w-4 h-4" />
-            {isUploading ? "Uploading..." : "Upload Images"}
+            Upload Images
           </Button>
-
-          {/* Hidden file input */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-            disabled={isUploading}
-          />
         </div>
       </div>
-
-      {/* Upload Progress */}
-      {isUploading && (
-        <div className="flex items-center gap-2 text-accent">
-          <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <span>Uploading...</span>
-        </div>
-      )}
 
       {/* Main Content */}
       <div className="flex gap-6 flex-1 min-h-0">
@@ -719,7 +667,11 @@ const MediaTabEnhanced = () => {
           setSelectedGallerySlot(null);
         }}
         onSelect={handleGalleryImageSelect}
-        title={`Select Image for ${selectedGallerySlot === 1 ? "Featured Slot" : `Slot ${selectedGallerySlot}`}`}
+        title={
+          selectedGallerySlot === null
+            ? "Upload to Media Library"
+            : `Select Image for ${selectedGallerySlot === 1 ? "Featured Slot" : `Slot ${selectedGallerySlot}`}`
+        }
         description="Choose an image from your media library or upload a new one"
       />
     </div>

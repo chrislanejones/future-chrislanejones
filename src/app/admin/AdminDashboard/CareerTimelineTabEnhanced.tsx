@@ -69,6 +69,7 @@ const CareerTimelineTabEnhanced = () => {
   const addEvent = useMutation(api.careerTimeline.addEvent);
   const updateEvent = useMutation(api.careerTimeline.updateEvent);
   const deleteEvent = useMutation(api.careerTimeline.deleteEvent);
+  const reorderEvents = useMutation(api.careerTimeline.reorderEvents);
 
   const [selectedEvent, setSelectedEvent] = useState<CareerEvent | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -77,6 +78,10 @@ const CareerTimelineTabEnhanced = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+
+  /* drag-to-reorder state */
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     year: "",
@@ -189,13 +194,35 @@ const CareerTimelineTabEnhanced = () => {
     setIsEditing(false);
   };
 
+  // Sort events by order
+  const sortedEvents = [...events].sort((a, b) => a.order - b.order);
+
+  /* ── drag-to-reorder ── */
+  const handleDragStart = (id: string) => setDraggedId(id);
+  const handleDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    if (id !== draggedId) setDragOverId(id);
+  };
+  const handleDragLeave = () => setDragOverId(null);
+  const handleDragEnd = () => { setDraggedId(null); setDragOverId(null); };
+
+  const handleDrop = async (targetId: string) => {
+    setDragOverId(null);
+    if (!draggedId || draggedId === targetId) return;
+    const ordered = [...sortedEvents];
+    const fromIdx = ordered.findIndex((e) => e._id === draggedId);
+    const toIdx = ordered.findIndex((e) => e._id === targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+    const [moved] = ordered.splice(fromIdx, 1);
+    ordered.splice(toIdx, 0, moved);
+    await reorderEvents({ updates: ordered.map((e, i) => ({ id: e._id, order: i })) });
+    setDraggedId(null);
+  };
+
   const renderIcon = (iconName: string, className?: string) => {
     const IconComponent = ICON_MAP[iconName] || Briefcase;
     return <IconComponent className={className} />;
   };
-
-  // Sort events by order
-  const sortedEvents = [...events].sort((a, b) => a.order - b.order);
 
   if (events === undefined) {
     return <LoadingSpinner message="Loading timeline..." />;
@@ -220,79 +247,72 @@ const CareerTimelineTabEnhanced = () => {
 
       {/* Left Panel - Event List */}
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-(--color-ink)">Timeline Events</h3>
         </div>
 
-        {/* Add Event Button - Homepage style */}
-        <Button
-          onClick={handleCreateNew}
-          variant="accent"
-          className="w-full gap-2 mb-4"
-        >
-          <Plus className="w-4 h-4" />
-          Add Event
-        </Button>
+        {/* Add Event Button */}
+        <div className="flex items-center justify-between mb-3">
+          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2 w-full">
+            <Plus className="w-4 h-4" />
+            Add Event
+          </Button>
+        </div>
+
+        <p className="text-xs text-muted mb-3">Drag to reorder</p>
 
         {/* Event List */}
-        <div className="flex-1 overflow-y-auto space-y-2">
+        <div className="flex-1 overflow-y-auto space-y-1.5">
           {sortedEvents.length === 0 ? (
             <p className="text-sm text-muted text-center py-8">
               No events yet. Add your first career milestone!
             </p>
           ) : (
             sortedEvents.map((event) => (
-              <button
+              <div
                 key={event._id}
+                draggable
+                onDragStart={() => handleDragStart(event._id)}
+                onDragOver={(e) => handleDragOver(e, event._id)}
+                onDragLeave={handleDragLeave}
+                onDrop={() => handleDrop(event._id)}
+                onDragEnd={handleDragEnd}
                 onClick={() => {
                   setIsCreating(false);
                   setSelectedEvent(event as CareerEvent);
                 }}
-                className={`w-full text-left p-3 rounded-lg transition ${
-                  selectedEvent?._id === event._id && !isCreating
+                className={`flex items-center gap-2 p-2.5 rounded-lg cursor-pointer transition-all
+                  ${dragOverId === event._id ? "border-2 border-accent bg-accent/5" : "border border-transparent"}
+                  ${draggedId === event._id ? "opacity-40" : ""}
+                  ${selectedEvent?._id === event._id && !isCreating
                     ? "bg-(--color-foreground) text-(--color-panel)"
                     : "bg-(--color-muted-accent) hover:bg-(--color-surface-hover) text-(--color-ink)"
-                }`}
+                  }`}
               >
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`mt-0.5 ${
-                      selectedEvent?._id === event._id && !isCreating
-                        ? "text-(--color-panel)"
-                        : "text-accent"
-                    }`}
-                  >
-                    {renderIcon(event.iconName, "w-4 h-4")}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-medium truncate">
-                        {event.title}
-                      </span>
-                      <span
-                        className={`text-xs shrink-0 ${
-                          selectedEvent?._id === event._id && !isCreating
-                            ? "opacity-70"
-                            : "text-muted"
-                        }`}
-                      >
-                        {event.year}
-                      </span>
-                    </div>
-                    {event.location && (
-                      <p
-                        className={`text-xs truncate ${
-                          selectedEvent?._id === event._id && !isCreating
-                            ? "opacity-70"
-                            : "text-muted"
-                        }`}
-                      >
-                        {event.location}
-                      </p>
-                    )}
-                  </div>
+                <GripVertical className="w-4 h-4 shrink-0 text-muted cursor-grab" />
+                <div
+                  className={`shrink-0 ${
+                    selectedEvent?._id === event._id && !isCreating
+                      ? "text-(--color-panel)"
+                      : "text-accent"
+                  }`}
+                >
+                  {renderIcon(event.iconName, "w-4 h-4")}
                 </div>
-              </button>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-medium truncate">{event.title}</span>
+                    <span className={`text-xs shrink-0 ${selectedEvent?._id === event._id && !isCreating ? "opacity-70" : "text-muted"}`}>
+                      {event.year}
+                    </span>
+                  </div>
+                  {event.location && (
+                    <p className={`text-xs truncate ${selectedEvent?._id === event._id && !isCreating ? "opacity-70" : "text-muted"}`}>
+                      {event.location}
+                    </p>
+                  )}
+                </div>
+              </div>
             ))
           )}
         </div>
