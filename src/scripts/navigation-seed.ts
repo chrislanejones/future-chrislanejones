@@ -26,7 +26,7 @@ export const staticHeaderNavItems: SeedHeaderNavItem[] = [
     label: "Work",
     children: [
       { href: "/projects", label: "Projects" },
-      { href: "/career", label: "Career & Resume" },
+      { href: "/career-and-resume", label: "Career & Resume" },
       { href: "/conferences", label: "Conferences" },
       { href: "/react-maintenance", label: "React Services" },
       { href: "/wordpress-maintenance", label: "WordPress Services" },
@@ -57,7 +57,7 @@ export const staticFooterNavLinks: SeedFooterNavSection[] = [
     title: "Work",
     links: [
       { href: "/projects", label: "Projects" },
-      { href: "/career", label: "Career & Resume" },
+      { href: "/career-and-resume", label: "Career & Resume" },
       { href: "/blog", label: "Blog" },
       { href: "/react-maintenance", label: "React Services" },
       { href: "/wordpress-maintenance", label: "WordPress Services" },

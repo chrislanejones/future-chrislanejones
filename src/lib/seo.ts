@@ -64,11 +64,11 @@ function getDefaultSEO(path: string): Metadata {
         "Full-stack projects featuring Next.js applications, WordPress plugins, image editors, and web tools. View my work with TypeScript, React, and modern frameworks.",
       alternates: { canonical: "https://chrislanejones.com/projects" }, // Corrected for defaults
     },
-    "/career": {
+    "/career-and-resume": {
       title: "Career & Experience | Chris Lane Jones Web Developer",
       description:
         "10+ years from video editor to senior developer. Experience with React, Next.js, WordPress, and building solutions for Fortune 500 companies and government agencies.",
-      alternates: { canonical: "https://chrislanejones.com/career" }, // Corrected for defaults
+      alternates: { canonical: "https://chrislanejones.com/career-and-resume" },
     },
     "/browser-tabs": {
       title: "Developer Resources & Tools | Curated Web Dev Bookmarks",

@@ -3,6 +3,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["js", "jsx", "ts", "tsx"],
+  async redirects() {
+    return [
+      {
+        source: "/career",
+        destination: "/career-and-resume",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

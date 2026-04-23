@@ -18,7 +18,7 @@ export const staticPageHeaders: Record<
     description:
       "A curated collection of useful resources, tools, and inspiration that I keep coming back to.",
   },
-  "/career": {
+  "/career-and-resume": {
     title: "Career",
     breadcrumbPage: "Career",
     description:
