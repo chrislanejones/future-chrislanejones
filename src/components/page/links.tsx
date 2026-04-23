@@ -86,7 +86,7 @@ export function useHeaderNavItems() {
           order: 2,
           children: [
             { href: "/projects", label: "Projects", order: 0 },
-            { href: "/career", label: "Career & Resume", order: 1 },
+            { href: "/career-and-resume", label: "Career & Resume", order: 1 },
             { href: "/conferences", label: "Conferences", order: 2 },
             { href: "/react-maintenance", label: "React Services", order: 3 },
             {
@@ -110,7 +110,7 @@ export function useHeaderNavItems() {
 export const headerNavLinks: NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
-  { href: "/career", label: "Career" },
+  { href: "/career-and-resume", label: "Career" },
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
   { href: "/browser-tabs", label: "Browser Tabs" },
@@ -140,7 +140,7 @@ export function useFooterNavSections() {
           order: 1,
           links: [
             { href: "/projects", label: "Projects", order: 0 },
-            { href: "/career", label: "Career & Resume", order: 1 },
+            { href: "/career-and-resume", label: "Career & Resume", order: 1 },
             { href: "/blog", label: "Blog", order: 2 },
             { href: "/react-maintenance", label: "React Services", order: 3 },
             {

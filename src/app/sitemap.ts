@@ -9,7 +9,7 @@ const staticPages = [
   '/about',
   '/blog',
   '/browser-tabs',
-  '/career',
+  '/career-and-resume',
   '/conferences',
   '/contact',
   '/link-page',

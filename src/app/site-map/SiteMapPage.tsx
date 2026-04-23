@@ -22,7 +22,7 @@ const sitemapSections = [
     links: [
       { label: "Home", href: "/" },
       { label: "About", href: "/about" },
-      { label: "Career", href: "/career" },
+      { label: "Career", href: "/career-and-resume" },
       { label: "Projects", href: "/projects" },
       { label: "Contact", href: "/contact" },
     ],
