@@ -191,6 +191,25 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_order", ["order"]),
 
+  conferences: defineTable({
+    slug: v.string(),
+    name: v.string(),
+    year: v.number(),
+    dateStart: v.optional(v.string()),
+    dateEnd: v.optional(v.string()),
+    city: v.optional(v.string()),
+    venue: v.optional(v.string()),
+    url: v.optional(v.string()),
+    description: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    logo: v.optional(v.string()),
+    logoAlt: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_year", ["year"])
+    .index("by_slug", ["slug"]),
+
   projects: defineTable({
     title: v.string(),
     description: v.string(),

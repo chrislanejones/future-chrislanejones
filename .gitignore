@@ -48,3 +48,6 @@ roll_repo_for_ai.sh
 
 # Added by roll_repo_for_ai.sh
 rolled_repo/
+
+# Fallow
+.fallow/
