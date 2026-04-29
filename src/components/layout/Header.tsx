@@ -5,18 +5,22 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "../ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SimpleModeToggle } from "../simple-mode-toggle";
 import { useHeaderNavItems, socialLinks, SiteLogo } from "../page/links";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "../ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -81,41 +85,36 @@ export default function Header() {
                   {headerNavItems.map((item) => (
                     <NavigationMenuItem key={item.label}>
                       {item.children ? (
-                        <>
-                          <NavigationMenuTrigger>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            className={cn(
+                              buttonVariants({ variant: "neutral", size: "sm" }),
+                              "group font-medium",
+                              isActive(item) && "bg-(--color-surface-hover)"
+                            )}
+                          >
                             {item.label}
-                          </NavigationMenuTrigger>
-                          <NavigationMenuContent>
-                            <div className="w-56 p-2">
-                              <ul className="space-y-1">
-                                {item.children.map((child) => (
-                                  <li key={child.href}>
-                                    <NavigationMenuLink asChild>
-                                      <Link
-                                        href={child.href!}
-                                        className={`block w-full rounded-md px-3 py-2 hover:bg-(--color-surface-hover) focus-ring ${
-                                          pathname === child.href
-                                            ? "bg-(--color-surface-hover)"
-                                            : ""
-                                        }`}
-                                        target={
-                                          child.isExternal ? "_blank" : undefined
-                                        }
-                                        rel={
-                                          child.isExternal
-                                            ? "noopener noreferrer"
-                                            : undefined
-                                        }
-                                      >
-                                        {child.label}
-                                      </Link>
-                                    </NavigationMenuLink>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </NavigationMenuContent>
-                        </>
+                            <ChevronDown className="ml-1 h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="w-56 p-2">
+                            {item.children.map((child) => (
+                              <DropdownMenuItem key={child.href} asChild>
+                                <Link
+                                  href={child.href!}
+                                  className={`block w-full rounded-md px-3 py-2 ${
+                                    pathname === child.href
+                                      ? "bg-(--color-surface-hover)"
+                                      : ""
+                                  }`}
+                                  target={child.isExternal ? "_blank" : undefined}
+                                  rel={child.isExternal ? "noopener noreferrer" : undefined}
+                                >
+                                  {child.label}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       ) : (
                         <NavigationMenuLink asChild>
                           <Link

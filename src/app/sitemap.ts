@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
-import { conferences } from '@/data/conferences'
+import { ConvexHttpClient } from 'convex/browser'
+import { api } from '../../convex/_generated/api'
 
 const BASE_URL = 'https://www.chrislanejones.com'
 const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_SITE_URL
@@ -31,20 +32,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === '/' ? 1 : 0.8,
   }))
 
-  const conferenceUrls: MetadataRoute.Sitemap = conferences.flatMap((conf) => [
-    {
-      url: `${BASE_URL}/conferences/${conf.year}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/conferences/${conf.year}/${conf.slug}`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly' as const,
-      priority: 0.5,
-    },
-  ])
+  let conferenceUrls: MetadataRoute.Sitemap = []
+  try {
+    const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!)
+    const confs = await convex.query(api.conferences.getAll, {})
+    const seen = new Set<string>()
+    conferenceUrls = confs.flatMap((conf) => {
+      const entries: MetadataRoute.Sitemap = []
+      const yearKey = String(conf.year)
+      if (!seen.has(yearKey)) {
+        seen.add(yearKey)
+        entries.push({
+          url: `${BASE_URL}/conferences/${conf.year}`,
+          lastModified: new Date(),
+          changeFrequency: 'monthly' as const,
+          priority: 0.6,
+        })
+      }
+      entries.push({
+        url: `${BASE_URL}/conferences/${conf.year}/${conf.slug}`,
+        lastModified: new Date(conf.updatedAt),
+        changeFrequency: 'yearly' as const,
+        priority: 0.5,
+      })
+      return entries
+    })
+  } catch (error) {
+    console.error('Error fetching conferences for sitemap:', error)
+  }
 
   if (!CONVEX_SITE_URL) {
     return [...staticUrls, ...conferenceUrls]

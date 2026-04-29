@@ -104,7 +104,6 @@ const NavigationMenuViewport = React.forwardRef<
     <NavigationMenuPrimitive.Viewport
       ref={ref}
       className={cn(
-        // shadcn viewport + your tokens
         "origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-auto overflow-hidden",
         "rounded-xl border border-(--color-border) bg-panel text-foreground shadow-soft",
         "transition-[width,height] duration-200 ease-in-out",
