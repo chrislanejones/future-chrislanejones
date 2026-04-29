@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "chrislanejones.com" }],
+      "destination": "https://www.chrislanejones.com/$1",
+      "permanent": true
+    }
+  ]
+}
