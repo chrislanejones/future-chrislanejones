@@ -46,6 +46,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ])
 
+  if (!CONVEX_SITE_URL) {
+    return [...staticUrls, ...conferenceUrls]
+  }
+
   try {
     const res = await fetch(`${CONVEX_SITE_URL}/sitemap-data`, {
       next: { revalidate: 3600 },

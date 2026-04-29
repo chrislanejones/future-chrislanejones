@@ -14,6 +14,7 @@ import {
   Heart,
   Briefcase,
   Users,
+  Globe,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useClerk, useUser } from "@clerk/nextjs";
@@ -42,6 +43,7 @@ import MessagesTabEnhanced from "./MessagesTabEnhanced";
 import EngagementTabEnhanced from "./EngagementTabEnhanced";
 import ProjectsTabEnhanced from "./ProjectsTabEnhanced";
 import ClientsTabEnhanced from "./ClientsTabEnhanced";
+import ConferencesTabEnhanced from "./ConferencesTabEnhanced";
 
 const AdminSidebarContent = ({
   tabs,
@@ -123,6 +125,7 @@ const AdminDashboard = () => {
     { id: "media", label: "Media Manager", icon: Image },
     { id: "projects", label: "Projects", icon: Briefcase },
     { id: "clients", label: "Clients", icon: Users },
+    { id: "conferences", label: "Conferences", icon: Globe },
     { id: "career", label: "Career Timeline", icon: Calendar },
     { id: "links", label: "Links Manager", icon: Link },
     { id: "messages", label: "Messages", icon: MessageSquare },
@@ -143,6 +146,8 @@ const AdminDashboard = () => {
         return <ProjectsTabEnhanced />;
       case "clients":
         return <ClientsTabEnhanced />;
+      case "conferences":
+        return <ConferencesTabEnhanced />;
       case "career":
         return <CareerTimelineTabEnhanced />;
       case "links":

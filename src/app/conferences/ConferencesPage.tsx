@@ -5,17 +5,21 @@ import Image from "next/image";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { conferences, type Conference } from "@/data/conferences";
+import type { Doc } from "../../../convex/_generated/dataModel";
 
-export default function ConferencesPage() {
-  // Get unique years and sort them (newest first)
+type Conference = Doc<"conferences">;
+
+export default function ConferencesPage({
+  conferences,
+}: {
+  conferences: Conference[];
+}) {
   const availableYears = [...new Set(conferences.map((c) => c.year))].sort(
     (a, b) => b - a
   );
 
   return (
     <>
-      {/* Year Filter Tabs */}
       <Tabs defaultValue="all" className="mb-8">
         <TabsList variant="pills">
           <TabsTrigger variant="pills" value="all">
@@ -28,14 +32,10 @@ export default function ConferencesPage() {
           ))}
         </TabsList>
 
-        {/* All Years Tab */}
         <TabsContent value="all" className="mt-8">
-          <ConferenceGrid
-            conferences={conferences.sort((a, b) => b.year - a.year)}
-          />
+          <ConferenceGrid conferences={[...conferences].sort((a, b) => b.year - a.year)} />
         </TabsContent>
 
-        {/* Individual Year Tabs */}
         {availableYears.map((year) => (
           <TabsContent key={year} value={String(year)} className="mt-8">
             <ConferenceGrid
@@ -50,7 +50,6 @@ export default function ConferencesPage() {
   );
 }
 
-// Separate component for the conference grid with proper typing
 function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
   return (
     <section
@@ -59,24 +58,20 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
     >
       {conferences.map((c, i) => (
         <Card
-          key={`${c.year}-${c.slug}`}
+          key={c._id}
           size="small"
           height="large"
           delay={0.05 + i * 0.05}
           className="overflow-hidden"
         >
           <div className="group flex h-full flex-col">
-            {/* Conference Logo */}
             <div className="relative w-full aspect-[16/9] bg-white/5">
-              {c.coverImage && (
-                <Link
-                  href={`/conferences/${c.year}/${c.slug}`}
-                  className="block"
-                >
+              {c.logo && (
+                <Link href={`/conferences/${c.year}/${c.slug}`} className="block">
                   <div className="relative w-full aspect-[16/9] bg-white/5">
                     <Image
-                      src={c.coverImage}
-                      alt={`${c.name} ${c.year}`}
+                      src={c.logo}
+                      alt={c.logoAlt ?? `${c.name} ${c.year}`}
                       fill
                       className="object-contain"
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -87,9 +82,7 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
               )}
             </div>
 
-            {/* Conference Info */}
             <div className="flex-1 p-5 flex flex-col">
-              {/* Title with bottom margin */}
               <Link
                 href={`/conferences/${c.year}/${c.slug}`}
                 className="nav-link inline-block mb-2"
@@ -99,17 +92,14 @@ function ConferenceGrid({ conferences }: { conferences: Conference[] }) {
                 </h2>
               </Link>
 
-              {/* Location with increased top margin */}
               <p className="text-ink mt-2">
                 {[c.city, c.venue].filter(Boolean).join(" • ")}
               </p>
 
-              {/* Description with more top margin */}
-              {c.summary && (
-                <p className="text-ink mt-4 line-clamp-3">{c.summary}</p>
+              {c.description && (
+                <p className="text-ink mt-4 line-clamp-3">{c.description}</p>
               )}
 
-              {/* Button at bottom */}
               <div className="mt-auto pt-6">
                 <Button variant="base" asChild className="w-full">
                   <Link href={`/conferences/${c.year}/${c.slug}`}>

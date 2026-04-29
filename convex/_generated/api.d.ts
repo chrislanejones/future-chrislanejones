@@ -12,6 +12,7 @@ import type * as blogPosts from "../blogPosts.js";
 import type * as browserLinks from "../browserLinks.js";
 import type * as careerTimeline from "../careerTimeline.js";
 import type * as clients from "../clients.js";
+import type * as conferences from "../conferences.js";
 import type * as contactMessages from "../contactMessages.js";
 import type * as homeGallery from "../homeGallery.js";
 import type * as http from "../http.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   browserLinks: typeof browserLinks;
   careerTimeline: typeof careerTimeline;
   clients: typeof clients;
+  conferences: typeof conferences;
   contactMessages: typeof contactMessages;
   homeGallery: typeof homeGallery;
   http: typeof http;

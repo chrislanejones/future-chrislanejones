@@ -108,6 +108,7 @@ const SettingsTabEnhanced = () => {
   const seedPageHeaders = useMutation(api.pageHeaders.seedPageHeaders);
   const seedProjects = useMutation(api.projects.seedProjects);
   const seedClients = useMutation(api.clients.seedClients);
+  const seedConferences = useMutation(api.conferences.seedConferences);
   const seedClientIcons = useMutation(api.media.seedClientIcons);
   const seedRedirects = useMutation(api.redirects.seedRedirects);
 
@@ -189,8 +190,8 @@ const SettingsTabEnhanced = () => {
     seo: seedSEO,
     profile: seedProfile,
     projects: seedProjects,
-    clients: seedClients,
-    "client-icons": seedClientIcons,
+    clients: async () => { await seedClients(); return seedClientIcons(); },
+    conferences: seedConferences,
     redirects: seedRedirects,
   };
 
@@ -354,10 +355,10 @@ const SettingsTabEnhanced = () => {
       description: "Past and present client logos and links",
     },
     {
-      id: "client-icons",
-      label: "Clean Local Icons",
-      icon: ImageIcon,
-      description: "Remove static /client-icons/ entries — drawer shows UploadThing only",
+      id: "conferences",
+      label: "Conferences",
+      icon: Globe,
+      description: "Tech conferences attended",
     },
     {
       id: "redirects",
