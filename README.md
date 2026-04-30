@@ -68,6 +68,73 @@ Modern portfolio website built with Next.js 16, React 19, TypeScript, Effect, an
 - User behavior tracking
 - Performance monitoring
 
+## 🗂️ Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── about/
+│   ├── blog/
+│   ├── browser-tabs/
+│   ├── career-and-resume/
+│   ├── conferences/
+│   │   └── [year]/[slug]/  # Dynamic conference talk pages
+│   ├── contact/
+│   ├── link-page/
+│   ├── logo-page/
+│   ├── projects/
+│   ├── react-maintenance/
+│   ├── site-history/
+│   ├── site-map/
+│   ├── wordpress-maintenance/
+│   └── admin/              # Protected dashboard (Clerk auth)
+├── components/
+│   ├── layout/             # Header, Footer
+│   ├── main/               # Homepage bento grid content blocks
+│   ├── page/               # Shared page components (Banner, Card, Gallery)
+│   └── ui/                 # shadcn/ui primitives
+├── lib/                    # Utilities: SEO, animations, page headers
+├── providers/              # Convex, PostHog, Clerk providers
+└── types/                  # Shared TypeScript types
+
+convex/                     # Backend: queries, mutations, HTTP endpoints
+├── blogPosts.ts
+├── conferences.ts
+├── careerTimeline.ts
+├── projects.ts
+├── clients.ts
+├── media.ts
+├── navigation.ts
+├── pageHeaders.ts
+├── redirects.ts
+├── seo.ts
+├── siteSettings.ts
+└── http.ts                 # HTTP actions (sitemap-data, SEO endpoint)
+```
+
+## 🌐 Pages & Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Bento grid homepage |
+| `/about` | Bio, hiking, and community background |
+| `/blog` | Blog post listing |
+| `/blog/[slug]` | Individual blog post |
+| `/projects` | Full-stack project portfolio |
+| `/career-and-resume` | Career timeline with downloadable resume |
+| `/conferences` | Conference index |
+| `/conferences/[year]` | Conferences by year |
+| `/conferences/[year]/[slug]` | Individual conference talk |
+| `/browser-tabs` | Curated developer resource links |
+| `/contact` | Contact form |
+| `/link-page` | Social and portfolio links |
+| `/logo-page` | Logo design story |
+| `/site-history` | 18-year site evolution timeline |
+| `/site-map` | Full site map and changelog |
+| `/wordpress-maintenance` | WordPress maintenance service |
+| `/react-maintenance` | React app maintenance service |
+| `/admin` | Protected CMS dashboard |
+
 ## 🚦 Getting Started
 
 ### Prerequisites
@@ -187,9 +254,19 @@ Access the admin dashboard at `/admin` (requires authentication via Clerk):
 - **Blog Posts**: Create, edit, and publish blog posts with rich content
 - **Career Timeline**: Manage work experience and career milestones
 - **Browser Links**: Curate resource collections and bookmarks
+- **Projects**: Add and manage portfolio projects with GitHub/live links and category tags
+- **Clients**: Manage client logos, icons, and links displayed in the homepage slider
+- **Conferences**: Create conference entries with year, slug, and talk details; auto-generates dynamic routes
+- **Page Headers**: Edit the banner title, breadcrumb label, and description shown at the top of each page
+- **SEO Manager**: Per-page title and meta description stored in Convex; supports reseed with upsert
+- **Redirects**: Create and toggle 301/302 redirects handled at runtime via Convex — no redeploy needed
 - **Settings**: Update site metadata, SEO, and configuration
 
 All changes are saved in real-time to Convex and immediately reflected on the live site.
+
+### ♻️ Reseeding Data
+
+The Settings tab includes a **Data Management** panel that lets you reseed any content module directly from the browser. Select one or more data sources and click **Reseed** — existing records are updated (upserted), not skipped.
 
 ## 📄 License
 

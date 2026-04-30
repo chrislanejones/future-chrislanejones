@@ -9,6 +9,7 @@ import {
   Image as ImageIcon,
   Trash2,
   Layout,
+  AlertTriangle,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -51,17 +52,21 @@ interface PageEntry {
 export const SeoTabEnhanced = () => {
   const seoEntries = useQuery(api.seo.getAllSEO) ?? [];
   const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders) ?? [];
+  const stalePaths = useQuery(api.seo.getStaleSEOPaths) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
   const updatePageHeader = useMutation(api.pageHeaders.updatePageHeader);
+  const deleteSEO = useMutation(api.seo.deleteSEO);
+  const cleanupStale = useMutation(api.seo.cleanupStaleSEOPublic);
 
   const [selectedPage, setSelectedPage] = useState<PageEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
-    null,
-  );
+  const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(null);
   const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
 
   const [formData, setFormData] = useState({
     path: "",
@@ -184,6 +189,7 @@ export const SeoTabEnhanced = () => {
   const handlePageSelect = (page: PageEntry) => {
     setSelectedPage(page);
     setSaveStatus(null);
+    setConfirmDelete(false);
   };
 
   const handleSave = async () => {
@@ -222,6 +228,36 @@ export const SeoTabEnhanced = () => {
       setSaveStatus("error");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedPage?.seoEntry) return;
+    setIsDeleting(true);
+    try {
+      await deleteSEO({ path: selectedPage.path });
+      setConfirmDelete(false);
+      setSelectedPage(null);
+      setSaveStatus(null);
+    } catch (error) {
+      console.error("Failed to delete:", error);
+      setSaveStatus("error");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleCleanup = async () => {
+    setIsCleaningUp(true);
+    try {
+      await cleanupStale();
+      if (selectedPage && stalePaths.some((s) => s.path === selectedPage.path)) {
+        setSelectedPage(null);
+      }
+    } catch (error) {
+      console.error("Cleanup failed:", error);
+    } finally {
+      setIsCleaningUp(false);
     }
   };
 
@@ -295,6 +331,29 @@ export const SeoTabEnhanced = () => {
 
   return (
     <div className="grid grid-cols-3 gap-6 h-full">
+      {/* Stale SEO Banner */}
+      {stalePaths.length > 0 && (
+        <div className="col-span-3 flex items-center justify-between gap-4 px-4 py-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-sm">
+          <div className="flex items-center gap-2 text-yellow-500">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>
+              <span className="font-semibold">{stalePaths.length} stale SEO {stalePaths.length === 1 ? "entry" : "entries"}</span>
+              {" "}found for unknown {stalePaths.length === 1 ? "path" : "paths"}:{" "}
+              <span className="font-mono">{stalePaths.map((s) => s.path).join(", ")}</span>
+            </span>
+          </div>
+          <Button
+            onClick={handleCleanup}
+            disabled={isCleaningUp}
+            variant="outline"
+            size="sm"
+            className="shrink-0 border-yellow-500/40 text-yellow-500 hover:bg-yellow-500/10"
+          >
+            {isCleaningUp ? "Cleaning…" : "Clean up"}
+          </Button>
+        </div>
+      )}
+
       {/* Left Panel - Page List */}
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <h3 className="font-semibold text-(--color-ink) mb-4">Pages</h3>
@@ -334,6 +393,16 @@ export const SeoTabEnhanced = () => {
                 <span className="truncate">{getPageName(entry.path)}</span>
                 {/* Data indicators */}
                 <div className="flex gap-1 ml-auto">
+                  {stalePaths.some((s) => s.path === entry.path) && (
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        selectedPage?.path === entry.path
+                          ? "bg-(--color-panel)/50"
+                          : "bg-yellow-500"
+                      }`}
+                      title="Stale — path not in known routes"
+                    />
+                  )}
                   {entry.seoEntry && (
                     <span
                       className={`w-2 h-2 rounded-full ${
@@ -406,6 +475,42 @@ export const SeoTabEnhanced = () => {
                     SEO Score
                   </span>
                 </div>
+
+                {/* Delete SEO record for this page */}
+                {selectedPage.seoEntry && (
+                  confirmDelete ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-red-500">Delete this entry?</span>
+                      <Button
+                        onClick={handleDelete}
+                        disabled={isDeleting}
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        {isDeleting ? "Deleting..." : "Confirm"}
+                      </Button>
+                      <Button
+                        onClick={() => setConfirmDelete(false)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => setConfirmDelete(true)}
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </Button>
+                  )
+                )}
 
                 {/* Save Button */}
                 <Button

@@ -1,6 +1,23 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
+
+const KNOWN_PATHS = new Set([
+  "/",
+  "/about",
+  "/blog",
+  "/browser-tabs",
+  "/career-and-resume",
+  "/conferences",
+  "/contact",
+  "/link-page",
+  "/logo-page",
+  "/projects",
+  "/react-maintenance",
+  "/site-history",
+  "/site-map",
+  "/wordpress-maintenance",
+]);
 
 async function requireAuth(ctx: { auth: any }): Promise<void> {
   const identity = await ctx.auth.getUserIdentity();
@@ -62,87 +79,163 @@ export const updateSEO = mutation({
   },
 });
 
+export const deleteSEO = mutation({
+  args: { path: v.string() },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("seoMetadata")
+      .withIndex("by_path", (q) => q.eq("path", args.path))
+      .first();
+    if (existing) {
+      await ctx.db.delete(existing._id);
+      return { deleted: true };
+    }
+    return { deleted: false };
+  },
+});
+
+export const getStaleSEOPaths = query({
+  handler: async (ctx) => {
+    const all = await ctx.db.query("seoMetadata").collect();
+    return all
+      .filter((entry) => !KNOWN_PATHS.has(entry.path))
+      .map((entry) => ({ path: entry.path, title: entry.title }));
+  },
+});
+
+export const cleanupStaleSEO = internalMutation({
+  handler: async (ctx) => {
+    const all = await ctx.db.query("seoMetadata").collect();
+    const stale = all.filter((entry) => !KNOWN_PATHS.has(entry.path));
+    for (const entry of stale) {
+      await ctx.db.delete(entry._id);
+    }
+    return { removed: stale.length, paths: stale.map((e) => e.path) };
+  },
+});
+
+export const cleanupStaleSEOPublic = mutation({
+  handler: async (ctx) => {
+    const all = await ctx.db.query("seoMetadata").collect();
+    const stale = all.filter((entry) => !KNOWN_PATHS.has(entry.path));
+    for (const entry of stale) {
+      await ctx.db.delete(entry._id);
+    }
+    return { removed: stale.length, paths: stale.map((e) => e.path) };
+  },
+});
+
 export const seedSEOData = mutation({
   handler: async (ctx) => {
     const pages = [
       {
         path: "/",
-        title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+        title: "Chris Lane Jones | Senior Web Engineer & AI Automation",
         description:
-          "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
-        canonicalUrl: "https://chrislanejones.com", // Added canonicalUrl
+          "Senior web engineer based in Richmond, VA specializing in React, Next.js, and AI-powered applications. Building modern web experiences for businesses and government agencies.",
+        canonicalUrl: "https://www.chrislanejones.com",
       },
       {
         path: "/about",
-        title: "About Chris Jones | Developer, Hiker & Community Leader",
+        title: "About Chris Lane Jones | Developer, Hiker & Community Leader",
         description:
-          "From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and life in Virginia's Shenandoah Mountains.",
-        canonicalUrl: "https://chrislanejones.com/about", // Added canonicalUrl
+          "Life on the trails and the web — from video production to full-stack development, leading the Richmond WordPress meetup, and building apps from Virginia's Shenandoah Mountains.",
+        canonicalUrl: "https://www.chrislanejones.com/about",
+      },
+      {
+        path: "/blog",
+        title: "Blog | Web Development, React & WordPress Insights",
+        description:
+          "Thoughts on web development, React, Next.js, WordPress, and building things on the internet. Tips and lessons learned from real client work.",
+        canonicalUrl: "https://www.chrislanejones.com/blog",
       },
       {
         path: "/projects",
-        title: "Web Development Projects | Next.js, React & WordPress Sites",
+        title: "Projects | Full-Stack Apps, Tools & Client Websites",
         description:
-          "Full-stack projects featuring Next.js applications, WordPress plugins, image editors, and web tools. View my work with TypeScript, React, and modern frameworks.",
-        canonicalUrl: "https://chrislanejones.com/projects", // Added canonicalUrl
+          "A collection of full-stack applications, tools, and client sites built with React, Next.js, TypeScript, and WordPress. Focus on performance and user experience.",
+        canonicalUrl: "https://www.chrislanejones.com/projects",
       },
       {
-        path: "/career",
-        title: "Career & Experience | Chris Lane Jones Web Developer",
+        path: "/career-and-resume",
+        title: "Career & Resume | Chris Lane Jones Web Developer",
         description:
-          "10+ years from video editor to senior developer. Experience with React, Next.js, WordPress, and building solutions for Fortune 500 companies and government agencies.",
-        canonicalUrl: "https://chrislanejones.com/career", // Added canonicalUrl
+          "Following the trail from video production to senior web engineer — navigating React frameworks, open-source communities, and a decade of client work along the way.",
+        canonicalUrl: "https://www.chrislanejones.com/career-and-resume",
       },
       {
         path: "/browser-tabs",
-        title: "Developer Resources & Tools | Curated Web Dev Bookmarks",
+        title: "Chrome Tabs I Left Open | Curated Dev Resources & Tools",
         description:
-          "My collection of essential web development resources: React libraries, design tools, icon sets, UI frameworks, and learning materials I reference daily.",
-        canonicalUrl: "https://chrislanejones.com/browser-tabs", // Added canonicalUrl
+          "A curated collection of useful resources, tools, and inspiration I keep coming back to — React libraries, design systems, icon sets, and learning materials.",
+        canonicalUrl: "https://www.chrislanejones.com/browser-tabs",
       },
       {
         path: "/conferences",
-        title: "Tech Conferences Attended | All Things Open, RenderATL & More",
+        title: "Conferences | All Things Open, WordCamp, RenderATL & More",
         description:
-          "Notes from web development conferences including All Things Open, WordCamp US, THAT Conference, RenderATL, and RVAJS. Insights from the JavaScript community.",
-        canonicalUrl: "https://chrislanejones.com/conferences", // Added canonicalUrl
+          "Highlights and notes from web and open-source conferences I've attended — All Things Open, WordCamp US, THAT Conference, RenderATL, and RVAJS.",
+        canonicalUrl: "https://www.chrislanejones.com/conferences",
+      },
+      {
+        path: "/contact",
+        title: "Contact Chris Lane Jones | Web Development Services",
+        description:
+          "Get in touch about web development projects, WordPress maintenance, React consulting, or speaking at a meetup. Based in Virginia, available for remote work.",
+        canonicalUrl: "https://www.chrislanejones.com/contact",
       },
       {
         path: "/link-page",
-        title: "Connect With Chris Lane Jones | Social Media & Portfolio Links",
+        title: "Links | Find Chris Lane Jones Online",
         description:
-          "Find me on GitHub, LinkedIn, Twitter/X, and CodePen. Access my portfolio, blog posts, WordPress services, and web development resources all in one place.",
-        canonicalUrl: "https://chrislanejones.com/link-page", // Added canonicalUrl
+          "GitHub, LinkedIn, Twitter/X, CodePen, and more — all my links in one place. Find my portfolio, blog, and web development services.",
+        canonicalUrl: "https://www.chrislanejones.com/link-page",
       },
       {
         path: "/logo-page",
-        title: "Mountain Logo Design Story | Chris Lane Jones Brand Identity",
+        title: "About the Logo | Mountain as Metaphor for Code & Trails",
         description:
-          "The meaning behind my mountain logo design - representing the journey through code and trails. Explore different logo variations and design philosophy.",
-        canonicalUrl: "https://chrislanejones.com/logo-page", // Added canonicalUrl
+          "The mountain in my logo represents more than a visual — it mirrors the trails I hike in the Shenandoah and the peaks conquered in code. The story behind the design.",
+        canonicalUrl: "https://www.chrislanejones.com/logo-page",
       },
       {
         path: "/site-history",
-        title: "Portfolio Evolution | From WordPress 2.1 to Next.js React App",
+        title: "Site History | From WordPress 2.1 to Next.js",
         description:
-          "18 years of website evolution: from the Kubrick WordPress theme in 2007 to modern Next.js. See how my portfolio transformed alongside web technology.",
-        canonicalUrl: "https://chrislanejones.com/site-history", // Added canonicalUrl
+          "The evolution of chrislanejones.com through various technologies and design iterations — from the Kubrick WordPress theme in 2007 to a modern Next.js and React application.",
+        canonicalUrl: "https://www.chrislanejones.com/site-history",
+      },
+      {
+        path: "/site-map",
+        title: "Site Map & Changelog | chrislanejones.com",
+        description:
+          "Explore all available pages on chrislanejones.com and track site updates, new features, and content additions over time.",
+        canonicalUrl: "https://www.chrislanejones.com/site-map",
       },
       {
         path: "/wordpress-maintenance",
         title: "WordPress Maintenance Services | Monthly Action Plan",
         description:
-          "Comprehensive WordPress maintenance including security scans, plugin updates, performance optimization, and technical support. Three hours of site changes monthly with 99.9% uptime guarantee.",
-        canonicalUrl: "https://chrislanejones.com/wordpress-maintenance", // Added canonicalUrl
+          "Three hours of site changes monthly — copy edits, plugin updates, security scans, performance optimization, and US-based technical support. Keep your WordPress site healthy.",
+        canonicalUrl: "https://www.chrislanejones.com/wordpress-maintenance",
       },
       {
         path: "/react-maintenance",
-        title: "React Application Maintenance | Monthly Support & Optimization",
+        title: "React App Maintenance | Monthly Support & Optimization",
         description:
-          "Expert React app maintenance with dependency updates, security monitoring, performance optimization, and debugging. Three hours of consulting monthly for Next.js and React applications.",
-        canonicalUrl: "https://chrislanejones.com/react-maintenance", // Added canonicalUrl
+          "Three hours of React app changes monthly — component updates, dependency management, security audits, performance reviews, and US-based consulting for Next.js applications.",
+        canonicalUrl: "https://www.chrislanejones.com/react-maintenance",
       },
     ];
+
+    // Migrate stale /career path → /career-and-resume
+    const staleCareer = await ctx.db
+      .query("seoMetadata")
+      .withIndex("by_path", (q) => q.eq("path", "/career"))
+      .first();
+    if (staleCareer) {
+      await ctx.db.delete(staleCareer._id);
+    }
 
     let inserted = 0;
     let updated = 0;
@@ -156,12 +249,16 @@ export const seedSEOData = mutation({
         await ctx.db.insert("seoMetadata", {
           ...page,
           updatedAt: Date.now(),
-          canonicalUrl: page.canonicalUrl || page.path, // Use path as fallback canonical
+          canonicalUrl: page.canonicalUrl || page.path,
         });
         inserted++;
       } else {
-        // We are not updating existing seeded data to avoid accidental overwrites during subsequent seeds
-        // but can modify this logic if initial seed updates are desired.
+        await ctx.db.patch(existing._id, {
+          title: page.title,
+          description: page.description,
+          canonicalUrl: page.canonicalUrl || page.path,
+          updatedAt: Date.now(),
+        });
         updated++;
       }
     }

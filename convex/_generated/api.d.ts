@@ -14,6 +14,7 @@ import type * as careerTimeline from "../careerTimeline.js";
 import type * as clients from "../clients.js";
 import type * as conferences from "../conferences.js";
 import type * as contactMessages from "../contactMessages.js";
+import type * as crons from "../crons.js";
 import type * as homeGallery from "../homeGallery.js";
 import type * as http from "../http.js";
 import type * as media from "../media.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   clients: typeof clients;
   conferences: typeof conferences;
   contactMessages: typeof contactMessages;
+  crons: typeof crons;
   homeGallery: typeof homeGallery;
   http: typeof http;
   media: typeof media;
