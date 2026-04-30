@@ -5,7 +5,7 @@ import WPMaintenanceContent from "./WP-MaintenanceContent";
 import { getPageSEO } from "@/lib/seo";
 
 export async function generateMetadata() {
-  return await getPageSEO("/WordPress-Maintenance");
+  return await getPageSEO("/wordpress-maintenance");
 }
 
 export default function WordPressMaintenancePage() {
