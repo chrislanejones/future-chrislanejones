@@ -19,9 +19,39 @@ export async function generateMetadata() {
   return await getPageSEO("/");
 }
 
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Chris Lane Jones",
+  url: "https://www.chrislanejones.com",
+  image: "https://www.chrislanejones.com/Professional-Photo-of-Chris-Lane-Jones.webp",
+  sameAs: [
+    "https://github.com/chrislanejones",
+    "https://www.linkedin.com/in/chrislanejones",
+    "https://twitter.com/chrislanejones",
+  ],
+  jobTitle: "Full-Stack Web Developer",
+  worksFor: {
+    "@type": "Organization",
+    name: "Chris Lane Jones Web Development",
+  },
+  description:
+    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+  knowsAbout: ["React", "Next.js", "WordPress", "TypeScript", "Web Development"],
+  address: {
+    "@type": "PostalAddress",
+    addressRegion: "Virginia",
+    addressCountry: "US",
+  },
+};
+
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
       <Header />
 
       <main id="main-content">

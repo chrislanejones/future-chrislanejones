@@ -15,9 +15,52 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.chrislanejones.com"),
+  title: {
+    default: "Chris Lane Jones | React & WordPress Developer in Virginia",
+    template: "%s | Chris Lane Jones",
+  },
+  description:
+    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+  authors: [{ name: "Chris Lane Jones", url: "https://www.chrislanejones.com" }],
+  creator: "Chris Lane Jones",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://www.chrislanejones.com",
+    siteName: "Chris Lane Jones",
+    title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+    description:
+      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+    images: [
+      {
+        url: "/Professional-Photo-of-Chris-Lane-Jones.webp",
+        width: 1200,
+        height: 630,
+        alt: "Chris Lane Jones - React & WordPress Developer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+    description:
+      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+    images: ["/Professional-Photo-of-Chris-Lane-Jones.webp"],
+  },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "HxJxP6aNuDpL80nAArN4i3BtkyY32mDzWc8Q7jubP4E",
   },
 };
 

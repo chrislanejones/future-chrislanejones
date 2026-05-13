@@ -11,16 +11,25 @@ export async function getPageSEO(path: string): Promise<Metadata> {
 
     if (data && data.title && data.description) {
       const defaults = getDefaultSEO(path);
+      const canonical = data.canonicalUrl || (defaults.alternates?.canonical as string | undefined) || `https://www.chrislanejones.com${path}`;
       return {
         title: data.title,
         description: data.description,
-        alternates: {
-          canonical: data.canonicalUrl || defaults.alternates?.canonical || `https://www.chrislanejones.com${path}`,
+        alternates: { canonical },
+        openGraph: {
+          title: data.title,
+          description: data.description,
+          url: canonical,
+          type: "website",
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: data.title,
+          description: data.description,
         },
       };
     }
 
-    // No Convex SEO entry for this path — fall back to hardcoded defaults
     return getDefaultSEO(path);
   } catch (error) {
     console.error("Error fetching SEO from Convex:", error);
@@ -118,10 +127,30 @@ function getDefaultSEO(path: string): Metadata {
     },
   };
 
-  return (
-    defaults[path] || {
-      title: "Chris Lane Jones — Dev & Hiker",
-      description: "Building modern web applications.",
-    }
-  );
+  const entry = defaults[path] || {
+    title: "Chris Lane Jones — Dev & Hiker",
+    description: "Building modern web applications.",
+    alternates: { canonical: `https://www.chrislanejones.com${path}` },
+  };
+
+  const canonical =
+    (entry.alternates as { canonical?: string })?.canonical ||
+    `https://www.chrislanejones.com${path}`;
+  const title = typeof entry.title === "string" ? entry.title : "Chris Lane Jones";
+  const description = entry.description ?? "";
+
+  return {
+    ...entry,
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
 }
