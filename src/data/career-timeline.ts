@@ -79,7 +79,7 @@ export const timelineEvents: TimelineEvent[] = [
     year: "2024",
     title: "React Developer That Also Does WordPress",
     description:
-      "Shifted More to React After Seeing the Animations (I Still Do WordPress Too)",
+      "98% React Developer these days - I still do WordPress from time to time",
     location: "Louisa, VA",
     icon: React.createElement(Code2, { className: "w-6 h-6" }),
   },

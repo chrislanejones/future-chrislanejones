@@ -254,7 +254,7 @@ function PhotoGalleryCard() {
         <div className="absolute inset-0 bg-linear-to-t from-base/80 via-base/20 to-transparent"></div>
       </div>
 
-      <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+      <div className="grid grid-cols-[auto_1fr] items-start gap-4 mt-4 px-4 pb-4">
         <GalleryDrawer
           photos={photos}
           title="Gallery"
@@ -263,7 +263,7 @@ function PhotoGalleryCard() {
         />
         <div>
           <span className="">Setup Photo Gallery</span>
-          <p className="text-muted">Desk Setups Throughout the Years</p>
+          <p className="text-muted">98% React Developer these days - I still do WordPress from time to time</p>
         </div>
       </div>
     </Card>
@@ -282,7 +282,7 @@ function ResumeDownloadCard() {
       <div className="flex flex-col gap-3">
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris Lane Jones UX UI Engineer Resume April 2026.pdf"
+            href="/career-files/Chris Lane Jones Resume May 2026.pdf"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -305,7 +305,7 @@ function ResumeDownloadCard() {
 
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris Lane Jones UX UI Engineer Resume April 2026.docx"
+            href="/career-files/Chris Lane Jones Resume May 2026.docx"
             target="_blank"
             rel="noopener noreferrer"
           >
