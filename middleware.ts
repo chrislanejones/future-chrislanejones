@@ -12,7 +12,7 @@ interface ConvexRedirect {
 
 // Module-level cache shared across requests within a worker instance
 let redirectCache: { data: ConvexRedirect[]; at: number } | null = null;
-const CACHE_TTL = 30_000;
+const CACHE_TTL = 60_000;
 
 async function getRedirects(): Promise<ConvexRedirect[]> {
   const now = Date.now();
@@ -23,7 +23,7 @@ async function getRedirects(): Promise<ConvexRedirect[]> {
   if (!siteUrl) return redirectCache?.data ?? [];
   try {
     const res = await fetch(`${siteUrl}/redirects`, {
-      signal: AbortSignal.timeout(500),
+      signal: AbortSignal.timeout(3000),
     });
     if (!res.ok) return redirectCache?.data ?? [];
     const data: ConvexRedirect[] = await res.json();
