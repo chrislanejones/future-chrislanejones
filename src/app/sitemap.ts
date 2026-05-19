@@ -16,8 +16,6 @@ const staticPages = [
   '/link-page',
   '/logo-page',
   '/projects',
-  '/projects/apps',
-  '/projects/websites',
   '/react-maintenance',
   '/site-history',
   '/site-map',
@@ -26,7 +24,7 @@ const staticPages = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticUrls: MetadataRoute.Sitemap = staticPages.map((path) => ({
-    url: `${BASE_URL}${path}`,
+    url: path === '/' ? BASE_URL : `${BASE_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: path === '/' ? 1 : 0.8,

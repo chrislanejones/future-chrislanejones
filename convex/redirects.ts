@@ -69,8 +69,9 @@ export const seedRedirects = mutation({
     }
     const seed = [
       { from: "/links", to: "/link-page", statusCode: 301, isActive: true, label: "Links page shortcut" },
-      { from: "/docs", to: "/career", statusCode: 301, isActive: true, label: "Docs → Career" },
-      { from: "/docs/", to: "/career", statusCode: 301, isActive: true, label: "Docs/ → Career" },
+      { from: "/docs", to: "/career-and-resume", statusCode: 301, isActive: true, label: "Docs → Career and Resume" },
+      { from: "/docs/", to: "/career-and-resume", statusCode: 301, isActive: true, label: "Docs/ → Career and Resume" },
+      { from: "/resume", to: "/career-and-resume", statusCode: 301, isActive: true, label: "Resume → Career and Resume" },
     ];
     for (const r of seed) {
       await ctx.db.insert("redirects", { ...r, createdAt: Date.now(), updatedAt: Date.now() });
