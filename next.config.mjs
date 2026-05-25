@@ -10,6 +10,16 @@ const nextConfig = {
         destination: "/career-and-resume",
         permanent: true,
       },
+      {
+        source: "/projects/apps",
+        destination: "/projects",
+        permanent: true,
+      },
+      {
+        source: "/projects/websites",
+        destination: "/projects",
+        permanent: true,
+      },
     ];
   },
   images: {
