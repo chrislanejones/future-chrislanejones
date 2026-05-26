@@ -20,6 +20,7 @@ const staticPages = [
   '/site-history',
   '/site-map',
   '/wordpress-maintenance',
+  '/admin-showcase',
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
