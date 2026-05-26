@@ -17,6 +17,7 @@ const KNOWN_PATHS = new Set([
   "/site-history",
   "/site-map",
   "/wordpress-maintenance",
+  "/admin-showcase",
 ]);
 
 async function requireAuth(ctx: { auth: any }): Promise<void> {

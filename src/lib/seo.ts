@@ -125,6 +125,12 @@ function getDefaultSEO(path: string): Metadata {
         "Expert React app maintenance with dependency updates, security monitoring, performance optimization, and debugging. Three hours of consulting monthly for Next.js and React applications.",
       alternates: { canonical: "https://www.chrislanejones.com/react-maintenance" }, // Corrected for defaults
     },
+    "/admin-showcase": {
+      title: "Website Convex Admin | A Tour of the Custom Dashboard",
+      description:
+        "A walkthrough of the custom admin built for this site — Next.js + Convex + Clerk. Screenshots of every tab: SEO Manager, Pages & Menu, Settings, Media, Projects, and more.",
+      alternates: { canonical: "https://www.chrislanejones.com/admin-showcase" },
+    },
   };
 
   const entry = defaults[path] || {

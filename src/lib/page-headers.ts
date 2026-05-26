@@ -90,6 +90,12 @@ export const staticPageHeaders: Record<
     description:
       "Get in touch about web development projects, WordPress meetups, or hiking trails.",
   },
+  "/admin-showcase": {
+    title: "Website Convex Admin",
+    breadcrumbPage: "Admin Showcase",
+    description:
+      "A tour of the custom admin powering this site — built on Next.js, Convex, and Clerk. Screenshots of every major tab.",
+  },
   "/fallback": {
     title: "Page",
     breadcrumbPage: "Page",

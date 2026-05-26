@@ -263,8 +263,20 @@ const SettingsTabEnhanced = () => {
         top: section.offsetTop - 24,
         behavior: "smooth",
       });
+      if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", `#${sectionId}`);
+      }
     }
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const initial = window.location.hash.replace(/^#/, "");
+    if (!initial) return;
+    if (!menuItems.some((m) => m.id === initial)) return;
+    const timer = window.setTimeout(() => scrollToSection(initial), 100);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const handleSaveProfile = async () => {
     setIsSavingProfile(true);
