@@ -273,16 +273,16 @@ function PhotoGalleryCard() {
 function ResumeDownloadCard() {
   return (
     <Card size="small" delay={0.3} className="flex flex-col justify-center">
-      <h2 className="mb-4">Resume & Portfolio</h2>
+      <h2 className="mb-4">Resume</h2>
       <p className="text-muted mb-6">
-        Download my resume and portfolio to learn more about my work experience,
-        skills, and projects.
+        Download my resume to learn more about my work experience, skills, and
+        projects.
       </p>
 
       <div className="flex flex-col gap-3">
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris Lane Jones Resume May 2026.pdf"
+            href="/career-files/Chris_Lane_Jones_Resume_May_2026.pdf"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -305,7 +305,7 @@ function ResumeDownloadCard() {
 
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris Lane Jones Resume May 2026.docx"
+            href="/career-files/Chris_Lane_Jones_Resume_May_2026.docx"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -326,22 +326,6 @@ function ResumeDownloadCard() {
           </a>
         </Button>
 
-        <Button variant="disabled" size="lg" className="justify-start">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          Portfolio Coming Soon
-        </Button>
       </div>
     </Card>
   );
