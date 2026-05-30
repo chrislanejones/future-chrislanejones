@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Card from "@/components/page/card";
+import { Layout } from "lucide-react";
 
 type Showcase = {
   title: string;
@@ -79,14 +79,18 @@ export default function AdminShowcasePage() {
         {sections.map((section, index) => (
           <Card key={section.title} size="full" delay={0.1 + index * 0.05}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-2">
-              <div className="relative w-full aspect-video bg-white/5 rounded-xl overflow-hidden">
-                <Image
-                  src={section.image}
-                  alt={section.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
+              <div
+                role="img"
+                aria-label={section.alt}
+                className="relative w-full aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-accent/15 via-white/5 to-accent/10 border border-(--color-border) flex flex-col items-center justify-center gap-3 p-6 text-center"
+              >
+                <Layout className="w-10 h-10 text-accent/60" aria-hidden />
+                <span className="text-xs uppercase tracking-wide text-muted">
+                  Screenshot coming soon
+                </span>
+                <span className="text-sm text-ink font-medium line-clamp-2">
+                  {section.title}
+                </span>
               </div>
               <div className="flex flex-col justify-center space-y-3">
                 <h3 className="text-ink">{section.title}</h3>
