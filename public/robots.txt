@@ -1,6 +1,9 @@
 User-agent: *
 Disallow: /admin
 Disallow: /api
+# /admin-showcase is a public marketing page; the longer Allow rule wins over
+# the /admin Disallow prefix in Google/Bing's longest-match resolution.
+Allow: /admin-showcase
 Allow: /
 
 Sitemap: https://www.chrislanejones.com/sitemap.xml

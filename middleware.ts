@@ -2,7 +2,8 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const isProtectedRoute = createRouteMatcher(["/admin(.*)"]);
+// Match the admin dashboard only — NOT public pages like /admin-showcase.
+const isProtectedRoute = createRouteMatcher(["/admin", "/admin/(.*)"]);
 
 interface ConvexRedirect {
   from: string;
@@ -37,8 +38,9 @@ async function getRedirects(): Promise<ConvexRedirect[]> {
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   const { pathname } = req.nextUrl;
 
-  // Check dynamic Convex redirects (skip admin/api/static paths)
-  if (!pathname.startsWith("/admin") && !pathname.startsWith("/api")) {
+  // Check dynamic Convex redirects (skip the admin dashboard + api paths)
+  const isAdminDashboard = pathname === "/admin" || pathname.startsWith("/admin/");
+  if (!isAdminDashboard && !pathname.startsWith("/api")) {
     const redirects = await getRedirects();
     const match = redirects.find((r) => r.from === pathname);
     if (match) {
