@@ -1,7 +1,7 @@
 // src/app/blog/[slug]/BlogPostPage.tsx
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { marked } from "marked";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -87,6 +87,47 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     if (isHtml) return trimmed;
     return marked.parse(trimmed) as string;
   }, [post?.content]);
+
+  const articleRef = useRef<HTMLElement>(null);
+
+  // dangerouslySetInnerHTML uses element.innerHTML, which the browser refuses
+  // to execute <script> tags from. To support interactive post content
+  // (charts, demos, etc.) we re-create each script node so the browser runs it.
+  // We set article.innerHTML imperatively (instead of using
+  // dangerouslySetInnerHTML) for two reasons:
+  //   1) browsers ignore <script> tags when innerHTML is assigned via the
+  //      DOM setter — so we re-execute inline scripts ourselves after the
+  //      assignment, which lets interactive post content (Play / Next / etc.)
+  //      actually work
+  //   2) dangerouslySetInnerHTML reapplies on every React re-render and would
+  //      wipe out anything the embedded script appended (dots, chips, etc.)
+  //      when sibling state (comments, like status) resolves
+  useEffect(() => {
+    const article = articleRef.current;
+    if (!article) return;
+    if (!renderedContent) {
+      article.innerHTML = "";
+      return;
+    }
+    article.innerHTML = renderedContent;
+    const scripts = article.querySelectorAll("script");
+    scripts.forEach((old) => {
+      if (old.src) {
+        const s = document.createElement("script");
+        for (const attr of Array.from(old.attributes)) {
+          s.setAttribute(attr.name, attr.value);
+        }
+        old.parentNode?.replaceChild(s, old);
+      } else if (old.textContent) {
+        try {
+          new Function(old.textContent)();
+        } catch (err) {
+          console.error("[blog] inline script failed:", err);
+        }
+        old.parentNode?.removeChild(old);
+      }
+    });
+  }, [renderedContent]);
 
   if (post === null) {
     return (
@@ -206,10 +247,10 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               </div>
             </div>
 
-            {/* Content */}
+            {/* Content — innerHTML + script re-execution handled in effect above */}
             <article
+              ref={articleRef}
               className="prose prose-lg max-w-none mb-8 dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: renderedContent }}
             />
 
             {/* Tags */}
