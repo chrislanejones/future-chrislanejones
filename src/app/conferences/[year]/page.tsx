@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import Header from "@/components/layout/Header";
@@ -32,6 +33,9 @@ export default async function ConferencesByYearRoute({
   const items = all
     .filter((c) => String(c.year) === year)
     .sort((a, b) => a.name.localeCompare(b.name));
+
+  // No conferences for this year → real 404 instead of an empty soft-404 page.
+  if (items.length === 0) notFound();
 
   return (
     <>

@@ -10,6 +10,7 @@ import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
@@ -50,7 +51,17 @@ function getUserIdentifier() {
   return identifier;
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+type BlogPost = NonNullable<
+  FunctionReturnType<typeof api.blogPosts.getPostBySlug>
+>;
+
+export default function BlogPostPage({
+  params,
+  initialPost,
+}: {
+  params: { slug: string };
+  initialPost: BlogPost;
+}) {
   const [userIdentifier, setUserIdentifier] = useState<string>("");
   const [commentForm, setCommentForm] = useState({
     authorName: "",
@@ -59,10 +70,13 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  const post = useQuery(
+  const livePost = useQuery(
     api.blogPosts.getPostBySlug,
     params.slug ? { slug: params.slug } : "skip"
   );
+  // Use the server-rendered post until the live query resolves so the content
+  // is present in the initial HTML and survives hydration without a flash.
+  const post = livePost === undefined ? initialPost : livePost;
   const userLikeStatus = useQuery(
     api.blogPosts.getUserLikeStatus,
     userIdentifier && post?._id ? { postId: post._id, userIdentifier } : "skip"
@@ -111,7 +125,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     );
   }
 
-  if (!post || !userIdentifier) {
+  // Note: content is gated only on `post` (always present via initialPost), not
+  // on `userIdentifier`, so the article renders server-side for crawlers.
+  if (!post) {
     return (
       <>
         <Header />
