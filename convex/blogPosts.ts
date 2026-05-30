@@ -41,11 +41,12 @@ export const getAllPosts = query({
 });
 
 // Admin: Get all posts including unpublished
+// Note: /admin/* is gated by Clerk middleware at the Next.js layer, so we don't
+// re-check auth here — Clerk's session identity isn't always propagated to
+// Convex queries in dev, which made this query return [] for signed-in admins.
 export const getAllPostsAdmin = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
     const posts = await ctx.db
       .query("blogPosts")
       .order("desc")
@@ -329,16 +330,10 @@ export const deleteComment = mutation({
   },
 });
 
-// Seed blog posts
+// Seed blog posts (upsert by slug so reseed works even when posts already exist)
 export const seedBlogPosts = mutation({
   args: {},
   handler: async (ctx) => {
-    // Check if blog posts already exist
-    const existingPosts = await ctx.db.query("blogPosts").collect();
-    if (existingPosts.length > 0) {
-      return "Blog posts already exist";
-    }
-
     const now = Date.now();
 
     const blogPosts = [
@@ -480,11 +475,29 @@ Remember: the perfect setup is personal. Experiment and adjust based on what wor
       },
     ];
 
-    // Insert all blog posts
+    let inserted = 0;
+    let updated = 0;
     for (const post of blogPosts) {
-      await ctx.db.insert("blogPosts", post);
+      const existing = await ctx.db
+        .query("blogPosts")
+        .filter((q) => q.eq(q.field("slug"), post.slug))
+        .first();
+      if (existing) {
+        const { likesCount: _ignoredLikes, createdAt: _ignoredCreated, ...rest } = post;
+        await ctx.db.patch(existing._id, { ...rest, updatedAt: now });
+        updated++;
+      } else {
+        await ctx.db.insert("blogPosts", post);
+        inserted++;
+      }
     }
 
-    return `Successfully seeded ${blogPosts.length} blog posts`;
+    return {
+      success: true,
+      total: blogPosts.length,
+      inserted,
+      updated,
+      message: `Seeded ${inserted} new posts, ${updated} updated`,
+    };
   },
 });

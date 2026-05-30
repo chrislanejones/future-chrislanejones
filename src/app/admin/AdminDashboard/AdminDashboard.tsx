@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Settings,
@@ -15,6 +15,10 @@ import {
   Briefcase,
   Users,
   Globe,
+  User,
+  Database,
+  ArrowRight,
+  Activity,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useClerk, useUser } from "@clerk/nextjs";
@@ -45,16 +49,24 @@ import ProjectsTabEnhanced from "./ProjectsTabEnhanced";
 import ClientsTabEnhanced from "./ClientsTabEnhanced";
 import ConferencesTabEnhanced from "./ConferencesTabEnhanced";
 
+type SubItem = { id: string; label: string; icon: LucideIcon };
+
 const AdminSidebarContent = ({
   tabs,
   activeTab,
   onTabChange,
   onSignOut,
+  settingsSubsections,
+  activeSettingsSection,
+  onSettingsSectionChange,
 }: {
   tabs: { id: string; label: string; icon: LucideIcon }[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
   onSignOut: () => void;
+  settingsSubsections: SubItem[];
+  activeSettingsSection: string;
+  onSettingsSectionChange: (id: string) => void;
 }) => {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
@@ -74,19 +86,47 @@ const AdminSidebarContent = ({
       <SidebarContent className="overflow-hidden flex-1 overflow-y-auto p-2 space-y-1">
         <SidebarMenu>
           {tabs.map((tab) => (
-            <SidebarMenuItem key={tab.id}>
-              <Button
-                variant={activeTab === tab.id ? "accent" : "outline"}
-                size="sm"
-                onClick={() => onTabChange(tab.id)}
-                className={`w-full justify-start gap-3 ${
-                  isCollapsed ? "justify-center px-0" : ""
-                }`}
-              >
-                <tab.icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                {!isCollapsed && <span>{tab.label}</span>}
-              </Button>
-            </SidebarMenuItem>
+            <React.Fragment key={tab.id}>
+              <SidebarMenuItem>
+                <Button
+                  variant={activeTab === tab.id ? "accent" : "outline"}
+                  size="sm"
+                  onClick={() => onTabChange(tab.id)}
+                  className={`w-full justify-start gap-3 ${
+                    isCollapsed ? "justify-center px-0" : ""
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  {!isCollapsed && <span>{tab.label}</span>}
+                </Button>
+              </SidebarMenuItem>
+              {tab.id === "settings" &&
+                activeTab === "settings" &&
+                !isCollapsed && (
+                  <SidebarMenuItem>
+                    <ul className="ml-4 mt-1 border-l border-(--color-border) pl-2 space-y-1">
+                      {settingsSubsections.map((sub) => {
+                        const isActive = activeSettingsSection === sub.id;
+                        return (
+                          <li key={sub.id}>
+                            <button
+                              onClick={() => onSettingsSectionChange(sub.id)}
+                              className={`w-full flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-md text-xs transition-colors ${
+                                isActive
+                                  ? "bg-accent/15 text-accent font-medium"
+                                  : "text-muted hover:text-ink hover:bg-(--color-surface-hover)"
+                              }`}
+                            >
+                              <sub.icon className="w-3.5 h-3.5 shrink-0" />
+                              <span>{sub.label}</span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </SidebarMenuItem>
+                )}
+            </React.Fragment>
           ))}
         </SidebarMenu>
       </SidebarContent>
@@ -103,12 +143,42 @@ const AdminSidebarContent = ({
   );
 };
 
+const settingsSubsections: SubItem[] = [
+  { id: "profile", label: "Profile", icon: User },
+  { id: "data-management", label: "Data Management", icon: Database },
+  { id: "redirects", label: "Redirects", icon: ArrowRight },
+  { id: "site-health", label: "Site Health", icon: Activity },
+];
+
 const AdminDashboard = () => {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "pages";
+  const [activeSettingsSection, setActiveSettingsSection] = useState(
+    settingsSubsections[0].id,
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      if (hash && settingsSubsections.some((s) => s.id === hash)) {
+        setActiveSettingsSection(hash);
+      }
+    };
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, []);
+
+  const handleSettingsSectionChange = (id: string) => {
+    setActiveSettingsSection(id);
+    if (typeof window !== "undefined") {
+      window.location.hash = id;
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -173,6 +243,9 @@ const AdminDashboard = () => {
           activeTab={activeTab}
           onTabChange={handleTabChange}
           onSignOut={handleSignOut}
+          settingsSubsections={settingsSubsections}
+          activeSettingsSection={activeSettingsSection}
+          onSettingsSectionChange={handleSettingsSectionChange}
         />
         <SidebarInset className="flex flex-col flex-1 overflow-hidden">
           <header className="sticky top-0 z-10 flex items-center justify-between admin-border-bottom bg-panel px-6 py-3">
