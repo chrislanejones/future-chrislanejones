@@ -21,6 +21,7 @@ import {
   siRust,
   siConvex,
   siReplicate,
+  siModelcontextprotocol,
   siN8n,
   siPosthog,
   siSentry,
@@ -107,6 +108,7 @@ export const aiTools: AiTool[] = [
       </svg>
     ),
   },
+  { name: "MCP", icon: siModelcontextprotocol },
   { name: "N8n", icon: siN8n },
   {
     name: "Kimi K2 (0905)",

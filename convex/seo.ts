@@ -227,6 +227,13 @@ export const seedSEOData = mutation({
           "Three hours of React app changes monthly — component updates, dependency management, security audits, performance reviews, and US-based consulting for Next.js applications.",
         canonicalUrl: "https://www.chrislanejones.com/react-maintenance",
       },
+      {
+        path: "/admin-showcase",
+        title: "Admin Showcase | A Tour of the Portfolio CMS",
+        description:
+          "A look at the custom admin dashboard powering chrislanejones.com — pages, navigation, blog posts, media, redirects, and live data reseeding built on Next.js and Convex.",
+        canonicalUrl: "https://www.chrislanejones.com/admin-showcase",
+      },
     ];
 
     // Migrate stale /career path → /career-and-resume

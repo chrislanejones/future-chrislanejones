@@ -93,8 +93,6 @@ const SettingsTabEnhanced = () => {
     }
   }, [profile]);
 
-  // Scrollspy state
-  const [activeSection, setActiveSection] = useState("profile");
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -111,6 +109,7 @@ const SettingsTabEnhanced = () => {
   const seedConferences = useMutation(api.conferences.seedConferences);
   const seedClientIcons = useMutation(api.media.seedClientIcons);
   const seedRedirects = useMutation(api.redirects.seedRedirects);
+  const seedMessages = useMutation(api.contactMessages.seedMessages);
 
   // Redirects
   const allRedirects = useQuery(api.redirects.getAll) ?? [];
@@ -193,6 +192,7 @@ const SettingsTabEnhanced = () => {
     clients: async () => { await seedClients(); return seedClientIcons(); },
     conferences: seedConferences,
     redirects: seedRedirects,
+    messages: seedMessages,
   };
 
   const [selectedSources, setSelectedSources] = useState<Set<string>>(
@@ -216,40 +216,6 @@ const SettingsTabEnhanced = () => {
     success("Avatar updated!");
   };
 
-  // Scrollspy effect
-  useEffect(() => {
-    const container = contentRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const scrollTop = container.scrollTop;
-      const offset = 100;
-
-      const atBottom =
-        scrollTop + container.clientHeight >= container.scrollHeight - 5;
-      if (atBottom) {
-        setActiveSection(menuItems[menuItems.length - 1].id);
-        return;
-      }
-
-      for (const item of menuItems) {
-        const section = sectionRefs.current[item.id];
-        if (section) {
-          const sectionTop = section.offsetTop - offset;
-          const sectionBottom = sectionTop + section.offsetHeight;
-
-          if (scrollTop >= sectionTop && scrollTop < sectionBottom) {
-            setActiveSection(item.id);
-            break;
-          }
-        }
-      }
-    };
-
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // Auto-scroll logs
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -258,24 +224,24 @@ const SettingsTabEnhanced = () => {
   const scrollToSection = (sectionId: string) => {
     const section = sectionRefs.current[sectionId];
     if (section && contentRef.current) {
-      setActiveSection(sectionId);
       contentRef.current.scrollTo({
         top: section.offsetTop - 24,
         behavior: "smooth",
       });
-      if (typeof window !== "undefined") {
-        window.history.replaceState(null, "", `#${sectionId}`);
-      }
     }
   };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const initial = window.location.hash.replace(/^#/, "");
-    if (!initial) return;
-    if (!menuItems.some((m) => m.id === initial)) return;
-    const timer = window.setTimeout(() => scrollToSection(initial), 100);
-    return () => window.clearTimeout(timer);
+    const scrollToHash = () => {
+      const target = window.location.hash.replace(/^#/, "");
+      if (!target) return;
+      if (!menuItems.some((m) => m.id === target)) return;
+      window.setTimeout(() => scrollToSection(target), 50);
+    };
+    scrollToHash();
+    window.addEventListener("hashchange", scrollToHash);
+    return () => window.removeEventListener("hashchange", scrollToHash);
   }, []);
 
   const handleSaveProfile = async () => {
@@ -377,6 +343,12 @@ const SettingsTabEnhanced = () => {
       label: "Redirects",
       icon: ArrowRight,
       description: "Seed the original /links and /docs redirects",
+    },
+    {
+      id: "messages",
+      label: "Messages",
+      icon: MessageSquare,
+      description: "Sample contact messages for the admin inbox",
     },
   ];
 
@@ -486,33 +458,11 @@ const SettingsTabEnhanced = () => {
   };
 
   return (
-    <div className="h-full flex gap-6">
+    <div className="h-full flex">
       {/* Toast Notifications */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
 
-      {/* Sidebar Menu */}
-      <div className="w-56 shrink-0">
-        <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-3 sticky top-0">
-          <nav className="space-y-1">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  activeSection === item.id
-                    ? "bg-accent text-on-accent"
-                    : "bg-(--color-muted-accent) text-muted hover:text-ink hover:bg-(--color-surface-hover)"
-                }`}
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Content Area */}
+      {/* Content Area (section navigation lives in the admin sidebar tree) */}
       <div
         ref={contentRef}
         className="flex-1 overflow-y-auto pr-2 space-y-8 scroll-smooth"
