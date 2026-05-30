@@ -109,6 +109,19 @@ export default function RootLayout({
       }}
     >
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "Chris Lane Jones",
+                url: "https://www.chrislanejones.com",
+              }),
+            }}
+          />
+        </head>
         <body
           className={`${interphases.className} ${interphases.variable} antialiased`}
           suppressHydrationWarning
