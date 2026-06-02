@@ -206,7 +206,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </Button>
         </div>
 
-        <Banner title={post.title} breadcrumbPage="Blog" />
+        <Banner
+          title={post.title}
+          breadcrumbPage={post.title}
+          parentBreadcrumbs={[{ label: "Blog", href: "/blog" }]}
+        />
 
         <Card size="full" className="overflow-hidden">
           {post.coverImage && (
@@ -247,10 +251,13 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               </div>
             </div>
 
-            {/* Content — innerHTML + script re-execution handled in effect above */}
+            {/* Content — innerHTML + script re-execution handled in effect above.
+                Uses site-themed .blog-content styles instead of Tailwind prose,
+                which was forcing prose-invert via prefers-color-scheme and made
+                headings white on a white background in light mode. */}
             <article
               ref={articleRef}
-              className="prose prose-lg max-w-none mb-8 dark:prose-invert"
+              className="blog-content max-w-none mb-8"
             />
 
             {/* Tags */}

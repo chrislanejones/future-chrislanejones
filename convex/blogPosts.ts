@@ -510,7 +510,11 @@ export const seedRustVsGcPost = mutation({
     const now = Date.now();
     const slug = "rust-borrow-checker-vs-garbage-collector";
 
-    const content = `Most "Rust vs garbage-collected language" debates argue about syntax, or about whether the borrow checker is "worth the fight." The cleaner way to see the difference is to watch the memory itself — where the value lives, when it dies, and *who decides*.
+    const content = `This post grew out of [ForrestKnight's video on the borrow checker](https://www.youtube.com/watch?v=meEXag1XCFw) — the one that finally pulled me away from Go and Zig and convinced me to reach for Rust the next time I needed something fast sitting next to a React app. If the borrow checker has been the thing keeping you on the fence, [his channel](https://www.youtube.com/@fknight) is worth a follow.
+
+What clicked for me from that video was less "Rust syntax" and more *who is responsible for memory at each moment* — so this post tries to make that visible.
+
+Most "Rust vs garbage-collected language" debates argue about syntax, or about whether the borrow checker is "worth the fight." The cleaner way to see the difference is to watch the memory itself — where the value lives, when it dies, and *who decides*.
 
 So here's a side-by-side. Step through each line and watch how the two strategies diverge from the same starting point: a value on the heap.
 
