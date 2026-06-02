@@ -368,6 +368,34 @@ html.dark .client-logo {
   max-width: none;
 }
 
+/* paragraphs/lists explicitly inherit ink so no embedded rule can win */
+.blog-content p,
+.blog-content li {
+  color: var(--color-ink);
+}
+
+/* dark mode: pure white body copy for max contrast on dark panel */
+.dark .blog-content,
+.dark .blog-content p,
+.dark .blog-content li,
+.dark .blog-content strong,
+.dark .blog-content b,
+.dark .blog-content em,
+.dark .blog-content i {
+  color: #ffffff;
+}
+
+/* bold/italic emphasis — keep readable in light mode (default text color) */
+.blog-content strong,
+.blog-content b {
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-ink);
+}
+.blog-content em,
+.blog-content i {
+  color: var(--color-ink);
+}
+
 /* headings */
 .blog-content h1,
 .blog-content h2,
@@ -380,6 +408,14 @@ html.dark .client-logo {
   line-height: 1.25;
   margin-top: 2em;
   margin-bottom: 0.6em;
+}
+.dark .blog-content h1,
+.dark .blog-content h2,
+.dark .blog-content h3,
+.dark .blog-content h4,
+.dark .blog-content h5,
+.dark .blog-content h6 {
+  color: #ffffff;
 }
 .blog-content h1 { font-size: var(--step-4); margin-top: 0; }
 .blog-content h2 { font-size: var(--step-3); }

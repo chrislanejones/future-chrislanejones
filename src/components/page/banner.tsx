@@ -15,6 +15,8 @@ import WireframeTerrain from "./wireframe-terrain";
 interface BannerProps {
   title: string;
   breadcrumbPage: string;
+  /** Optional linked breadcrumb entries shown between Home and the current page. */
+  parentBreadcrumbs?: Array<{ label: string; href: string }>;
   description?: string;
   children?: ReactNode;
 }
@@ -22,6 +24,7 @@ interface BannerProps {
 export default function Banner({
   title,
   breadcrumbPage,
+  parentBreadcrumbs,
   description,
   children,
 }: BannerProps) {
@@ -46,6 +49,16 @@ export default function Banner({
               <BreadcrumbItem>
                 <BreadcrumbLink href="/">Home</BreadcrumbLink>
               </BreadcrumbItem>
+              {parentBreadcrumbs?.map((parent) => (
+                <span key={parent.href} className="contents">
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={parent.href}>
+                      {parent.label}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </span>
+              ))}
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbPage>{breadcrumbPage}</BreadcrumbPage>
