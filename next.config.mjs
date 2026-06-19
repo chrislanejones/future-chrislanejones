@@ -3,6 +3,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["js", "jsx", "ts", "tsx"],
+  // Pin the workspace root to this repo. Without it, Turbopack walks up and
+  // picks a stray lockfile in a parent directory as the root.
+  turbopack: {
+    root: import.meta.dirname,
+  },
   async redirects() {
     return [
       {

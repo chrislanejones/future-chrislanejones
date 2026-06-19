@@ -1,6 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
@@ -51,6 +56,7 @@ export const create = mutation({
     logoAlt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     if (args.logo) {
       await syncLogoToMedia(
         ctx,
@@ -84,6 +90,7 @@ export const update = mutation({
     logoAlt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const { id, ...fields } = args;
     if (args.logo) {
       const conf = await ctx.db.get(id);
@@ -97,6 +104,7 @@ export const update = mutation({
 export const deleteConference = mutation({
   args: { id: v.id("conferences") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return ctx.db.delete(args.id);
   },
 });
@@ -104,6 +112,7 @@ export const deleteConference = mutation({
 export const seedConferences = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("conferences").collect();
     if (existing.length > 0) {
       // Sync any existing conference logos that are missing from the media table

@@ -51,6 +51,7 @@ export const updateSEO = mutation({
     ogImage: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db
       .query("seoMetadata")
       .withIndex("by_path", (q) => q.eq("path", args.path))
@@ -83,6 +84,7 @@ export const updateSEO = mutation({
 export const deleteSEO = mutation({
   args: { path: v.string() },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const existing = await ctx.db
       .query("seoMetadata")
       .withIndex("by_path", (q) => q.eq("path", args.path))
@@ -117,6 +119,7 @@ export const cleanupStaleSEO = internalMutation({
 
 export const cleanupStaleSEOPublic = mutation({
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const all = await ctx.db.query("seoMetadata").collect();
     const stale = all.filter((entry) => !KNOWN_PATHS.has(entry.path));
     for (const entry of stale) {
@@ -128,6 +131,7 @@ export const cleanupStaleSEOPublic = mutation({
 
 export const seedSEOData = mutation({
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const pages = [
       {
         path: "/",

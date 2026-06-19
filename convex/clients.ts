@@ -1,6 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
@@ -21,7 +26,7 @@ export const create = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     return ctx.db.insert("clients", {
       ...args,
       logoAlt: args.logoAlt ?? `${args.name} logo`,
@@ -40,7 +45,7 @@ export const update = mutation({
     logoAlt: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     const { id, ...fields } = args;
     return ctx.db.patch(id, { ...fields, updatedAt: Date.now() });
   },
@@ -49,7 +54,7 @@ export const update = mutation({
 export const deleteClient = mutation({
   args: { id: v.id("clients") },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     return ctx.db.delete(args.id);
   },
 });
@@ -59,7 +64,7 @@ export const reorder = mutation({
     items: v.array(v.object({ id: v.id("clients"), order: v.number() })),
   },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     for (const item of args.items) {
       await ctx.db.patch(item.id, { order: item.order, updatedAt: Date.now() });
     }
@@ -69,6 +74,7 @@ export const reorder = mutation({
 export const seedClients = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("clients").collect();
     if (existing.length > 0) {
       return { success: true, message: "Clients already seeded" };
