@@ -49,6 +49,7 @@ export const create = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return ctx.db.insert("projects", {
       ...args,
       createdAt: Date.now(),
@@ -73,6 +74,7 @@ export const update = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, { id, ...updateData }) => {
+    await requireAuth(ctx);
     await ctx.db.patch(id, {
       ...updateData,
       updatedAt: Date.now(),
@@ -83,6 +85,7 @@ export const update = mutation({
 export const deleteProject = mutation({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     await ctx.db.delete(args.id);
   },
 });
@@ -90,6 +93,7 @@ export const deleteProject = mutation({
 export const toggleFeatured = mutation({
   args: { id: v.id("projects") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const project = await ctx.db.get(args.id);
     if (!project) throw new Error("Project not found");
     await ctx.db.patch(args.id, {
@@ -104,6 +108,7 @@ export const toggleFeatured = mutation({
 export const swapFeaturedOrder = mutation({
   args: { idA: v.id("projects"), idB: v.id("projects") },
   handler: async (ctx, { idA, idB }) => {
+    await requireAuth(ctx);
     const a = await ctx.db.get(idA);
     const b = await ctx.db.get(idB);
     if (!a || !b) throw new Error("Project not found");
@@ -116,6 +121,7 @@ export const swapFeaturedOrder = mutation({
 export const seedProjects = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
 
     // Check per category so existing app projects don't block website seeding
     const existingApps = await ctx.db

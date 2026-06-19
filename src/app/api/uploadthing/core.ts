@@ -1,20 +1,25 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UploadThingError } from "uploadthing/server";
+import { auth } from "@clerk/nextjs/server";
 
 const f = createUploadthing();
+
+// Only the authenticated admin may upload. Without this, the file router is a
+// public endpoint anyone can use to push files into the account.
+async function requireAdmin() {
+  const { userId } = await auth();
+  if (!userId) throw new UploadThingError("Unauthorized");
+  return userId;
+}
 
 export const ourFileRouter = {
   // General media uploader - saves to media table
   mediaUploader: f({ image: { maxFileSize: "8MB", maxFileCount: 10 } })
     .middleware(async () => {
-      // You could add auth here if needed
-      return { uploadedBy: "admin" };
+      const userId = await requireAdmin();
+      return { uploadedBy: userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for:", metadata.uploadedBy);
-      console.log("File URL:", file.url);
-      console.log("File name:", file.name);
-      console.log("File size:", file.size);
-
       return {
         uploadedBy: metadata.uploadedBy,
         url: file.url,
@@ -26,12 +31,10 @@ export const ourFileRouter = {
   // Legacy blog image uploader (keeping for backwards compatibility)
   blogImageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })
     .middleware(async () => {
-      return { uploadedBy: "admin" };
+      const userId = await requireAdmin();
+      return { uploadedBy: userId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for:", metadata.uploadedBy);
-      console.log("File URL:", file.url);
-
       return { uploadedBy: metadata.uploadedBy, url: file.url };
     }),
 } satisfies FileRouter;

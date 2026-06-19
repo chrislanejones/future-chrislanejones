@@ -100,6 +100,7 @@ export const createPost = mutation({
     published: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.insert("blogPosts", {
       ...args,
       published: args.published ?? false,
@@ -122,6 +123,7 @@ export const updatePost = mutation({
     createdAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     const { id, ...updateData } = args;
     return await ctx.db.patch(id, {
       ...updateData,
@@ -133,6 +135,7 @@ export const updatePost = mutation({
 export const deletePost = mutation({
   args: { id: v.id("blogPosts") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.delete(args.id);
   },
 });
@@ -316,6 +319,7 @@ export const getAllLikesAdmin = query({
 export const approveComment = mutation({
   args: { commentId: v.id("blogComments") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.patch(args.commentId, {
       approved: true,
       updatedAt: Date.now(),
@@ -326,6 +330,7 @@ export const approveComment = mutation({
 export const deleteComment = mutation({
   args: { commentId: v.id("blogComments") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.delete(args.commentId);
   },
 });
@@ -334,6 +339,7 @@ export const deleteComment = mutation({
 export const seedBlogPosts = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const now = Date.now();
 
     const blogPosts = [
@@ -507,6 +513,7 @@ Remember: the perfect setup is personal. Experiment and adjust based on what wor
 export const seedRustVsGcPost = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const now = Date.now();
     const slug = "rust-borrow-checker-vs-garbage-collector";
 

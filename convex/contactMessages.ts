@@ -6,12 +6,15 @@ async function requireAuth(ctx: { auth: any }): Promise<void> {
   if (!identity) throw new Error("Unauthorized");
 }
 
-// /admin/* is gated by Clerk middleware in Next.js, so we don't re-check auth
-// here — Clerk's session identity isn't reliably propagated to Convex in dev
-// and this query was returning [] for signed-in admins as a result.
+// Contact messages contain PII (names, emails, phone numbers). Convex queries
+// are publicly callable, so these MUST gate on the caller's identity — without
+// it, anyone on the internet can read every submission. We return empty results
+// (rather than throwing) when unauthenticated to match the other admin queries.
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
     return await ctx.db
       .query("contactMessages")
       .withIndex("by_created")
@@ -23,6 +26,8 @@ export const getAll = query({
 export const getUnreadCount = query({
   args: {},
   handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return 0;
     const unread = await ctx.db
       .query("contactMessages")
       .filter((q) => q.eq(q.field("read"), false))
@@ -34,6 +39,7 @@ export const getUnreadCount = query({
 export const markAsRead = mutation({
   args: { id: v.id("contactMessages") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.patch(args.id, { read: true });
   },
 });
@@ -41,6 +47,7 @@ export const markAsRead = mutation({
 export const markAsUnread = mutation({
   args: { id: v.id("contactMessages") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.patch(args.id, { read: false });
   },
 });
@@ -48,6 +55,7 @@ export const markAsUnread = mutation({
 export const deleteMessage = mutation({
   args: { id: v.id("contactMessages") },
   handler: async (ctx, args) => {
+    await requireAuth(ctx);
     return await ctx.db.delete(args.id);
   },
 });
@@ -73,6 +81,7 @@ export const create = mutation({
 export const seedMessages = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const now = Date.now();
     const samples: Array<{
       name: string;

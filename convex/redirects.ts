@@ -1,6 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
+async function requireAuth(ctx: { auth: any }): Promise<void> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Unauthorized");
+}
+
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
@@ -27,7 +32,7 @@ export const create = mutation({
     label: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     return ctx.db.insert("redirects", {
       ...args,
       createdAt: Date.now(),
@@ -46,7 +51,7 @@ export const update = mutation({
     label: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     const { id, ...fields } = args;
     return ctx.db.patch(id, { ...fields, updatedAt: Date.now() });
   },
@@ -55,7 +60,7 @@ export const update = mutation({
 export const deleteRedirect = mutation({
   args: { id: v.id("redirects") },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     return ctx.db.delete(args.id);
   },
 });
@@ -63,6 +68,7 @@ export const deleteRedirect = mutation({
 export const seedRedirects = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireAuth(ctx);
     const existing = await ctx.db.query("redirects").collect();
     if (existing.length > 0) {
       return { success: true, message: "Redirects already seeded" };
@@ -83,7 +89,7 @@ export const seedRedirects = mutation({
 export const toggleActive = mutation({
   args: { id: v.id("redirects") },
   handler: async (ctx, args) => {
-
+    await requireAuth(ctx);
     const redirect = await ctx.db.get(args.id);
     if (!redirect) throw new Error("Redirect not found");
     return ctx.db.patch(args.id, {
