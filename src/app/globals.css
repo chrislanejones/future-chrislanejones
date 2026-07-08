@@ -273,6 +273,19 @@ p {
 }
 
 @layer base {
+  /* Tailwind v4's Preflight sets `button { cursor: default }`. That not only
+     shows the wrong cursor on every button/tab, it makes taps unreliable on
+     iOS Safari (which needs cursor:pointer to fire click on non-anchor
+     elements) — that's why the /projects App/Website toggle "did nothing" in
+     Safari. Restore pointer on interactive elements. */
+  button:not(:disabled),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+
   :root {
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
