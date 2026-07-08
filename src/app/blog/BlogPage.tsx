@@ -4,8 +4,7 @@
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import type { Doc } from "../../../convex/_generated/dataModel";
 import Link from "next/link";
 import { Calendar, Heart, ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -25,19 +24,10 @@ const getBadgeVariant = (index: number) => {
   return variants[index % variants.length];
 };
 
-export default function BlogPage() {
-  const posts = useQuery(api.blogPosts.getAllPosts);
-
-  if (!posts) {
-    return (
-      <div className="site-container py-12">
-        <div className="flex justify-center items-center py-12">
-          <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      </div>
-    );
-  }
-
+// Posts are fetched server-side and passed in, so the list (titles, excerpts,
+// and links) is present in the initial HTML for crawlers instead of behind a
+// client-only useQuery that rendered an empty spinner on the server.
+export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
   return (
     <div className="site-container py-12">
       {posts.length === 0 ? (
