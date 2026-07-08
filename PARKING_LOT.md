@@ -2,6 +2,15 @@
 
 Adjacent problems noticed during sessions — not fixed in the diff they were found in.
 
+- **2026-07-08 — Finish the Clerk production-instance migration (user-owned).** Security is
+  already enforced owner-only in code (`convex/authz.ts`) and the DEV Clerk instance
+  (`amazed-akita-72`) has restricted mode ON, so no one else can sign up. A Clerk PRODUCTION
+  instance for this app already exists but is "awaiting deployment." To finish: add Clerk's DNS
+  records at the registrar, recreate the "convex" JWT template on the prod instance, set
+  `pk_live_…`/`sk_live_…` in Vercel prod env, enable restricted mode on the prod instance, then
+  repoint the Convex issuer — `npx convex env set CLERK_JWT_ISSUER_DOMAIN <prod-domain> --prod
+  && npx convex deploy` (auth.config.ts is already env-driven, so no code change). Chris is the
+  sole admin (Clerk id `user_36c1KtgcpJ5waZjYB39KKwB5pU3`).
 - **2026-07-08 — SeoTab reactive re-sync can wipe unsaved edits (low sev).**
   `SeoTabEnhanced.tsx` re-sync effect (~line 126) reads `selectedPage` but deps on
   `[mergedPages]`; a concurrent Convex query re-run while typing calls setSelectedPage →
