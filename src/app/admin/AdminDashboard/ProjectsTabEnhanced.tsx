@@ -1,6 +1,6 @@
 // src/app/admin/AdminDashboard/ProjectsTabEnhanced.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Trash2,
@@ -83,8 +83,17 @@ const ProjectsTabEnhanced = () => {
     }
   }, [projects, selectedProject, isCreating]);
 
+  // Only reload the form when a DIFFERENT project is selected. Without the id
+  // guard, an in-place setSelectedProject (e.g. toggling Featured) re-ran this
+  // and wiped the admin's unsaved title/description edits.
+  const loadedProjectId = useRef<string | null>(null);
   useEffect(() => {
-    if (selectedProject && !isCreating) {
+    if (
+      selectedProject &&
+      !isCreating &&
+      selectedProject._id !== loadedProjectId.current
+    ) {
+      loadedProjectId.current = selectedProject._id;
       setFormData({
         title: selectedProject.title,
         description: selectedProject.description,
@@ -192,8 +201,13 @@ const ProjectsTabEnhanced = () => {
 
   const handleToggleFeatured = async (_checked?: boolean) => {
     if (!selectedProject) return;
-    const { featured } = await toggleFeatured({ id: selectedProject._id });
-    setSelectedProject({ ...selectedProject, featured });
+    try {
+      const { featured } = await toggleFeatured({ id: selectedProject._id });
+      setSelectedProject({ ...selectedProject, featured });
+    } catch (error) {
+      console.error("Failed to toggle featured:", error);
+      setSaveStatus("error");
+    }
   };
 
   const handleCancel = () => {
@@ -223,18 +237,28 @@ const ProjectsTabEnhanced = () => {
 
   const handleMoveUp = async (index: number) => {
     if (index === 0) return;
-    await swapFeaturedOrder({
-      idA: featuredList[index]._id,
-      idB: featuredList[index - 1]._id,
-    });
+    try {
+      await swapFeaturedOrder({
+        idA: featuredList[index]._id,
+        idB: featuredList[index - 1]._id,
+      });
+    } catch (error) {
+      console.error("Failed to reorder:", error);
+      setSaveStatus("error");
+    }
   };
 
   const handleMoveDown = async (index: number) => {
     if (index === featuredList.length - 1) return;
-    await swapFeaturedOrder({
-      idA: featuredList[index]._id,
-      idB: featuredList[index + 1]._id,
-    });
+    try {
+      await swapFeaturedOrder({
+        idA: featuredList[index]._id,
+        idB: featuredList[index + 1]._id,
+      });
+    } catch (error) {
+      console.error("Failed to reorder:", error);
+      setSaveStatus("error");
+    }
   };
 
   return (

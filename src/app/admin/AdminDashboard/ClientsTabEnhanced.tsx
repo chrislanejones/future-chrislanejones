@@ -180,7 +180,11 @@ const ClientsTabEnhanced = () => {
     ordered.splice(toIdx, 0, moved);
 
     const updates = ordered.map((c, i) => ({ id: c._id, order: i }));
-    await reorderClients({ items: updates });
+    try {
+      await reorderClients({ items: updates });
+    } catch (err) {
+      console.error("Failed to reorder clients:", err);
+    }
     setDraggedId(null);
   };
 

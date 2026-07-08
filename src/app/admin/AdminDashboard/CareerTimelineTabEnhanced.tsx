@@ -206,7 +206,11 @@ const CareerTimelineTabEnhanced = () => {
     if (fromIdx === -1 || toIdx === -1) return;
     const [moved] = ordered.splice(fromIdx, 1);
     ordered.splice(toIdx, 0, moved);
-    await reorderEvents({ updates: ordered.map((e, i) => ({ id: e._id, order: i })) });
+    try {
+      await reorderEvents({ updates: ordered.map((e, i) => ({ id: e._id, order: i })) });
+    } catch (err) {
+      console.error("Failed to reorder timeline:", err);
+    }
     setDraggedId(null);
   };
 

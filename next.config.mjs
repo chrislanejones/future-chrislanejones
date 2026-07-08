@@ -35,9 +35,17 @@ const nextConfig = {
         port: "",
         pathname: "/f/**",
       },
+      // uploadthing v7 serves per-app subdomains via ufsUrl (<appId>.ufs.sh),
+      // which an exact "ufs.sh" host would miss. Match the apex and subdomains.
       {
         protocol: "https",
         hostname: "ufs.sh",
+        port: "",
+        pathname: "/f/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.ufs.sh",
         port: "",
         pathname: "/f/**",
       },
