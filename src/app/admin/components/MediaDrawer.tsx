@@ -70,15 +70,24 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
-      if (res && res[0]) {
-        await createMedia({
-          url: res[0].url,
-          filename: res[0].name || "Uploaded image",
-          size: res[0].size,
-          mimeType: res[0].type,
-        });
+      try {
+        if (res && res[0]) {
+          await createMedia({
+            url: res[0].url,
+            filename: res[0].name || "Uploaded image",
+            size: res[0].size,
+            mimeType: res[0].type,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to save uploaded media:", err);
+      } finally {
         setIsUploading(false);
       }
+    },
+    onUploadError: (err: Error) => {
+      console.error("Upload error:", err);
+      setIsUploading(false);
     },
   });
 

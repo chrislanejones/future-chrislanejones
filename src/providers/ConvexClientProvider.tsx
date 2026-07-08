@@ -14,7 +14,8 @@ function useAuthFromClerk() {
     async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
       try {
         return await getToken({ template: "convex", skipCache: forceRefreshToken });
-      } catch {
+      } catch (err) {
+        console.error("Convex auth: failed to fetch Clerk token", err);
         return null;
       }
     },
