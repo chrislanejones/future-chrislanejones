@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Admin Dashboard | Chris Lane Jones",
+  title: "Admin Dashboard",
   description: "Manage portfolio content and SEO",
 };
 

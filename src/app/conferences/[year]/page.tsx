@@ -17,7 +17,7 @@ export async function generateMetadata({
   const yearConfs = all.filter((c) => String(c.year) === year);
   const count = yearConfs.length;
   return {
-    title: `Conferences ${year} | Chris Lane Jones`,
+    title: `Conferences ${year}`,
     description: `${count} conference${count !== 1 ? "s" : ""} attended in ${year}${count > 0 ? ` — ${yearConfs.map((c) => c.name).join(", ")}` : ""}`,
   };
 }

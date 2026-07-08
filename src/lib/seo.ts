@@ -5,6 +5,15 @@ import { api } from "../../convex/_generated/api";
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL!;
 const convex = new ConvexHttpClient(convexUrl);
 
+// Next merges metadata shallowly: a page's openGraph/twitter object wholesale
+// replaces the layout's, so every page must carry its own images or social
+// cards render blank. Relative URLs resolve against metadataBase (layout.tsx).
+const DEFAULT_OG_IMAGE = "/Professional-Photo-of-Chris-Lane-Jones.webp";
+
+function ogImages(url: string, alt: string) {
+  return [{ url, width: 1200, height: 630, alt }];
+}
+
 export async function getPageSEO(path: string): Promise<Metadata> {
   try {
     const data = await convex.query(api.seo.getSEOByPath, { path });
@@ -12,6 +21,7 @@ export async function getPageSEO(path: string): Promise<Metadata> {
     if (data && data.title && data.description) {
       const defaults = getDefaultSEO(path);
       const canonical = data.canonicalUrl || (defaults.alternates?.canonical as string | undefined) || `https://www.chrislanejones.com${path}`;
+      const images = ogImages(data.ogImage || DEFAULT_OG_IMAGE, data.title);
       return {
         title: data.title,
         description: data.description,
@@ -21,11 +31,13 @@ export async function getPageSEO(path: string): Promise<Metadata> {
           description: data.description,
           url: canonical,
           type: "website",
+          images,
         },
         twitter: {
           card: "summary_large_image",
           title: data.title,
           description: data.description,
+          images,
         },
       };
     }
@@ -145,6 +157,7 @@ function getDefaultSEO(path: string): Metadata {
   const title = typeof entry.title === "string" ? entry.title : "Chris Lane Jones";
   const description = entry.description ?? "";
 
+  const images = ogImages(DEFAULT_OG_IMAGE, title);
   return {
     ...entry,
     openGraph: {
@@ -152,11 +165,13 @@ function getDefaultSEO(path: string): Metadata {
       description,
       url: canonical,
       type: "website",
+      images,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images,
     },
   };
 }

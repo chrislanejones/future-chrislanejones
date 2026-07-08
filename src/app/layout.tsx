@@ -43,6 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@cljwebdev",
+    creator: "@cljwebdev",
     title: "Chris Lane Jones | React & WordPress Developer in Virginia",
     description:
       "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",

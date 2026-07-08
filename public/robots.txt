@@ -1,6 +1,7 @@
 User-agent: *
-Disallow: /admin
-Disallow: /api
+Disallow: /admin/
+Disallow: /admin$
+Disallow: /api/
 Allow: /
 
 Sitemap: https://www.chrislanejones.com/sitemap.xml

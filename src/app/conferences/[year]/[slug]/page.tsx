@@ -21,12 +21,15 @@ export async function generateMetadata({
   const description =
     conf.description ??
     `Notes and highlights from ${conf.name} ${conf.year}${conf.city ? ` in ${conf.city}` : ""}.`;
+  const canonical = `https://www.chrislanejones.com/conferences/${year}/${slug}`;
   return {
     title,
     description,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
+      url: canonical,
       images: conf.logo ? [conf.logo] : undefined,
     },
     twitter: {
