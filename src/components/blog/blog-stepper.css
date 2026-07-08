@@ -1,0 +1,185 @@
+/* Shared styles for the interactive blog "stepper" widget (BlogStepper).
+   Single source of truth — previously this CSS was duplicated inline inside
+   each post's Convex content (the rgc-* and uhl-* class sets). Structural
+   classes are bstep-*; the four semantic chip styles (accent/alt/dead/warn)
+   cover both the Rust-vs-GC and Undo-vs-oplog widgets, which used the same
+   four colors under different names. */
+
+.bstep-root {
+  font-family: inherit;
+  color: var(--color-ink);
+  margin: 24px 0;
+}
+.bstep-banner {
+  background: var(--color-muted-accent);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 18px;
+  min-height: 52px;
+}
+.bstep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.bstep-panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.bstep-phead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.bstep-ptitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.bstep-pbadge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--color-muted-accent);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.bstep-code {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  background: var(--color-inner-card);
+  color: var(--color-ink);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  min-height: 18px;
+  white-space: pre;
+  overflow-x: auto;
+}
+.bstep-zone-label {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.bstep-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 34px;
+  margin-bottom: 12px;
+}
+.bstep-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  border: 1px solid var(--color-border);
+  transition: background 0.35s, color 0.35s;
+}
+.bstep-chip .bstep-meta {
+  font-size: 11px;
+  opacity: 0.85;
+}
+.bstep-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 0 0 12px;
+  opacity: 0.7;
+}
+.bstep-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
+  min-height: 48px;
+  margin: 0;
+}
+
+/* Semantic chip styles (shared by both widgets) */
+.bstep-accent {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+.bstep-alt {
+  background: color-mix(in srgb, var(--color-accent-alt) 18%, transparent);
+  color: var(--color-accent-alt);
+  border-color: color-mix(in srgb, var(--color-accent-alt) 35%, transparent);
+}
+.bstep-dead {
+  background: var(--color-muted-accent);
+  color: var(--color-muted);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--color-muted) 70%, transparent);
+}
+.bstep-warn {
+  background: rgba(245, 158, 11, 0.18);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+html[data-theme="dark"] .bstep-warn {
+  color: #fbbf24;
+}
+
+/* Controls */
+.bstep-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.bstep-btn {
+  font: inherit;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 7px 11px;
+  transition: background 0.15s, transform 0.1s, border-color 0.15s;
+}
+.bstep-btn:hover {
+  background: var(--color-surface-hover);
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+}
+.bstep-btn:active {
+  transform: scale(0.97);
+}
+.bstep-btn svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+.bstep-dots {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.bstep-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: background 0.25s;
+}
+.bstep-dot.bstep-on {
+  background: var(--color-accent);
+}

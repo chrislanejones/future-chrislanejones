@@ -2,7 +2,10 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import { createRoot, type Root } from "react-dom/client";
 import { marked } from "marked";
+import { BlogStepper } from "@/components/blog/BlogStepper";
+import { STEPPER_CONFIGS } from "@/components/blog/stepper-configs";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Banner from "@/components/page/banner";
@@ -89,19 +92,17 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   }, [post?.content]);
 
   const articleRef = useRef<HTMLElement>(null);
+  const stepperRootsRef = useRef<Root[]>([]);
 
-  // dangerouslySetInnerHTML uses element.innerHTML, which the browser refuses
-  // to execute <script> tags from. To support interactive post content
-  // (charts, demos, etc.) we re-create each script node so the browser runs it.
-  // We set article.innerHTML imperatively (instead of using
-  // dangerouslySetInnerHTML) for two reasons:
-  //   1) browsers ignore <script> tags when innerHTML is assigned via the
-  //      DOM setter — so we re-execute inline scripts ourselves after the
-  //      assignment, which lets interactive post content (Play / Next / etc.)
-  //      actually work
-  //   2) dangerouslySetInnerHTML reapplies on every React re-render and would
-  //      wipe out anything the embedded script appended (dots, chips, etc.)
-  //      when sibling state (comments, like status) resolves
+  // We set article.innerHTML imperatively (instead of dangerouslySetInnerHTML)
+  // so that:
+  //   1) any legacy inline <script> in older posts still runs — the innerHTML
+  //      setter marks script nodes non-executable, so we re-create them
+  //   2) it isn't re-applied on every React re-render (which would wipe
+  //      script-appended DOM when sibling state resolves)
+  // Interactive widgets are now React components (BlogStepper): a post embeds
+  // <div data-stepper="rust-vs-gc"></div> and we mount the shared component
+  // into that marker — one implementation instead of a copy pasted per post.
   useEffect(() => {
     const article = articleRef.current;
     if (!article) return;
@@ -110,6 +111,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       return;
     }
     article.innerHTML = renderedContent;
+
     const scripts = article.querySelectorAll("script");
     scripts.forEach((old) => {
       if (old.src) {
@@ -127,6 +129,25 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         old.parentNode?.removeChild(old);
       }
     });
+
+    // Mount any BlogStepper widgets referenced by <div data-stepper="id">.
+    const markers =
+      article.querySelectorAll<HTMLElement>("[data-stepper]");
+    markers.forEach((el) => {
+      const id = el.dataset.stepper;
+      const config = id ? STEPPER_CONFIGS[id] : undefined;
+      if (!config) return;
+      const root = createRoot(el);
+      root.render(<BlogStepper config={config} />);
+      stepperRootsRef.current.push(root);
+    });
+
+    return () => {
+      const roots = stepperRootsRef.current;
+      stepperRootsRef.current = [];
+      // Defer so we never unmount synchronously during the parent's commit.
+      setTimeout(() => roots.forEach((r) => r.unmount()), 0);
+    };
   }, [renderedContent]);
 
   if (post === null) {
