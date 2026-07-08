@@ -103,6 +103,15 @@ export const createPost = mutation({
   },
   handler: async (ctx, args) => {
     await requireAuth(ctx);
+    // Slugs are the public URL and getPostBySlug uses .first(), so a duplicate
+    // would make one post permanently unreachable. Reject the collision.
+    const clash = await ctx.db
+      .query("blogPosts")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first();
+    if (clash) {
+      throw new Error(`A post with slug "${args.slug}" already exists`);
+    }
     return await ctx.db.insert("blogPosts", {
       ...args,
       published: args.published ?? false,
@@ -127,6 +136,16 @@ export const updatePost = mutation({
   handler: async (ctx, args) => {
     await requireAuth(ctx);
     const { id, ...updateData } = args;
+    // If the slug is changing, make sure no OTHER post already owns it.
+    if (updateData.slug) {
+      const clash = await ctx.db
+        .query("blogPosts")
+        .withIndex("by_slug", (q) => q.eq("slug", updateData.slug!))
+        .first();
+      if (clash && clash._id !== id) {
+        throw new Error(`A post with slug "${updateData.slug}" already exists`);
+      }
+    }
     return await ctx.db.patch(id, {
       ...updateData,
       updatedAt: Date.now(),
@@ -138,6 +157,35 @@ export const deletePost = mutation({
   args: { id: v.id("blogPosts") },
   handler: async (ctx, args) => {
     await requireAuth(ctx);
+    // Cascade: without this, deleting a post orphans its likes (still counted
+    // in getAllLikesAdmin), its comments (shown as "Unknown Post" forever in
+    // moderation), and its media (pinned to a dead id).
+    const likes = await ctx.db
+      .query("blogLikes")
+      .withIndex("by_post", (q) => q.eq("postId", args.id))
+      .collect();
+    for (const like of likes) await ctx.db.delete(like._id);
+
+    const comments = await ctx.db
+      .query("blogComments")
+      .withIndex("by_post", (q) => q.eq("postId", args.id))
+      .collect();
+    for (const comment of comments) await ctx.db.delete(comment._id);
+
+    const media = await ctx.db
+      .query("media")
+      .withIndex("by_assigned_id", (q) => q.eq("assignedToId", args.id))
+      .filter((q) => q.eq(q.field("assignedToType"), "blogPost"))
+      .collect();
+    for (const m of media) {
+      await ctx.db.patch(m._id, {
+        assignedToType: undefined,
+        assignedToId: undefined,
+        assignedToTitle: undefined,
+        updatedAt: Date.now(),
+      });
+    }
+
     return await ctx.db.delete(args.id);
   },
 });
