@@ -129,6 +129,8 @@ const LinksManagerTabEnhanced = () => {
       const domain = url.hostname;
 
       if (isEditing && editingLinkId) {
+        // NB: don't send `order` here — updateLink patches provided fields, so
+        // passing order:0 reset every edited link's position to the top.
         await updateLink({
           id: editingLinkId as Id<"browserLinks">,
           href: formData.href,
@@ -137,7 +139,6 @@ const LinksManagerTabEnhanced = () => {
           favicon: formData.favicon || undefined,
           category: formData.category,
           color: formData.color,
-          order: 0,
         });
         setSuccess("Link updated successfully!");
       } else {

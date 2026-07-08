@@ -210,10 +210,15 @@ const SettingsTabEnhanced = () => {
   const logEndRef = useRef<HTMLDivElement>(null);
 
   const handleAvatarSelect = async (url: string) => {
-    setProfileData((prev) => ({ ...prev, avatar: url }));
-    await updateAvatar({ avatar: url });
-    setIsAvatarDrawerOpen(false);
-    success("Avatar updated!");
+    try {
+      await updateAvatar({ avatar: url });
+      setProfileData((prev) => ({ ...prev, avatar: url }));
+      setIsAvatarDrawerOpen(false);
+      success("Avatar updated!");
+    } catch (err) {
+      console.error("Failed to update avatar:", err);
+      showError("Failed to update avatar");
+    }
   };
 
   // Auto-scroll logs
