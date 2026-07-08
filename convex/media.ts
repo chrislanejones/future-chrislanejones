@@ -54,6 +54,12 @@ export const getUnassigned = query({
 export const getOrganized = query({
   args: {},
   handler: async (ctx) => {
+    // Admin-only: this returns every blog post including unpublished drafts
+    // (titles + slugs). Convex functions are publicly callable, so gate here.
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return { pages: [], blogPosts: [], unassigned: [] };
+    }
     const allMedia = await ctx.db.query("media").collect();
     const blogPosts = await ctx.db.query("blogPosts").order("desc").collect();
 
