@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,23 +22,8 @@ import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import Image from "next/image";
 
-interface Conference {
-  _id: Id<"conferences">;
-  slug: string;
-  name: string;
-  year: number;
-  dateStart?: string;
-  dateEnd?: string;
-  city?: string;
-  venue?: string;
-  url?: string;
-  description?: string;
-  tags?: string[];
-  logo?: string;
-  logoAlt?: string;
-  createdAt: number;
-  updatedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
+type Conference = Doc<"conferences">;
 
 interface FormData {
   slug: string;

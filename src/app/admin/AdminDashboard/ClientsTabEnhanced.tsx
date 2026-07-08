@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,16 +20,8 @@ import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import Image from "next/image";
 
-interface Client {
-  _id: Id<"clients">;
-  name: string;
-  url: string;
-  logo: string;
-  logoAlt?: string;
-  order: number;
-  createdAt: number;
-  updatedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
+type Client = Doc<"clients">;
 
 /* ─── Inline Logo Uploader ───────────────────────────────────────────────── */
 

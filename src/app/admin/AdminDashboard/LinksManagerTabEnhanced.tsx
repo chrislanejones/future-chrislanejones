@@ -14,25 +14,15 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 
-interface BrowserLink {
-  _id: Id<"browserLinks">;
-  href: string;
-  label: string;
-  domain: string;
-  favicon?: string;
-  category: string;
-  color: string;
-  order: number;
-  featured?: boolean;
-  createdAt: number;
-  updatedAt: number;
-}
+// Derived from the Convex schema (SSOT). The hand-rolled copy was missing the
+// schema's screenshotUrl / screenshotUpdatedAt fields.
+type BrowserLink = Doc<"browserLinks">;
 
 interface Category {
   category: string;

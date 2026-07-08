@@ -27,23 +27,14 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 
-interface CareerEvent {
-  _id: Id<"careerTimeline">;
-  year: string;
-  title: string;
-  description: string;
-  location?: string;
-  iconName: string;
-  order: number;
-  createdAt: number;
-  updatedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
+type CareerEvent = Doc<"careerTimeline">;
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   GraduationCap,

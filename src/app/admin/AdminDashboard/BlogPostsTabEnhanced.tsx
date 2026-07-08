@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { useUploadThing } from "@/utils/uploadthing";
 import { HtmlEditorEnhanced } from "../components/HtmlEditorEnhanced";
 import { MediaDrawer } from "../components/MediaDrawer";
@@ -35,19 +35,8 @@ import {
 import { format } from "date-fns";
 import Image from "next/image";
 
-interface BlogPost {
-  _id: Id<"blogPosts">;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  coverImage?: string;
-  tags?: string[];
-  published: boolean;
-  likesCount?: number;
-  createdAt: number;
-  updatedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
+type BlogPost = Doc<"blogPosts">;
 
 const BlogPostsTabEnhanced = () => {
   const posts = useQuery(api.blogPosts.getAllPostsAdmin) ?? [];
