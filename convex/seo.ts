@@ -20,10 +20,7 @@ const KNOWN_PATHS = new Set([
   "/admin-showcase",
 ]);
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth } from "./authz";
 
 export const getAllSEO = query({
   handler: async (ctx) => {

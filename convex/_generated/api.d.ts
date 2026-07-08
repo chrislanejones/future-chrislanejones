@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as authz from "../authz.js";
 import type * as blogPosts from "../blogPosts.js";
 import type * as browserLinks from "../browserLinks.js";
 import type * as careerTimeline from "../careerTimeline.js";
@@ -32,6 +33,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  authz: typeof authz;
   blogPosts: typeof blogPosts;
   browserLinks: typeof browserLinks;
   careerTimeline: typeof careerTimeline;

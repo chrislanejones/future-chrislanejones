@@ -1,10 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth } from "./authz";
 
 export const getAll = query({
   args: {},
