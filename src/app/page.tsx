@@ -28,7 +28,7 @@ const personSchema = {
   sameAs: [
     "https://github.com/chrislanejones",
     "https://www.linkedin.com/in/chrislanejones",
-    "https://twitter.com/chrislanejones",
+    "https://x.com/cljwebdev",
   ],
   jobTitle: "Full-Stack Web Developer",
   worksFor: {
