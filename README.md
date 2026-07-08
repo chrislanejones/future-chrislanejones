@@ -1,28 +1,25 @@
 # Chris Lane Jones Portfolio
 
-Modern portfolio website built with Next.js 16, React 19, TypeScript, Effect, and Tailwind CSS v4. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard with Convex database for content management.
+Modern portfolio website built with Next.js 16, React 19, TypeScript, and Tailwind CSS v4. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard backed by a Convex database for content management.
 
-[Vercel Live Link - https://future-chrislanejones.vercel.app/](https://future-chrislanejones.vercel.app/)
+Live at [www.chrislanejones.com](https://www.chrislanejones.com).
 
 ![Image of Light and Dark Mode](public/Repo-Cover-V3.webp)
 
 ## 🚀 Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org/) 14 (App Router)
+- **Framework:** [Next.js](https://nextjs.org/) 16 (App Router)
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) v4
 - **Animations:** [Framer Motion](https://www.framer.com/motion/)
 - **Database:** [Convex](https://www.convex.dev/) (real-time backend)
 - **File Uploads:** [UploadThing](https://uploadthing.com/) (CDN-hosted media)
 - **Authentication:** [Clerk](https://clerk.com/)
-- **Error Handling:** [Effect.ts](https://effect.website/) (typed errors & functional pipelines)
-- **Analytics:** [PostHog](https://posthog.com/) (product analytics & session recording)
+- **Analytics:** [PostHog](https://posthog.com/) (product analytics & session recording) and [Google Analytics 4](https://analytics.google.com/) (gtag)
 - **UI Components:** [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
 - **Drag & Drop:** [@dnd-kit](https://dndkit.com/)
 - **Icons:** [Lucide React](https://lucide.dev/guide/packages/lucide-react), [React Icons](https://react-icons.github.io/react-icons/), [Simple Icons](https://simpleicons.org/)
 - **Package Manager:** [pnpm](https://pnpm.io/)
-- **Analytics:** [Google Analytics 4](https://analytics.google.com/) (gtag)
-- **Error Monitoring:** [Sentry](https://sentry.io/)
 
 ## ✨ Features
 
@@ -35,7 +32,7 @@ Modern portfolio website built with Next.js 16, React 19, TypeScript, Effect, an
 - Interactive music player
 - Photo gallery with Polaroid-style drawer
 - Project showcase with carousel
-- Blog post pages with rich content
+- Blog post pages with rich content, including interactive stepper widgets rendered by one shared React component (`src/components/blog/`) that posts embed with `<div data-stepper="…">`
 - Conference archive with year/talk pages
 - Career timeline with downloadable resume (PDF & DOCX)
 - Site history timeline
@@ -45,7 +42,7 @@ Modern portfolio website built with Next.js 16, React 19, TypeScript, Effect, an
 
 ### 🔐 Admin Dashboard
 
-- Clerk authentication
+- Clerk authentication, gated to the owner — every Convex admin function checks the caller's Clerk user id against an allowlist (`convex/authz.ts`), not just "is anyone signed in"
 - **Media Manager** - Drag-and-drop image assignment to pages and blog posts
 - **Blog Post Manager** - Create and edit blog posts with UploadThing media uploads
 - **Career Timeline Manager** - Manage work history and experiences
@@ -55,18 +52,10 @@ Modern portfolio website built with Next.js 16, React 19, TypeScript, Effect, an
 - **SEO Manager** - Per-page SEO metadata served via Convex HTTP (`/seo?path=`)
 - Real-time updates with Convex
 
-### 🛡️ Error Handling & Data Flow
-
-- Effect.ts for type-safe error handling
-- Functional pipelines for data transformations
-- Composable effects for async operations
-- Explicit error types for better debugging
-
-### 📊 Analytics & Monitoring
+### 📊 Analytics
 
 - PostHog analytics with session recording
-- User behavior tracking
-- Performance monitoring
+- Google Analytics 4 (gtag)
 
 ## 🗂️ Project Structure
 
@@ -98,11 +87,14 @@ src/
 └── types/                  # Shared TypeScript types
 
 convex/                     # Backend: queries, mutations, HTTP endpoints
+├── authz.ts                # Owner-only admin gate (requireAdmin / isAdmin)
+├── auth.config.ts          # Clerk → Convex JWT issuer
 ├── blogPosts.ts
 ├── conferences.ts
 ├── careerTimeline.ts
 ├── projects.ts
 ├── clients.ts
+├── contactMessages.ts
 ├── media.ts
 ├── navigation.ts
 ├── pageHeaders.ts
@@ -139,7 +131,7 @@ convex/                     # Backend: queries, mutations, HTTP endpoints
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/) 18+ and [pnpm](https://pnpm.io/)
+- [Node.js](https://nodejs.org/en/) 20+ and [pnpm](https://pnpm.io/)
 - [Clerk](https://clerk.com/) account
 - [Convex](https://www.convex.dev/) account
 - [UploadThing](https://uploadthing.com/) account
@@ -175,8 +167,8 @@ CONVEX_DEPLOYMENT=dev:your-deployment-name
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
 
-# UploadThing
-UPLOADTHING_API_KEY=your_uploadthing_api_key
+# UploadThing (v7 uses a single token)
+UPLOADTHING_TOKEN=your_uploadthing_token
 
 # PostHog Analytics — must be a project key starting with phc_, NOT a personal phx_ key
 NEXT_PUBLIC_POSTHOG_KEY=phc_your_posthog_project_key
@@ -194,16 +186,9 @@ npx convex dev
 
 5. Seed the database (optional):
 
-```bash
-# Seed SEO settings
-npx convex run settings:seed
-
-# Seed blog posts
-npx convex run blogPosts:seedBlogPosts
-
-# Seed browser links
-npx convex run browserLinks:seedBrowserLinks
-```
+Sign in at `/admin`, open the **Settings → Data Management** panel, pick the
+data sources you want, and click **Reseed**. The seed mutations are admin-gated,
+so this is done from the dashboard rather than the CLI.
 
 6. Run the development server:
 
@@ -213,27 +198,26 @@ pnpm dev
 
 > **Note:** Run `npx convex dev` in a separate terminal alongside `pnpm dev` to keep the Convex backend in sync during development.
 
-Open [https://www.chrislanejones.com](https://www.chrislanejones.com) to view the site.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 ## 📦 Key Dependencies
 
 ```json
 {
-  "next": "16.2.3",
-  "react": "^19.2.5",
-  "typescript": "^6.0.2",
-  "tailwindcss": "^4.2.2",
-  "framer-motion": "^12.38.0",
-  "convex": "^1.34.1",
-  "@clerk/nextjs": "7.0.12",
-  "effect": "^3.21.0",
+  "next": "16.2.9",
+  "react": "^19.2.7",
+  "typescript": "^6.0.3",
+  "tailwindcss": "^4.3.1",
+  "framer-motion": "^12.40.0",
+  "convex": "^1.41.0",
+  "@clerk/nextjs": "7.5.5",
   "uploadthing": "^7.7.4",
   "@uploadthing/react": "^7.3.3",
   "@dnd-kit/core": "^6.3.1",
   "@dnd-kit/sortable": "^10.0.0",
   "@radix-ui/react-*": "latest",
-  "lucide-react": "^1.7.0",
-  "posthog-js": "^1.365.4"
+  "lucide-react": "^1.21.0",
+  "posthog-js": "^1.390.2"
 }
 ```
 
