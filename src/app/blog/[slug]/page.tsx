@@ -95,6 +95,13 @@ export default async function Page({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {/* NB: the article body is still client-rendered (useQuery) for now — the
+          post's interactive widgets rely on imperative innerHTML + script
+          re-execution, which a hydrated dangerouslySetInnerHTML broke. The
+          crawler-visible SEO (title, description, canonical, article OG tags,
+          BlogPosting JSON-LD above, and the 404 below) is all server-rendered.
+          Full body SSR needs a server-component article + client interactions
+          island — see PARKING_LOT. */}
       <BlogPostPage params={{ slug }} />
     </>
   );

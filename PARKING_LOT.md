@@ -19,12 +19,19 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `SeoTabEnhanced.tsx:662` uses the non-www apex in its canonical preview — extract one const.
   (4) Dead duplicated-shape files under `admin/effects/*` and `admin/hooks/*` are unimported
   and drifted — recommend deletion.
-- **2026-07-08 — Blog is client-only (SEO).** `/blog` index and `/blog/[slug]` body render via
-  client `useQuery`, so the post list and article body are absent from server HTML (crawlers
-  see a spinner). JSON-LD + metadata + 404s are now server-rendered, but the body itself still
-  needs SSR — fetch server-side (copy `conferences/page.tsx`), keep likes/comments as a client
-  island. The `[slug]` body is delicate: content is injected via imperative innerHTML +
-  `new Function()` script re-execution for interactive post widgets.
+- **2026-07-08 — Blog `/blog/[slug]` article body not in SSR HTML (SEO).** The `/blog` index is
+  now server-rendered (done). Post metadata, canonical, article OG tags, `BlogPosting` JSON-LD,
+  and `notFound()` are all server-rendered too. The remaining gap is the article BODY text —
+  it's still client-rendered via `useQuery` + imperative `innerHTML` + `new Function()` script
+  re-execution (needed for interactive post widgets like the Rust-vs-GC stepper).
+  ATTEMPTED 2026-07-08: passing the server-fetched post to the client component and rendering
+  the body via `dangerouslySetInnerHTML` (scripts stripped, re-run on mount). It put the body
+  text in SSR HTML BUT the hydrated client component left a duplicate hidden DOM copy and the
+  widget script populated the wrong copy (broke interactivity). Reverted. CORRECT approach:
+  make the article a **server component** (`page.tsx` already fetches the post) that renders the
+  body + `<h1>` + cover + tags, with only likes/comments as a client island — the body subtree
+  then never hydrates, so no duplication. The widget scripts, being in the initial server HTML,
+  execute on hard-load; add a small client script-runner if client-nav interactivity is needed.
 - **2026-07-08 — a11y/perf (from audit).** Accent `#6ea34d` is ~3.0:1 on white (below AA) for
   green text/hover + skip link; mobile menu is `aria-modal` with no focus trap/Escape; theme
   applied in useEffect → FOUC (next-themes is installed but unused); header nav gated behind
