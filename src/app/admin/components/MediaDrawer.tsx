@@ -240,8 +240,12 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                 <Button
                   onClick={async () => {
                     if (confirm("Delete permanently?")) {
-                      await deleteMedia({ id: selectedItem._id });
-                      setSelectedItem(null);
+                      try {
+                        await deleteMedia({ id: selectedItem._id });
+                        setSelectedItem(null);
+                      } catch (err) {
+                        console.error("Failed to delete media:", err);
+                      }
                     }
                   }}
                   variant="ghost"

@@ -523,8 +523,14 @@ const SettingsTabEnhanced = () => {
                   {profileData.avatar && (
                     <button
                       onClick={async () => {
-                        setProfileData((prev) => ({ ...prev, avatar: "" }));
-                        await removeAvatarMutation();
+                        try {
+                          await removeAvatarMutation();
+                          setProfileData((prev) => ({ ...prev, avatar: "" }));
+                          success("Photo removed");
+                        } catch (err) {
+                          console.error("Failed to remove avatar:", err);
+                          showError("Failed to remove photo");
+                        }
                       }}
                       className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1 mt-2"
                     >
@@ -869,7 +875,12 @@ const SettingsTabEnhanced = () => {
                         {r.statusCode}
                       </span>
                       <button
-                        onClick={() => toggleRedirectActive({ id: r._id })}
+                        onClick={() =>
+                          toggleRedirectActive({ id: r._id }).catch((err) => {
+                            console.error("Failed to toggle redirect:", err);
+                            showError("Failed to toggle redirect");
+                          })
+                        }
                         title={r.isActive ? "Disable redirect" : "Enable redirect"}
                         className="text-accent hover:opacity-70 transition"
                       >
@@ -907,9 +918,14 @@ const SettingsTabEnhanced = () => {
               <div className="flex gap-2">
                 <Button
                   onClick={async () => {
-                    await deleteRedirectMutation({ id: deleteRedirectConfirm });
-                    setDeleteRedirectConfirm(null);
-                    success("Redirect deleted");
+                    try {
+                      await deleteRedirectMutation({ id: deleteRedirectConfirm });
+                      setDeleteRedirectConfirm(null);
+                      success("Redirect deleted");
+                    } catch (err) {
+                      console.error("Failed to delete redirect:", err);
+                      showError("Failed to delete redirect");
+                    }
                   }}
                   variant="outline"
                   className="flex-1 text-red-500"

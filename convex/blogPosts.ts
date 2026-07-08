@@ -40,13 +40,15 @@ export const getAllPosts = query({
   },
 });
 
-// Admin: Get all posts including unpublished
-// Note: /admin/* is gated by Clerk middleware at the Next.js layer, so we don't
-// re-check auth here — Clerk's session identity isn't always propagated to
-// Convex queries in dev, which made this query return [] for signed-in admins.
+// Admin: Get all posts including unpublished. Convex functions are publicly
+// callable regardless of the Next.js middleware, so drafts must be gated here.
+// (The old "identity isn't propagated in dev" issue was middleware.ts sitting
+// at the repo root where next dev ignored it — fixed by moving it into src/.)
 export const getAllPostsAdmin = query({
   args: {},
   handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
     const posts = await ctx.db
       .query("blogPosts")
       .order("desc")
