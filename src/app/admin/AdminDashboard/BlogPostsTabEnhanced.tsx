@@ -70,13 +70,19 @@ const BlogPostsTabEnhanced = () => {
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
-      if (res && res[0]) {
-        await createMedia({
-          url: res[0].url,
-          filename: res[0].name || "Blog cover image",
-          size: res[0].size,
-        });
-        setFormData({ ...formData, coverImage: res[0].url });
+      try {
+        if (res && res[0]) {
+          await createMedia({
+            url: res[0].url,
+            filename: res[0].name || "Blog cover image",
+            size: res[0].size,
+          });
+          setFormData({ ...formData, coverImage: res[0].url });
+        }
+      } catch (err) {
+        console.error("Failed to save uploaded media:", err);
+        setSaveStatus("error");
+      } finally {
         setIsUploading(false);
       }
     },
