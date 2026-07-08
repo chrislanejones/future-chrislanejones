@@ -35,6 +35,8 @@ export async function getPageSEO(path: string): Promise<Metadata> {
         },
         twitter: {
           card: "summary_large_image",
+          site: "@cljwebdev",
+          creator: "@cljwebdev",
           title: data.title,
           description: data.description,
           images,
@@ -169,6 +171,8 @@ function getDefaultSEO(path: string): Metadata {
     },
     twitter: {
       card: "summary_large_image",
+      site: "@cljwebdev",
+      creator: "@cljwebdev",
       title,
       description,
       images,
