@@ -1,10 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
 // Contact messages contain PII (names, emails, phone numbers). Convex queries
 // are publicly callable, so these MUST gate on the caller's identity — without
@@ -13,8 +10,7 @@ async function requireAuth(ctx: { auth: any }): Promise<void> {
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
+    if (!(await isAdmin(ctx))) return [];
     return await ctx.db
       .query("contactMessages")
       .withIndex("by_created")
@@ -26,8 +22,7 @@ export const getAll = query({
 export const getUnreadCount = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return 0;
+    if (!(await isAdmin(ctx))) return 0;
     const unread = await ctx.db
       .query("contactMessages")
       .filter((q) => q.eq(q.field("read"), false))
@@ -69,6 +64,18 @@ export const create = mutation({
     source: v.string(),
   },
   handler: async (ctx, args) => {
+    // Public, unauthenticated mutation — the client form validates, but a direct
+    // Convex call bypasses that. Cap lengths server-side so it can't be used to
+    // bloat storage with megabyte payloads.
+    if (
+      args.name.length > 200 ||
+      args.email.length > 320 ||
+      (args.phone?.length ?? 0) > 50 ||
+      args.message.length > 5000 ||
+      args.source.length > 100
+    ) {
+      throw new Error("Message exceeds allowed length");
+    }
     return await ctx.db.insert("contactMessages", {
       ...args,
       read: false,

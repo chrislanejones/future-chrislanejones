@@ -1,17 +1,19 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
-// Get the profile (there should only be one)
+// Get the profile (there should only be one). Public — name/avatar/bio/social
+// are shown across the site — but the owner's email is admin-only, so strip it
+// for unauthenticated callers.
 export const getProfile = query({
   args: {},
   handler: async (ctx) => {
     const profile = await ctx.db.query("siteSettings").first();
-    return profile;
+    if (!profile) return profile;
+    if (await isAdmin(ctx)) return profile;
+    // Keep the shape stable for consumers; just hide the owner's email.
+    return { ...profile, email: undefined };
   },
 });
 

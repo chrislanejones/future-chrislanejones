@@ -7,10 +7,7 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { staticPageHeaders } from "../src/lib/page-headers";
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth } from "./authz";
 
 // Get all page headers
 export const getAllPageHeaders = query({

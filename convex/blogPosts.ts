@@ -2,10 +2,7 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
 // Helper to get media for a blog post
 async function getPostMedia(ctx: any, postId: string) {
@@ -47,8 +44,7 @@ export const getAllPosts = query({
 export const getAllPostsAdmin = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
+    if (!(await isAdmin(ctx))) return [];
     const posts = await ctx.db
       .query("blogPosts")
       .order("desc")
@@ -197,6 +193,11 @@ export const toggleLike = mutation({
     userIdentifier: v.string(),
   },
   handler: async (ctx, args) => {
+    // Public — userIdentifier is an arbitrary client string; cap it so it can't
+    // be used to write oversized rows.
+    if (args.userIdentifier.length > 100) {
+      throw new Error("Invalid identifier");
+    }
     // Check if user already liked this post
     const existingLike = await ctx.db
       .query("blogLikes")
@@ -264,6 +265,14 @@ export const addComment = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
+    // Public, unauthenticated — cap lengths so it can't be used to bloat the DB.
+    if (
+      args.authorName.length > 200 ||
+      args.authorEmail.length > 320 ||
+      args.content.length > 5000
+    ) {
+      throw new Error("Comment exceeds allowed length");
+    }
     return await ctx.db.insert("blogComments", {
       ...args,
       approved: false, // Comments need approval by default
@@ -289,8 +298,7 @@ export const getComments = query({
 export const getAllCommentsAdmin = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
+    if (!(await isAdmin(ctx))) return [];
     const comments = await ctx.db
       .query("blogComments")
       .order("desc")
@@ -316,8 +324,7 @@ export const getAllCommentsAdmin = query({
 export const getPendingCommentsCount = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return 0;
+    if (!(await isAdmin(ctx))) return 0;
     const pendingComments = await ctx.db
       .query("blogComments")
       .filter((q) => q.eq(q.field("approved"), false))
@@ -330,8 +337,7 @@ export const getPendingCommentsCount = query({
 export const getAllLikesAdmin = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return { total: 0, byPost: [] };
+    if (!(await isAdmin(ctx))) return { total: 0, byPost: [] };
     const likes = await ctx.db
       .query("blogLikes")
       .order("desc")

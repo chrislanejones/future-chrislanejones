@@ -2,15 +2,15 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
-async function requireAuth(ctx: { auth: any }): Promise<void> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new Error("Unauthorized");
-}
+import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
-// Get all media items
+// Admin-only. These return every media row including assignedToTitle, which for
+// blogPost-assigned media is the post title — leaking unpublished draft titles
+// to anonymous callers if left open. Not used by any public page.
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
+    if (!(await isAdmin(ctx))) return [];
     return await ctx.db.query("media").order("desc").collect();
   },
 });
@@ -19,6 +19,7 @@ export const getAll = query({
 export const getByAssignedType = query({
   args: { assignedToType: v.string() },
   handler: async (ctx, args) => {
+    if (!(await isAdmin(ctx))) return [];
     return await ctx.db
       .query("media")
       .withIndex("by_assigned_type", (q) =>
@@ -32,6 +33,7 @@ export const getByAssignedType = query({
 export const getByAssignedId = query({
   args: { assignedToId: v.string() },
   handler: async (ctx, args) => {
+    if (!(await isAdmin(ctx))) return [];
     return await ctx.db
       .query("media")
       .withIndex("by_assigned_id", (q) =>
@@ -45,6 +47,7 @@ export const getByAssignedId = query({
 export const getUnassigned = query({
   args: {},
   handler: async (ctx) => {
+    if (!(await isAdmin(ctx))) return [];
     const allMedia = await ctx.db.query("media").collect();
     return allMedia.filter((item) => !item.assignedToType);
   },
@@ -56,8 +59,7 @@ export const getOrganized = query({
   handler: async (ctx) => {
     // Admin-only: this returns every blog post including unpublished drafts
     // (titles + slugs). Convex functions are publicly callable, so gate here.
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    if (!(await isAdmin(ctx))) {
       return { pages: [], blogPosts: [], unassigned: [] };
     }
     const allMedia = await ctx.db.query("media").collect();
