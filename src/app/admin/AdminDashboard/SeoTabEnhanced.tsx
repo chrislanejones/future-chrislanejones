@@ -13,33 +13,17 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 
-interface SEOEntry {
-  _id: Id<"seoMetadata">;
-  _creationTime: number;
-  path: string;
-  title: string;
-  description: string;
-  canonicalUrl?: string;
-  ogImage?: string;
-  updatedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of hand-rolled shapes.
+type SEOEntry = Doc<"seoMetadata">;
 
-interface PageHeaderEntry {
-  _id: Id<"pageHeaders">;
-  _creationTime: number;
-  path: string;
-  title: string;
-  breadcrumbPage: string;
-  description: string;
-  updatedAt: number;
-}
+type PageHeaderEntry = Doc<"pageHeaders">;
 
 // Combined page entry for the list
 interface PageEntry {

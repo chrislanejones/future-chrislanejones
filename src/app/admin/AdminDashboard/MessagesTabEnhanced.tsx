@@ -16,22 +16,14 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 
-interface ContactMessage {
-  _id: Id<"contactMessages">;
-  name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  createdAt: number;
-  read: boolean;
-  source: string;
-}
+// Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
+type ContactMessage = Doc<"contactMessages">;
 
 const MessagesTabEnhanced = () => {
   const messages = useQuery(api.contactMessages.getAll) ?? [];

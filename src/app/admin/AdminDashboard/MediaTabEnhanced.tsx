@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -22,25 +22,10 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { MediaDrawer } from "../components/MediaDrawer";
 
-interface MediaFile {
-  _id: Id<"media">;
-  url: string;
-  filename: string;
-  altText?: string;
-  size?: number;
-  assignedToType?: string;
-  assignedToId?: string;
-  assignedToTitle?: string;
-  uploadedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of hand-rolled shapes.
+type MediaFile = Doc<"media">;
 
-interface GalleryItem {
-  _id: Id<"homeGallery">;
-  position: number;
-  url: string;
-  alt: string;
-  description?: string;
-}
+type GalleryItem = Doc<"homeGallery">;
 
 const MediaTabEnhanced = () => {
   const organizedMedia = useQuery(api.media.getOrganized);

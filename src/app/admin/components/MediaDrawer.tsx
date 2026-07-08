@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import {
   Drawer,
   DrawerContent,
@@ -26,15 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUploadThing } from "@/utils/uploadthing";
 
-interface MediaItem {
-  _id: Id<"media">;
-  url: string;
-  filename: string;
-  altText?: string;
-  size?: number;
-  mimeType?: string;
-  uploadedAt: number;
-}
+// Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
+type MediaItem = Doc<"media">;
 
 interface MediaDrawerProps {
   isOpen: boolean;
