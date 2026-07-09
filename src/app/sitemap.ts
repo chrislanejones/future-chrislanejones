@@ -5,6 +5,8 @@ import { api } from '../../convex/_generated/api'
 const BASE_URL = 'https://www.chrislanejones.com'
 const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_SITE_URL
 
+export const revalidate = 60
+
 const staticPages = [
   '/',
   '/about',

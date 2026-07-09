@@ -5,6 +5,8 @@ import ConvexBanner from "@/components/page/ConvexBanner";
 import SiteHistoryPage from "@/app/site-history/SiteHistoryPage";
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   return await getPageSEO("/site-history");
 }

@@ -8,6 +8,8 @@ import BlogPostPage from "./BlogPostPage";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 const SITE_URL = "https://www.chrislanejones.com";
 
+export const revalidate = 60;
+
 // OG/Twitter cards require ABSOLUTE URLs — social crawlers don't follow
 // site-relative paths. Prefix the domain when coverImage is a /path.
 function absoluteImage(coverImage?: string): string | null {

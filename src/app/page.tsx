@@ -15,6 +15,8 @@ import TechStackContent from "@/components/main/tech-stack-content";
 
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   return await getPageSEO("/");
 }

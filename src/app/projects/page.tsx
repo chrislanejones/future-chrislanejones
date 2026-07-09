@@ -4,6 +4,8 @@ import Footer from "@/components/layout/Footer";
 import ProjectGrid from "@/app/projects/ProjectPage";
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   return await getPageSEO("/projects");
 }
