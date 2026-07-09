@@ -8,6 +8,8 @@ import ConferenceDetailPage from "./ConferenceDetailPage";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+export const revalidate = 60;
+
 export async function generateMetadata({
   params,
 }: {

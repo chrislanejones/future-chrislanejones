@@ -1,6 +1,8 @@
 import LinkGrid from "./LinkGrid";
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   const metadata = await getPageSEO("/link-page");
   console.log("Link page metadata:", metadata);

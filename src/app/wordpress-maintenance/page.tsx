@@ -4,6 +4,8 @@ import ConvexBanner from "@/components/page/ConvexBanner";
 import WPMaintenanceContent from "./WP-MaintenanceContent";
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   return await getPageSEO("/wordpress-maintenance");
 }

@@ -4,6 +4,8 @@ import ConvexBanner from "@/components/page/ConvexBanner";
 import BrowserTabs from "./BrowserTabs";
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   return await getPageSEO("/browser-tabs");
 }

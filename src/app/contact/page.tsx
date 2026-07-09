@@ -4,6 +4,8 @@ import ConvexBanner from "@/components/page/ConvexBanner";
 import ContactForm from "./ContactForm";
 import { getPageSEO } from "@/lib/seo";
 
+export const revalidate = 60;
+
 export async function generateMetadata() {
   return await getPageSEO("/contact");
 }
