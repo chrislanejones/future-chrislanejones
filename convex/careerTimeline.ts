@@ -195,6 +195,17 @@ export const seedTimeline = mutation({
         createdAt: now,
         updatedAt: now,
       },
+      {
+        year: "2026",
+        title: "Moved Back to Florida",
+        description:
+          "Left Central Virginia after eight years and moved back to Jacksonville, FL. Still remote, still building for the Commonwealth.",
+        location: "Jacksonville, FL",
+        iconName: "Home",
+        order: 8,
+        createdAt: now,
+        updatedAt: now,
+      },
     ];
 
     for (const event of events) {

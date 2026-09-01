@@ -83,4 +83,12 @@ export const timelineEvents: TimelineEvent[] = [
     location: "Louisa, VA",
     icon: React.createElement(Code2, { className: "w-6 h-6" }),
   },
+  {
+    year: "2026",
+    title: "Moved Back to Florida",
+    description:
+      "Left Central Virginia after eight years and moved back to Jacksonville, FL. Still remote, still building for the Commonwealth.",
+    location: "Jacksonville, FL",
+    icon: React.createElement(Home, { className: "w-6 h-6" }),
+  },
 ];
