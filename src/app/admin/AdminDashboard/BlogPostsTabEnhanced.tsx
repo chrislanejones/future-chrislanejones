@@ -506,7 +506,7 @@ const BlogPostsTabEnhanced = () => {
                           setIsEditing(true);
                         }
                       }}
-                      initialFocus
+                      autoFocus
                     />
                   </PopoverContent>
                 </Popover>

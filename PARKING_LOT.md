@@ -58,3 +58,20 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   directly fails with `ERR_MODULE_NOT_FOUND: @eslint/eslintrc` from `eslint.config.mjs`
   (dep missing after the security dependency patching). Needs: migrate the lint script to
   the ESLint CLI and install/repair the flat-config deps.
+- **2026-09-01 — 146 pre-existing lint problems, now finally visible.** Lint had been
+  silently broken (`eslint.config.mjs` imported `@eslint/eslintrc`, which was never
+  installed; `pnpm lint` still called `next lint`, removed in Next 16). Both are fixed —
+  the config now spreads `eslint-config-next/core-web-vitals` + `/typescript` directly and
+  `pnpm lint` runs `eslint src convex`. That surfaced a backlog nobody had seen:
+  **65 errors, 81 warnings**. By rule: `no-unused-vars` 60w, `react-hooks/set-state-in-effect`
+  22e, `no-explicit-any` 19e, `react-hooks/exhaustive-deps` 16w, `react/no-unescaped-entities`
+  16e, `@next/next/no-img-element` 3w, plus a handful of `react-hooks/purity`,
+  `no-empty-object-type`, `jsx-a11y/alt-text`. None were introduced by the Sept 2026 package
+  update — they were always there, just unreported. The 16 `no-unescaped-entities` and 60
+  `no-unused-vars` are mechanical; the 22 `set-state-in-effect` need real thought per site.
+- **2026-09-01 — TypeScript 7 is blocked by typescript-eslint.** TS 7.0.2 typechecks this
+  repo clean (only fix needed was react-day-picker v10 renaming `initialFocus` → `autoFocus`),
+  but `typescript-eslint` 8.69 hard-refuses TS 7 ("does not support TS 7.0"), which takes
+  `eslint-config-next` down with it. Held at TS 6.0.3 so the lint gate stays runnable.
+  Retry when typescript-eslint ships TS 7 support (tracking:
+  https://github.com/typescript-eslint/typescript-eslint/issues/10940).
