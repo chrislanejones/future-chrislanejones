@@ -134,14 +134,14 @@ export const seedSEOData = mutation({
         path: "/",
         title: "Chris Lane Jones | Senior Web Engineer & AI Automation",
         description:
-          "Senior web engineer based in Richmond, VA specializing in React, Next.js, and AI-powered applications. Building modern web experiences for businesses and government agencies.",
+          "Senior web engineer based in Jacksonville, FL specializing in React, Next.js, and AI-powered applications. Building modern web experiences for businesses and government agencies.",
         canonicalUrl: "https://www.chrislanejones.com",
       },
       {
         path: "/about",
         title: "About Chris Lane Jones | Developer, Hiker & Community Leader",
         description:
-          "Life on the trails and the web — from video production to full-stack development, leading the Richmond WordPress meetup, and building apps from Virginia's Shenandoah Mountains.",
+          "Life on the trails and the web — from video production to full-stack development, leading the Richmond WordPress meetup, and building apps from Jacksonville, Florida.",
         canonicalUrl: "https://www.chrislanejones.com/about",
       },
       {
@@ -183,7 +183,7 @@ export const seedSEOData = mutation({
         path: "/contact",
         title: "Contact Chris Lane Jones | Web Development Services",
         description:
-          "Get in touch about web development projects, WordPress maintenance, React consulting, or speaking at a meetup. Based in Virginia, available for remote work.",
+          "Get in touch about web development projects, WordPress maintenance, React consulting, or speaking at a meetup. Based in Jacksonville, FL, available for remote work.",
         canonicalUrl: "https://www.chrislanejones.com/contact",
       },
       {

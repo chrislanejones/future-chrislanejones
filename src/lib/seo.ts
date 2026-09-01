@@ -54,15 +54,15 @@ export async function getPageSEO(path: string): Promise<Metadata> {
 function getDefaultSEO(path: string): Metadata {
   const defaults: Record<string, Metadata> = {
     "/": {
-      title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+      title: "Chris Lane Jones | React & WordPress Developer in Florida",
       description:
-        "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+        "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
       alternates: { canonical: "https://www.chrislanejones.com" }, // Corrected for defaults
     },
     "/about": {
       title: "About Chris Jones | Developer, Hiker & Community Leader",
       description:
-        "From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and life in Virginia's Shenandoah Mountains.",
+        "From video production to web development - my journey through React frameworks, leading Richmond's WordPress meetup, and building from Jacksonville, Florida.",
       alternates: { canonical: "https://www.chrislanejones.com/about" }, // Corrected for defaults
     },
     "/blog": {

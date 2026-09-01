@@ -17,11 +17,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.chrislanejones.com"),
   title: {
-    default: "Chris Lane Jones | React & WordPress Developer in Virginia",
+    default: "Chris Lane Jones | React & WordPress Developer in Florida",
     template: "%s | Chris Lane Jones",
   },
   description:
-    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
   authors: [{ name: "Chris Lane Jones", url: "https://www.chrislanejones.com" }],
   creator: "Chris Lane Jones",
   openGraph: {
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://www.chrislanejones.com",
     siteName: "Chris Lane Jones",
-    title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+    title: "Chris Lane Jones | React & WordPress Developer in Florida",
     description:
-      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
     images: [
       {
         url: "/Professional-Photo-of-Chris-Lane-Jones.webp",
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@cljwebdev",
     creator: "@cljwebdev",
-    title: "Chris Lane Jones | React & WordPress Developer in Virginia",
+    title: "Chris Lane Jones | React & WordPress Developer in Florida",
     description:
-      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
     images: ["/Professional-Photo-of-Chris-Lane-Jones.webp"],
   },
   robots: {

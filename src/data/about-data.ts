@@ -27,9 +27,9 @@ export const aboutSections: AboutSection[] = [
     imagePosition: "right",
   },
   {
-    title: "Living in the Shenandoah Mountains",
+    title: "Eight Years in the Shenandoah Mountains",
     description:
-      "Our dreams came true five years ago when I moved to Harrisonburg, Virginia. I later moved closer to Richmond, VA and now work remotely in the small town of Louisa, Virginia.\n\nMy wife runs a local equine-assisted private practice counseling service — [Heaven's Rays Ministries](https://heavensraysministries.com/). In Louisa, I am close to several cities and the Shenandoah mountains.",
+      "We moved to Harrisonburg, Virginia in 2018 and then out to the small town of Louisa in 2019 — close to Richmond, closer to the mountains, and surrounded by cows.\n\nThose eight years gave me the Shenandoah trails, Richmond's WordPress community, and the Commonwealth of Virginia work I still do today. My wife runs an equine-assisted private practice counseling service — [Heaven's Rays Ministries](https://heavensraysministries.com/).",
     image: "/gallery/Me-at-Marys-Rock-Shenandoah.webp",
     imageAlt: "Me at Marys Rock in the Shenandoah Mountains",
     imageDescription: "Me at Marys Rock in the Shenandoah Mountains",
@@ -43,5 +43,14 @@ export const aboutSections: AboutSection[] = [
     imageAlt: "Becky and I in Santorini",
     imageDescription: "Becky and I in Santorini",
     imagePosition: "right",
+  },
+  {
+    title: "Back to Florida",
+    description:
+      "After eight years in Virginia, we moved back to Florida in 2026. Jacksonville is where I graduated from UNF, edited video for a living, and later ran the Jacksonville Online Marketing Meetup — so it is not exactly new ground.\n\nI still work remotely for the Commonwealth of Virginia. The hiking traded mountain ridges for the coast. Same job, different view out the window.",
+    image: "/gallery/Under-Construction.webp",
+    imageAlt: "Photo coming soon",
+    imageDescription: "Photo coming soon",
+    imagePosition: "left",
   },
 ];

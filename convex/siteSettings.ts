@@ -110,9 +110,9 @@ export const seedProfile = mutation({
 
     await ctx.db.insert("siteSettings", {
       name: "Chris Lane Jones",
-      bio: "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+      bio: "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
       email: "",
-      location: "Louisa, Virginia",
+      location: "Jacksonville, Florida",
       socialLinks: {
         github: "https://github.com/chrislanejones",
         linkedin: "https://linkedin.com/in/chrislanejones",

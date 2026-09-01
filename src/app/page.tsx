@@ -38,11 +38,12 @@ const personSchema = {
     name: "Chris Lane Jones Web Development",
   },
   description:
-    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Virginia.",
+    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
   knowsAbout: ["React", "Next.js", "WordPress", "TypeScript", "Web Development"],
   address: {
     "@type": "PostalAddress",
-    addressRegion: "Virginia",
+    addressLocality: "Jacksonville",
+    addressRegion: "FL",
     addressCountry: "US",
   },
 };

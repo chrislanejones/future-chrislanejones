@@ -199,7 +199,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           <p className="text-ink mt-2 line-clamp-3">{project.description}</p>
 
           <ul className="space-y-2 mt-4 flex-1">
-            {(project.features ?? []).slice(0, 3).map((feature, i) => (
+            {(project.features ?? []).slice(0, 5).map((feature, i) => (
               <li key={i} className="flex items-start gap-2">
                 <svg
                   className="w-4 h-4 text-accent shrink-0 mt-0.5"

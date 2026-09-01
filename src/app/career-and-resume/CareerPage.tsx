@@ -282,7 +282,7 @@ function ResumeDownloadCard() {
       <div className="flex flex-col gap-3">
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris_Lane_Jones_Resume_May_2026.pdf"
+            href="/career-files/Chris_Lane_Jones_Resume_Sept_2026.pdf"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -305,7 +305,7 @@ function ResumeDownloadCard() {
 
         <Button asChild variant="base" size="lg" className="justify-start">
           <a
-            href="/career-files/Chris_Lane_Jones_Resume_May_2026.docx"
+            href="/career-files/Chris_Lane_Jones_Resume_Sept_2026.docx"
             target="_blank"
             rel="noopener noreferrer"
           >
