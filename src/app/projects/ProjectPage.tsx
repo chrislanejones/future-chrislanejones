@@ -46,7 +46,7 @@ const FALLBACK_APPS: Project[] = [
     image: "/projects/Image-Horse-App.webp",
     githubUrl:
       "https://github.com/chrislanejones/multi-image-compress-and-edit",
-    vercelUrl: "https://imagehorse.app/",
+    vercelUrl: "https://edit.imagehorse.app/",
   },
   {
     title: "Go Web Crawler",
