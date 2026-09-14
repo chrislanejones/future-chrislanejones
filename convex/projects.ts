@@ -134,7 +134,7 @@ export const seedProjects = mutation({
     const projects = [
       // ── App projects ──────────────────────────────────────────────
       {
-        title: "Image Editor & Optimizer",
+        title: "Image Horse",
         description:
           "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
         category: "app",
@@ -233,6 +233,25 @@ export const seedProjects = mutation({
         updatedAt: now,
       },
       {
+        title: "Image Horse - Marketing Website",
+        description:
+          "Marketing site for Image Horse, a photo editor that runs in your browser. Five prerendered pages cover features, pricing, architecture and a dated release log.",
+        category: "website",
+        features: [
+          "React 19, Vite and React Router, prerendered to static HTML per route",
+          "One route table drives the nav, sitemap, canonical tags and JSON-LD",
+          "Trail Log and features list generated from git history and the docs",
+          "⌘K command palette that searches every page and feature",
+          "Vercel config with a www redirect, real 404s and immutable asset caching",
+        ],
+        image: "/projects/Image-Horse-Marketing-Website.webp",
+        customUrl: "https://imagehorse.app/",
+        featured: false,
+        order: 3,
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
         title: "Wheelock Communities - Real Estate Development",
         description:
           "Corporate website for Wheelock Communities, showcasing master-planned communities, luxury condominiums, and resort development projects across the United States.",
@@ -247,7 +266,7 @@ export const seedProjects = mutation({
         image: "/projects/Wheelock-Communities.webp",
         customUrl: "https://wheel.chrislanejones.com/",
         featured: false,
-        order: 3,
+        order: 4,
         createdAt: now,
         updatedAt: now,
       },
