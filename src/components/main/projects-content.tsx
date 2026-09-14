@@ -25,7 +25,7 @@ const FALLBACK = [
     githubUrl:
       "https://github.com/chrislanejones/multi-image-compress-and-edit",
     codebergUrl: "",
-    vercelUrl: "https://rust-wasm-photo-tool.netlify.app/",
+    vercelUrl: "https://imagehorse.app/",
     customUrl: "",
   },
   {
