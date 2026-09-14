@@ -33,7 +33,7 @@ const isValidUrl = (url: string | undefined): boolean =>
 /* Static fallback data (shown while Convex loads or if DB is empty) */
 const FALLBACK_APPS: Project[] = [
   {
-    title: "Image Editor & Optimizer",
+    title: "Image Horse",
     description:
       "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
     features: [
@@ -107,6 +107,20 @@ const FALLBACK_WEBSITES: Project[] = [
     ],
     image: "/projects/Job-Listing-WordPress-Plugin.webp",
     githubUrl: "https://github.com/chrislanejones/job-listing-plugin",
+  },
+  {
+    title: "Image Horse - Marketing Website",
+    description:
+      "Marketing site for Image Horse, a photo editor that runs in your browser. Five prerendered pages cover features, pricing, architecture and a dated release log.",
+    features: [
+      "React 19, Vite and React Router, prerendered to static HTML per route",
+      "One route table drives the nav, sitemap, canonical tags and JSON-LD",
+      "Trail Log and features list generated from git history and the docs",
+      "⌘K command palette that searches every page and feature",
+      "Vercel config with a www redirect, real 404s and immutable asset caching",
+    ],
+    image: "/projects/Image-Horse-Marketing-Website.webp",
+    customUrl: "https://imagehorse.app/",
   },
   {
     title: "Wheelock Communities - Real Estate Development",

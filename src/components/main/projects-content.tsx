@@ -13,7 +13,7 @@ import { api } from "../../../convex/_generated/api";
 // Static fallback shown while Convex loads
 const FALLBACK = [
   {
-    title: "Image Editor & Optimizer",
+    title: "Image Horse",
     description:
       "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
     features: [
