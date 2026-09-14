@@ -148,7 +148,7 @@ export const seedProjects = mutation({
         image: "/projects/Image-Horse-App.webp",
         githubUrl:
           "https://github.com/chrislanejones/multi-image-compress-and-edit",
-        vercelUrl: "https://imagehorse.app/",
+        vercelUrl: "https://edit.imagehorse.app/",
         featured: true,
         order: 1,
         createdAt: now,
