@@ -47,10 +47,10 @@ export const aboutSections: AboutSection[] = [
   {
     title: "Back to Florida",
     description:
-      "After eight years in Virginia, we moved back to Florida in 2026. Jacksonville is where I graduated from UNF, edited video for a living, and later ran the Jacksonville Online Marketing Meetup — so it is not exactly new ground.\n\nI still work remotely for the Commonwealth of Virginia. The hiking traded mountain ridges for the coast. Same job, different view out the window.",
-    image: "/gallery/Under-Construction.webp",
-    imageAlt: "Photo coming soon",
-    imageDescription: "Photo coming soon",
+      "After eight years in Virginia, we hit undo and traded mountains for beaches. We are back in Florida as of 2026. Our families are from here, and Jacksonville is where I graduated from UNF and edited video for a living — so it is not exactly new ground.\n\nI still work remotely for the Commonwealth of Virginia. Same job, different view out the window.",
+    image: "/gallery/Florida-Coast-Aerial.webp",
+    imageAlt: "Aerial view of the Florida coastline",
+    imageDescription: "Back on the Florida coast",
     imagePosition: "left",
   },
 ];
