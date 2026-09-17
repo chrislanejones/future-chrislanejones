@@ -32,8 +32,8 @@
     "effect": "^3.22.1",
     "framer-motion": "^13.1.1",
     "lucide-react": "^1.39.0",
-    "marked": "^18.0.11",
-    "next": "16.3.4",
+    "marked": "^18.0.13",
+    "next": "16.3.5",
     "next-themes": "^0.4.6",
     "posthog-js": "^1.424.1",
     "react": "^19.2.8",
@@ -58,16 +58,16 @@
     "@types/react-dom": "^19.2.5",
     "autoprefixer": "^10.5.4",
     "eslint": "^10.9.1",
-    "eslint-config-next": "16.3.4",
-    "postcss": "^8.5.26",
+    "eslint-config-next": "16.3.5",
+    "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   },
   "pnpm": {
     "overrides": {
       "ws@<8.21.0": ">=8.21.0",
-      "postcss@<8.5.10": ">=8.5.10",
-      "effect@<3.20.0": ">=3.20.0"
+      "effect@<3.20.0": ">=3.20.0",
+      "postcss@<8.5.23": ">=8.5.23"
     }
   }
 }
