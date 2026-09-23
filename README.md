@@ -17,7 +17,7 @@ Live at [www.chrislanejones.com](https://www.chrislanejones.com).
 - **Authentication:** [Clerk](https://clerk.com/)
 - **Analytics:** [PostHog](https://posthog.com/) (product analytics & session recording) and [Google Analytics 4](https://analytics.google.com/) (gtag)
 - **UI Components:** [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
-- **Drag & Drop:** [@dnd-kit](https://dndkit.com/)
+- **Drag & Drop:** Native HTML5 drag events (admin reordering — no library)
 - **Icons:** [Lucide React](https://lucide.dev/guide/packages/lucide-react), [React Icons](https://react-icons.github.io/react-icons/), [Simple Icons](https://simpleicons.org/)
 - **Package Manager:** [pnpm](https://pnpm.io/)
 
@@ -76,7 +76,8 @@ src/
 │   ├── site-history/
 │   ├── site-map/
 │   ├── wordpress-maintenance/
-│   └── admin/              # Protected dashboard (Clerk auth)
+│   ├── admin/              # Protected dashboard (Clerk auth)
+│   └── admin-showcase/     # Public preview of the admin (screenshots pending)
 ├── components/
 │   ├── layout/             # Header, Footer
 │   ├── main/               # Homepage bento grid content blocks
@@ -90,11 +91,14 @@ convex/                     # Backend: queries, mutations, HTTP endpoints
 ├── authz.ts                # Owner-only admin gate (requireAdmin / isAdmin)
 ├── auth.config.ts          # Clerk → Convex JWT issuer
 ├── blogPosts.ts
+├── browserLinks.ts
 ├── conferences.ts
 ├── careerTimeline.ts
 ├── projects.ts
 ├── clients.ts
 ├── contactMessages.ts
+├── crons.ts                # Daily cleanup of stale SEO entries
+├── homeGallery.ts
 ├── media.ts
 ├── navigation.ts
 ├── pageHeaders.ts
@@ -126,6 +130,7 @@ convex/                     # Backend: queries, mutations, HTTP endpoints
 | `/wordpress-maintenance` | WordPress maintenance service |
 | `/react-maintenance` | React app maintenance service |
 | `/admin` | Protected CMS dashboard |
+| `/admin-showcase` | Public preview of the admin dashboard's tabs (screenshots pending) |
 
 ## 🚦 Getting Started
 
@@ -204,20 +209,18 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 ```json
 {
-  "next": "16.2.9",
-  "react": "^19.2.7",
+  "next": "16.3.5",
+  "react": "^19.2.8",
   "typescript": "^6.0.3",
-  "tailwindcss": "^4.3.1",
-  "framer-motion": "^12.40.0",
-  "convex": "^1.41.0",
-  "@clerk/nextjs": "7.5.5",
+  "tailwindcss": "^4.3.3",
+  "framer-motion": "^13.1.1",
+  "convex": "^1.45.0",
+  "@clerk/nextjs": "7.8.4",
   "uploadthing": "^7.7.4",
   "@uploadthing/react": "^7.3.3",
-  "@dnd-kit/core": "^6.3.1",
-  "@dnd-kit/sortable": "^10.0.0",
-  "@radix-ui/react-*": "latest",
-  "lucide-react": "^1.21.0",
-  "posthog-js": "^1.390.2"
+  "@radix-ui/react-*": "pinned per-package (see package.json)",
+  "lucide-react": "^1.39.0",
+  "posthog-js": "^1.424.1"
 }
 ```
 
@@ -236,12 +239,14 @@ Access the admin dashboard at `/admin` (requires authentication via Clerk):
 ### Content Management
 
 - **Blog Posts**: Create, edit, and publish blog posts with rich content
+- **Comments & Likes**: Moderate blog comments (approve or delete) and see like counts per post
 - **Career Timeline**: Manage work experience and career milestones
 - **Browser Links**: Curate resource collections and bookmarks
 - **Projects**: Add and manage portfolio projects with GitHub/live links and category tags
 - **Clients**: Manage client logos, icons, and links displayed in the homepage slider
 - **Conferences**: Create conference entries with year, slug, and talk details; auto-generates dynamic routes
-- **Page Headers**: Edit the banner title, breadcrumb label, and description shown at the top of each page
+- **Pages & Menu**: Reorder header/footer navigation and edit each page's banner title, breadcrumb label, and description
+- **Messages**: Inbox for contact-form submissions — mark read/unread, delete
 - **SEO Manager**: Per-page title and meta description stored in Convex; supports reseed with upsert
 - **Redirects**: Create and toggle 301/302 redirects handled at runtime via Convex — no redeploy needed
 - **Settings**: Update site metadata, SEO, and configuration
@@ -251,6 +256,14 @@ All changes are saved in real-time to Convex and immediately reflected on the li
 ### ♻️ Reseeding Data
 
 The Settings tab includes a **Data Management** panel that lets you reseed any content module directly from the browser. Select one or more data sources and click **Reseed** — existing records are updated (upserted), not skipped.
+
+## 🚢 Deployment
+
+- The frontend deploys automatically via Vercel on push to the GitHub `origin` remote. Codeberg is a mirror — pushing there alone does not deploy.
+- Convex does **not** deploy with the frontend. Run `npx convex deploy` separately whenever anything in `convex/` changes.
+- Admin writes are gated in code, not just by being signed in: `requireAdmin`/`isAdmin` in `convex/authz.ts` check the caller's Clerk user id against an allowlist. Override it with the `ADMIN_USER_IDS` env var — set it in both the Convex deployment (`npx convex env set ADMIN_USER_IDS "..."`) and the Next.js app env, since `src/app/api/uploadthing/core.ts` reads the same variable for upload gating.
+- Auth needs a Clerk JWT template named `convex` on whichever Clerk instance `CLERK_JWT_ISSUER_DOMAIN` points at (see `convex/auth.config.ts`).
+- Changing a Vercel environment variable doesn't take effect until the next deploy.
 
 ## 📄 License
 

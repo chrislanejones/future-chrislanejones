@@ -42,7 +42,7 @@ const sitemapSections = [
       { label: "Browser Tabs", href: "/browser-tabs" },
       { label: "Conferences", href: "/conferences" },
       { label: "Site History", href: "/site-history" },
-      { label: "About the Logo", href: "/logo" },
+      { label: "About the Logo", href: "/logo-page" },
     ],
   },
   {
@@ -167,7 +167,7 @@ export default function SiteMapPage() {
         <div className="text-center space-y-4">
           <h2 className="">Built With</h2>
           <p className="text-muted max-w-2xl mx-auto">
-            This site is built with Next.js 14, React, TypeScript, Tailwind CSS,
+            This site is built with Next.js 16, React, TypeScript, Tailwind CSS,
             and Framer Motion. Hosted on Vercel with data managed through
             Convex.
           </p>

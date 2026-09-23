@@ -9,5 +9,7 @@ Drop screenshots of the live admin here. The /admin-showcase page references:
 - media-manager.webp    — Media Manager tab
 - content-tabs.webp     — Projects tab card editor (or any content tab of your choice)
 
-Recommended: 1600x900 webp, light or dark theme matching site. Until images
-are added, the page will show broken image placeholders.
+Recommended: 1600x900 webp, light or dark theme matching site. Until these
+are wired up, the page shows a "Screenshot coming soon" placeholder card for
+each section — `AdminShowcasePage.tsx` doesn't render the `image` paths yet,
+so dropping files in here alone won't make them appear.

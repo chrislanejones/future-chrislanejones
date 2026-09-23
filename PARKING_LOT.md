@@ -83,3 +83,26 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   ("Full-Stack Web Developer") plus its description in `src/app/page.tsx:35`. Chris to decide
   whether those should follow the new title; the `<title>` is a length/keyword call, not a paste.
   Also: the Codeberg repo's website field was not checked (GitHub's was fixed).
+- **2026-09-23 — Three unused dependencies found during the README audit.**
+  `react-dnd`/`react-dnd-html5-backend` (package.json) are never imported —
+  admin drag-to-reorder (Clients, Career Timeline, Pages & Menu tabs) is
+  hand-rolled with native `onDragStart`/`onDragOver`/`onDrop`. `three` is
+  still unused too, confirming the 2026-07-08 finding survived the Sept 2026
+  dependency bump. All three are dead weight in `package.json`; remove or
+  wire up.
+- **2026-09-23 — Admin-showcase screenshots are dead-wired.**
+  `AdminShowcasePage.tsx`'s `sections[].image` paths (e.g.
+  `/admin-showcase/dashboard.webp`) are defined but never rendered — the
+  component always shows a static "Screenshot coming soon" placeholder.
+  Dropping files into `public/admin-showcase/` per its README won't do
+  anything until the component actually renders `section.image`.
+- **2026-09-23 — `/site-map` gaps found during the README audit.** The
+  Sitemap card's link list omits `/blog` and `/admin-showcase`; its
+  "Changelog" card is a permanent "Coming Soon" placeholder with no data
+  behind it; its BlueSky link (`bsky.app/profile/chrislanejones.com`) 404s.
+  Fixed in the same pass: the card's "Next.js 14" copy (now 16) and a
+  `/logo` link that should have been `/logo-page`.
+- **2026-09-23 — Codeberg repo metadata still unchecked.** Tried to verify
+  the Codeberg mirror's description/website field for this audit;
+  codeberg.org was unreachable from this sandbox (curl and WebFetch both
+  timed out). Still needs a manual check — see the 2026-09-23 entry above.
