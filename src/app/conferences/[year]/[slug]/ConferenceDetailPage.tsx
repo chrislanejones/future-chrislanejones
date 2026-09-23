@@ -6,6 +6,7 @@ import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { Doc } from "../../../../../convex/_generated/dataModel";
+import { jsonLd as toJsonLd } from "@/lib/structured-data";
 
 type Conference = Doc<"conferences">;
 
@@ -36,7 +37,7 @@ export default function ConferenceDetailPage({
     <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-16">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLd(jsonLd) }}
       />
 
       <div className="mb-8">

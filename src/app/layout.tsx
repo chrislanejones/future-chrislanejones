@@ -8,6 +8,9 @@ import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { Suspense } from "react";
+import { PERSON, SITE_URL, jsonLd, siteGraph } from "@/lib/structured-data";
+
+const HOME_TITLE = "Chris Lane Jones | Senior Web Engineer, React & Rust/WASM";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -15,13 +18,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.chrislanejones.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Chris Lane Jones | React & WordPress Developer in Florida",
+    default: HOME_TITLE,
     template: "%s | Chris Lane Jones",
   },
   description:
-    "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
+    PERSON.description,
   authors: [{ name: "Chris Lane Jones", url: "https://www.chrislanejones.com" }],
   creator: "Chris Lane Jones",
   openGraph: {
@@ -29,15 +32,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://www.chrislanejones.com",
     siteName: "Chris Lane Jones",
-    title: "Chris Lane Jones | React & WordPress Developer in Florida",
+    title: HOME_TITLE,
     description:
-      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
+      PERSON.description,
     images: [
       {
         url: "/Professional-Photo-of-Chris-Lane-Jones.webp",
         width: 1200,
         height: 630,
-        alt: "Chris Lane Jones - React & WordPress Developer",
+        alt: `${PERSON.name}, ${PERSON.jobTitle}`,
       },
     ],
   },
@@ -45,9 +48,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@cljwebdev",
     creator: "@cljwebdev",
-    title: "Chris Lane Jones | React & WordPress Developer in Florida",
+    title: HOME_TITLE,
     description:
-      "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
+      PERSON.description,
     images: ["/Professional-Photo-of-Chris-Lane-Jones.webp"],
   },
   robots: {
@@ -119,6 +122,10 @@ export default function RootLayout({
             color: "var(--color-ink)",
           }}
         >
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: jsonLd(siteGraph()) }}
+          />
           <PHProvider>
             <ConvexClientProvider>
               <Suspense fallback={null}>
