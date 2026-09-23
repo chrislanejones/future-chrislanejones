@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import Header from "@/components/layout/Header";
@@ -8,6 +9,13 @@ import ConferenceYearPage from "./ConferenceYearPage";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export const revalidate = 60;
+
+// Prerender every known year at build time; new ones still render on
+// demand (dynamicParams defaults to true) and then cache via ISR.
+export async function generateStaticParams() {
+  const all = await convex.query(api.conferences.getAll, {});
+  return [...new Set(all.map((c) => String(c.year)))].map((year) => ({ year }));
+}
 
 export async function generateMetadata({
   params,
@@ -35,6 +43,8 @@ export default async function ConferencesByYearRoute({
   const items = all
     .filter((c) => String(c.year) === year)
     .sort((a, b) => a.name.localeCompare(b.name));
+  // A year with no conferences isn't a page. Real 404, not an empty list.
+  if (items.length === 0) notFound();
 
   return (
     <>

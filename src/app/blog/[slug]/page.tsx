@@ -5,11 +5,19 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import BlogPostPage from "./BlogPostPage";
 import { jsonLd as toJsonLd } from "@/lib/structured-data";
+import { renderPostHtml, stripScripts } from "@/lib/blog-content";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 const SITE_URL = "https://www.chrislanejones.com";
 
 export const revalidate = 60;
+
+// Prerender every known post at build time; new ones still render on
+// demand (dynamicParams defaults to true) and then cache via ISR.
+export async function generateStaticParams() {
+  const posts = await convex.query(api.blogPosts.getAllPosts, {});
+  return posts.map((p) => ({ slug: p.slug }));
+}
 
 // OG/Twitter cards require ABSOLUTE URLs — social crawlers don't follow
 // site-relative paths. Prefix the domain when coverImage is a /path.
@@ -80,11 +88,13 @@ export default async function Page({
     dateModified: new Date(post.updatedAt).toISOString(),
     author: {
       "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
       name: "Chris Lane Jones",
       url: SITE_URL,
     },
     publisher: {
       "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
       name: "Chris Lane Jones",
       url: SITE_URL,
     },
@@ -98,14 +108,16 @@ export default async function Page({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: toJsonLd(jsonLd) }}
       />
-      {/* NB: the article body is still client-rendered (useQuery) for now — the
-          post's interactive widgets rely on imperative innerHTML + script
-          re-execution, which a hydrated dangerouslySetInnerHTML broke. The
-          crawler-visible SEO (title, description, canonical, article OG tags,
-          BlogPosting JSON-LD above, and the 404 below) is all server-rendered.
-          Full body SSR needs a server-component article + client interactions
-          island — see PARKING_LOT. */}
-      <BlogPostPage params={{ slug }} />
+      {/* The body renders here on the server, so crawlers and AI tools get
+          the full text. BlogPostPage mounts the widgets into this DOM. */}
+      <BlogPostPage params={{ slug }} initialPost={post}>
+        <article
+          className="blog-content max-w-none mb-8"
+          dangerouslySetInnerHTML={{
+            __html: stripScripts(renderPostHtml(post.content)),
+          }}
+        />
+      </BlogPostPage>
     </>
   );
 }
