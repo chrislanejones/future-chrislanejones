@@ -49,6 +49,15 @@ yarn.lock
 # vercel
 .vercel
 
+# convex local state
+.convex/
+
+# logs
+*.log
+
+# local agent settings (machine paths, per-user permission allowlists)
+.claude/settings.local.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
