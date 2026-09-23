@@ -28,7 +28,8 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `SeoTabEnhanced.tsx:662` uses the non-www apex in its canonical preview — extract one const.
   (4) Dead duplicated-shape files under `admin/effects/*` and `admin/hooks/*` are unimported
   and drifted — recommend deletion.
-- **2026-07-08 — Blog `/blog/[slug]` article body not in SSR HTML (SEO).** The `/blog` index is
+- **2026-07-08 — Blog `/blog/[slug]` article body not in SSR HTML (SEO).** **RESOLVED 2026-09-23** (f10d3b0):
+  server-rendered article passed as children; client only mounts widgets. Original notes: The `/blog` index is
   now server-rendered (done). Post metadata, canonical, article OG tags, `BlogPosting` JSON-LD,
   and `notFound()` are all server-rendered too. The remaining gap is the article BODY text —
   it's still client-rendered via `useQuery` + imperative `innerHTML` + `new Function()` script
@@ -122,7 +123,10 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   117/129 lack `args: {}`; (5) blog inline scripts via `new Function` — keep or
   port to React widgets. Enforce the CSP (rename the header) once the console
   stays clean.
-- **2026-09-23 — AI/SEO: blog bodies are the biggest remaining gap.** Crawlers that skip
+- **2026-09-23 — AI/SEO: blog bodies are the biggest remaining gap.** **RESOLVED same day** (f10d3b0): posts now
+  serve 250–2,860 words to non-JS crawlers. Leftover: 2 posts (web-worker, Next.js 14) put an
+  `<h1>` inside their body, giving the page two h1s — change it to `##`/`<h2>` in the admin editor.
+  Crawlers that skip
   JavaScript see ~81 words of a post (title/excerpt only); every other page serves 230–670.
   `/llms-full.txt` now carries full post text as a stopgap, but Google and most AI crawlers
   read the page, not llms.txt. The real fix is the server-rendered article from the
