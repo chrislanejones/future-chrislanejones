@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { marked } from "marked";
+import { renderPostHtml } from "@/lib/blog-content";
 import { BlogStepper } from "@/components/blog/BlogStepper";
 import { STEPPER_CONFIGS } from "@/components/blog/stepper-configs";
 import Header from "@/components/layout/Header";
@@ -24,7 +24,7 @@ import {
   User,
   Mail,
 } from "lucide-react";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Doc } from "../../../../convex/_generated/dataModel";
 
 // Helper function to get badge color variant based on index
 const getBadgeVariant = (index: number) => {
@@ -53,7 +53,18 @@ function getUserIdentifier() {
   return identifier;
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+// The server fetches the post and renders its body (see page.tsx), passing
+// both in. The page paints complete on first load, crawlers get the full
+// text, and the live Convex query takes over once it connects.
+export default function BlogPostPage({
+  params,
+  initialPost,
+  children,
+}: {
+  params: { slug: string };
+  initialPost: Doc<"blogPosts">;
+  children: React.ReactNode;
+}) {
   const [userIdentifier, setUserIdentifier] = useState<string>("");
   const [commentForm, setCommentForm] = useState({
     authorName: "",
@@ -62,10 +73,12 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  const post = useQuery(
+  const livePost = useQuery(
     api.blogPosts.getPostBySlug,
     params.slug ? { slug: params.slug } : "skip"
   );
+  // undefined = still connecting (use the server copy); null = unpublished.
+  const post = livePost === undefined ? initialPost : livePost;
   const userLikeStatus = useQuery(
     api.blogPosts.getUserLikeStatus,
     userIdentifier && post?._id ? { postId: post._id, userIdentifier } : "skip"
@@ -82,62 +95,49 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     setUserIdentifier(getUserIdentifier());
   }, []);
 
-  const renderedContent = useMemo(() => {
-    if (!post?.content) return "";
-    const trimmed = post.content.trim();
-    // If content looks like HTML, pass through; otherwise treat as Markdown
-    const isHtml = /^<[a-z][\s\S]*>/i.test(trimmed);
-    if (isHtml) return trimmed;
-    return marked.parse(trimmed) as string;
-  }, [post?.content]);
+  const postContent = post?.content;
+  const renderedContent = useMemo(() => renderPostHtml(postContent), [postContent]);
 
-  const articleRef = useRef<HTMLElement>(null);
+  const articleRef = useRef<HTMLDivElement>(null);
   const stepperRootsRef = useRef<Root[]>([]);
 
-  // We set article.innerHTML imperatively (instead of dangerouslySetInnerHTML)
-  // so that:
-  //   1) any legacy inline <script> in older posts still runs — the innerHTML
-  //      setter marks script nodes non-executable, so we re-create them
-  //   2) it isn't re-applied on every React re-render (which would wipe
-  //      script-appended DOM when sibling state resolves)
-  // Interactive widgets are now React components (BlogStepper): a post embeds
-  // <div data-stepper="rust-vs-gc"></div> and we mount the shared component
-  // into that marker — one implementation instead of a copy pasted per post.
+  // The article HTML is server-rendered (children), and React never touches
+  // it again. This effect only enhances that DOM:
+  //   1) legacy inline <script>s, which the server copy drops, run here
+  //   2) BlogStepper widgets mount into their <div data-stepper="id"> markers
+  //      (one shared component instead of a copy pasted per post)
   useEffect(() => {
     const article = articleRef.current;
-    if (!article) return;
-    if (!renderedContent) {
-      article.innerHTML = "";
-      return;
-    }
-    article.innerHTML = renderedContent;
+    if (!article || !renderedContent) return;
 
-    const scripts = article.querySelectorAll("script");
-    scripts.forEach((old) => {
+    const tpl = document.createElement("template");
+    tpl.innerHTML = renderedContent;
+    tpl.content.querySelectorAll("script").forEach((old) => {
       if (old.src) {
         const s = document.createElement("script");
         for (const attr of Array.from(old.attributes)) {
           s.setAttribute(attr.name, attr.value);
         }
-        old.parentNode?.replaceChild(s, old);
+        article.appendChild(s);
       } else if (old.textContent) {
         try {
           new Function(old.textContent)();
         } catch (err) {
           console.error("[blog] inline script failed:", err);
         }
-        old.parentNode?.removeChild(old);
       }
     });
 
-    // Mount any BlogStepper widgets referenced by <div data-stepper="id">.
-    const markers =
-      article.querySelectorAll<HTMLElement>("[data-stepper]");
+    const markers = article.querySelectorAll<HTMLElement>("[data-stepper]");
     markers.forEach((el) => {
       const id = el.dataset.stepper;
       const config = id ? STEPPER_CONFIGS[id] : undefined;
       if (!config) return;
-      const root = createRoot(el);
+      // Fresh node per mount, so a re-run (Strict Mode, content edit) never
+      // calls createRoot on a container an old root still owns.
+      const fresh = el.cloneNode(false) as HTMLElement;
+      el.replaceWith(fresh);
+      const root = createRoot(fresh);
       root.render(<BlogStepper config={config} />);
       stepperRootsRef.current.push(root);
     });
@@ -173,7 +173,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     );
   }
 
-  if (!post || !userIdentifier) {
+  if (!post) {
     return (
       <>
         <Header />
@@ -188,7 +188,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   }
 
   const handleLike = async () => {
-    if (!post?._id) return;
+    if (!post?._id || !userIdentifier) return;
     await toggleLike({ postId: post._id, userIdentifier });
   };
 
@@ -272,14 +272,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               </div>
             </div>
 
-            {/* Content — innerHTML + script re-execution handled in effect above.
-                Uses site-themed .blog-content styles instead of Tailwind prose,
-                which was forcing prose-invert via prefers-color-scheme and made
-                headings white on a white background in light mode. */}
-            <article
-              ref={articleRef}
-              className="blog-content max-w-none mb-8"
-            />
+            {/* Content: server-rendered <article> passed in as children. */}
+            <div ref={articleRef}>{children}</div>
 
             {/* Tags */}
             {post.tags && post.tags.length > 0 && (

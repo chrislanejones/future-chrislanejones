@@ -10,6 +10,13 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export const revalidate = 60;
 
+// Prerender every known conference at build time; new ones still render on
+// demand (dynamicParams defaults to true) and then cache via ISR.
+export async function generateStaticParams() {
+  const all = await convex.query(api.conferences.getAll, {});
+  return all.map((c) => ({ year: String(c.year), slug: c.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {
