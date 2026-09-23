@@ -75,3 +75,11 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `eslint-config-next` down with it. Held at TS 6.0.3 so the lint gate stays runnable.
   Retry when typescript-eslint ships TS 7 support (tracking:
   https://github.com/typescript-eslint/typescript-eslint/issues/10940).
+- **2026-09-23 — Older titles still live in SEO metadata (found while swapping the hero title).**
+  The hero and link-page h1 now read "Senior Web Engineer | React, TypeScript & Rust/WebAssembly
+  | AI Automation | Enterprise CMS & WCAG Accessibility", but two spots still carry older
+  titles: the home `<title>` ("Chris Lane Jones | Senior Web Engineer & AI Automation", seeded in
+  `convex/seo.ts:135` and editable in the admin SEO tab) and the Person JSON-LD `jobTitle`
+  ("Full-Stack Web Developer") plus its description in `src/app/page.tsx:35`. Chris to decide
+  whether those should follow the new title; the `<title>` is a length/keyword call, not a paste.
+  Also: the Codeberg repo's website field was not checked (GitHub's was fixed).
