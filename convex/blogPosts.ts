@@ -285,12 +285,21 @@ export const addComment = mutation({
 export const getComments = query({
   args: { postId: v.id("blogPosts") },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const comments = await ctx.db
       .query("blogComments")
       .withIndex("by_post", (q) => q.eq("postId", args.postId))
       .filter((q) => q.eq(q.field("approved"), true))
       .order("asc")
       .collect();
+    // Public query: never return authorEmail, it's for the admin only.
+    return comments.map((c) => ({
+      _id: c._id,
+      postId: c.postId,
+      parentId: c.parentId,
+      authorName: c.authorName,
+      content: c.content,
+      createdAt: c.createdAt,
+    }));
   },
 });
 
