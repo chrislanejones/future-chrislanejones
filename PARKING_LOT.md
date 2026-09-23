@@ -89,7 +89,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   hand-rolled with native `onDragStart`/`onDragOver`/`onDrop`. `three` is
   still unused too, confirming the 2026-07-08 finding survived the Sept 2026
   dependency bump. All three are dead weight in `package.json`; remove or
-  wire up.
+  wire up. **RESOLVED 2026-09-23** — removed in 228d27a.
 - **2026-09-23 — Admin-showcase screenshots are dead-wired.**
   `AdminShowcasePage.tsx`'s `sections[].image` paths (e.g.
   `/admin-showcase/dashboard.webp`) are defined but never rendered — the
@@ -99,10 +99,23 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - **2026-09-23 — `/site-map` gaps found during the README audit.** The
   Sitemap card's link list omits `/blog` and `/admin-showcase`; its
   "Changelog" card is a permanent "Coming Soon" placeholder with no data
-  behind it; its BlueSky link (`bsky.app/profile/chrislanejones.com`) 404s.
+  behind it; ~~its BlueSky link 404s~~ — false alarm: the link works in a
+  browser and the handle resolves (the audit's curl sent no user agent).
   Fixed in the same pass: the card's "Next.js 14" copy (now 16) and a
   `/logo` link that should have been `/logo-page`.
 - **2026-09-23 — Codeberg repo metadata still unchecked.** Tried to verify
   the Codeberg mirror's description/website field for this audit;
   codeberg.org was unreachable from this sandbox (curl and WebFetch both
   timed out). Still needs a manual check — see the 2026-09-23 entry above.
+  **Checked later 2026-09-23 via API:** description is stale ("Next.js 14…
+  Effect") and website is blank. Needs a Codeberg login to edit (Chris).
+- **2026-09-23 — Security audit follow-ups (Vera).** Fixed same day: public
+  `getComments` leaked commenter emails (a5aa3bd, **Convex deploy pending**);
+  security headers + report-only CSP (8060d99). Still open, all Low: (1) no
+  rate limit/captcha on `toggleLike`, `addComment`, `contactMessages.create`;
+  (2) `src/middleware.ts:53` lets any signed-in Clerk user load the `/admin`
+  shell (data stays owner-gated); (3) JSON-LD in `blog/[slug]/page.tsx:98` and
+  `ConferenceDetailPage.tsx:39` doesn't escape `<`; (4) `convex/seo.ts` 97/106/
+  117/129 lack `args: {}`; (5) blog inline scripts via `new Function` — keep or
+  port to React widgets. Enforce the CSP (rename the header) once the console
+  stays clean.
