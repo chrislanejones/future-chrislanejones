@@ -132,9 +132,9 @@ export const seedSEOData = mutation({
     const pages = [
       {
         path: "/",
-        title: "Chris Lane Jones | Senior Web Engineer & AI Automation",
+        title: "Chris Lane Jones | Senior Web Engineer, React & Rust/WASM",
         description:
-          "Senior web engineer based in Jacksonville, FL specializing in React, Next.js, and AI-powered applications. Building modern web experiences for businesses and government agencies.",
+          "Senior web engineer in Jacksonville, FL. React, TypeScript, Rust/WebAssembly, AI automation, enterprise CMS and WCAG accessibility for business and government.",
         canonicalUrl: "https://www.chrislanejones.com",
       },
       {
@@ -160,7 +160,7 @@ export const seedSEOData = mutation({
       },
       {
         path: "/career-and-resume",
-        title: "Career & Resume | Chris Lane Jones Web Developer",
+        title: "Career & Resume | Chris Lane Jones, Senior Web Engineer",
         description:
           "Following the trail from video production to senior web engineer — navigating React frameworks, open-source communities, and a decade of client work along the way.",
         canonicalUrl: "https://www.chrislanejones.com/career-and-resume",

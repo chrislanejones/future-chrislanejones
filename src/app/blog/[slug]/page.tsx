@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import BlogPostPage from "./BlogPostPage";
+import { jsonLd as toJsonLd } from "@/lib/structured-data";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 const SITE_URL = "https://www.chrislanejones.com";
@@ -95,7 +96,7 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: toJsonLd(jsonLd) }}
       />
       {/* NB: the article body is still client-rendered (useQuery) for now — the
           post's interactive widgets rely on imperative innerHTML + script

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
+import { PERSON } from "./structured-data";
 
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL!;
 const convex = new ConvexHttpClient(convexUrl);
@@ -9,6 +10,13 @@ const convex = new ConvexHttpClient(convexUrl);
 // replaces the layout's, so every page must carry its own images or social
 // cards render blank. Relative URLs resolve against metadataBase (layout.tsx).
 const DEFAULT_OG_IMAGE = "/Professional-Photo-of-Chris-Lane-Jones.webp";
+
+// The layout appends "| Chris Lane Jones" to every page title. Titles that
+// already name Chris opt out, so they don't read "Chris Lane Jones | … |
+// Chris Lane Jones".
+function pageTitle(title: string): Metadata["title"] {
+  return title.includes(PERSON.name) ? { absolute: title } : title;
+}
 
 function ogImages(url: string, alt: string) {
   return [{ url, width: 1200, height: 630, alt }];
@@ -23,7 +31,7 @@ export async function getPageSEO(path: string): Promise<Metadata> {
       const canonical = data.canonicalUrl || (defaults.alternates?.canonical as string | undefined) || `https://www.chrislanejones.com${path}`;
       const images = ogImages(data.ogImage || DEFAULT_OG_IMAGE, data.title);
       return {
-        title: data.title,
+        title: pageTitle(data.title),
         description: data.description,
         alternates: { canonical },
         openGraph: {
@@ -54,9 +62,8 @@ export async function getPageSEO(path: string): Promise<Metadata> {
 function getDefaultSEO(path: string): Metadata {
   const defaults: Record<string, Metadata> = {
     "/": {
-      title: "Chris Lane Jones | React & WordPress Developer in Florida",
-      description:
-        "Full-stack developer specializing in Next.js, React, and WordPress. Building modern web applications for businesses and government agencies from Jacksonville, Florida.",
+      title: "Chris Lane Jones | Senior Web Engineer, React & Rust/WASM",
+      description: PERSON.description,
       alternates: { canonical: "https://www.chrislanejones.com" }, // Corrected for defaults
     },
     "/about": {
@@ -84,7 +91,7 @@ function getDefaultSEO(path: string): Metadata {
       alternates: { canonical: "https://www.chrislanejones.com/projects" }, // Corrected for defaults
     },
     "/career-and-resume": {
-      title: "Career & Experience | Chris Lane Jones Web Developer",
+      title: "Career & Resume | Chris Lane Jones, Senior Web Engineer",
       description:
         "10+ years from video editor to senior developer. Experience with React, Next.js, WordPress, and building solutions for Fortune 500 companies and government agencies.",
       alternates: { canonical: "https://www.chrislanejones.com/career-and-resume" },
@@ -162,6 +169,7 @@ function getDefaultSEO(path: string): Metadata {
   const images = ogImages(DEFAULT_OG_IMAGE, title);
   return {
     ...entry,
+    title: pageTitle(title),
     openGraph: {
       title,
       description,

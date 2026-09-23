@@ -20,6 +20,7 @@ export async function generateMetadata({
   const count = yearConfs.length;
   return {
     title: `Conferences ${year}`,
+    alternates: { canonical: `https://www.chrislanejones.com/conferences/${year}` },
     description: `${count} conference${count !== 1 ? "s" : ""} attended in ${year}${count > 0 ? ` — ${yearConfs.map((c) => c.name).join(", ")}` : ""}`,
   };
 }
