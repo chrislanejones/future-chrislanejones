@@ -50,10 +50,14 @@ export default function HeroContent() {
       {/* Content */}
       <div className="flex flex-col h-full">
         <div className="flex flex-col gap-4">
-          <h1 className="h1 tracking-tight text-ink">
-            Senior Web Engineer | AI Automation & CMS Architect
+          <h1
+            className="h1 tracking-tight text-ink"
+            style={{ fontSize: "var(--step-3)" }}
+          >
+            Senior Web Engineer | React, TypeScript & Rust/WebAssembly | AI
+            Automation | Enterprise CMS & WCAG Accessibility
           </h1>
-          <h2 className="h2 text-ink">
+          <h2 className="h2 text-ink" style={{ fontSize: "var(--step-1)" }}>
             I Consult, Design, and Develop Web Interfaces for Businesses and
             Government Agencies.
           </h2>

@@ -66,10 +66,11 @@ export default function LinkGrid() {
               className="h-30 w-30 rounded-2xl ring-2 ring-white/5 object-cover"
               src="/Professional-Photo-of-Chris-Lane-Jones.webp"
             />
-            <h1 className="text-center">
-              Senior Web Engineer | AI Automation & CMS Architect
+            <h1 className="text-center" style={{ fontSize: "var(--step-3)" }}>
+              Senior Web Engineer | React, TypeScript & Rust/WebAssembly | AI
+              Automation | Enterprise CMS & WCAG Accessibility
             </h1>
-            <h2 className="text-center">
+            <h2 className="text-center" style={{ fontSize: "var(--step-1)" }}>
               I Consult, Design, and Develop Web Interfaces for Businesses and
               Government Agencies.
             </h2>
