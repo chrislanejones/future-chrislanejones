@@ -82,6 +82,9 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `convex/seo.ts:135` and editable in the admin SEO tab) and the Person JSON-LD `jobTitle`
   ("Full-Stack Web Developer") plus its description in `src/app/page.tsx:35`. Chris to decide
   whether those should follow the new title; the `<title>` is a length/keyword call, not a paste.
+  **MOSTLY RESOLVED 2026-09-23** (39767c6): jobTitle, JSON-LD, layout, fallbacks and SEO seed
+  updated. Live `/` and `/career-and-resume` titles come from Convex rows — edit them in the
+  admin SEO tab (Chris) to finish.
   Also: the Codeberg repo's website field was not checked (GitHub's was fixed).
 - **2026-09-23 — Three unused dependencies found during the README audit.**
   `react-dnd`/`react-dnd-html5-backend` (package.json) are never imported —
@@ -119,3 +122,8 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   117/129 lack `args: {}`; (5) blog inline scripts via `new Function` — keep or
   port to React widgets. Enforce the CSP (rename the header) once the console
   stays clean.
+- **2026-09-23 — AI/SEO: blog bodies are the biggest remaining gap.** Crawlers that skip
+  JavaScript see ~81 words of a post (title/excerpt only); every other page serves 230–670.
+  `/llms-full.txt` now carries full post text as a stopgap, but Google and most AI crawlers
+  read the page, not llms.txt. The real fix is the server-rendered article from the
+  2026-07-08 "Blog body not in SSR" entry above.
