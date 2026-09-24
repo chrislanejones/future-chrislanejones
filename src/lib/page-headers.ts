@@ -40,7 +40,7 @@ export const staticPageHeaders: Record<
     title: "About the Logo",
     breadcrumbPage: "Logo",
     description:
-      "The mountain in my logo represents more than just a visual element—it's a symbol of the journey. Each peak conquered in code, each valley navigated through debugging, mirrors the trails I hike in the Shenandoah Mountains.",
+      "The mountain in my logo represents more than just a visual element—it's a symbol of the journey. Each peak conquered in code, each valley navigated through debugging, mirrors the Shenandoah trails I hiked for eight years in Virginia.",
   },
   "/projects": {
     title: "Projects",

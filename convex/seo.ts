@@ -197,7 +197,7 @@ export const seedSEOData = mutation({
         path: "/logo-page",
         title: "About the Logo: A Mountain for Code",
         description:
-          "The mountain in my logo represents more than a visual — it mirrors the trails I hike in the Shenandoah and the peaks conquered in code. The story behind the design.",
+          "The mountain in my logo represents more than a visual — it came from the Shenandoah trails I hiked for eight years, and from the peaks you climb in code. The story behind the design.",
         canonicalUrl: "https://www.chrislanejones.com/logo-page",
       },
       {
