@@ -389,7 +389,7 @@ const ClientsTabEnhanced = () => {
                   disabled={!isEditing}
                   placeholder={formData.name ? `${formData.name} logo` : "Company Name logo"}
                 />
-                <p className="text-xs text-muted">Auto-generated from company name. Edit to customise.</p>
+                <p className="text-xs text-muted">Auto-generated from company name. Edit to customize.</p>
               </div>
 
               <div className="space-y-2">

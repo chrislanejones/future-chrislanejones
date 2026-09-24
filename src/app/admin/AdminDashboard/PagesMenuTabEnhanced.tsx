@@ -6,6 +6,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { GripVertical, Trash2, Plus, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getPageName } from "../components/page-name";
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 
@@ -56,13 +57,6 @@ type DragPayload =
 
 /* ─── Helpers ────────────────────────────────────────────────────────────── */
 
-const getPageName = (path: string): string => {
-  if (path === "/") return "Home";
-  return path
-    .replace(/^\//, "")
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-};
 
 /* ─── DraggablePageItem ──────────────────────────────────────────────────── */
 

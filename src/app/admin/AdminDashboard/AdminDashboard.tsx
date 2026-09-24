@@ -25,7 +25,6 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
@@ -130,15 +129,6 @@ const AdminSidebarContent = ({
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="flex flex-col gap-2 mt-auto p-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <div className={`flex ${isCollapsed ? "justify-center" : "px-2"}`}>
-              1
-            </div>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 };
