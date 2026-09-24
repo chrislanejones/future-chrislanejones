@@ -19,6 +19,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
+import { getPageName } from "../components/page-name";
 
 // Derived from the Convex schema (SSOT) instead of hand-rolled shapes.
 type SEOEntry = Doc<"seoMetadata">;
@@ -40,6 +41,7 @@ export const SeoTabEnhanced = () => {
   const updateSEO = useMutation(api.seo.updateSEO);
   const updatePageHeader = useMutation(api.pageHeaders.updatePageHeader);
   const deleteSEO = useMutation(api.seo.deleteSEO);
+  const deletePageHeader = useMutation(api.pageHeaders.deletePageHeader);
   const cleanupStale = useMutation(api.seo.cleanupStaleSEOPublic);
 
   const [selectedPage, setSelectedPage] = useState<PageEntry | null>(null);
@@ -215,11 +217,16 @@ export const SeoTabEnhanced = () => {
     }
   };
 
+  // Removes both halves of a page entry: the SEO row and the banner header
+  // row. Header-only rows (e.g. /career after it redirected) had no delete.
   const handleDelete = async () => {
-    if (!selectedPage?.seoEntry) return;
+    if (!selectedPage || !canDelete) return;
     setIsDeleting(true);
     try {
-      await deleteSEO({ path: selectedPage.path });
+      if (selectedPage.seoEntry) await deleteSEO({ path: selectedPage.path });
+      if (selectedPage.headerEntry) {
+        await deletePageHeader({ id: selectedPage.headerEntry._id });
+      }
       setConfirmDelete(false);
       setSelectedPage(null);
       setSaveStatus(null);
@@ -300,14 +307,12 @@ export const SeoTabEnhanced = () => {
     return "bg-red-500";
   };
 
-  const getPageName = (path: string): string => {
-    if (path === "/") return "Home";
-    const name = path
-      .replace(/^\//, "")
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-    return name;
-  };
+  // /fallback is the default banner for unknown paths (src/lib/page-headers.ts).
+  const canDelete =
+    !!selectedPage &&
+    selectedPage.path !== "/fallback" &&
+    !!(selectedPage.seoEntry || selectedPage.headerEntry);
+
 
   return (
     <div className="grid grid-cols-3 gap-6 h-full">
@@ -457,7 +462,7 @@ export const SeoTabEnhanced = () => {
                 </div>
 
                 {/* Delete SEO record for this page */}
-                {selectedPage.seoEntry && (
+                {canDelete && (
                   confirmDelete ? (
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-red-500">Delete this entry?</span>

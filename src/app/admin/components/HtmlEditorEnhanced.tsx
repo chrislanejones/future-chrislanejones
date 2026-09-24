@@ -1,6 +1,6 @@
 // src/app/admin/components/HtmlEditorEnhanced.tsx
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Bold,
   Italic,
@@ -28,7 +28,19 @@ export const HtmlEditorEnhanced: React.FC<HtmlEditorProps> = ({
   onImageClick,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
-  const [isHtml, setIsHtml] = useState(false);
+  // Markdown posts open in source view: the visual editor would wrap every
+  // keystroke in <div>/<br> and quietly turn the Markdown into broken HTML.
+  const [isHtml, setIsHtml] = useState(
+    () => value.trim() !== "" && !/^<[a-z]/i.test(value.trim()),
+  );
+
+  // Load the post into the visual editor. Without this it opened EMPTY, and
+  // the first keystroke saved only what was typed, wiping the post. Skipped
+  // when the DOM already matches, so typing never resets the caret.
+  useLayoutEffect(() => {
+    const el = editorRef.current;
+    if (!isHtml && el && el.innerHTML !== value) el.innerHTML = value;
+  }, [value, isHtml]);
 
   const execCommand = (command: string, value?: string) => {
     document.execCommand(command, false, value);
@@ -49,12 +61,7 @@ export const HtmlEditorEnhanced: React.FC<HtmlEditorProps> = ({
     }
   };
 
-  const toggleHTMLView = () => {
-    if (isHtml && editorRef.current) {
-      editorRef.current.innerHTML = value;
-    }
-    setIsHtml(!isHtml);
-  };
+  const toggleHTMLView = () => setIsHtml(!isHtml);
 
   return (
     <div className="border border-border rounded-lg overflow-hidden bg-panel">
