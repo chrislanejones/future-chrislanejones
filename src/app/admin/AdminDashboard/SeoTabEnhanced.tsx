@@ -255,39 +255,35 @@ export const SeoTabEnhanced = () => {
     setIsEditing(true);
   };
 
+  // What Google actually shows: the layout appends " | Chris Lane Jones" to
+  // every title except home and titles that already name Chris (see
+  // pageTitle in src/lib/seo.ts). Count and preview that, not the raw field.
+  const renderedTitle =
+    !formData.title ||
+    formData.path === "/" ||
+    formData.title.includes("Chris Lane Jones")
+      ? formData.title
+      : `${formData.title} | Chris Lane Jones`;
+
+  const previewUrl = (() => {
+    const c = formData.canonicalUrl;
+    if (c.startsWith("http")) return c;
+    return `https://www.chrislanejones.com${c || formData.path}`;
+  })();
+
   const calculateSEOScore = () => {
     let score = 0;
-    if (formData.title.length >= 30 && formData.title.length <= 60) {
-      score += 25;
-    } else if (formData.title.length >= 50 && formData.title.length <= 60) {
-      score += 25;
-    } else if (formData.title.length > 0) {
-      score += 10;
-    }
+    const t = renderedTitle.length;
+    if (t >= 30 && t <= 60) score += 25;
+    else if (t > 0) score += 10;
 
-    if (
-      formData.description.length >= 120 &&
-      formData.description.length <= 160
-    ) {
-      score += 25;
-    } else if (
-      formData.description.length >= 150 &&
-      formData.description.length <= 160
-    ) {
-      score += 25;
-    } else if (formData.description.length > 0) {
-      score += 10;
-    }
+    const d = formData.description.length;
+    if (d >= 120 && d <= 160) score += 25;
+    else if (d > 0) score += 10;
 
-    if (formData.canonicalUrl) {
-      score += 25;
-    }
-
-    if (formData.ogImage) {
-      score += 25;
-    }
-
-    return Math.min(score, 100);
+    if (formData.canonicalUrl) score += 25;
+    if (formData.ogImage) score += 25;
+    return score;
   };
 
   const seoScore = calculateSEOScore();
@@ -536,7 +532,7 @@ export const SeoTabEnhanced = () => {
                 <label className="block mb-2 text-ink font-medium">
                   Page Title
                   <span className="ml-2 text-sm text-muted">
-                    ({formData.title.length}/60 chars)
+                    ({renderedTitle.length}/60 chars with site name)
                   </span>
                 </label>
                 <input
@@ -549,7 +545,7 @@ export const SeoTabEnhanced = () => {
                   className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none"
                   placeholder="Enter page title..."
                 />
-                {formData.title.length > 60 && (
+                {renderedTitle.length > 60 && (
                   <p className="mt-1 text-sm text-yellow-500">
                     Title may be truncated in search results
                   </p>
@@ -639,11 +635,10 @@ export const SeoTabEnhanced = () => {
                 </h3>
                 <div className="p-4 bg-white dark:bg-gray-900 rounded-lg">
                   <p className="text-blue-600 dark:text-blue-400 text-lg hover:underline cursor-pointer font-medium">
-                    {formData.title || "Page Title"}
+                    {renderedTitle || "Page Title"}
                   </p>
                   <p className="text-green-700 dark:text-green-400 text-sm">
-                    {formData.canonicalUrl ||
-                      `https://chrislanejones.com${formData.path}`}
+                    {previewUrl}
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
                     {formData.description ||
