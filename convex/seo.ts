@@ -141,19 +141,19 @@ export const seedSEOData = mutation({
         path: "/about",
         title: "About Chris Lane Jones | Developer, Hiker & Community Leader",
         description:
-          "Life on the trails and the web — from video production to full-stack development, leading the Richmond WordPress meetup, and building apps from Jacksonville, Florida.",
+          "Life on the trails and the web: from video production to full-stack development, leading the Richmond WordPress meetup, and building apps in Jacksonville, FL.",
         canonicalUrl: "https://www.chrislanejones.com/about",
       },
       {
         path: "/blog",
-        title: "Blog | Web Development, React & WordPress Insights",
+        title: "Blog: React, Rust & Web Engineering",
         description:
           "Thoughts on web development, React, Next.js, WordPress, and building things on the internet. Tips and lessons learned from real client work.",
         canonicalUrl: "https://www.chrislanejones.com/blog",
       },
       {
         path: "/projects",
-        title: "Projects | Full-Stack Apps, Tools & Client Websites",
+        title: "Projects: Apps, Tools & Client Websites",
         description:
           "A collection of full-stack applications, tools, and client sites built with React, Next.js, TypeScript, and WordPress. Focus on performance and user experience.",
         canonicalUrl: "https://www.chrislanejones.com/projects",
@@ -162,19 +162,19 @@ export const seedSEOData = mutation({
         path: "/career-and-resume",
         title: "Career & Resume | Chris Lane Jones, Senior Web Engineer",
         description:
-          "Following the trail from video production to senior web engineer — navigating React frameworks, open-source communities, and a decade of client work along the way.",
+          "Following the trail from video production to senior web engineer: React frameworks, open-source communities, and a decade of client work.",
         canonicalUrl: "https://www.chrislanejones.com/career-and-resume",
       },
       {
         path: "/browser-tabs",
-        title: "Chrome Tabs I Left Open | Curated Dev Resources & Tools",
+        title: "Chrome Tabs I Left Open: Dev Resources",
         description:
           "A curated collection of useful resources, tools, and inspiration I keep coming back to — React libraries, design systems, icon sets, and learning materials.",
         canonicalUrl: "https://www.chrislanejones.com/browser-tabs",
       },
       {
         path: "/conferences",
-        title: "Conferences | All Things Open, WordCamp, RenderATL & More",
+        title: "Conference Notes: All Things Open & More",
         description:
           "Highlights and notes from web and open-source conferences I've attended — All Things Open, WordCamp US, THAT Conference, RenderATL, and RVAJS.",
         canonicalUrl: "https://www.chrislanejones.com/conferences",
@@ -183,56 +183,56 @@ export const seedSEOData = mutation({
         path: "/contact",
         title: "Contact Chris Lane Jones | Web Development Services",
         description:
-          "Get in touch about web development projects, WordPress maintenance, React consulting, or speaking at a meetup. Based in Jacksonville, FL, available for remote work.",
+          "Get in touch about web projects, WordPress maintenance, React consulting, or speaking at a meetup. Based in Jacksonville, FL, and available for remote work.",
         canonicalUrl: "https://www.chrislanejones.com/contact",
       },
       {
         path: "/link-page",
         title: "Links | Find Chris Lane Jones Online",
         description:
-          "GitHub, LinkedIn, Twitter/X, CodePen, and more — all my links in one place. Find my portfolio, blog, and web development services.",
+          "GitHub, Codeberg, LinkedIn, X, Bluesky, and more: all my links in one place, plus my portfolio, blog, and web development services.",
         canonicalUrl: "https://www.chrislanejones.com/link-page",
       },
       {
         path: "/logo-page",
-        title: "About the Logo | Mountain as Metaphor for Code & Trails",
+        title: "About the Logo: A Mountain for Code",
         description:
           "The mountain in my logo represents more than a visual — it mirrors the trails I hike in the Shenandoah and the peaks conquered in code. The story behind the design.",
         canonicalUrl: "https://www.chrislanejones.com/logo-page",
       },
       {
         path: "/site-history",
-        title: "Site History | From WordPress 2.1 to Next.js",
+        title: "Site History: WordPress 2.1 to Next.js",
         description:
-          "The evolution of chrislanejones.com through various technologies and design iterations — from the Kubrick WordPress theme in 2007 to a modern Next.js and React application.",
+          "How chrislanejones.com changed over the years, from the Kubrick WordPress theme in 2007 to the Next.js and React app it is today.",
         canonicalUrl: "https://www.chrislanejones.com/site-history",
       },
       {
         path: "/site-map",
-        title: "Site Map & Changelog | chrislanejones.com",
+        title: "Site Map & Changelog",
         description:
           "Explore all available pages on chrislanejones.com and track site updates, new features, and content additions over time.",
         canonicalUrl: "https://www.chrislanejones.com/site-map",
       },
       {
         path: "/wordpress-maintenance",
-        title: "WordPress Maintenance Services | Monthly Action Plan",
+        title: "WordPress Maintenance, Monthly Plan",
         description:
-          "Three hours of site changes monthly — copy edits, plugin updates, security scans, performance optimization, and US-based technical support. Keep your WordPress site healthy.",
+          "Three hours of site changes a month: copy edits, plugin updates, security scans, performance tuning, and US-based support for your WordPress site.",
         canonicalUrl: "https://www.chrislanejones.com/wordpress-maintenance",
       },
       {
         path: "/react-maintenance",
-        title: "React App Maintenance | Monthly Support & Optimization",
+        title: "React App Maintenance, Monthly Plan",
         description:
-          "Three hours of React app changes monthly — component updates, dependency management, security audits, performance reviews, and US-based consulting for Next.js applications.",
+          "Three hours of React app changes a month: component updates, dependency management, security audits, and performance reviews for Next.js apps.",
         canonicalUrl: "https://www.chrislanejones.com/react-maintenance",
       },
       {
         path: "/admin-showcase",
-        title: "Admin Showcase | A Tour of the Portfolio CMS",
+        title: "Admin Showcase: The Portfolio CMS",
         description:
-          "A look at the custom admin dashboard powering chrislanejones.com — pages, navigation, blog posts, media, redirects, and live data reseeding built on Next.js and Convex.",
+          "A tour of the custom admin behind chrislanejones.com: pages, navigation, blog posts, media, redirects, and data reseeding on Next.js and Convex.",
         canonicalUrl: "https://www.chrislanejones.com/admin-showcase",
       },
     ];
