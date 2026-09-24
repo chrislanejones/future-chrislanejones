@@ -239,7 +239,7 @@ export default function WireframeTerrain({
 
     const canvas = canvasRef.current;
     if (canvas) {
-      canvas.addEventListener("mousemove", handleMouseMove as any);
+      canvas.addEventListener("mousemove", handleMouseMove);
       canvas.addEventListener("mouseleave", handleMouseLeave);
     }
 
@@ -247,7 +247,7 @@ export default function WireframeTerrain({
       ro.disconnect();
       mo.disconnect();
       if (canvas) {
-        canvas.removeEventListener("mousemove", handleMouseMove as any);
+        canvas.removeEventListener("mousemove", handleMouseMove);
         canvas.removeEventListener("mouseleave", handleMouseLeave);
       }
     };

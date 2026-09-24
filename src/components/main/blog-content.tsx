@@ -1,24 +1,26 @@
 // src/components/main/blog-content.tsx
 "use client";
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import Link from "next/link";
 import { Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// Pure: the caller supplies `now`, so this never reads the clock during render.
+function daysAgoLabel(timestamp: number, now: number): string {
+  const diffInDays = Math.floor((now - timestamp) / (1000 * 60 * 60 * 24));
+  if (diffInDays === 0) return "today";
+  if (diffInDays === 1) return "1 day ago";
+  return `${diffInDays} days ago`;
+}
+
 export default function BlogContent() {
+  // Captured once per mount so the labels stay stable across re-renders.
+  const [now] = useState(() => Date.now());
   const posts = useQuery(api.blogPosts.getAllPosts);
   const sortedPosts = [...(posts || [])].sort((a, b) => b.createdAt - a.createdAt);
   const recentPosts = sortedPosts.slice(0, 2);
-
-  const getDaysAgo = (timestamp: number): string => {
-    const now = Date.now();
-    const diffInMs = now - timestamp;
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-    if (diffInDays === 0) return "today";
-    if (diffInDays === 1) return "1 day ago";
-    return `${diffInDays} days ago`;
-  };
 
   return (
     <div className="flex flex-col h-full">
@@ -36,7 +38,7 @@ export default function BlogContent() {
                 </h4>
               </div>
               <p className="text-muted mt-2 text-sm">
-                created {getDaysAgo(post.createdAt)}
+                created {daysAgoLabel(post.createdAt, now)}
               </p>
             </Link>
           ))}

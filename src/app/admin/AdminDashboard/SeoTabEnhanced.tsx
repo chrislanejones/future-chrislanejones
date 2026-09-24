@@ -47,7 +47,9 @@ export const SeoTabEnhanced = () => {
   const [selectedPage, setSelectedPage] = useState<PageEntry | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
+    null,
+  );
   const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -99,65 +101,66 @@ export const SeoTabEnhanced = () => {
     return Array.from(pageMap.values());
   }, [seoEntries, pageHeaders]);
 
-  // Auto-select homepage (/) first, or first entry if no homepage
-  useEffect(() => {
-    if (mergedPages.length > 0 && !selectedPage) {
-      const homePage = mergedPages.find((entry) => entry.path === "/");
-      const firstEntry = homePage || mergedPages[0];
-      setSelectedPage(firstEntry);
-    }
-  }, [mergedPages, selectedPage]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (mergedPages.length > 0 && !selectedPage) {
+    const homePage = mergedPages.find((entry) => entry.path === "/");
+    setSelectedPage(homePage || mergedPages[0]);
+  }
 
   // Sync selectedPage with latest Convex data
-  useEffect(() => {
-    if (selectedPage && mergedPages.length > 0) {
-      const updatedPage = mergedPages.find((p) => p.path === selectedPage.path);
-      if (updatedPage) {
-        // Update selectedPage reference if data changed
-        setSelectedPage(updatedPage);
-      }
+  // Keep the selection pointing at the freshest Convex data. mergedPages is
+  // memoised on the query results, so this settles after one pass.
+  if (selectedPage) {
+    const updatedPage = mergedPages.find((p) => p.path === selectedPage.path);
+    if (updatedPage && updatedPage !== selectedPage) {
+      setSelectedPage(updatedPage);
     }
-  }, [mergedPages]);
+  }
 
-  useEffect(() => {
-    if (selectedPage) {
-      // Load SEO data
-      if (selectedPage.seoEntry) {
-        setFormData({
-          path: selectedPage.path,
-          title: selectedPage.seoEntry.title,
-          description: selectedPage.seoEntry.description,
-          canonicalUrl: selectedPage.seoEntry.canonicalUrl || "",
-          ogImage: selectedPage.seoEntry.ogImage || "",
-        });
-      } else {
-        setFormData({
-          path: selectedPage.path,
-          title: "",
-          description: "",
-          canonicalUrl: "",
-          ogImage: "",
-        });
-      }
-
-      // Load page header data from Convex
-      if (selectedPage.headerEntry) {
-        setHeaderFormData({
-          title: selectedPage.headerEntry.title,
-          breadcrumbPage: selectedPage.headerEntry.breadcrumbPage,
-          description: selectedPage.headerEntry.description,
-        });
-      } else {
-        setHeaderFormData({
-          title: "",
-          breadcrumbPage: "",
-          description: "",
-        });
-      }
-
-      setIsEditing(false);
+  // Reload the editors only when a DIFFERENT page is picked. The old effect
+  // depended on the selectedPage object, so every Convex refresh re-ran it and
+  // could overwrite whatever the admin was mid-way through typing.
+  const [loadedPath, setLoadedPath] = useState<string | null>(null);
+  if (selectedPage && selectedPage.path !== loadedPath) {
+    setLoadedPath(selectedPage.path);
+    // Load SEO data
+    if (selectedPage.seoEntry) {
+      setFormData({
+        path: selectedPage.path,
+        title: selectedPage.seoEntry.title,
+        description: selectedPage.seoEntry.description,
+        canonicalUrl: selectedPage.seoEntry.canonicalUrl || "",
+        ogImage: selectedPage.seoEntry.ogImage || "",
+      });
+    } else {
+      setFormData({
+        path: selectedPage.path,
+        title: "",
+        description: "",
+        canonicalUrl: "",
+        ogImage: "",
+      });
     }
-  }, [selectedPage]);
+
+    // Load page header data from Convex
+    if (selectedPage.headerEntry) {
+      setHeaderFormData({
+        title: selectedPage.headerEntry.title,
+        breadcrumbPage: selectedPage.headerEntry.breadcrumbPage,
+        description: selectedPage.headerEntry.description,
+      });
+    } else {
+      setHeaderFormData({
+        title: "",
+        breadcrumbPage: "",
+        description: "",
+      });
+    }
+
+    setIsEditing(false);
+  }
 
   const filteredPages = mergedPages.filter(
     (entry) =>
@@ -242,7 +245,10 @@ export const SeoTabEnhanced = () => {
     setIsCleaningUp(true);
     try {
       await cleanupStale();
-      if (selectedPage && stalePaths.some((s) => s.path === selectedPage.path)) {
+      if (
+        selectedPage &&
+        stalePaths.some((s) => s.path === selectedPage.path)
+      ) {
         setSelectedPage(null);
       }
     } catch (error) {
@@ -322,9 +328,14 @@ export const SeoTabEnhanced = () => {
           <div className="flex items-center gap-2 text-yellow-500">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <span>
-              <span className="font-semibold">{stalePaths.length} stale SEO {stalePaths.length === 1 ? "entry" : "entries"}</span>
-              {" "}found for unknown {stalePaths.length === 1 ? "path" : "paths"}:{" "}
-              <span className="font-mono">{stalePaths.map((s) => s.path).join(", ")}</span>
+              <span className="font-semibold">
+                {stalePaths.length} stale SEO{" "}
+                {stalePaths.length === 1 ? "entry" : "entries"}
+              </span>{" "}
+              found for unknown {stalePaths.length === 1 ? "path" : "paths"}:{" "}
+              <span className="font-mono">
+                {stalePaths.map((s) => s.path).join(", ")}
+              </span>
             </span>
           </div>
           <Button
@@ -462,10 +473,12 @@ export const SeoTabEnhanced = () => {
                 </div>
 
                 {/* Delete SEO record for this page */}
-                {canDelete && (
-                  confirmDelete ? (
+                {canDelete &&
+                  (confirmDelete ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-red-500">Delete this entry?</span>
+                      <span className="text-xs text-red-500">
+                        Delete this entry?
+                      </span>
                       <Button
                         onClick={handleDelete}
                         disabled={isDeleting}
@@ -494,8 +507,7 @@ export const SeoTabEnhanced = () => {
                       <Trash2 className="w-4 h-4" />
                       Delete
                     </Button>
-                  )
-                )}
+                  ))}
 
                 {/* Save Button */}
                 <Button

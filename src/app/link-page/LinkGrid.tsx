@@ -84,10 +84,10 @@ export default function LinkGrid() {
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="base" className="justify-center" asChild>
-              <a href="/">
+              <Link href="/">
                 <FaHome className="w-4 h-4 mr-2" />
                 Home
-              </a>
+              </Link>
             </Button>
 
             <Button
@@ -240,10 +240,10 @@ export default function LinkGrid() {
               className="justify-center"
               asChild
             >
-              <a href="/react-maintenance">
+              <Link href="/react-maintenance">
                 <FaAtom className="w-4 h-4 mr-2" />
                 React Services
-              </a>
+              </Link>
             </Button>
 
             <Button
@@ -252,10 +252,10 @@ export default function LinkGrid() {
               className="justify-center"
               asChild
             >
-              <a href="/wordpress-maintenance">
+              <Link href="/wordpress-maintenance">
                 <FaWordpress className="w-4 h-4 mr-2" />
                 WordPress Services
-              </a>
+              </Link>
             </Button>
           </div>
         </Card>
@@ -300,7 +300,7 @@ export default function LinkGrid() {
               <div className="text-center py-8 text-muted">
                 <p className="text-sm">No featured links yet.</p>
                 <p className="text-xs mt-2">
-                  Mark links as "Featured" in the admin panel to display them
+                  Mark links as “Featured” in the admin panel to display them
                   here.
                 </p>
               </div>
@@ -309,10 +309,10 @@ export default function LinkGrid() {
             {/* Link to full browser tabs page */}
             <div className="mt-6 pt-4 border-t border-border">
               <Button variant="base" className="w-full justify-center" asChild>
-                <a href="/browser-tabs">
+                <Link href="/browser-tabs">
                   <FaChrome className="w-4 h-4 mr-2" />
                   View All Browser Tabs
-                </a>
+                </Link>
               </Button>
             </div>
           </div>

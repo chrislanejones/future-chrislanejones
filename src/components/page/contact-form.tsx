@@ -83,13 +83,15 @@ const ContactForm: React.FC<ContactFormProps> = ({
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    // Update the message in formData whenever initialMessage changes (e.g., plan selection changes)
-    setFormData((prev) => ({
-      ...prev,
-      message: initialMessage,
-    }));
-  }, [initialMessage]); // Depend on initialMessage to trigger update
+  // Reset the message when the caller swaps in a new one (e.g. plan selection
+  // changes). Adjusting state during render rather than in an effect keeps the
+  // stale message from painting for a frame first.
+  // https://react.dev/learn/you-might-not-need-an-effect
+  const [prevInitialMessage, setPrevInitialMessage] = useState(initialMessage);
+  if (initialMessage !== prevInitialMessage) {
+    setPrevInitialMessage(initialMessage);
+    setFormData((prev) => ({ ...prev, message: initialMessage }));
+  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};

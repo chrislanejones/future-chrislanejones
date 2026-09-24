@@ -11,6 +11,7 @@ import { timelineEvents } from "@/data/career-timeline";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import React from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   GraduationCap,
   Video,
@@ -32,7 +33,7 @@ const cn = (...classes: Array<string | undefined | null | false>) =>
   classes.filter(Boolean).join(" ");
 
 // Lucide icon mapping helper
-const iconMap: Record<string, React.ComponentType<any>> = {
+const iconMap: Record<string, LucideIcon> = {
   // New Lucide icon names
   GraduationCap,
   Video,

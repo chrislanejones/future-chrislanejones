@@ -54,12 +54,12 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
   const updateMedia = useMutation(api.media.update);
   const deleteMedia = useMutation(api.media.deleteMedia);
 
-  // AUTO-SELECT FIRST PHOTO ON OPEN
-  useEffect(() => {
-    if (isOpen && allMedia.length > 0 && !selectedItem) {
-      setSelectedItem(allMedia[0]);
-    }
-  }, [isOpen, allMedia, selectedItem]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (isOpen && allMedia.length > 0 && !selectedItem) {
+    setSelectedItem(allMedia[0]);
+  }
 
   const { startUpload } = useUploadThing("mediaUploader", {
     onClientUploadComplete: async (res) => {
