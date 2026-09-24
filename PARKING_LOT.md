@@ -131,3 +131,10 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `/llms-full.txt` now carries full post text as a stopgap, but Google and most AI crawlers
   read the page, not llms.txt. The real fix is the server-rendered article from the
   2026-07-08 "Blog body not in SSR" entry above.
+- **2026-09-24 — Admin leftovers from the UI pass (290a880).** (1) Stale banner rows for
+  `/career`, `/projects/apps`, `/projects/websites` (all redirect now): select each in the SEO
+  panel and click Delete — the panel can delete header-only rows now. Keep `/fallback`.
+  (2) Settings → Profile is empty in prod and nothing on the public site reads `siteSettings`;
+  wire it up or drop the form. (3) `src/app/admin/components/HtmlEditor.tsx` is unimported
+  (the blog uses HtmlEditorEnhanced). (4) The Messages inbox is mostly SEO spam — see the
+  rate-limit/Turnstile item in the security follow-ups.
