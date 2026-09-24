@@ -19,7 +19,7 @@ export default function NotFound() {
         <Card size="full" delay={0.1} className="text-center mt-10">
           <div className="space-y-6">
             <h3 className="">
-              Japanese Breakfast – Live on SNL – "Be Sweet" and "Paprika"
+              Japanese Breakfast – Live on SNL – “Be Sweet” and “Paprika”
             </h3>
 
             <div className="relative" style={{ paddingTop: "56.25%" }}>

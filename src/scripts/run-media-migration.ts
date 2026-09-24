@@ -25,8 +25,8 @@ async function runMigration() {
     console.log("Results:");
     console.log(JSON.stringify(results, null, 2));
 
-    const successCount = results.filter((r: any) => r.success).length;
-    const failCount = results.filter((r: any) => !r.success).length;
+    const successCount = results.filter((r) => r.success).length;
+    const failCount = results.filter((r) => !r.success).length;
 
     console.log(`\n✨ Success: ${successCount}, Failed: ${failCount}`);
   } catch (error) {

@@ -1,15 +1,20 @@
 import { v } from "convex/values";
-import { query, mutation, internalMutation } from "./_generated/server";
+import {
+  query,
+  mutation,
+  internalMutation,
+  type QueryCtx,
+} from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
 import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
 // Helper to get media for a blog post
-async function getPostMedia(ctx: any, postId: string) {
+async function getPostMedia(ctx: QueryCtx, postId: string) {
   const media = await ctx.db
     .query("media")
-    .withIndex("by_assigned_id", (q: any) => q.eq("assignedToId", postId))
-    .filter((q: any) => q.eq(q.field("assignedToType"), "blogPost"))
+    .withIndex("by_assigned_id", (q) => q.eq("assignedToId", postId))
+    .filter((q) => q.eq(q.field("assignedToType"), "blogPost"))
     .collect();
   return media[0]?.url; // Return first image URL
 }

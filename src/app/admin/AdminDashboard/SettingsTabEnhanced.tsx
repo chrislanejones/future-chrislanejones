@@ -80,18 +80,20 @@ const SettingsTabEnhanced = () => {
   const [isAvatarDrawerOpen, setIsAvatarDrawerOpen] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
-  // Sync Convex data to local state
-  useEffect(() => {
-    if (profile) {
-      setProfileData({
-        name: profile.name || "",
-        bio: profile.bio || "",
-        avatar: profile.avatar || "",
-        email: profile.email || "",
-        location: profile.location || "",
-      });
-    }
-  }, [profile]);
+  // Reload the form only when a DIFFERENT record is selected. Guarding on the
+  // id (rather than the object) stops a Convex refresh from re-running this and
+  // wiping unsaved edits, and doing it in render avoids a stale first paint.
+  const [loadedProfileId, setLoadedProfileId] = useState<string | null>(null);
+  if (profile && profile._id !== loadedProfileId) {
+    setLoadedProfileId(profile._id);
+    setProfileData({
+      name: profile.name || "",
+      bio: profile.bio || "",
+      avatar: profile.avatar || "",
+      email: profile.email || "",
+      location: profile.location || "",
+    });
+  }
 
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});

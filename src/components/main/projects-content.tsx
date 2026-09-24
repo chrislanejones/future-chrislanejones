@@ -85,8 +85,7 @@ export default function ProjectsContent() {
   const hasGithub =
     currentProject.githubUrl?.trim() !== "" && currentProject.githubUrl;
   const hasCodeberg =
-    (currentProject as any).codebergUrl?.trim() !== "" &&
-    (currentProject as any).codebergUrl;
+    currentProject.codebergUrl?.trim() !== "" && currentProject.codebergUrl;
   const hasVercel =
     currentProject.vercelUrl?.trim() !== "" && currentProject.vercelUrl;
 
@@ -149,7 +148,7 @@ export default function ProjectsContent() {
             {hasCodeberg && (
               <Button
                 onClick={() =>
-                  window.open((currentProject as any).codebergUrl)
+                  window.open(currentProject.codebergUrl)
                 }
                 variant="neutral"
                 size="icon"

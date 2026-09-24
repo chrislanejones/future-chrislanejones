@@ -63,13 +63,13 @@ const LinksManagerTabEnhanced = () => {
     color: "blue",
   });
 
-  // Auto-select first category on load
-  useEffect(() => {
-    if (categories.length > 0 && !selectedCategory) {
-      setSelectedCategory(categories[0].category);
-      setFormData((prev) => ({ ...prev, category: categories[0].category }));
-    }
-  }, [categories, selectedCategory]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (categories.length > 0 && !selectedCategory) {
+    setSelectedCategory(categories[0].category);
+    setFormData((prev) => ({ ...prev, category: categories[0].category }));
+  }
 
   const CHROME_COLORS = [
     { id: "blue", name: "Blue", class: "bg-blue-500" },
@@ -86,9 +86,9 @@ const LinksManagerTabEnhanced = () => {
     return allLinks.filter((link) => link.category === category);
   };
 
-  const handleOpenModal = (linkId?: string) => {
+  const handleOpenModal = (linkId?: Id<"browserLinks">) => {
     if (linkId) {
-      const link = allLinks.find((l) => l._id === (linkId as any));
+      const link = allLinks.find((l) => l._id === linkId);
       if (link) {
         setFormData({
           href: link.href,

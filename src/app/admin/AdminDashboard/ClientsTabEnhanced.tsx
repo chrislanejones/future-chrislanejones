@@ -50,25 +50,27 @@ const ClientsTabEnhanced = () => {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
-  /* auto-select first client */
-  useEffect(() => {
-    if (clientList.length > 0 && !selectedClient && !isCreating) {
-      setSelectedClient(clientList[0]);
-    }
-  }, [rawClients, selectedClient, isCreating]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (clientList.length > 0 && !selectedClient && !isCreating) {
+    setSelectedClient(clientList[0]);
+  }
 
-  /* sync form when selection changes */
-  useEffect(() => {
-    if (selectedClient && !isCreating) {
-      setFormData({
-        name: selectedClient.name,
-        url: selectedClient.url,
-        logo: selectedClient.logo,
-        logoAlt: selectedClient.logoAlt ?? `${selectedClient.name} logo`,
-      });
-      setIsEditing(false);
-    }
-  }, [selectedClient, isCreating]);
+  // Reload the form only when a DIFFERENT record is selected. Guarding on the
+  // id (rather than the object) stops a Convex refresh from re-running this and
+  // wiping unsaved edits, and doing it in render avoids a stale first paint.
+  const [loadedClientId, setLoadedClientId] = useState<string | null>(null);
+  if (selectedClient && !isCreating && selectedClient._id !== loadedClientId) {
+    setLoadedClientId(selectedClient._id);
+    setFormData({
+      name: selectedClient.name,
+      url: selectedClient.url,
+      logo: selectedClient.logo,
+      logoAlt: selectedClient.logoAlt ?? `${selectedClient.name} logo`,
+    });
+    setIsEditing(false);
+  }
 
   /* auto-update logoAlt when name changes if alt still matches the generated pattern */
   const handleNameChange = (name: string) => {

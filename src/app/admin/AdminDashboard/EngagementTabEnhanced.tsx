@@ -68,13 +68,13 @@ const EngagementTabEnhanced = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  // Auto-select first pending comment or first comment
-  useEffect(() => {
-    if (comments.length > 0 && !selectedComment) {
-      const pendingComment = comments.find((c) => !c.approved);
-      setSelectedComment((pendingComment || comments[0]) as BlogComment);
-    }
-  }, [comments, selectedComment]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (comments.length > 0 && !selectedComment) {
+    const pendingComment = comments.find((c) => !c.approved);
+    setSelectedComment((pendingComment || comments[0]) as BlogComment);
+  }
 
   const handleApprove = async (commentId: Id<"blogComments">) => {
     try {

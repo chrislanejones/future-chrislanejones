@@ -38,6 +38,10 @@ import Image from "next/image";
 // Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
 type BlogPost = Doc<"blogPosts">;
 
+// Only ever called from event handlers (New Post); kept outside the
+// component so react-hooks/purity doesn't read it as a render-time clock.
+const nowMs = () => Date.now();
+
 const BlogPostsTabEnhanced = () => {
   const posts = useQuery(api.blogPosts.getAllPostsAdmin) ?? [];
   const createPost = useMutation(api.blogPosts.createPost);
@@ -81,7 +85,7 @@ const BlogPostsTabEnhanced = () => {
     },
   });
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(() => ({
     title: "",
     slug: "",
     excerpt: "",
@@ -90,33 +94,36 @@ const BlogPostsTabEnhanced = () => {
     tags: [] as string[],
     published: false,
     createdAt: Date.now(),
-  });
+  }));
 
   const [tagInput, setTagInput] = useState("");
 
-  // Auto-select first post
-  useEffect(() => {
-    if (posts.length > 0 && !selectedPost && !isCreating) {
-      setSelectedPost(posts[0] as BlogPost);
-    }
-  }, [posts, selectedPost, isCreating]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (posts.length > 0 && !selectedPost && !isCreating) {
+    setSelectedPost(posts[0] as BlogPost);
+  }
 
   // Update form when post is selected
-  useEffect(() => {
-    if (selectedPost && !isCreating) {
-      setFormData({
-        title: selectedPost.title,
-        slug: selectedPost.slug,
-        excerpt: selectedPost.excerpt,
-        content: selectedPost.content,
-        coverImage: selectedPost.coverImage || "",
-        tags: selectedPost.tags || [],
-        published: selectedPost.published,
-        createdAt: selectedPost.createdAt,
-      });
-      setIsEditing(false);
-    }
-  }, [selectedPost, isCreating]);
+  // Reload the form only when a DIFFERENT record is selected. Guarding on the
+  // id (rather than the object) stops a Convex refresh from re-running this and
+  // wiping unsaved edits, and doing it in render avoids a stale first paint.
+  const [loadedPostId, setLoadedPostId] = useState<string | null>(null);
+  if (selectedPost && !isCreating && selectedPost._id !== loadedPostId) {
+    setLoadedPostId(selectedPost._id);
+    setFormData({
+      title: selectedPost.title,
+      slug: selectedPost.slug,
+      excerpt: selectedPost.excerpt,
+      content: selectedPost.content,
+      coverImage: selectedPost.coverImage || "",
+      tags: selectedPost.tags || [],
+      published: selectedPost.published,
+      createdAt: selectedPost.createdAt,
+    });
+    setIsEditing(false);
+  }
 
   const handleCreateNew = () => {
     setIsCreating(true);
@@ -129,7 +136,7 @@ const BlogPostsTabEnhanced = () => {
       coverImage: "",
       tags: [],
       published: false,
-      createdAt: Date.now(),
+      createdAt: nowMs(),
     });
     setIsEditing(true);
   };

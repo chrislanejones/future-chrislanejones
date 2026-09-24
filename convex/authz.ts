@@ -11,6 +11,8 @@
 // ADMIN_USER_IDS Convex env var (comma-separated Clerk user ids):
 //   npx convex env set ADMIN_USER_IDS "user_xxx,user_yyy"   (and --prod)
 
+import type { Auth } from "convex/server";
+
 const DEFAULT_ADMIN_USER_IDS = ["user_36c1KtgcpJ5waZjYB39KKwB5pU3"];
 
 function adminUserIds(): string[] {
@@ -23,12 +25,12 @@ function adminUserIds(): string[] {
 
 // True only when the caller is authenticated AND on the admin allowlist.
 // Use in admin QUERIES: `if (!(await isAdmin(ctx))) return <empty>;`
-export async function isAdmin(ctx: { auth: any }): Promise<boolean> {
+export async function isAdmin(ctx: { auth: Auth }): Promise<boolean> {
   const identity = await ctx.auth.getUserIdentity();
   return !!identity && adminUserIds().includes(identity.subject);
 }
 
 // Throws unless the caller is an admin. Use in admin MUTATIONS.
-export async function requireAdmin(ctx: { auth: any }): Promise<void> {
+export async function requireAdmin(ctx: { auth: Auth }): Promise<void> {
   if (!(await isAdmin(ctx))) throw new Error("Unauthorized");
 }

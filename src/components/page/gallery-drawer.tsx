@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type PanInfo } from "framer-motion";
 import Image from "next/image";
 import {
   Drawer,
@@ -168,6 +168,8 @@ const PhotoGallery = ({
     direction: (i % 2 === 0 ? "left" : "right") as Direction,
   }));
 
+  type PhotoPosition = (typeof positions)[number];
+
   const containerVariants = {
     hidden: { opacity: 1 },
     visible: {
@@ -178,7 +180,7 @@ const PhotoGallery = ({
 
   const photoVariants = {
     hidden: () => ({ x: 0, y: 0, rotate: 0, scale: 1 }),
-    visible: (custom: any) => ({
+    visible: (custom: PhotoPosition) => ({
       x: custom.x,
       y: custom.y,
       rotate: custom.rotate,
@@ -202,7 +204,10 @@ const PhotoGallery = ({
     const swipePower = (offset: number, velocity: number) =>
       Math.abs(offset) * velocity;
 
-    const handleDragEnd = (_: any, { offset, velocity }: any) => {
+    const handleDragEnd = (
+      _: MouseEvent | TouchEvent | PointerEvent,
+      { offset, velocity }: PanInfo,
+    ) => {
       const swipe = swipePower(offset.x, velocity.x);
 
       if (swipe < -swipeConfidenceThreshold) {

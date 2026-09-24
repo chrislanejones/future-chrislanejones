@@ -76,12 +76,13 @@ const ProjectsTabEnhanced = () => {
     order: 0,
   });
 
-  useEffect(() => {
-    if (projectList.length > 0 && !selectedProject && !isCreating) {
-      const p = projectList[0];
-      setSelectedProject({ ...p, category: (p.category as "app" | "website") || "app" });
-    }
-  }, [projects, selectedProject, isCreating]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (projectList.length > 0 && !selectedProject && !isCreating) {
+    const p = projectList[0];
+    setSelectedProject({ ...p, category: (p.category as "app" | "website") || "app" });
+  }
 
   // Only reload the form when a DIFFERENT project is selected. Without the id
   // guard, an in-place setSelectedProject (e.g. toggling Featured) re-ran this
@@ -521,16 +522,16 @@ const ProjectsTabEnhanced = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              {[
+              {([
                 { key: "githubUrl", label: "GitHub URL", placeholder: "https://github.com/..." },
                 { key: "codebergUrl", label: "Codeberg URL", placeholder: "https://codeberg.org/..." },
                 { key: "vercelUrl", label: "Vercel / Live URL", placeholder: "https://..." },
                 { key: "customUrl", label: "Custom URL", placeholder: "https://..." },
-              ].map(({ key, label, placeholder }) => (
+              ] as const).map(({ key, label, placeholder }) => (
                 <div key={key}>
                   <label className="block mb-2 text-ink font-medium text-sm">{label}</label>
                   <Input
-                    value={(formData as any)[key]}
+                    value={formData[key]}
                     onChange={(e) => { setFormData((p) => ({ ...p, [key]: e.target.value })); setIsEditing(true); }}
                     disabled={!isEditing}
                     placeholder={placeholder}

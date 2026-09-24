@@ -43,19 +43,13 @@ const MessagesTabEnhanced = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Auto-select first unread message or first message
-  useEffect(() => {
-    if (messages.length > 0 && !selectedMessage) {
-      const unreadMessage = messages.find((m) => !m.read);
-      setSelectedMessage((unreadMessage || messages[0]) as ContactMessage);
-    }
-  }, [messages, selectedMessage]);
-
-  // Mark as read when selected
-  useEffect(() => {
-    if (selectedMessage && !selectedMessage.read) {
-      handleMarkAsRead(selectedMessage._id);
-    }
-  }, [selectedMessage?._id]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (messages.length > 0 && !selectedMessage) {
+    const unreadMessage = messages.find((m) => !m.read);
+    setSelectedMessage((unreadMessage || messages[0]) as ContactMessage);
+  }
 
   const handleMarkAsRead = async (id: Id<"contactMessages">) => {
     try {
@@ -65,6 +59,21 @@ const MessagesTabEnhanced = () => {
       console.error("Failed to mark as read:", err);
     }
   };
+
+  // Mark as read when selected. The state update waits for the mutation, so
+  // nothing is set synchronously inside the effect.
+  const selectedId = selectedMessage?._id;
+  const selectedUnread = !!selectedMessage && !selectedMessage.read;
+  useEffect(() => {
+    if (!selectedId || !selectedUnread) return;
+    markAsRead({ id: selectedId })
+      .then(() =>
+        setSelectedMessage((prev) =>
+          prev?._id === selectedId ? { ...prev, read: true } : prev,
+        ),
+      )
+      .catch((err) => console.error("Failed to mark as read:", err));
+  }, [selectedId, selectedUnread, markAsRead]);
 
   const handleMarkAsUnread = async (id: Id<"contactMessages">) => {
     try {

@@ -1,7 +1,13 @@
 // src/app/blog/[slug]/BlogPostPage.tsx
 "use client";
 
-import { useState, useEffect, useMemo, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { renderPostHtml } from "@/lib/blog-content";
 import { BlogStepper } from "@/components/blog/BlogStepper";
@@ -53,6 +59,18 @@ function getUserIdentifier() {
   return identifier;
 }
 
+// The id never changes once written, so the store never notifies.
+const subscribeToNothing = () => () => {};
+const getServerUserIdentifier = () => "";
+
+function useUserIdentifier(): string {
+  return useSyncExternalStore(
+    subscribeToNothing,
+    getUserIdentifier,
+    getServerUserIdentifier,
+  );
+}
+
 // The server fetches the post and renders its body (see page.tsx), passing
 // both in. The page paints complete on first load, crawlers get the full
 // text, and the live Convex query takes over once it connects.
@@ -65,7 +83,7 @@ export default function BlogPostPage({
   initialPost: Doc<"blogPosts">;
   children: React.ReactNode;
 }) {
-  const [userIdentifier, setUserIdentifier] = useState<string>("");
+  const userIdentifier = useUserIdentifier();
   const [commentForm, setCommentForm] = useState({
     authorName: "",
     authorEmail: "",
@@ -90,10 +108,6 @@ export default function BlogPostPage({
 
   const toggleLike = useMutation(api.blogPosts.toggleLike);
   const addComment = useMutation(api.blogPosts.addComment);
-
-  useEffect(() => {
-    setUserIdentifier(getUserIdentifier());
-  }, []);
 
   const postContent = post?.content;
   const renderedContent = useMemo(() => renderPostHtml(postContent), [postContent]);

@@ -98,7 +98,7 @@ export const update = mutation({
     const { id, ...updateData } = args;
 
     // Filter out undefined values
-    const cleanedData: Record<string, any> = {};
+    const cleanedData: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(updateData)) {
       if (value !== undefined) {
         cleanedData[key] = value;

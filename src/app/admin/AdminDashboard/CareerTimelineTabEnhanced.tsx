@@ -82,26 +82,29 @@ const CareerTimelineTabEnhanced = () => {
     iconName: "Briefcase",
   });
 
-  // Auto-select first event
-  useEffect(() => {
-    if (events.length > 0 && !selectedEvent && !isCreating) {
-      setSelectedEvent(events[0] as CareerEvent);
-    }
-  }, [events, selectedEvent, isCreating]);
+  // Auto-select during render instead of in an effect: setting the selection
+  // makes the condition false on the very next pass, so this converges without
+  // the extra render (and the flash of nothing selected) an effect would cost.
+  if (events.length > 0 && !selectedEvent && !isCreating) {
+    setSelectedEvent(events[0] as CareerEvent);
+  }
 
   // Update form when event is selected
-  useEffect(() => {
-    if (selectedEvent && !isCreating) {
-      setFormData({
-        year: selectedEvent.year,
-        title: selectedEvent.title,
-        description: selectedEvent.description,
-        location: selectedEvent.location || "",
-        iconName: selectedEvent.iconName,
-      });
-      setIsEditing(false);
-    }
-  }, [selectedEvent, isCreating]);
+  // Reload the form only when a DIFFERENT record is selected. Guarding on the
+  // id (rather than the object) stops a Convex refresh from re-running this and
+  // wiping unsaved edits, and doing it in render avoids a stale first paint.
+  const [loadedEventId, setLoadedEventId] = useState<string | null>(null);
+  if (selectedEvent && !isCreating && selectedEvent._id !== loadedEventId) {
+    setLoadedEventId(selectedEvent._id);
+    setFormData({
+      year: selectedEvent.year,
+      title: selectedEvent.title,
+      description: selectedEvent.description,
+      location: selectedEvent.location || "",
+      iconName: selectedEvent.iconName,
+    });
+    setIsEditing(false);
+  }
 
   const handleCreateNew = () => {
     setIsCreating(true);
