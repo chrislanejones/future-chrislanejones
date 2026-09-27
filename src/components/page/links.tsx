@@ -178,7 +178,7 @@ export function useFooterNavSections() {
 export const socialLinks: SocialLink[] = [
   {
     href: "https://x.com/cljwebdev",
-    label: "X (formerly Twitter)",
+    label: "X.com",
     icon: <FaXTwitter size={18} />,
   },
   {
