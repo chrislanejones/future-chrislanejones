@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+
+// The avatar is admin-managed in Convex; this is the photo that ships in
+// /public, so the card still renders before the profile query resolves.
+const FALLBACK_AVATAR = "/Professional-Photo-of-Chris-Lane-Jones.webp";
 
 // Helper component for inline code styling
 const Code = ({ children }: { children: ReactNode }) => (
@@ -129,6 +135,8 @@ export default function QuoteContent() {
   );
   const [chosen, setChosen] = useState<number | null>(null);
   const index = chosen ?? seeded;
+  const profile = useQuery(api.siteSettings.getProfile);
+  const avatar = profile?.avatar || FALLBACK_AVATAR;
 
   const nextQuote = () => setChosen(pickDifferentQuote(index));
 
@@ -171,9 +179,9 @@ export default function QuoteContent() {
         >
           <Link href="/about">
             <Image
-              alt="Chris Lane Jones profile photo"
+              alt={`${profile?.name || "Chris Lane Jones"} profile photo`}
               className="h-full w-full object-cover"
-              src="/Professional-Photo-of-Chris-Lane-Jones.webp"
+              src={avatar}
               width={44}
               height={44}
               priority

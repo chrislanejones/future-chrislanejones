@@ -25,6 +25,7 @@ import type * as projects from "../projects.js";
 import type * as redirects from "../redirects.js";
 import type * as seo from "../seo.js";
 import type * as siteSettings from "../siteSettings.js";
+import type * as socialLinks from "../socialLinks.js";
 
 import type {
   ApiFromModules,
@@ -50,6 +51,7 @@ declare const fullApi: ApiFromModules<{
   redirects: typeof redirects;
   seo: typeof seo;
   siteSettings: typeof siteSettings;
+  socialLinks: typeof socialLinks;
 }>;
 
 /**

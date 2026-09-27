@@ -3,6 +3,7 @@ import { query, mutation } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 
 import { requireAdmin as requireAuth, isAdmin } from "./authz";
+import { PROFILE_PHOTO_URL } from "./siteSettings";
 
 // Admin-only. These return every media row including assignedToTitle, which for
 // blogPost-assigned media is the post title — leaking unpublished draft titles
@@ -185,6 +186,32 @@ export const deleteMedia = mutation({
 
 // Removes any local /client-icons/ static paths that were previously seeded into
 // the media table — the drawer should only contain UploadThing-hosted images.
+// Put the professional headshot in the media library so it shows up in the
+// Media Manager gallery and is selectable from the avatar picker. Idempotent:
+// keyed on the url, so running it twice does not duplicate the row.
+export const seedProfilePhoto = mutation({
+  args: {},
+  handler: async (ctx) => {
+    await requireAuth(ctx);
+    const all = await ctx.db.query("media").collect();
+    const existing = all.find((m) => m.url === PROFILE_PHOTO_URL);
+    if (existing) {
+      return { success: true, message: "Profile photo already in the gallery" };
+    }
+
+    const now = Date.now();
+    const id = await ctx.db.insert("media", {
+      url: PROFILE_PHOTO_URL,
+      filename: "Professional-Photo-of-Chris-Lane-Jones.webp",
+      altText: "Chris Lane Jones profile photo",
+      mimeType: "image/webp",
+      uploadedAt: now,
+      updatedAt: now,
+    });
+    return { success: true, id };
+  },
+});
+
 export const seedClientIcons = mutation({
   args: {},
   handler: async (ctx) => {

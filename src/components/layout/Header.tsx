@@ -9,7 +9,11 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMounted } from "@/lib/use-is-mounted";
 import { SimpleModeToggle } from "../simple-mode-toggle";
-import { useHeaderNavItems, socialLinks, SiteLogo } from "../page/links";
+import {
+  useHeaderNavItems,
+  useHeaderSocialLinks,
+  SiteLogo,
+} from "../page/links";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -28,6 +32,7 @@ export default function Header() {
   const isMounted = useIsMounted();
   const pathname = usePathname();
   const headerNavItems = useHeaderNavItems();
+  const socialLinks = useHeaderSocialLinks();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);

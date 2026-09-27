@@ -8,6 +8,9 @@ export default defineSchema({
     avatar: v.optional(v.string()),
     email: v.optional(v.string()),
     location: v.optional(v.string()),
+    // Deprecated: superseded by the `socialLinks` TABLE below, which supports
+    // any number of platforms plus per-surface ordering. Kept optional so the
+    // existing production document still validates; nothing writes it now.
     socialLinks: v.optional(
       v.object({
         github: v.optional(v.string()),
@@ -19,6 +22,34 @@ export default defineSchema({
     ),
     updatedAt: v.number(),
   }),
+
+  // Social profiles and the handful of other links that sit beside them. One
+  // row per link, and one row can appear on several surfaces at once — the site
+  // header at slot 2, the footer at slot 4, the link page at slot 13. `kind`
+  // only groups the two lists in the admin panel; it does not affect the order
+  // anything renders in.
+  socialLinks: defineTable({
+    kind: v.union(v.literal("social"), v.literal("extra")),
+    label: v.string(),
+    href: v.string(),
+    iconKey: v.string(),
+    isExternal: v.optional(v.boolean()),
+    // Position in the admin panel's own Social / Other list.
+    order: v.number(),
+    // One slot number per surface the link can appear on. undefined means "not
+    // on that surface". The link page interleaves social and extra links freely
+    // (Home sits first, services sit last), so it needs its own slot rather
+    // than inheriting the kind grouping.
+    headerOrder: v.optional(v.number()),
+    footerOrder: v.optional(v.number()),
+    linkPageOrder: v.optional(v.number()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_kind_order", ["kind", "order"])
+    .index("by_header_order", ["headerOrder"])
+    .index("by_footer_order", ["footerOrder"])
+    .index("by_link_page_order", ["linkPageOrder"]),
 
   seoMetadata: defineTable({
     path: v.string(),

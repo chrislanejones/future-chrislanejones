@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import {
-  footerSocialLinks,
+  useFooterSocialLinks,
   SiteLogo,
   useFooterNavSections, // Use the hook instead of static import
   NavLinkComponent,
@@ -14,6 +14,7 @@ import WireframeTerrain from "../page/wireframe-terrain";
 
 export default function Footer() {
   const footerNavSections = useFooterNavSections(); // Use the hook for dynamic data
+  const footerSocialLinks = useFooterSocialLinks();
 
   return (
     <>

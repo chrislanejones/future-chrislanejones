@@ -47,6 +47,9 @@ import EngagementTabEnhanced from "./EngagementTabEnhanced";
 import ProjectsTabEnhanced from "./ProjectsTabEnhanced";
 import ClientsTabEnhanced from "./ClientsTabEnhanced";
 import ConferencesTabEnhanced from "./ConferencesTabEnhanced";
+import ProfileSocialTabEnhanced, {
+  profileSocialSubsections,
+} from "./ProfileSocialTabEnhanced";
 
 type SubItem = { id: string; label: string; icon: LucideIcon };
 
@@ -55,17 +58,17 @@ const AdminSidebarContent = ({
   activeTab,
   onTabChange,
   onSignOut,
-  settingsSubsections,
-  activeSettingsSection,
-  onSettingsSectionChange,
+  subsectionsByTab,
+  activeSubsection,
+  onSubsectionChange,
 }: {
   tabs: { id: string; label: string; icon: LucideIcon }[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
   onSignOut: () => void;
-  settingsSubsections: SubItem[];
-  activeSettingsSection: string;
-  onSettingsSectionChange: (id: string) => void;
+  subsectionsByTab: Record<string, SubItem[]>;
+  activeSubsection: string;
+  onSubsectionChange: (id: string) => void;
 }) => {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
@@ -99,17 +102,17 @@ const AdminSidebarContent = ({
                   {!isCollapsed && <span>{tab.label}</span>}
                 </Button>
               </SidebarMenuItem>
-              {tab.id === "settings" &&
-                activeTab === "settings" &&
+              {activeTab === tab.id &&
+                subsectionsByTab[tab.id] &&
                 !isCollapsed && (
                   <SidebarMenuItem>
                     <ul className="ml-4 mt-1 border-l border-(--color-border) pl-2 space-y-1">
-                      {settingsSubsections.map((sub) => {
-                        const isActive = activeSettingsSection === sub.id;
+                      {subsectionsByTab[tab.id].map((sub) => {
+                        const isActive = activeSubsection === sub.id;
                         return (
                           <li key={sub.id}>
                             <button
-                              onClick={() => onSettingsSectionChange(sub.id)}
+                              onClick={() => onSubsectionChange(sub.id)}
                               className={`w-full flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-md text-xs transition-colors ${
                                 isActive
                                   ? "bg-accent/15 text-accent font-medium"
@@ -134,11 +137,17 @@ const AdminSidebarContent = ({
 };
 
 const settingsSubsections: SubItem[] = [
-  { id: "profile", label: "Profile", icon: User },
   { id: "data-management", label: "Data Management", icon: Database },
   { id: "redirects", label: "Redirects", icon: ArrowRight },
   { id: "site-health", label: "Site Health", icon: Activity },
 ];
+
+// Tabs that render several stacked sections get a sub-tree in the sidebar. The
+// active id is mirrored into the URL hash, which each panel listens for.
+const subsectionsByTab: Record<string, SubItem[]> = {
+  "profile-social": profileSocialSubsections,
+  settings: settingsSubsections,
+};
 
 const AdminDashboard = () => {
   const { user } = useUser();
@@ -146,25 +155,33 @@ const AdminDashboard = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "pages";
-  const [activeSettingsSection, setActiveSettingsSection] = useState(
-    settingsSubsections[0].id,
-  );
+  const [activeSubsection, setActiveSubsection] = useState("");
 
+  // Keep the highlighted sub-item in step with the hash, which is also how the
+  // panels themselves know which section to scroll to.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const syncFromHash = () => {
       const hash = window.location.hash.replace(/^#/, "");
-      if (hash && settingsSubsections.some((s) => s.id === hash)) {
-        setActiveSettingsSection(hash);
-      }
+      const valid = Object.values(subsectionsByTab).some((subs) =>
+        subs.some((s) => s.id === hash),
+      );
+      if (hash && valid) setActiveSubsection(hash);
     };
     syncFromHash();
     window.addEventListener("hashchange", syncFromHash);
     return () => window.removeEventListener("hashchange", syncFromHash);
   }, []);
 
-  const handleSettingsSectionChange = (id: string) => {
-    setActiveSettingsSection(id);
+  // Switching tabs must not leave a sub-item from the previous tab highlighted.
+  const currentSubsections = subsectionsByTab[activeTab];
+  const resolvedSubsection =
+    currentSubsections?.some((s) => s.id === activeSubsection)
+      ? activeSubsection
+      : (currentSubsections?.[0]?.id ?? "");
+
+  const handleSubsectionChange = (id: string) => {
+    setActiveSubsection(id);
     if (typeof window !== "undefined") {
       window.location.hash = id;
     }
@@ -191,6 +208,7 @@ const AdminDashboard = () => {
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "blog-posts", label: "Blog Posts", icon: FileText },
     { id: "engagement", label: "Comments & Likes", icon: Heart },
+    { id: "profile-social", label: "Profile & Social", icon: User },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
@@ -218,6 +236,8 @@ const AdminDashboard = () => {
         return <BlogPostsTabEnhanced />;
       case "engagement":
         return <EngagementTabEnhanced />;
+      case "profile-social":
+        return <ProfileSocialTabEnhanced />;
       case "settings":
         return <SettingsTabEnhanced />;
       default:
@@ -233,9 +253,9 @@ const AdminDashboard = () => {
           activeTab={activeTab}
           onTabChange={handleTabChange}
           onSignOut={handleSignOut}
-          settingsSubsections={settingsSubsections}
-          activeSettingsSection={activeSettingsSection}
-          onSettingsSectionChange={handleSettingsSectionChange}
+          subsectionsByTab={subsectionsByTab}
+          activeSubsection={resolvedSubsection}
+          onSubsectionChange={handleSubsectionChange}
         />
         <SidebarInset className="flex flex-col flex-1 overflow-hidden">
           <header className="sticky top-0 z-10 flex items-center justify-between admin-border-bottom bg-panel px-6 py-3">
