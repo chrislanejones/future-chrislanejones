@@ -170,8 +170,8 @@ export const setSurfaceOrder = mutation({
 //   footer    — the same four plus CodePen
 //   link page — the live order, which interleaves social and other links:
 //               Home first, the services buttons last.
-// Links added in this pass (Threads, Codeberg, Browser Tabs, Career & Resume,
-// Blog) are appended to the link page so the existing twelve keep their slots.
+// Links added in this pass (Threads, Codeberg, Browser Tabs, Career & Resume)
+// are appended to the link page so the existing twelve keep their slots.
 export const seedSocialLinks = mutation({
   args: {},
   handler: async (ctx) => {
@@ -197,7 +197,7 @@ export const seedSocialLinks = mutation({
       // ── Social profiles ──
       {
         kind: "social",
-        label: "X (formerly Twitter)",
+        label: "X.com",
         href: "https://x.com/cljwebdev",
         iconKey: "x-twitter",
         headerOrder: 0,
@@ -312,7 +312,6 @@ export const seedSocialLinks = mutation({
         iconKey: "resume",
         linkPageOrder: 15,
       },
-      { kind: "extra", label: "Blog", href: "/blog", iconKey: "rss", linkPageOrder: 16 },
     ];
 
     // `order` is the position in the admin panel's own list, numbered per group.

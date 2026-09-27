@@ -145,7 +145,7 @@ export default function LinkGrid() {
               alt={profile?.name || "Chris Lane Jones"}
               width={120}
               height={120}
-              className="h-30 w-30 rounded-2xl ring-2 ring-white/5 object-cover"
+              className="h-30 w-30 rounded-full ring-2 ring-white/5 object-cover"
               src={avatar}
             />
             <h1 className="text-center" style={{ fontSize: "var(--step-3)" }}>
