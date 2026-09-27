@@ -9,11 +9,8 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMounted } from "@/lib/use-is-mounted";
 import { SimpleModeToggle } from "../simple-mode-toggle";
-import {
-  useHeaderNavItems,
-  useHeaderSocialLinks,
-  SiteLogo,
-} from "../page/links";
+import { useHeaderNavItems, SiteLogo } from "../page/links";
+import { SocialIconRow } from "../page/social-icon-row";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -32,7 +29,6 @@ export default function Header() {
   const isMounted = useIsMounted();
   const pathname = usePathname();
   const headerNavItems = useHeaderNavItems();
-  const socialLinks = useHeaderSocialLinks();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((v) => !v);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -141,26 +137,7 @@ export default function Header() {
 
             {/* Social buttons (desktop) */}
             <div className="flex items-center gap-3" role="list">
-              {socialLinks.map((social) => (
-                <div key={social.href} role="listitem">
-                  <Button
-                    asChild
-                    variant="neutral"
-                    size="icon"
-                    round={true}
-                    title={social.label}
-                  >
-                    <a
-                      href={social.href}
-                      target="_blank"
-                      aria-label={social.label}
-                      rel="noopener noreferrer"
-                    >
-                      {social.icon}
-                    </a>
-                  </Button>
-                </div>
-              ))}
+              <SocialIconRow surface="header" asListItems />
               <SimpleModeToggle />
             </div>
           </div>
@@ -225,25 +202,7 @@ export default function Header() {
                     Social Links
                   </h2>
                   <div className="flex gap-3">
-                    {socialLinks.map((social) => (
-                      <Button
-                        key={social.href}
-                        asChild
-                        variant="neutral"
-                        size="icon"
-                        round={true}
-                        title={social.label}
-                      >
-                        <a
-                          href={social.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label={social.label}
-                        >
-                          {social.icon}
-                        </a>
-                      </Button>
-                    ))}
+                    <SocialIconRow surface="header" />
                   </div>
                 </div>
 

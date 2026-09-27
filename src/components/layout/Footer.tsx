@@ -1,20 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Button } from "../ui/button";
 import Link from "next/link";
 import {
-  useFooterSocialLinks,
   SiteLogo,
   useFooterNavSections, // Use the hook instead of static import
   NavLinkComponent,
 } from "../page/links";
+import { SocialIconRow } from "../page/social-icon-row";
 import dynamic from "next/dynamic";
 import WireframeTerrain from "../page/wireframe-terrain";
 
 export default function Footer() {
   const footerNavSections = useFooterNavSections(); // Use the hook for dynamic data
-  const footerSocialLinks = useFooterSocialLinks();
 
   return (
     <>
@@ -47,25 +45,7 @@ export default function Footer() {
 
             {/* Social Icons - will align to bottom on desktop */}
             <div className="flex items-center gap-3 pt-3 md:mt-auto">
-              {footerSocialLinks.map((social) => (
-                <Button
-                  key={social.href}
-                  asChild
-                  variant="neutral"
-                  size="icon"
-                  round={true}
-                  title={social.label}
-                >
-                  <a
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                  >
-                    {social.icon}
-                  </a>
-                </Button>
-              ))}
+              <SocialIconRow surface="footer" />
             </div>
           </div>
 

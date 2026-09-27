@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { FaChrome, FaExternalLinkAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/page/card";
@@ -62,20 +63,65 @@ function LinkButton({ link }: { link: SocialLinkRow }) {
   );
 }
 
+// Convex's useQuery throws on a server error, and a throw during render cannot
+// be caught by the component doing the querying. Keeping the link list in its
+// own child behind this boundary means a bad query costs one card, not the page.
+class LinkListBoundary extends React.Component<
+  { children: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error("Link page links unavailable from Convex.", error);
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <p className="text-center py-8 text-sm text-muted">
+        Links are temporarily unavailable.
+      </p>
+    );
+  }
+}
+
+function LinkList() {
+  // One flat list in the order stored as each link's linkPageOrder, so social
+  // profiles and other links can interleave (Home first, services last).
+  const pageLinks = useQuery(api.socialLinks.getForLinkPage);
+  const allRows = pageLinks ?? [];
+
+  if (pageLinks && allRows.length === 0) {
+    return (
+      <p className="text-center py-8 text-sm text-muted">
+        No links yet. Add them in Admin &rarr; Profile &amp; Social.
+      </p>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {allRows.map((link) => (
+        <LinkButton key={link._id} link={link} />
+      ))}
+    </div>
+  );
+}
+
 export default function LinkGrid() {
   // Query for featured links from Convex
   const featuredLinks = useQuery(api.browserLinks.getFeatured) as
     | FeaturedLink[]
     | undefined;
 
-  // Profile photo and the social / other link sets, all admin-managed.
+  // Profile photo, admin-managed, with the /public headshot as the fallback.
   const profile = useQuery(api.siteSettings.getProfile);
-  const pageLinks = useQuery(api.socialLinks.getForLinkPage);
-
   const avatar = profile?.avatar || FALLBACK_AVATAR;
-  // One flat list in the order stored as each link's linkPageOrder, so social
-  // profiles and other links can interleave (Home first, services last).
-  const allRows = pageLinks ?? [];
 
   return (
     <>
@@ -118,16 +164,9 @@ export default function LinkGrid() {
           <h3 className="mb-6 text-center flex items-center justify-center space-x-2">
             Connect With Me
           </h3>
-          <div className="grid grid-cols-2 gap-3">
-            {allRows.map((link) => (
-              <LinkButton key={link._id} link={link} />
-            ))}
-          </div>
-          {pageLinks && allRows.length === 0 && (
-            <p className="text-center py-8 text-sm text-muted">
-              No links yet. Add them in Admin → Profile &amp; Social.
-            </p>
-          )}
+          <LinkListBoundary>
+            <LinkList />
+          </LinkListBoundary>
         </Card>
 
         {/* Card 3: Current Chrome Tabs - Bottom (spans both columns, grid-area: 2 / 1 / 3 / 3) */}

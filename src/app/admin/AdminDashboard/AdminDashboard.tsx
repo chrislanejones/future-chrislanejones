@@ -149,6 +149,44 @@ const subsectionsByTab: Record<string, SubItem[]> = {
   settings: settingsSubsections,
 };
 
+// Convex's useQuery throws on a server error — a function not deployed yet, a
+// schema mismatch — and a throw during render would otherwise take the entire
+// dashboard with it, including the tabs that are working fine. Keyed on the tab
+// id so switching tabs clears a previous failure.
+class TabErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error("Admin tab failed to render:", error);
+  }
+
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
+        <h2 className="text-lg font-bold text-ink mb-2">
+          This panel could not load
+        </h2>
+        <p className="text-sm text-muted mb-4">
+          Usually this means the Convex backend is behind the deployed site —
+          run <code className="text-ink">npx convex deploy</code> and reload. The
+          other tabs are unaffected.
+        </p>
+        <p className="text-xs text-muted font-mono break-all">
+          {this.state.error.message}
+        </p>
+      </div>
+    );
+  }
+};
+
 const AdminDashboard = () => {
   const { user } = useUser();
   const { signOut } = useClerk();
@@ -278,7 +316,11 @@ const AdminDashboard = () => {
               <SimpleModeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-auto p-6">{renderTabContent()}</main>
+          <main className="flex-1 overflow-auto p-6">
+            <TabErrorBoundary key={activeTab}>
+              {renderTabContent()}
+            </TabErrorBoundary>
+          </main>
         </SidebarInset>
       </div>
     </SidebarProvider>
