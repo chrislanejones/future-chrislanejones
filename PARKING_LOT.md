@@ -155,3 +155,14 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   avatar and every button from Convex, but the `<h1>` job title and `<h2>` tagline above them are
   still literals in the component. The profile row already has a `bio` field doing nothing —
   either wire those two headings to Convex or accept they're static and note it.
+- **2026-09-27 — Outage: a missing Convex function blanked the whole site.** After the
+  socialLinks commit shipped to Vercel but BEFORE `npx convex deploy` ran, prod Convex had no
+  `socialLinks:*` functions. `Header` and `Footer` sit in the root layout and called
+  `useQuery(api.socialLinks.getForHeader/getForFooter)`; Convex's `useQuery` THROWS on a server
+  error, and a throw during render in the root layout took every page down with
+  "This page couldn't load" — the HTML still returned 200, so uptime checks would not have
+  caught it. Fixed by moving those queries into `social-icon-row.tsx` behind an error boundary
+  that falls back to the hard-coded lists, plus a per-tab boundary in the admin dashboard and one
+  around the link page's link card. **Standing rule: never call `useQuery` from a component in
+  the root layout without an error boundary, and deploy Convex BEFORE (or with) the frontend that
+  depends on it — the two deploys are independent and the frontend always wins the race.**
