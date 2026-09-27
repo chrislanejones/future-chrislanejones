@@ -146,11 +146,13 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   so the schema keeps it as optional. Nothing reads or writes it. Clean-up is a one-line
   migration that patches the field to `undefined` on the single row, then removes it from
   `convex/schema.ts` — worth doing on the next Convex migration pass, not on its own.
-- **2026-09-27 — The `X (formerly Twitter)` label renders longer than the old `𝕏`.** One row now
-  feeds the header, the footer and the link page, so the label is shared. The live link page
-  showed the bare `𝕏` glyph while the header used `X (formerly Twitter)` as its accessible name;
-  the descriptive version won because screen readers handle the glyph badly. If the long label
-  crowds the link-page button, rename it in Admin → Profile & Social — it is one field.
+- **2026-09-27 — Prod social/profile data was imported by CLI, not by the seed buttons.** The
+  seed mutations are admin-gated (`requireAdmin`) and `npx convex run` has no Clerk identity,
+  so prod was populated with `npx convex import --prod` instead: 16 `socialLinks` rows, the
+  headshot appended to `media`, and the `siteSettings` row replaced with avatar/name/bio added
+  (its `_id`, `_creationTime` and `location` preserved). A full snapshot was taken first. The
+  seed function and the imported rows are generated from the same list, but nothing enforces
+  that — if the seed changes, re-import or reseed rather than assuming they still match.
 - **2026-09-27 — The link-page card headings are still hard-coded.** `LinkGrid.tsx` now pulls the
   avatar and every button from Convex, but the `<h1>` job title and `<h2>` tagline above them are
   still literals in the component. The profile row already has a `bio` field doing nothing —
