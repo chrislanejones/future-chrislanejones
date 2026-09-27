@@ -1,20 +1,5 @@
 "use client";
-import {
-  FaGithub,
-  FaTwitter,
-  FaLinkedin,
-  FaYoutube,
-  FaTiktok,
-  FaCodepen,
-  FaDev,
-  FaHome,
-  FaWordpress,
-  FaChrome,
-  FaAtom,
-  FaStar,
-  FaExternalLinkAlt,
-} from "react-icons/fa";
-import { SiBluesky, SiBuymeacoffee } from "react-icons/si";
+import { FaChrome, FaExternalLinkAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/page/card";
 import Image from "next/image";
@@ -23,6 +8,8 @@ import Link from "next/link";
 import { SimpleModeToggle } from "@/components/simple-mode-toggle";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import type { Doc } from "../../../convex/_generated/dataModel";
+import { SocialIcon } from "@/lib/social-icons";
 
 interface FeaturedLink {
   _id: string;
@@ -35,11 +22,60 @@ interface FeaturedLink {
   featured?: boolean;
 }
 
+type SocialLinkRow = Doc<"socialLinks">;
+
+// The avatar comes from Convex now; this is the photo that ships in /public, so
+// the card still renders before the profile query resolves.
+const FALLBACK_AVATAR = "/Professional-Photo-of-Chris-Lane-Jones.webp";
+
+// Internal routes get a Next <Link> for client navigation; anything flagged
+// external opens in a new tab.
+function LinkButton({ link }: { link: SocialLinkRow }) {
+  const content = (
+    <>
+      <span className="mr-2">
+        <SocialIcon iconKey={link.iconKey} size={16} />
+      </span>
+      {link.label}
+    </>
+  );
+
+  if (link.isExternal ?? link.href.startsWith("http")) {
+    return (
+      <Button
+        variant="base"
+        showExternalIcon={true}
+        className="justify-center"
+        asChild
+      >
+        <a href={link.href} target="_blank" rel="noopener noreferrer">
+          {content}
+        </a>
+      </Button>
+    );
+  }
+
+  return (
+    <Button variant="base" className="justify-center" asChild>
+      <Link href={link.href}>{content}</Link>
+    </Button>
+  );
+}
+
 export default function LinkGrid() {
   // Query for featured links from Convex
   const featuredLinks = useQuery(api.browserLinks.getFeatured) as
     | FeaturedLink[]
     | undefined;
+
+  // Profile photo and the social / other link sets, all admin-managed.
+  const profile = useQuery(api.siteSettings.getProfile);
+  const pageLinks = useQuery(api.socialLinks.getForLinkPage);
+
+  const avatar = profile?.avatar || FALLBACK_AVATAR;
+  // One flat list in the order stored as each link's linkPageOrder, so social
+  // profiles and other links can interleave (Home first, services last).
+  const allRows = pageLinks ?? [];
 
   return (
     <>
@@ -60,11 +96,11 @@ export default function LinkGrid() {
         <Card size="small" delay={0.1} className="h-full">
           <div className="flex flex-col items-center gap-4">
             <Image
-              alt="Chris Lane Jones"
+              alt={profile?.name || "Chris Lane Jones"}
               width={120}
               height={120}
               className="h-30 w-30 rounded-2xl ring-2 ring-white/5 object-cover"
-              src="/Professional-Photo-of-Chris-Lane-Jones.webp"
+              src={avatar}
             />
             <h1 className="text-center" style={{ fontSize: "var(--step-3)" }}>
               Senior Web Engineer | React, TypeScript & Rust/WebAssembly | AI
@@ -83,181 +119,15 @@ export default function LinkGrid() {
             Connect With Me
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="base" className="justify-center" asChild>
-              <Link href="/">
-                <FaHome className="w-4 h-4 mr-2" />
-                Home
-              </Link>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://x.com/cljwebdev"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaTwitter className="w-4 h-4 mr-2" />
-                𝕏
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://bsky.app/profile/chrislanejones.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SiBluesky className="w-4 h-4 mr-2" />
-                BlueSky
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://github.com/chrislanejones"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaGithub className="w-4 h-4 mr-2" />
-                GitHub
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://www.linkedin.com/in/chrislanejones/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaLinkedin className="w-4 h-4 mr-2" />
-                LinkedIn
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://www.youtube.com/@chrislanejones"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaYoutube className="w-4 h-4 mr-2" />
-                YouTube
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://www.tiktok.com/@cljwebdev"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaTiktok className="w-4 h-4 mr-2" />
-                TikTok
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://codepen.io/chrislanejones"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaCodepen className="w-4 h-4 mr-2" />
-                CodePen
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://dev.to/chrislanejones"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaDev className="w-4 h-4 mr-2" />
-                Dev.to
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <a
-                href="https://buymeacoffee.com/chrislanejones"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SiBuymeacoffee className="w-4 h-4 mr-2" />
-                Coffee
-              </a>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <Link href="/react-maintenance">
-                <FaAtom className="w-4 h-4 mr-2" />
-                React Services
-              </Link>
-            </Button>
-
-            <Button
-              variant="base"
-              showExternalIcon={true}
-              className="justify-center"
-              asChild
-            >
-              <Link href="/wordpress-maintenance">
-                <FaWordpress className="w-4 h-4 mr-2" />
-                WordPress Services
-              </Link>
-            </Button>
+            {allRows.map((link) => (
+              <LinkButton key={link._id} link={link} />
+            ))}
           </div>
+          {pageLinks && allRows.length === 0 && (
+            <p className="text-center py-8 text-sm text-muted">
+              No links yet. Add them in Admin → Profile &amp; Social.
+            </p>
+          )}
         </Card>
 
         {/* Card 3: Current Chrome Tabs - Bottom (spans both columns, grid-area: 2 / 1 / 3 / 3) */}

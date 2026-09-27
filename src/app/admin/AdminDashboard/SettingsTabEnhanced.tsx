@@ -22,6 +22,7 @@ import {
   ArrowRight,
   Plus,
   Edit2,
+  Share2,
   ToggleLeft,
   ToggleRight,
   type LucideIcon,
@@ -33,7 +34,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
-import { MediaDrawer } from "../components/MediaDrawer";
 import Image from "next/image";
 
 interface DataSource {
@@ -56,45 +56,12 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { id: "profile", label: "Profile", icon: User },
   { id: "data-management", label: "Data Management", icon: Database },
   { id: "redirects", label: "Redirects", icon: ArrowRight },
   { id: "site-health", label: "Site Health", icon: Activity },
 ];
 
 const SettingsTabEnhanced = () => {
-  // Profile from Convex
-  const profile = useQuery(api.siteSettings.getProfile);
-  const updateProfile = useMutation(api.siteSettings.updateProfile);
-  const updateAvatar = useMutation(api.siteSettings.updateAvatar);
-  const removeAvatarMutation = useMutation(api.siteSettings.removeAvatar);
-
-  // Local profile state (for form editing)
-  const [profileData, setProfileData] = useState({
-    name: "",
-    bio: "",
-    avatar: "",
-    email: "",
-    location: "",
-  });
-  const [isAvatarDrawerOpen, setIsAvatarDrawerOpen] = useState(false);
-  const [isSavingProfile, setIsSavingProfile] = useState(false);
-
-  // Reload the form only when a DIFFERENT record is selected. Guarding on the
-  // id (rather than the object) stops a Convex refresh from re-running this and
-  // wiping unsaved edits, and doing it in render avoids a stale first paint.
-  const [loadedProfileId, setLoadedProfileId] = useState<string | null>(null);
-  if (profile && profile._id !== loadedProfileId) {
-    setLoadedProfileId(profile._id);
-    setProfileData({
-      name: profile.name || "",
-      bio: profile.bio || "",
-      avatar: profile.avatar || "",
-      email: profile.email || "",
-      location: profile.location || "",
-    });
-  }
-
   const contentRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
@@ -105,6 +72,8 @@ const SettingsTabEnhanced = () => {
   const seedNavigation = useMutation(api.navigation.seedNavigationData);
   const seedSEO = useMutation(api.seo.seedSEOData);
   const seedProfile = useMutation(api.siteSettings.seedProfile);
+  const seedProfilePhoto = useMutation(api.media.seedProfilePhoto);
+  const seedSocialLinks = useMutation(api.socialLinks.seedSocialLinks);
   const seedPageHeaders = useMutation(api.pageHeaders.seedPageHeaders);
   const seedProjects = useMutation(api.projects.seedProjects);
   const seedClients = useMutation(api.clients.seedClients);
@@ -189,7 +158,11 @@ const SettingsTabEnhanced = () => {
     "page-headers": seedPageHeaders,
     navigation: seedNavigation,
     seo: seedSEO,
-    profile: seedProfile,
+    profile: async () => {
+      await seedProfile();
+      return seedProfilePhoto();
+    },
+    "social-links": seedSocialLinks,
     projects: seedProjects,
     clients: async () => { await seedClients(); return seedClientIcons(); },
     conferences: seedConferences,
@@ -210,18 +183,6 @@ const SettingsTabEnhanced = () => {
     loading: showLoading,
   } = useToast();
   const logEndRef = useRef<HTMLDivElement>(null);
-
-  const handleAvatarSelect = async (url: string) => {
-    try {
-      await updateAvatar({ avatar: url });
-      setProfileData((prev) => ({ ...prev, avatar: url }));
-      setIsAvatarDrawerOpen(false);
-      success("Avatar updated!");
-    } catch (err) {
-      console.error("Failed to update avatar:", err);
-      showError("Failed to update avatar");
-    }
-  };
 
   // Auto-scroll logs
   useEffect(() => {
@@ -251,25 +212,6 @@ const SettingsTabEnhanced = () => {
     return () => window.removeEventListener("hashchange", scrollToHash);
   }, []);
 
-  const handleSaveProfile = async () => {
-    setIsSavingProfile(true);
-    try {
-      await updateProfile({
-        name: profileData.name,
-        bio: profileData.bio,
-        avatar: profileData.avatar || undefined,
-        email: profileData.email || undefined,
-        location: profileData.location || undefined,
-      });
-      success("Profile saved!");
-    } catch (err) {
-      console.error("Failed to save profile:", err);
-      showError("Failed to save profile");
-    } finally {
-      setIsSavingProfile(false);
-    }
-  };
-
   const addLog = (
     message: string,
     type: "info" | "success" | "error" = "info",
@@ -289,7 +231,14 @@ const SettingsTabEnhanced = () => {
       id: "profile",
       label: "Profile",
       icon: User,
-      description: "Site owner name, bio, and social links",
+      description: "Site owner name, bio, and the headshot in the media library",
+    },
+    {
+      id: "social-links",
+      label: "Social & Other Links",
+      icon: Share2,
+      description:
+        "Social profiles plus the extra link-page buttons, with header and footer slots",
     },
     {
       id: "seo",
@@ -474,145 +423,6 @@ const SettingsTabEnhanced = () => {
         ref={contentRef}
         className="flex-1 overflow-y-auto pr-2 space-y-8 scroll-smooth"
       >
-        {/* Profile Section */}
-        <section
-          id="profile"
-          ref={(el) => {
-            sectionRefs.current["profile"] = el;
-          }}
-          className="scroll-mt-6"
-        >
-          <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-accent/10 rounded-lg">
-                <User className="w-5 h-5 text-accent" />
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-ink">Profile</h2>
-                <p className="text-sm text-muted">
-                  Your personal information displayed across the site
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              {/* Avatar */}
-              <div className="flex items-start gap-6">
-                <div className="relative">
-                  <div className="relative w-24 h-24 rounded-full overflow-hidden bg-(--color-muted-accent)">
-                    {profileData.avatar ? (
-                      <Image
-                        src={profileData.avatar}
-                        alt="Avatar"
-                        fill
-                        sizes="96px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-accent/10">
-                        <User className="w-10 h-10 text-accent/50" />
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => setIsAvatarDrawerOpen(true)}
-                    className="absolute -bottom-1 -right-1 p-2 bg-accent text-on-accent rounded-full cursor-pointer hover:bg-accent/90 transition shadow-md"
-                    title="Change photo"
-                  >
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium text-ink">Profile Photo</p>
-                  <p className="text-xs text-muted">
-                    Recommended: Square image, at least 200x200px
-                  </p>
-                  {profileData.avatar && (
-                    <button
-                      onClick={async () => {
-                        try {
-                          await removeAvatarMutation();
-                          setProfileData((prev) => ({ ...prev, avatar: "" }));
-                          success("Photo removed");
-                        } catch (err) {
-                          console.error("Failed to remove avatar:", err);
-                          showError("Failed to remove photo");
-                        }
-                      }}
-                      className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1 mt-2"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                      Remove photo
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Name */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="profile-name"
-                  className="block text-sm font-medium text-ink"
-                >
-                  Name
-                </label>
-                <Input
-                  id="profile-name"
-                  value={profileData.name}
-                  onChange={(e) =>
-                    setProfileData((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                  placeholder="Your name"
-                  className="max-w-md"
-                />
-              </div>
-
-              {/* Bio */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="profile-bio"
-                  className="block text-sm font-medium text-ink"
-                >
-                  Bio
-                </label>
-                <textarea
-                  id="profile-bio"
-                  value={profileData.bio}
-                  onChange={(e) =>
-                    setProfileData((prev) => ({ ...prev, bio: e.target.value }))
-                  }
-                  placeholder="A short bio about yourself"
-                  rows={4}
-                  className="w-full px-3 py-2 bg-(--color-muted-accent) rounded-lg text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
-                />
-                <p className="text-xs text-muted">
-                  {profileData.bio.length}/300 characters
-                </p>
-              </div>
-
-              {/* Save Button */}
-              <div className="pt-2">
-                <Button
-                  onClick={handleSaveProfile}
-                  variant="outline"
-                  disabled={isSavingProfile}
-                  className="gap-2"
-                >
-                  {isSavingProfile ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  Save Profile
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Data Management Section */}
         <section
           id="data-management"
@@ -1021,14 +831,6 @@ Sitemap: https://www.chrislanejones.com/sitemap.xml`}
           </div>
         </section>
       </div>
-
-      <MediaDrawer
-        isOpen={isAvatarDrawerOpen}
-        onClose={() => setIsAvatarDrawerOpen(false)}
-        onSelect={handleAvatarSelect}
-        title="Select Profile Photo"
-        description="Choose a photo from your media library or upload a new one"
-      />
     </div>
   );
 };

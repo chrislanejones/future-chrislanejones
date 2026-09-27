@@ -135,6 +135,23 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `/career`, `/projects/apps`, `/projects/websites` (all redirect now): select each in the SEO
   panel and click Delete — the panel can delete header-only rows now. Keep `/fallback`.
   (2) Settings → Profile is empty in prod and nothing on the public site reads `siteSettings`;
-  wire it up or drop the form. (3) `src/app/admin/components/HtmlEditor.tsx` is unimported
+  wire it up or drop the form. **RESOLVED 09-27-2026** — Profile moved out of Settings into its
+  own "Profile & Social" panel, and the avatar now feeds the home page "My Ramblings" card and
+  the link page. Still needs its one-time seed in prod (Settings → Data Management → Profile). (3) `src/app/admin/components/HtmlEditor.tsx` is unimported
   (the blog uses HtmlEditorEnhanced). (4) The Messages inbox is mostly SEO spam — see the
   rate-limit/Turnstile item in the security follow-ups.
+- **2026-09-27 — Drop the deprecated `siteSettings.socialLinks` object.** Social links live in
+  their own `socialLinks` table now, but the old embedded object
+  (github/linkedin/twitter/codepen/youtube) is still on the production `siteSettings` document,
+  so the schema keeps it as optional. Nothing reads or writes it. Clean-up is a one-line
+  migration that patches the field to `undefined` on the single row, then removes it from
+  `convex/schema.ts` — worth doing on the next Convex migration pass, not on its own.
+- **2026-09-27 — The `X (formerly Twitter)` label renders longer than the old `𝕏`.** One row now
+  feeds the header, the footer and the link page, so the label is shared. The live link page
+  showed the bare `𝕏` glyph while the header used `X (formerly Twitter)` as its accessible name;
+  the descriptive version won because screen readers handle the glyph badly. If the long label
+  crowds the link-page button, rename it in Admin → Profile & Social — it is one field.
+- **2026-09-27 — The link-page card headings are still hard-coded.** `LinkGrid.tsx` now pulls the
+  avatar and every button from Convex, but the `<h1>` job title and `<h2>` tagline above them are
+  still literals in the component. The profile row already has a `bio` field doing nothing —
+  either wire those two headings to Convex or accept they're static and note it.

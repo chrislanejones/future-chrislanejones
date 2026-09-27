@@ -6,6 +6,7 @@ import { FaXTwitter, FaGithub, FaLinkedin, FaCodepen } from "react-icons/fa6";
 import { SiCodeberg } from "react-icons/si";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import { SocialIcon } from "@/lib/social-icons";
 
 export interface NavLink {
   href: string;
@@ -169,9 +170,12 @@ export function useFooterNavSections() {
   }, [convexFooterSections]);
 }
 
+// Fallbacks for the two icon rows. Admin edits live in the Convex `socialLinks`
+// table (Admin → Profile & Social), but a cold query returns undefined and an
+// unseeded table returns [], and an empty header is worse than a stale one.
 export const socialLinks: SocialLink[] = [
   {
-    href: "https://twitter.com/cljwebdev",
+    href: "https://x.com/cljwebdev",
     label: "X (formerly Twitter)",
     icon: <FaXTwitter size={18} />,
   },
@@ -182,7 +186,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     href: "https://codeberg.org/chrislanejones",
-    label: "Codeburg",
+    label: "Codeberg",
     icon: <SiCodeberg size={18} />,
   },
   {
@@ -193,32 +197,39 @@ export const socialLinks: SocialLink[] = [
 ];
 
 export const footerSocialLinks: SocialLink[] = [
-  {
-    href: "https://twitter.com/cljwebdev",
-    label: "X (formerly Twitter)",
-    icon: <FaXTwitter size={18} />,
-  },
-  {
-    href: "https://github.com/chrislanejones",
-    label: "GitHub",
-    icon: <FaGithub size={18} />,
-  },
-  {
-    href: "https://codeberg.org/chrislanejones",
-    label: "Codeburg",
-    icon: <SiCodeberg size={18} />,
-  },
-  {
-    href: "https://www.linkedin.com/in/chrislanejones",
-    label: "LinkedIn",
-    icon: <FaLinkedin size={18} />,
-  },
+  ...socialLinks,
   {
     href: "https://codepen.io/chrislanejones",
     label: "Codepen",
     icon: <FaCodepen size={18} />,
   },
 ];
+
+// Convex rows carry an iconKey string (a React component is not a storable
+// value), so map it through the shared registry on the way out.
+function toSocialLinks(
+  rows: { href: string; label: string; iconKey: string }[] | undefined,
+  fallback: SocialLink[],
+): SocialLink[] {
+  if (!rows || rows.length === 0) return fallback;
+  return rows.map((row) => ({
+    href: row.href,
+    label: row.label,
+    icon: <SocialIcon iconKey={row.iconKey} size={18} />,
+  }));
+}
+
+/** Site header icon row, in the order stored as each link's headerOrder. */
+export function useHeaderSocialLinks(): SocialLink[] {
+  const rows = useQuery(api.socialLinks.getForHeader);
+  return React.useMemo(() => toSocialLinks(rows, socialLinks), [rows]);
+}
+
+/** Site footer icon row, in the order stored as each link's footerOrder. */
+export function useFooterSocialLinks(): SocialLink[] {
+  const rows = useQuery(api.socialLinks.getForFooter);
+  return React.useMemo(() => toSocialLinks(rows, footerSocialLinks), [rows]);
+}
 
 interface NavLinkProps {
   link: NavLink;
