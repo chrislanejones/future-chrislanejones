@@ -26,9 +26,11 @@ import {
   siN8n,
   siPosthog,
   siSentry,
+  siStripe,
+  siDocker,
 } from "simple-icons";
 
-type TechItem = { name: string; icon: { path: string } };
+type TechItem = { name: string; icon?: { path: string }; svg?: ReactNode };
 
 type AiTool = {
   name: string;
@@ -52,6 +54,8 @@ const techStack: TechItem[] = [
   { name: "Convex", icon: siConvex },
   { name: "Posthog", icon: siPosthog },
   { name: "Sentry", icon: siSentry },
+  { name: "Stripe", icon: siStripe },
+  { name: "Docker", icon: siDocker },
 ];
 
 const techStackFuture: TechItem[] = [
@@ -67,7 +71,7 @@ export const aiTools: AiTool[] = [
     svg: (
       <svg
         viewBox="0 0 16 16"
-        className="h-10 w-10"
+        className="h-6 w-6 sm:h-10 sm:w-10"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -81,7 +85,7 @@ export const aiTools: AiTool[] = [
     svg: (
       <svg
         viewBox="0 0 46 32"
-        className="h-10 w-10"
+        className="h-6 w-6 sm:h-10 sm:w-10"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -95,7 +99,7 @@ export const aiTools: AiTool[] = [
     svg: (
       <svg
         viewBox="118 120 480 480"
-        className="h-10 w-10"
+        className="h-6 w-6 sm:h-10 sm:w-10"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -117,7 +121,7 @@ export const aiTools: AiTool[] = [
     svg: (
       <svg
         viewBox="-200.008 -199.727 512 512"
-        className="h-10 w-10"
+        className="h-6 w-6 sm:h-10 sm:w-10"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -129,6 +133,40 @@ export const aiTools: AiTool[] = [
     ),
   },
   { name: "Replicate", icon: siReplicate },
+  {
+    name: "Firecrawl",
+    svg: (
+      <svg
+        viewBox="0 0 50 72"
+        aria-hidden
+        className="h-6 w-6 sm:h-10 sm:w-10"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M41.715 23.193c-2.762.82-4.844 2.675-6.37 4.69-.327.432-1.01.107-.88-.423 2.92-12.007-.937-21.986-12.961-26.898a.803.803 0 0 0-1.085.937c5.47 21.961-17.537 20.109-14.63 45.005.05.427-.43.72-.78.47-1.09-.782-2.307-2.415-3.142-3.562a.502.502 0 0 0-.887.16c-.665 2.404-.98 4.67-.98 6.92 0 8.749 4.497 16.45 11.304 20.915.39.255.89-.11.758-.557a13.5 13.5 0 0 1-.563-3.697c0-.788.05-1.593.173-2.343.285-1.885.94-3.68 2.04-5.314 3.772-5.663 11.334-11.132 10.127-18.56-.078-.47.477-.78.827-.457 5.328 4.868 6.383 11.415 5.508 17.287-.075.51.564.782.887.382a11.6 11.6 0 0 1 2.892-2.587c.27-.168.63-.04.733.26.602 1.752 1.497 3.397 2.342 5.042a13.46 13.46 0 0 1 .905 9.982.502.502 0 0 0 .755.57C45.5 66.95 50 59.248 50 50.494c0-3.043-.532-6.025-1.54-8.82-2.112-5.862-7.472-10.264-6.117-17.904.065-.365-.273-.682-.628-.577" />
+      </svg>
+    ),
+  },
+  {
+    name: "Browserbase",
+    svg: (
+      <svg
+        viewBox="0 0 200 200"
+        aria-hidden
+        className="h-6 w-6 sm:h-10 sm:w-10"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M111.168 116.901H83.168V109.901H111.168V116.901Z" />
+        <path d="M111.168 86.208H83.168V79.208H111.168V86.208Z" />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M200 200H0V0H200V200ZM55.4453 147.815H128.678L145.259 131.234V111.891L131.441 98.0723L142.495 87.0186V69.0557L125.914 52.4756H55.4453V147.815Z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export default function TechStackContent() {
@@ -136,17 +174,19 @@ export default function TechStackContent() {
     <div className="flex flex-col gap-3 h-full">
       <div className="p-3">
         <h3 className="text-ink tracking-tight mb-3">Tech I Love 💖</h3>
-        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-3 min-[420px]:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
           {techStack.map((tech) => (
             <IconBlock key={tech.name} label={tech.name}>
-              <svg
-                aria-hidden
-                viewBox="0 0 24 24"
-                className="h-10 w-10"
-                fill="currentColor"
-              >
-                <path d={tech.icon.path} />
-              </svg>
+              {tech.svg ?? (
+                <svg
+                  aria-hidden
+                  viewBox="0 0 24 24"
+                  className="h-6 w-6 sm:h-10 sm:w-10"
+                  fill="currentColor"
+                >
+                  <path d={tech.icon?.path} />
+                </svg>
+              )}
             </IconBlock>
           ))}
         </div>
@@ -156,17 +196,19 @@ export default function TechStackContent() {
         <h3 className="text-ink tracking-tight mb-3">
           Learning & Tinkering 🔬
         </h3>
-        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-3 min-[420px]:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
           {techStackFuture.map((tech) => (
             <IconBlock key={tech.name} label={tech.name}>
-              <svg
-                aria-hidden
-                viewBox="0 0 24 24"
-                className="h-10 w-10"
-                fill="currentColor"
-              >
-                <path d={tech.icon.path} />
-              </svg>
+              {tech.svg ?? (
+                <svg
+                  aria-hidden
+                  viewBox="0 0 24 24"
+                  className="h-6 w-6 sm:h-10 sm:w-10"
+                  fill="currentColor"
+                >
+                  <path d={tech.icon?.path} />
+                </svg>
+              )}
             </IconBlock>
           ))}
         </div>
@@ -174,7 +216,7 @@ export default function TechStackContent() {
 
       <div className="p-3">
         <h3 className="text-ink tracking-tight mb-3">Current AI Tools 🤖</h3>
-        <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div className="grid grid-cols-3 min-[420px]:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
           {aiTools.map((tool) => (
             <IconBlock key={tool.name} label={tool.name}>
               {tool.svg ||
@@ -182,7 +224,7 @@ export default function TechStackContent() {
                   <svg
                     aria-hidden
                     viewBox="0 0 24 24"
-                    className="h-10 w-10"
+                    className="h-6 w-6 sm:h-10 sm:w-10"
                     fill="currentColor"
                   >
                     <path d={tool.icon.path} />
