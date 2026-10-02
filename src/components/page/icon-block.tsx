@@ -26,13 +26,13 @@ export default function IconBlock({
         ${className}`}
     >
       {/* inner icon centered */}
-      <div className="flex flex-col items-center justify-center h-full w-full p-3">
+      <div className="flex flex-col items-center justify-center h-full w-full p-1.5 sm:p-3">
         <div className="flex items-center justify-center flex-1">
           {children}
         </div>
         <h4
-          className="text-center text-(--color-ink)"
-          style={{ fontSize: "var(--step--1)" }}
+          className="text-center text-(--color-ink) leading-tight wrap-break-word"
+          style={{ fontSize: "min(var(--step--1), 3vw)" }}
         >
           {label}
         </h4>
