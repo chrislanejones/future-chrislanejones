@@ -28,6 +28,7 @@ import {
   siSentry,
   siStripe,
   siDocker,
+  siOpencode,
 } from "simple-icons";
 
 type TechItem = { name: string; icon?: { path: string }; svg?: ReactNode };
@@ -153,6 +154,7 @@ export const aiTools: AiTool[] = [
       </svg>
     ),
   },
+  { name: "OpenCode", icon: siOpencode },
   {
     name: "Gemini",
     svg: (
