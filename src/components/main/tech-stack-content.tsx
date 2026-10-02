@@ -29,6 +29,7 @@ import {
   siStripe,
   siDocker,
   siOpencode,
+  siKubernetes,
 } from "simple-icons";
 
 type TechItem = { name: string; icon?: { path: string }; svg?: ReactNode };
@@ -64,6 +65,7 @@ const techStackFuture: TechItem[] = [
   { name: "Go", icon: siGo },
   { name: "NixOS", icon: siNixos },
   { name: "Svelte", icon: siSvelte },
+  { name: "Kubernetes", icon: siKubernetes },
 ];
 
 export const aiTools: AiTool[] = [
