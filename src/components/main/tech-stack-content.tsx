@@ -67,20 +67,6 @@ const techStackFuture: TechItem[] = [
 
 export const aiTools: AiTool[] = [
   {
-    name: "Gemini 3.1 Pro",
-    svg: (
-      <svg
-        viewBox="0 0 16 16"
-        className="h-6 w-6 sm:h-10 sm:w-10"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z" />
-      </svg>
-    ),
-  },
-
-  {
     name: "Claude Code",
     svg: (
       <svg
@@ -164,6 +150,19 @@ export const aiTools: AiTool[] = [
           clipRule="evenodd"
           d="M200 200H0V0H200V200ZM55.4453 147.815H128.678L145.259 131.234V111.891L131.441 98.0723L142.495 87.0186V69.0557L125.914 52.4756H55.4453V147.815Z"
         />
+      </svg>
+    ),
+  },
+  {
+    name: "Gemini 3.1 Pro",
+    svg: (
+      <svg
+        viewBox="0 0 16 16"
+        className="h-6 w-6 sm:h-10 sm:w-10"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z" />
       </svg>
     ),
   },
