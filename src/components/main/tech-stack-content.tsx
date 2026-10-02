@@ -154,7 +154,7 @@ export const aiTools: AiTool[] = [
     ),
   },
   {
-    name: "Gemini 3.1 Pro",
+    name: "Gemini",
     svg: (
       <svg
         viewBox="0 0 16 16"
