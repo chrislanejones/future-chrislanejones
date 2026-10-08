@@ -73,7 +73,7 @@ function IconButtons({
               rel="noopener noreferrer"
               aria-label={social.label}
             >
-              {social.icon}
+              <span aria-hidden="true">{social.icon}</span>
             </a>
           </Button>
         );

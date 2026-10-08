@@ -45,7 +45,7 @@ const QuoteImage = ({ src, alt }: { src: string; alt: string }) => (
 
 const MARQUEE_INDEX = 0; // index of the scrolling marquee quote
 
-const QUOTES: ReactNode[] = [
+export const QUOTES: ReactNode[] = [
   <MarqueeQuote key="marquee">
     I still mourn the death of the <Code>&lt;marquee&gt;</Code> tag.
   </MarqueeQuote>,

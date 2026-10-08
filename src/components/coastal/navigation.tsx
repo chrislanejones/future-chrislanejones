@@ -1,0 +1,198 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowUpRight, ChevronDown, Menu, Waves } from "lucide-react";
+import {
+  useHeaderNavItems,
+  useFooterNavSections,
+} from "@/components/page/links";
+import { SocialIconRow } from "@/components/page/social-icon-row";
+import { SimpleModeToggle } from "@/components/simple-mode-toggle";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import styles from "./coastal.module.css";
+
+function Brand() {
+  return (
+    <Link
+      href="/"
+      className={styles.brand}
+      aria-label="Chris Lane Jones - Home"
+    >
+      <Waves aria-hidden="true" strokeWidth={1.5} />
+      <span>
+        Chris Lane Jones
+        <span className={styles.brandRole}>Senior web engineer</span>
+      </span>
+    </Link>
+  );
+}
+
+export function CoastalHeader() {
+  const items = useHeaderNavItems();
+  const [open, setOpen] = useState(false);
+  return (
+    <header className={`${styles.container} ${styles.header}`}>
+      <a href="#main-content" className={styles.skipLink}>
+        Skip to main content
+      </a>
+      <Brand />
+      <nav
+        id="main-navigation"
+        aria-label="Main navigation"
+        className={styles.desktopNav}
+      >
+        {items.map((item) =>
+          item.children ? (
+            <DropdownMenu key={item.label}>
+              <DropdownMenuTrigger className={styles.navLink}>
+                {item.label}
+                <ChevronDown size={13} aria-hidden="true" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className={styles.dropdown}
+                align="start"
+                sideOffset={12}
+              >
+                {item.children.map((child) => (
+                  <DropdownMenuItem asChild key={child.href}>
+                    <Link
+                      href={child.href!}
+                      target={child.isExternal ? "_blank" : undefined}
+                      rel={child.isExternal ? "noopener noreferrer" : undefined}
+                    >
+                      {child.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link
+              key={item.label}
+              href={item.href!}
+              className={`${styles.navLink} ${item.href === "/" ? styles.activeNav : ""} ${item.href === "/contact" ? styles.contactNav : ""}`}
+              aria-current={item.href === "/" ? "page" : undefined}
+              target={item.isExternal ? "_blank" : undefined}
+              rel={item.isExternal ? "noopener noreferrer" : undefined}
+            >
+              {item.label}
+              {item.href === "/contact" && (
+                <ArrowUpRight size={16} aria-hidden="true" />
+              )}
+            </Link>
+          ),
+        )}
+      </nav>
+      <div className={styles.headerActions}>
+        <SimpleModeToggle />
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger
+            className={styles.menuButton}
+            aria-label="Open navigation"
+          >
+            <Menu size={22} aria-hidden="true" />
+          </SheetTrigger>
+          <SheetContent className={styles.mobileMenu}>
+            <SheetTitle>Explore the site</SheetTitle>
+            <SheetDescription className={styles.menuDescription}>
+              Work, writing, and a little life outside the editor.
+            </SheetDescription>
+            <nav aria-label="Mobile navigation" className={styles.mobileLinks}>
+              {items.map((item) => (
+                <div key={item.label}>
+                  {item.children ? (
+                    <>
+                      <p>{item.label}</p>
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href!}
+                          onClick={() => setOpen(false)}
+                          target={child.isExternal ? "_blank" : undefined}
+                          rel={
+                            child.isExternal ? "noopener noreferrer" : undefined
+                          }
+                        >
+                          {child.label}
+                          <ArrowUpRight size={16} aria-hidden="true" />
+                        </Link>
+                      ))}
+                    </>
+                  ) : (
+                    <Link
+                      href={item.href!}
+                      onClick={() => setOpen(false)}
+                      target={item.isExternal ? "_blank" : undefined}
+                      rel={item.isExternal ? "noopener noreferrer" : undefined}
+                    >
+                      {item.label}
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </header>
+  );
+}
+
+export function CoastalFooter() {
+  const sections = useFooterNavSections();
+  return (
+    <footer className={`${styles.container} ${styles.footer}`}>
+      <div className={styles.footerTop}>
+        <div className={styles.footerBrand}>
+          <Brand />
+          <p>
+            I consult, design, and develop web interfaces for businesses and
+            government agencies.
+          </p>
+          <div className={styles.socials}>
+            <SocialIconRow surface="footer" />
+          </div>
+        </div>
+        <div className={styles.footerLinks}>
+          {sections.map((section) => (
+            <div key={section.title}>
+              <h3>{section.title}</h3>
+              {section.links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  target={link.isExternal ? "_blank" : undefined}
+                  rel={link.isExternal ? "noopener noreferrer" : undefined}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.footerBottom}>
+        <span>
+          © {new Date().getFullYear()} Chris Lane Jones. All rights reserved.
+        </span>
+        <a href="#main-content">
+          Back to top <ArrowUpRight size={14} aria-hidden="true" />
+        </a>
+      </div>
+    </footer>
+  );
+}

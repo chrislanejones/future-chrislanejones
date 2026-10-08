@@ -1,0 +1,425 @@
+"use client";
+
+import { Component, type ReactNode, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  Code2,
+  RefreshCw,
+} from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { clients as staticClients } from "@/data/clients";
+import GalleryDrawer, {
+  type GalleryPhoto,
+} from "@/components/page/gallery-drawer";
+import { QUOTES } from "@/components/main/quote-content";
+import { Reveal } from "./reveal";
+import styles from "./coastal.module.css";
+
+// Public content remains reactive and admin-managed. Each section can recover
+// independently if its query fails, without blanking the rest of the homepage.
+export class ContentBoundary extends Component<
+  { children: ReactNode; fallback: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
+
+const plain = (text: string) => text.replace(/[\u2013\u2014]/g, "-");
+
+type Project = {
+  title: string;
+  description: string;
+  image?: string;
+  githubUrl?: string;
+  codebergUrl?: string;
+  vercelUrl?: string;
+  customUrl?: string;
+  features?: string[];
+};
+const fallbackProjects: Project[] = [
+  {
+    title: "Image Horse",
+    description:
+      "A browser-based image annotation and editing tool powered by Rust/WASM for pixel-level operations and React + TypeScript for the UI.",
+    image: "/projects/Image-Horse-App.webp",
+    githubUrl:
+      "https://github.com/chrislanejones/multi-image-compress-and-edit",
+    vercelUrl: "https://edit.imagehorse.app/",
+  },
+  {
+    title: "Go Web Crawler",
+    description:
+      "A Go-based crawler that scans websites and documents for the links and text you need.",
+    image: "/projects/Web-Crawler-Golang-App.webp",
+    githubUrl: "https://github.com/chrislanejones/webcrawler-go",
+  },
+  {
+    title: "Vim/Neovim Shortcut Finder",
+    description:
+      "Find and learn Vim commands with an interactive, searchable shortcut reference.",
+    image: "/projects/MPC-Vim-Filter-Tool.webp",
+    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
+    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
+  },
+];
+
+function ProjectView({ projects }: { projects: Project[] }) {
+  return (
+    <div className={styles.projectGrid}>
+      {projects.slice(0, 3).map((project, index) => {
+        const url =
+          project.customUrl ||
+          project.vercelUrl ||
+          project.githubUrl ||
+          project.codebergUrl ||
+          "/projects";
+        const external = /^https?:\/\//.test(url);
+        return (
+          <Reveal
+            key={project.title}
+            className={
+              index === 0 ? styles.primaryProject : styles.secondaryProject
+            }
+            delay={index * 0.06}
+          >
+            <article className={styles.project}>
+              <a
+                href={url}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                className={styles.projectImage}
+                aria-label={`Explore ${plain(project.title)}`}
+              >
+                {project.image ? (
+                  <Image
+                    src={project.image}
+                    alt={`${plain(project.title)} project preview`}
+                    fill
+                    sizes={
+                      index === 0
+                        ? "(max-width: 767px) 90vw, 60vw"
+                        : "(max-width: 767px) 90vw, 32vw"
+                    }
+                    className={styles.previewImage}
+                  />
+                ) : (
+                  <span className={styles.noPreview}>
+                    Explore {plain(project.title)}
+                  </span>
+                )}
+                <span className={styles.imageAction}>
+                  <ArrowUpRight size={24} aria-hidden="true" />
+                </span>
+              </a>
+              <div className={styles.projectInfo}>
+                <h3>
+                  <a
+                    href={url}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noopener noreferrer" : undefined}
+                  >
+                    {plain(project.title)}
+                  </a>
+                </h3>
+                <p>{plain(project.description)}</p>
+                {index === 0 && (
+                  <div className={styles.projectLinks}>
+                    <a
+                      href={url}
+                      target={external ? "_blank" : undefined}
+                      rel={external ? "noopener noreferrer" : undefined}
+                      className={styles.textLink}
+                    >
+                      Explore project{" "}
+                      <ArrowUpRight size={17} aria-hidden="true" />
+                    </a>
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.sourceLink}
+                      >
+                        <Code2 size={17} aria-hidden="true" />
+                        Source code
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </article>
+          </Reveal>
+        );
+      })}
+    </div>
+  );
+}
+function LiveProjects() {
+  const projects = useQuery(api.projects.getFeatured);
+  return (
+    <ProjectView projects={projects?.length ? projects : fallbackProjects} />
+  );
+}
+export function CoastalProjects() {
+  return (
+    <ContentBoundary fallback={<ProjectView projects={fallbackProjects} />}>
+      <LiveProjects />
+    </ContentBoundary>
+  );
+}
+
+type Client = { name: string; logo: string; url: string; logoAlt?: string };
+function ClientView({ clients }: { clients: Client[] }) {
+  const [page, setPage] = useState(0);
+  const pages = Math.ceil(clients.length / 6);
+  const safePage = Math.min(page, pages - 1);
+  return (
+    <div className={styles.clientSection}>
+      <div className={styles.clientHeading}>
+        <h2>Past and present clients</h2>
+        <div className={styles.carouselButtons}>
+          <button
+            type="button"
+            onClick={() => setPage((safePage - 1 + pages) % pages)}
+            aria-label="Previous clients"
+            disabled={pages < 2}
+          >
+            <ArrowLeft size={18} aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setPage((safePage + 1) % pages)}
+            aria-label="Next clients"
+            disabled={pages < 2}
+          >
+            <ArrowRight size={18} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+      <div className={styles.clientLogos}>
+        {clients.slice(safePage * 6, safePage * 6 + 6).map((client) => (
+          <a
+            href={client.url}
+            key={client.name}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={client.name}
+          >
+            <Image
+              src={client.logo}
+              alt={client.logoAlt || client.name}
+              width={170}
+              height={70}
+              className={styles.clientLogo}
+            />
+          </a>
+        ))}
+      </div>
+      <span className="sr-only" aria-live="polite">
+        Showing clients {safePage * 6 + 1} to{" "}
+        {Math.min((safePage + 1) * 6, clients.length)} of {clients.length}
+      </span>
+    </div>
+  );
+}
+function LiveClients() {
+  const clients = useQuery(api.clients.getAll);
+  return <ClientView clients={clients?.length ? clients : staticClients} />;
+}
+export function CoastalClients() {
+  return (
+    <ContentBoundary fallback={<ClientView clients={staticClients} />}>
+      <LiveClients />
+    </ContentBoundary>
+  );
+}
+
+function JournalView({
+  posts,
+}: {
+  posts?: { _id: string; title: string; slug: string; createdAt: number }[];
+}) {
+  return (
+    <div className={styles.journal}>
+      <h3>Latest writing</h3>
+      <p>Things I learn, build, and occasionally break.</p>
+      <div className={styles.journalPosts} aria-busy={posts === undefined}>
+        {posts === undefined ? (
+          [0, 1].map((index) => (
+            <div
+              key={index}
+              className={styles.postSkeleton}
+              aria-hidden="true"
+            />
+          ))
+        ) : posts.length ? (
+          [...posts]
+            .sort((a, b) => b.createdAt - a.createdAt)
+            .slice(0, 2)
+            .map((post) => (
+              <Link key={post._id} href={`/blog/${post.slug}`}>
+                <span>
+                  {plain(post.title)}
+                  <time dateTime={new Date(post.createdAt).toISOString()}>
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "short",
+                      year: "numeric",
+                      timeZone: "UTC",
+                    }).format(post.createdAt)}
+                  </time>
+                </span>
+                <ArrowUpRight size={22} aria-hidden="true" />
+              </Link>
+            ))
+        ) : (
+          <p className={styles.emptyPosts}>
+            More writing is on the way. Browse the blog for articles and
+            tutorials.
+          </p>
+        )}
+      </div>
+      <Link href="/blog" className={styles.textLink}>
+        Read the blog <ArrowUpRight size={17} aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+function LiveJournal() {
+  const posts = useQuery(api.blogPosts.getAllPosts);
+  return <JournalView posts={posts} />;
+}
+export function CoastalJournal() {
+  return (
+    <ContentBoundary fallback={<JournalView posts={[]} />}>
+      <LiveJournal />
+    </ContentBoundary>
+  );
+}
+
+const photos: GalleryPhoto[] = [
+  {
+    src: "/gallery/fan-gallery/Theo-and-I-at-RenderATL.webp",
+    alt: "Chris and Theo Browne at RenderATL",
+    description: "Theo Browne and I at Render 2024",
+  },
+  {
+    src: "/gallery/fan-gallery/Jason-Lengstorf-and-I.webp",
+    alt: "Chris and Jason Lengstorf at Epic Web",
+    description: "Jason Lengstorf and I at Epic Web Conf 2025",
+  },
+  {
+    src: "/gallery/fan-gallery/Group-Photo-With-Kent-C-Dodds-at-THAT-Conf.webp",
+    alt: "Chris, Kent C. Dodds, and friends at THAT Conference",
+    description: "With Kent C. Dodds at THAT Conf WI 2024",
+  },
+  {
+    src: "/gallery/fan-gallery/Kevin-Powell-And-I-THAT-Conf.webp",
+    alt: "Chris and Kevin Powell at THAT Conference",
+    description: "Kevin Powell and I at THAT Conf WI 2025",
+  },
+  {
+    src: "/gallery/fan-gallery/ChrisSev-Avindra-and-I-ATO-2024.webp",
+    alt: "Chris with Chris Sev and Avindra Fernando",
+    description: "Chris Sev, Avindra Fernando, and I at ATO 2024",
+  },
+];
+function GalleryView({ items }: { items: GalleryPhoto[] }) {
+  return (
+    <div className={styles.gallery}>
+      <div className={styles.galleryImage}>
+        <Image
+          src={items[0].src}
+          alt={items[0].alt}
+          fill
+          sizes="(max-width: 767px) 90vw, 30vw"
+          className={styles.coverImage}
+        />
+      </div>
+      <div className={styles.galleryFooter}>
+        <h3>Conference fan shots</h3>
+        <GalleryDrawer
+          photos={items}
+          title="Conference fan shots"
+          animationDelay={0}
+        />
+      </div>
+    </div>
+  );
+}
+function LiveGallery() {
+  const items = useQuery(api.homeGallery.getGalleryPhotos);
+  return <GalleryView items={items?.length ? items : photos} />;
+}
+export function CoastalGallery() {
+  return (
+    <ContentBoundary fallback={<GalleryView items={photos} />}>
+      <LiveGallery />
+    </ContentBoundary>
+  );
+}
+
+function RamblingsView({
+  avatar = "/Professional-Photo-of-Chris-Lane-Jones.webp",
+  name = "Chris Lane Jones",
+}: {
+  avatar?: string;
+  name?: string;
+}) {
+  const [index, setIndex] = useState(1);
+  return (
+    <div className={styles.ramblings}>
+      <div className={styles.ramblingsHeading}>
+        <span>My ramblings</span>
+        <button
+          type="button"
+          className={styles.circleButton}
+          aria-label="New quote"
+          onClick={() => setIndex((index + 1) % QUOTES.length)}
+        >
+          <RefreshCw size={17} aria-hidden="true" />
+        </button>
+      </div>
+      <blockquote aria-live="polite">{QUOTES[index]}</blockquote>
+      <Link href="/about" className={styles.quoteAuthor}>
+        <Image
+          src={avatar}
+          alt={`${name} profile photo`}
+          width={44}
+          height={44}
+        />
+        <span>
+          {name}
+          <span>A little less serious, off the clock.</span>
+        </span>
+        <ArrowUpRight size={20} aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
+function LiveRamblings() {
+  const profile = useQuery(api.siteSettings.getProfile);
+  return (
+    <RamblingsView
+      avatar={profile?.avatar || undefined}
+      name={profile?.name || undefined}
+    />
+  );
+}
+export function CoastalRamblings() {
+  return (
+    <ContentBoundary fallback={<RamblingsView />}>
+      <LiveRamblings />
+    </ContentBoundary>
+  );
+}
