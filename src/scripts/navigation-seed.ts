@@ -72,7 +72,6 @@ export const staticFooterNavLinks: SeedFooterNavSection[] = [
       { href: "/site-map", label: "Change Log / Site Map" },
       { href: "/admin", label: "Admin" },
       { href: "/404", label: "404 Music Lounge" },
-      { href: "https://old.chrislanejones.com", label: "Old Website", isExternal: true },
     ],
   },
 ];

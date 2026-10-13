@@ -267,44 +267,6 @@ export const reorderFooterNavSections = mutation({
   },
 });
 
-// One-time migration: add Old Website link to Resources footer section
-export const addOldWebsiteLink = mutation({
-  args: {},
-  handler: async (ctx) => {
-    await requireAuth(ctx);
-    const sections = await ctx.db.query("footerNavSections").collect();
-    const resourcesSection = sections.find((s) => s.title === "Resources");
-    if (!resourcesSection) return "Resources section not found";
-
-    const existingLinks = await ctx.db
-      .query("footerNavLinks")
-      .filter((q) => q.eq(q.field("sectionId"), resourcesSection._id))
-      .collect();
-
-    const alreadyExists = existingLinks.some(
-      (l) => l.href === "https://old.chrislanejones.com"
-    );
-    if (alreadyExists) return "Link already exists";
-
-    const maxOrder =
-      existingLinks.length > 0
-        ? Math.max(...existingLinks.map((l) => l.order)) + 1
-        : 0;
-
-    await ctx.db.insert("footerNavLinks", {
-      sectionId: resourcesSection._id,
-      label: "Old Website",
-      href: "https://old.chrislanejones.com",
-      isExternal: true,
-      order: maxOrder,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    });
-
-    return "Old website link added!";
-  },
-});
-
 // --- Seeding Mutations ---
 export const seedNavigationData = mutation({
   args: {},
