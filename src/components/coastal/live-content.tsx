@@ -340,18 +340,7 @@ function RamblingsView({
 }) {
   const [index, setIndex] = useState(1);
   return (
-    <div className={styles.ramblings}>
-      <div className={styles.ramblingsHeading}>
-        <span>My ramblings</span>
-        <button
-          type="button"
-          className={styles.circleButton}
-          aria-label="New quote"
-          onClick={() => setIndex((index + 1) % QUOTES.length)}
-        >
-          <RefreshCw size={17} aria-hidden="true" />
-        </button>
-      </div>
+    <section className={styles.ramblings} aria-labelledby="ramblings-title">
       <div className={styles.quoteBody}>
         <blockquote aria-live="polite">{QUOTES[index]}</blockquote>
         <div className={styles.quoteSizer} aria-hidden="true" inert>
@@ -362,20 +351,29 @@ function RamblingsView({
           ))}
         </div>
       </div>
-      <Link href="/about" className={styles.quoteAuthor}>
-        <Image
-          src={avatar}
-          alt={`${name} profile photo`}
-          width={44}
-          height={44}
-        />
-        <span>
-          {name}
-          <span>A little less serious, off the clock.</span>
-        </span>
-        <ArrowUpRight size={20} aria-hidden="true" />
-      </Link>
-    </div>
+      <div className={styles.quoteFooter}>
+        <Link href="/about" className={styles.quoteAuthor}>
+          <Image
+            src={avatar}
+            alt={`${name} profile photo`}
+            width={44}
+            height={44}
+          />
+          <span>
+            {name}
+            <h3 id="ramblings-title">My ramblings</h3>
+          </span>
+        </Link>
+        <button
+          type="button"
+          className={styles.circleButton}
+          aria-label="New quote"
+          onClick={() => setIndex((index + 1) % QUOTES.length)}
+        >
+          <RefreshCw size={17} aria-hidden="true" />
+        </button>
+      </div>
+    </section>
   );
 }
 function LiveRamblings() {

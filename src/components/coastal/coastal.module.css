@@ -676,23 +676,51 @@
 .ramblings {
   border-radius: 20px;
   background: transparent;
-  padding: 28px 32px;
+  /* No side padding: the speech bubble runs the full column width, matching the fan-shots card below. */
+  padding: 28px 0;
   height: 100%;
   min-height: 242px;
   display: flex;
   flex-direction: column;
 }
-.ramblingsHeading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  font-size: 12px;
-  color: var(--coast-muted);
-}
+/* The quote is a speech bubble; its tail points down at the avatar in the footer row.
+ * The avatar sits at the bubble's left edge at every width, so the tail offset is a constant:
+ * --tail-x is the avatar's center (48px avatar / 2). */
 .quoteBody {
+  --tail-x: 24px;
+  --tail-w: 34px;
+  --tail-h: 24px;
+  position: relative;
   display: grid;
-  margin: 25px 0 28px;
+  margin: 0 0 calc(var(--tail-h) + 12px);
+  padding: clamp(18px, 2.6vw, 30px) clamp(20px, 3vw, 34px);
+  border: 1px solid var(--coast-line);
+  border-radius: clamp(20px, 2.4vw, 32px);
+  background: var(--coast-panel);
+  box-shadow: 0 18px 30px -24px #173f4a59;
+}
+.quoteBody::before,
+.quoteBody::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--tail-x) - 2px);
+  width: var(--tail-w);
+  height: var(--tail-h);
+  /* a tail that leans toward the avatar: vertical left edge, slanted right edge */
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  pointer-events: none;
+}
+/* outline layer, then the fill layer 1.5px inside it so the bubble border reads continuous */
+.quoteBody::before {
+  bottom: calc(-1 * var(--tail-h));
+  background: var(--coast-line);
+}
+.quoteBody::after {
+  bottom: calc(-1 * var(--tail-h) + 2px);
+  left: calc(var(--tail-x) - 0.5px);
+  width: calc(var(--tail-w) - 3px);
+  height: calc(var(--tail-h) - 1px);
+  background: var(--coast-panel);
 }
 .quoteBody code {
   font-size: 0.85em;
@@ -712,6 +740,9 @@
 .quoteSizer * {
   animation: none !important;
 }
+.ramblings blockquote {
+  align-self: center;
+}
 .ramblings blockquote,
 .quoteMeasure {
   grid-area: 1 / 1;
@@ -721,16 +752,40 @@
   line-height: 1.22;
   letter-spacing: -0.03em;
 }
+/* Bottom row: face, name, "My ramblings" on the left; the new-quote spin button on the right. */
+.quoteFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: auto;
+}
 .quoteAuthor {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: auto;
+  min-width: 0;
   font-size: 13px;
 }
+.quoteAuthor h3 {
+  margin: 3px 0 0;
+  color: var(--coast-muted);
+  font-size: 11px;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+}
+:global(.dark) .quoteFooter .circleButton {
+  color: #ffffff;
+  background: #235967;
+  border-color: #497f88;
+}
+:global(.dark) .quoteFooter .circleButton:hover {
+  background: #2b6b79;
+}
 .quoteAuthor img {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
   object-fit: cover;
 }
@@ -739,9 +794,6 @@
   color: var(--coast-muted);
   font-size: 11px;
   margin-top: 3px;
-}
-.quoteAuthor > svg {
-  margin-left: auto;
 }
 .music {
   --coast-accent: #235967;
@@ -1832,7 +1884,7 @@
     gap: 28px;
   }
   .ramblings {
-    padding: 23px;
+    padding: 23px 0;
     min-height: 230px;
   }
   .ramblings blockquote,

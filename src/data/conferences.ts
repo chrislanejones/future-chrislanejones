@@ -62,7 +62,7 @@ export const conferences: Conference[] = [
     venue: "Carolina Theatre",
     url: "https://allthingsai.org/",
     topics: ["AI/ML", "Open Source", "MLOps", "Safety"],
-    coverImage: "/conferences/All-Things-Open-AI-2025-Transparent-Faces.webp",
+    coverImage: "/conferences/All-Things-Open-AI-2025.webp",
     summary:
       "All Things Open.AI is a practitioner-focused spinoff from the All Things Open team, created to explore the real-world impact of AI across tooling, platforms, and organizations. The inaugural 2025 event ran two days at the Carolina Theatre in Durham, bringing together engineers, data scientists, and product leaders for dense, vendor-neutral content on the AI stack.\n\nTalks emphasized applied machine learning, model governance, safety and security, and the intersection of open source with rapidly evolving AI tooling. The format mirrored ATO's community ethos—multi-track sessions, hands-on workshops, and hallway track networking—aimed at helping teams ship responsible AI in production.",
   },
