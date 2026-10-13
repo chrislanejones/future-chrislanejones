@@ -13,9 +13,9 @@
 
   --color-surface-hover: #f3f4f6; /* gray-100, super pale for hover */
 
-  --color-accent: #6ea34d; /* green-500, brighter & fresher */
+  --color-accent: #235967; /* coastal teal, same as the Contact button */
   --color-accent-alt: #3b82f6; /* blue-500 */
-  --color-on-accent: #ffffff;
+  --color-on-accent: #f8fbfa;
 
   --color-border: #e5e7eb; /* gray-200, subtle */
   --radius: 12px;
@@ -56,9 +56,9 @@
 
   --color-surface-hover: #1a1e24;
 
-  --color-accent: #6ea34d; /* Tailwind green-400, softer neon */
+  --color-accent: #a7d3d7; /* coastal light teal for dark mode */
   --color-accent-alt: #60a5fa; /* Tailwind blue-400 */
-  --color-on-accent: #0b0d10; /* dark text on accent */
+  --color-on-accent: #163b45; /* dark text on the light teal */
 
   --color-border: #1f242b;
   --color-focus-ring: #ffffff; /* near-white — high contrast on dark backgrounds */

@@ -313,7 +313,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 text-green-500"
+              className="flex items-center gap-2 text-(--color-accent)"
             >
               <CheckCircle className="w-5 h-5" />
               <span className="">Message sent successfully!</span>
