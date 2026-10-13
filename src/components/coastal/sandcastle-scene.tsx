@@ -72,7 +72,10 @@ function CameraFit() {
 const SHELL_KINDS: ShellKind[] = ["scallop", "clam", "spiral"];
 type Shells = Record<ShellKind, BufferGeometry>;
 
-function SandPiece({ piece, texture, shells, dark, elevation = 0 }: { piece: CastlePiece; texture: Texture; shells: Shells; dark: boolean; elevation?: number }) {
+type Links = { n: boolean; e: boolean; s: boolean; w: boolean };
+const HALF = SPACING / 2;
+
+function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { piece: CastlePiece; texture: Texture; shells: Shells; dark: boolean; elevation?: number; links?: Links }) {
   const color = dark ? "#bca47a" : "#dfc491";
   const material = <meshStandardMaterial color={color} map={texture} roughness={1} />;
   const flag = useMemo(() => {
@@ -80,10 +83,12 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0 }: { piece: Cas
     shape.moveTo(0, 0); shape.lineTo(.56, -.16); shape.lineTo(0, -.32); shape.closePath();
     return shape;
   }, []);
-  const stacked = piece.level === 1;
+  const stacked = piece.level > 0;
+  // Each story narrows a little so the stack reads as sand pressed on sand.
+  const taper = piece.level === 2 ? .68 : .82;
   return (
-    <group position={[piece.x * SPACING, 0, piece.z * SPACING]} rotation={[0, piece.rotated ? Math.PI / 2 : 0, 0]}>
-      {piece.kind === "tower" && <group position={[0, elevation, 0]} scale={stacked ? [.82, 1, .82] : 1}>
+    <group position={[piece.x * SPACING, 0, piece.z * SPACING]} rotation={[0, piece.kind === "wall" && piece.rotated ? Math.PI / 2 : 0, 0]}>
+      {piece.kind === "tower" && <group position={[0, elevation, 0]} scale={stacked ? [taper, 1, taper] : 1}>
         {!stacked && <mesh position={[0, .08, 0]} scale={[1, .12, 1]} receiveShadow>
           <sphereGeometry args={[.55, 24, 10]} />{material}
         </mesh>}
@@ -101,7 +106,7 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0 }: { piece: Cas
         })}
         <mesh position={[0, .87, .37]}><boxGeometry args={[.1, .23, .018]} /><meshStandardMaterial color="#756045" /></mesh>
       </group>}
-      {piece.kind === "bucket" && <group position={[0, elevation, 0]} scale={stacked ? [.8, 1, .8] : 1}>
+      {piece.kind === "bucket" && <group position={[0, elevation, 0]} scale={stacked ? [taper, 1, taper] : 1}>
         {/* A bucket mold: wider at the base, with the ridges of the bucket pressed into the sand. */}
         {!stacked && <mesh position={[0, .07, 0]} scale={[1.1, .11, 1.1]} receiveShadow>
           <sphereGeometry args={[.55, 24, 10]} />{material}
@@ -119,7 +124,23 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0 }: { piece: Cas
           <sphereGeometry args={[.09, 12, 8]} />{material}
         </mesh>
       </group>}
-      {piece.kind === "moat" && <>
+      {piece.kind === "moat" && (links && (links.n || links.e || links.s || links.w) ? <>
+        {/* Linked moats run to the tile edge, so neighbors join into lines, corners, and squares. */}
+        {[{ on: links.n, pos: [0, 0, -HALF / 2] as const, size: [.42, HALF] as const },
+          { on: links.s, pos: [0, 0, HALF / 2] as const, size: [.42, HALF] as const },
+          { on: links.e, pos: [HALF / 2, 0, 0] as const, size: [HALF, .42] as const },
+          { on: links.w, pos: [-HALF / 2, 0, 0] as const, size: [HALF, .42] as const },
+          { on: true, pos: [0, 0, 0] as const, size: [.42, .42] as const }].filter(part => part.on).map((part, i) => <group key={i} position={[part.pos[0], 0, part.pos[2]]}>
+          <mesh position={[0, .004, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+            <planeGeometry args={[part.size[0] + .16, part.size[1] + .16]} />
+            <meshStandardMaterial color={dark ? "#6a5b45" : "#c9ad7a"} map={texture} roughness={1} />
+          </mesh>
+          <mesh position={[0, .008, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+            <planeGeometry args={[part.size[0], part.size[1]]} />
+            <meshStandardMaterial color={dark ? "#4a9aa0" : "#86c2c2"} roughness={.3} metalness={.1} />
+          </mesh>
+        </group>)}
+      </> : <>
         <mesh position={[0, .005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <ringGeometry args={[.2, .52, 48]} />
           <meshStandardMaterial color={dark ? "#4a9aa0" : "#86c2c2"} roughness={.3} metalness={.1} />
@@ -135,7 +156,7 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0 }: { piece: Cas
         <mesh position={[0, .04, 0]} scale={[1, .35, 1]} castShadow receiveShadow>
           <sphereGeometry args={[.2, 20, 10]} />{material}
         </mesh>
-      </>}
+      </>)}
       {piece.kind === "shell" && <group position={[.14, elevation + .02, .1]} rotation={[-Math.PI / 2, 0, (piece.id * 1.7) % (Math.PI * 2)]} scale={.3}>
         <mesh geometry={shells[SHELL_KINDS[piece.id % 3]]} castShadow>
           <meshStandardMaterial color={piece.id % 2 ? "#f4e4cf" : "#e9c9b6"} map={texture} roughness={.75} />
@@ -162,6 +183,7 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
   const press = useRef<{ x: number; y: number } | null>(null);
   const clock = useRef(0);
   const { invalidate } = useThree();
+  const moats = useMemo(() => new Set(pieces.filter(p => p.kind === "moat").map(p => `${p.x},${p.z}`)), [pieces]);
   const texture = useMemo(() => makeShellTexture(), []);
   const shells = useMemo(() => makeShellGeometries(), []);
   useEffect(() => () => { texture.dispose(); Object.values(shells).forEach(geometry => geometry.dispose()); }, [texture, shells]);
@@ -183,7 +205,8 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.025, 0]} receiveShadow>
       <planeGeometry args={[80, 80]} /><shadowMaterial opacity={dark ? .22 : .16} transparent />
     </mesh>
-    {pieces.map(piece => <SandPiece key={piece.id} piece={piece} texture={texture} shells={shells} dark={dark} elevation={pieceElevation(pieces, piece)} />)}
+    {pieces.map(piece => <SandPiece key={piece.id} piece={piece} texture={texture} shells={shells} dark={dark} elevation={pieceElevation(pieces, piece)}
+      links={piece.kind === "moat" ? { n: moats.has(`${piece.x},${piece.z - 1}`), s: moats.has(`${piece.x},${piece.z + 1}`), e: moats.has(`${piece.x + 1},${piece.z}`), w: moats.has(`${piece.x - 1},${piece.z}`) } : undefined} />)}
     <group position={[-2.2, 0, 1.5]} scale={.65}><Bucket /></group>
     <group ref={marker}>
       <mesh rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[.43, .47, 48]} /><meshBasicMaterial color={tool === "erase" ? "#ed9c84" : "#fff4d9"} transparent opacity={.85} depthWrite={false} /></mesh>

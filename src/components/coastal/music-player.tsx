@@ -14,9 +14,9 @@ const radioScript = localFont({
 
 const tracks = [
   {
-    title: "Afterlife",
-    artist: "Sharon Van Etten",
-    src: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
+    title: "Good Vibrations",
+    artist: "The Beach Boys",
+    src: "/music/audio/The-Beach-Boys-Good-Vibrations.mp3",
   },
   {
     title: "Praise",
@@ -27,6 +27,11 @@ const tracks = [
     title: "After The Earthquake",
     artist: "Alvvays",
     src: "/music/audio/alvvays-after-the-earthquake.mp3",
+  },
+  {
+    title: "Afterlife",
+    artist: "Sharon Van Etten",
+    src: "/music/audio/Sharon-Van-Etten-Afterlife.mp3",
   },
 ];
 

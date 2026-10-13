@@ -36,6 +36,24 @@ export const projects: Project[] = [
     "order": 1
   },
   {
+    "id": "pga-golf-game",
+    "title": "PGA Golf Game",
+    "description": "A 3D golf game that runs in the browser. Pick a golfer (a dinosaur from Beach Blvd, a quarterback, or a big cat), aim with the arrow keys or by dragging, then hold Space and let go at the power you want. The scene, physics, obstacles, courses, and audio are all hand-written TypeScript on React Three Fiber.",
+    "features": [
+      "Three playable golfers, each with their own swing",
+      "Aim with the arrow keys or a drag; hold Space and release for power",
+      "Hand-rolled ball physics, obstacles, and course data",
+      "React Three Fiber scene with instanced grass and flyover cameras",
+      "State in zustand, no game engine"
+    ],
+    "image": "/projects/PGA-Golf-Game.webp",
+    "githubUrl": "https://github.com/chrislanejones/pga-golf-game",
+    "vercelUrl": "https://pga-golf-game.vercel.app/",
+    "featured": false,
+    "category": "app",
+    "order": 2
+  },
+  {
     "id": "kx72swawqazwe2mbtkchg24x5h84gtd4",
     "title": "Alembic - AI Marketing Analytics Platform",
     "description": "Enterprise-grade marketing intelligence platform that uses advanced causality models and AI to provide predictive insights and measure marketing ROI across all channels.",
@@ -54,6 +72,23 @@ export const projects: Project[] = [
     "order": 1
   },
   {
+    "id": "vita-major-it-projects",
+    "title": "VITA Major IT Projects Dashboard",
+    "description": "A public dashboard for the Virginia IT Agency that tracks the Commonwealth's major IT projects: forecast budget, spend to date, status, and project type across 71 projects. Pick a quarterly list, filter by agency, status, type, or budget range, and switch between overview, charts, a data table, and project cards. I built this for VITA, where I work on the web team.",
+    "features": [
+      "Quarterly project lists back to November 2025",
+      "Filters by status, agency, project type, and budget range",
+      "Overview, charts, data table, and project card views",
+      "Per-agency portfolio breakdown by project",
+      "Built to the Commonwealth's accessibility standards"
+    ],
+    "image": "/projects/VITA-Major-IT-Projects.webp",
+    "customUrl": "https://www.vita.virginia.gov/demo/major-it-projects-current-and-forecast-expenditure/",
+    "featured": false,
+    "category": "website",
+    "order": 2
+  },
+  {
     "id": "kx78ppb2mjg5cgebw6zbx3d9xs7yb3hj",
     "title": "Web Crawler (Golang)",
     "description": "A performant web crawler built with Go, featuring concurrent scraping, rate limiting, and structured data extraction for SEO analysis and content auditing.",
@@ -66,7 +101,7 @@ export const projects: Project[] = [
     "githubUrl": "https://github.com/chrislanejones",
     "featured": false,
     "category": "app",
-    "order": 2
+    "order": 3
   },
   {
     "id": "kx7at5abnbheyxbx3rbp2zm2v984gvy2",
@@ -83,21 +118,6 @@ export const projects: Project[] = [
     "githubUrl": "https://github.com/chrislanejones/job-listing-plugin",
     "featured": false,
     "category": "website",
-    "order": 2
-  },
-  {
-    "id": "kx70c32pcsdyvcn0y6314k5t457yaea1",
-    "title": "MPC Vim Filter Tool",
-    "description": "CLI tool for filtering and managing Music Player Daemon playlists with Vim-style keybindings. Built for keyboard-driven workflow efficiency.",
-    "features": [
-      "Interactive shortcut search and filtering",
-      "Context-aware command suggestions",
-      "Custom shortcut collection builder"
-    ],
-    "image": "/projects/MPC-Vim-Filter-Tool.webp",
-    "githubUrl": "https://github.com/chrislanejones",
-    "featured": false,
-    "category": "app",
     "order": 3
   },
   {
@@ -116,7 +136,7 @@ export const projects: Project[] = [
     "vercelUrl": "https://imagehorse.app/",
     "featured": true,
     "category": "website",
-    "order": 3
+    "order": 4
   },
   {
     "id": "kx7fdr7an971m0vh3dg56fxdf184hzeg",
@@ -133,7 +153,7 @@ export const projects: Project[] = [
     "customUrl": "https://wheel.chrislanejones.com/",
     "featured": false,
     "category": "website",
-    "order": 4
+    "order": 5
   }
 ];
 

@@ -6,8 +6,8 @@ export type CastlePiece = {
   x: number;
   z: number;
   rotated: boolean;
-  /** 0 sits on the sand; 1 sits on top of a bucket. */
-  level: 0 | 1;
+  /** 0 sits on the sand; 1 and 2 sit on stacked buckets. */
+  level: 0 | 1 | 2;
 };
 export type CastleState = { pieces: CastlePiece[]; history: CastlePiece[][]; nextId: number; message: string };
 export type CastleAction =
@@ -20,6 +20,8 @@ export const BEACH_ROWS = 5;
 /** Structures take up a spot; decorations sit on whatever is there. */
 const STRUCTURES: ReadonlySet<CastleKind> = new Set(["tower", "bucket", "wall", "moat"]);
 const STACKABLE: ReadonlySet<CastleKind> = new Set(["tower", "bucket"]);
+/** Three stories max: bucket, bucket, then a tower (or bucket) on top. */
+const MAX_LEVEL = 2;
 /** How tall each piece is, so flags, shells, and stacked pieces know where to sit. */
 export const PIECE_HEIGHT: Record<CastleKind, number> = { tower: 1.4, bucket: 1.02, wall: .85, moat: 0, flag: 0, shell: 0 };
 const LABEL: Record<CastleKind, string> = { tower: "Tower", bucket: "Bucket castle", wall: "Wall", moat: "Moat", flag: "Flag", shell: "Shell" };
@@ -81,7 +83,7 @@ export function castleReducer(state: CastleState, action: CastleAction): CastleS
     return save(state.pieces.filter(piece => piece.id !== target.id), message);
   }
 
-  const place = (level: 0 | 1, message: string) =>
+  const place = (level: 0 | 1 | 2, message: string) =>
     save([...state.pieces, { id: state.nextId, kind: tool, x, z, rotated, level }], fortMessage([...state.pieces, { id: state.nextId, kind: tool, x, z, rotated, level }], message), state.nextId + 1);
 
   if (tool === "flag" || tool === "shell") {
@@ -91,11 +93,12 @@ export function castleReducer(state: CastleState, action: CastleAction): CastleS
   }
 
   if (!topStructure) return place(0, `${LABEL[tool]} added.`);
-  if (topStructure.kind === "bucket" && topStructure.level === 0 && STACKABLE.has(tool)) {
+  if (topStructure.kind === "bucket" && topStructure.level < MAX_LEVEL && STACKABLE.has(tool)) {
     if (atSpot.some(piece => piece.kind === "flag" || piece.kind === "shell")) return { ...state, message: "Clear the flag or shell off that bucket before stacking on it." };
-    return place(1, `${LABEL[tool]} stacked on the bucket. Two stories tall.`);
+    const level = (topStructure.level + 1) as 1 | 2;
+    return place(level, `${LABEL[tool]} stacked on the bucket. ${level === 2 ? "Three stories tall, as high as the sand will hold." : "Two stories tall. One more will fit."}`);
   }
-  if (topStructure.level === 1) return { ...state, message: "Two stories is as high as the sand will hold." };
+  if (topStructure.level >= MAX_LEVEL) return { ...state, message: "Three stories is as high as the sand will hold." };
   if (topStructure.kind === "bucket") return { ...state, message: "Only a tower or another bucket can sit on a bucket." };
   return { ...state, message: "That spot is taken. Try the open sand, stack on a bucket, or use the eraser." };
 }
