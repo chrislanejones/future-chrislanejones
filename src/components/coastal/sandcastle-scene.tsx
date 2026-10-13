@@ -29,9 +29,14 @@ const sandFragment = `
   varying vec2 vUv; varying vec2 vScreenUv;
   uniform float uTime; uniform float uDetail; uniform vec3 uSand; uniform vec3 uWater;
   void main() {
-    float noise = fract(sin(dot(floor(vUv*1700.0),vec2(127.1,311.7)))*43758.5453);
-    float ripple=sin(vUv.y*155.0+sin(vUv.x*18.0)*2.0);
-    vec3 sand=uSand+(noise-.5)*uDetail+ripple*.003;
+    // Soft value noise: gentle mottling instead of per-pixel grain, which aliased into stripes.
+    vec2 cell = vUv * 260.0; vec2 i = floor(cell); vec2 f = fract(cell); f = f * f * (3.0 - 2.0 * f);
+    float a = fract(sin(dot(i, vec2(127.1, 311.7))) * 43758.5453);
+    float b = fract(sin(dot(i + vec2(1.0, 0.0), vec2(127.1, 311.7))) * 43758.5453);
+    float c = fract(sin(dot(i + vec2(0.0, 1.0), vec2(127.1, 311.7))) * 43758.5453);
+    float d = fract(sin(dot(i + vec2(1.0, 1.0), vec2(127.1, 311.7))) * 43758.5453);
+    float noise = mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+    vec3 sand = uSand + (noise - .5) * uDetail;
     // Keep the sea in the upper-right corner at every canvas aspect ratio.
     vec2 p = vScreenUv;
     float coast = p.x + p.y * .7 - 1.22
@@ -217,7 +222,7 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
   const texture = useMemo(() => makeShellTexture(), []);
   const shells = useMemo(() => makeShellGeometries(), []);
   useEffect(() => () => { texture.dispose(); Object.values(shells).forEach(geometry => geometry.dispose()); }, [texture, shells]);
-  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uDetail: { value: dark ? .018 : .035 }, uSand: { value: new Color(dark ? "#756448" : "#ddc397") }, uWater: { value: new Color(dark ? "#2e6970" : "#86bcbc") } }), [dark]);
+  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uDetail: { value: dark ? .02 : .03 }, uSand: { value: new Color(dark ? "#756448" : "#ddc397") }, uWater: { value: new Color(dark ? "#2e6970" : "#86bcbc") } }), [dark]);
   useEffect(() => {
     if (marker.current) { marker.current.position.set(cursor.x * SPACING, .028, cursor.z * SPACING); marker.current.visible = true; }
     invalidate();
