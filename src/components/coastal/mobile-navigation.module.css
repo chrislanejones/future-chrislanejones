@@ -14,27 +14,22 @@
   background: var(--coast-base);
   font-size: var(--type-body);
 }
-.header { flex: none; padding: max(28px, env(safe-area-inset-top)) 24px 24px; }
+.header { flex: none; padding: max(16px, env(safe-area-inset-top)) 24px 16px; }
 .brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: 20px; font-weight: var(--weight-semibold); letter-spacing: -.03em; line-height: 1.15; text-decoration: none; }
 .brand small { display: block; margin-top: 2px; color: var(--coast-muted); font-size: 12px; font-weight: 400; letter-spacing: 0; }
 .brand svg { color: var(--coast-accent); flex: none; }
 .menu .title { color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.2; letter-spacing: -.035em; margin-top: 32px; }
 .menu .description { color: var(--coast-muted); font-size: var(--type-body); line-height: 1.5; margin-top: 10px; }
-.menu .close { width: 56px; height: 56px; display: grid; place-items: center; top: max(16px, env(safe-area-inset-top)); right: 16px; opacity: 1; color: var(--coast-ink); background: var(--coast-soft); border: 2px solid currentColor; border-radius: var(--radius-pill); }
+.menu .close { width: 56px; height: 56px; display: grid; place-items: center; top: max(16px, env(safe-area-inset-top)); right: 16px; margin: 0; opacity: 1; color: var(--coast-ink); background: var(--coast-soft); border: 2px solid currentColor; border-radius: var(--radius-pill); }
 .menu .close svg { width: 28px; height: 28px; }
 .navigation { overflow-y: auto; overscroll-behavior: contain; min-height: 0; flex: 1; padding: 4px 24px 24px; scroll-padding-block: 8px; }
-.link, .group summary { min-height: 56px; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px; color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.25; text-decoration: none; border-radius: var(--radius-control); }
-.link span, .group summary span { min-width: 0; overflow-wrap: anywhere; }
-.link svg, .group summary svg { flex: none; }
-.link:hover, .group summary:hover { background: var(--coast-soft); }
+.link { min-height: 56px; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px; color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.25; text-decoration: none; border-radius: var(--radius-control); }
+.link span { min-width: 0; overflow-wrap: anywhere; }
+.link svg { flex: none; }
+.link:hover { background: var(--coast-soft); }
 .link[aria-current="page"] { background: var(--coast-soft); color: var(--coast-accent); text-decoration: underline; text-underline-offset: 5px; }
-.group { margin-top: 8px; }
-.group summary { cursor: pointer; list-style: none; }
-.group summary::-webkit-details-marker { display: none; }
-.group summary svg { transition: transform var(--motion-fast) var(--ease-out); }
-.group[open] summary svg { transform: rotate(180deg); }
-.children { padding: 4px 0 12px 12px; }
-.children .link { min-height: 48px; font-size: var(--type-body); font-weight: var(--weight-regular); }
+.group { margin-top: 18px; }
+.groupLabel { padding: 0 12px 4px; color: var(--coast-muted); font-size: 12px; font-weight: var(--weight-semibold); letter-spacing: .12em; text-transform: uppercase; }
 .footer { flex: none; border-top: 1px solid var(--coast-line); padding: 18px 24px max(18px, env(safe-area-inset-bottom)); }
 .footer p { color: var(--coast-muted); font-size: var(--type-body); margin-bottom: 12px; }
 .footer .contact { width: 100%; height: auto; min-height: 48px; justify-content: space-between; padding: 12px 20px; border-radius: var(--radius-pill); background: var(--coast-accent); color: var(--coast-on-accent); box-shadow: none; font-size: var(--type-body); }
@@ -50,5 +45,5 @@
   .footer { padding-block: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .menu, .menu *, .group summary svg { animation: none !important; transition: none !important; }
+  .menu, .menu * { animation: none !important; transition: none !important; }
 }
