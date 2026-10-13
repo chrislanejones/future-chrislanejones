@@ -35,6 +35,9 @@ export function HeroPhoto() {
   const [source, setSource] = useState("");
   const [visible, setVisible] = useState(false);
   const [tabVisible, setTabVisible] = useState(true);
+  // three.js is ~240 KB and seconds of CPU on a phone, so the moving water
+  // waits for the first scroll, tap, pointer move, or key press.
+  const [awake, setAwake] = useState(false);
   const reduced = useSyncExternalStore(subscribeToMotion,
     () => matchMedia("(prefers-reduced-motion: reduce)").matches, () => true);
   const mobile = useSyncExternalStore(subscribeToMobile,
@@ -48,9 +51,16 @@ export function HeroPhoto() {
     const onVisibility = () => setTabVisible(!document.hidden);
     onVisibility();
     document.addEventListener("visibilitychange", onVisibility);
+    const events = ["pointermove", "pointerdown", "scroll", "keydown", "touchstart"] as const;
+    const wake = () => {
+      setAwake(true);
+      events.forEach((name) => window.removeEventListener(name, wake));
+    };
+    events.forEach((name) => window.addEventListener(name, wake, { passive: true }));
     return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
+      events.forEach((name) => window.removeEventListener(name, wake));
     };
   }, []);
 
@@ -68,7 +78,7 @@ export function HeroPhoto() {
         className={styles.heroImage}
         onLoad={(event) => setSource(event.currentTarget.currentSrc)}
       />
-      {source && !reduced && (
+      {source && awake && !reduced && (
         <div className={styles.heroSea} aria-hidden="true">
           <PhotoFallback>
             <HeroSea source={source} moving={moving} mobile={mobile} />

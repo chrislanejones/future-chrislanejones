@@ -5,8 +5,6 @@ import Script from "next/script";
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
 import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import { Suspense } from "react";
 import { PERSON, SITE_URL, jsonLd, siteGraph } from "@/lib/structured-data";
 
@@ -72,23 +70,18 @@ export const metadata: Metadata = {
 const interphases = localFont({
   src: [
     {
-      path: "../../public/fonts/TT-Interphases-Pro-Regular.ttf",
+      path: "../../public/fonts/TT-Interphases-Pro-Regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/fonts/TT-Interphases-Pro-DemiBold.ttf",
+      path: "../../public/fonts/TT-Interphases-Pro-DemiBold.woff2",
       weight: "600",
       style: "normal",
     },
     {
-      path: "../../public/fonts/TT-Interphases-Pro-Bold.ttf",
+      path: "../../public/fonts/TT-Interphases-Pro-Bold.woff2",
       weight: "700",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/TT-Interphases-Pro-Black.ttf",
-      weight: "900",
       style: "normal",
     },
   ],
@@ -102,17 +95,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      appearance={{
-        theme: dark,
-        variables: {
-          colorPrimary: "#4ade80",
-          colorBackground: "#0b0d10",
-          colorInput: "#111418",
-          colorInputForeground: "#f3f4f6",
-        },
-      }}
-    >
       <html lang="en" suppressHydrationWarning>
         <body
           className={`${interphases.className} ${interphases.variable} antialiased`}
@@ -138,8 +120,8 @@ export default function RootLayout({
               </div>
             </ConvexClientProvider>
           </PHProvider>
-          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-4RZ5XQXZ9Y" strategy="afterInteractive" />
-          <Script id="google-analytics" strategy="afterInteractive">
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-4RZ5XQXZ9Y" strategy="lazyOnload" />
+          <Script id="google-analytics" strategy="lazyOnload">
             {`window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
@@ -147,6 +129,5 @@ export default function RootLayout({
           </Script>
         </body>
       </html>
-    </ClerkProvider>
   );
 }

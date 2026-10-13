@@ -1,3 +1,5 @@
+import { ConvexAdminProvider } from "@/providers/ConvexAdminProvider";
+
 export const metadata = {
   title: "Admin Dashboard",
   description: "Manage portfolio content and SEO",
@@ -9,8 +11,10 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed inset-0 overflow-hidden bg-base text-ink">
-      {children}
-    </div>
+    <ConvexAdminProvider>
+      <div className="fixed inset-0 overflow-hidden bg-base text-ink">
+        {children}
+      </div>
+    </ConvexAdminProvider>
   );
 }

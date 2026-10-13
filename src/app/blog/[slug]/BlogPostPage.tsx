@@ -250,6 +250,7 @@ export default function BlogPostPage({
                 sizes="(max-width: 1280px) 100vw, 1280px"
                 className="object-contain"
                 priority
+                fetchPriority="high"
               />
             </div>
           )}

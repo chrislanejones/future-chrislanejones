@@ -65,7 +65,7 @@ export function ProjectPreview({
       target={external ? "_blank" : undefined}
       rel={external ? "noopener noreferrer" : undefined}
       className={styles.projectImage}
-      aria-label={`Explore ${title}`}
+      aria-label={external ? `Explore ${title} at ${href!.replace(/^https?:\/\//, "").replace(/\/$/, "")}` : `Explore ${title}`}
     >
       {content}
     </a>

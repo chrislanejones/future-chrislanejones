@@ -1,41 +1,11 @@
 "use client";
 
-import { ConvexProviderWithAuth, ConvexReactClient } from "convex/react";
-import { useAuth } from "@clerk/nextjs";
-import { useCallback, useMemo } from "react";
+import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { ReactNode } from "react";
 
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+export const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-function useAuthFromClerk() {
-  const { isLoaded, isSignedIn, getToken } = useAuth();
-
-  const fetchAccessToken = useCallback(
-    async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
-      try {
-        return await getToken({ template: "convex", skipCache: forceRefreshToken });
-      } catch (err) {
-        console.error("Convex auth: failed to fetch Clerk token", err);
-        return null;
-      }
-    },
-    [getToken]
-  );
-
-  return useMemo(
-    () => ({
-      isLoading: !isLoaded,
-      isAuthenticated: isSignedIn ?? false,
-      fetchAccessToken,
-    }),
-    [isLoaded, isSignedIn, fetchAccessToken]
-  );
-}
-
+/** Public pages only read public queries, so they skip Clerk entirely. */
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
-  return (
-    <ConvexProviderWithAuth client={convex} useAuth={useAuthFromClerk}>
-      {children}
-    </ConvexProviderWithAuth>
-  );
+  return <ConvexProvider client={convex}>{children}</ConvexProvider>;
 }

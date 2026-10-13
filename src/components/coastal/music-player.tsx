@@ -6,7 +6,7 @@ import { Pause, Play, SkipForward, Volume2 } from "lucide-react";
 import styles from "./coastal.module.css";
 
 const radioScript = localFont({
-  src: "../../../public/fonts/Yellowtail-Regular.ttf",
+  src: "../../../public/fonts/Yellowtail-Regular.woff2",
   weight: "400",
   display: "swap",
   preload: false,

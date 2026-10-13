@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import type { NextFetchEvent, NextRequest } from "next/server";
 
 const isProtectedRoute = createRouteMatcher(["/admin", "/admin/(.*)"]);
 
@@ -34,25 +34,31 @@ async function getRedirects(): Promise<ConvexRedirect[]> {
   }
 }
 
-export default clerkMiddleware(async (auth, req: NextRequest) => {
-  const { pathname } = req.nextUrl;
-
-  // Check dynamic Convex redirects (skip admin/api/static paths)
-  if (!pathname.startsWith("/admin") && !pathname.startsWith("/api")) {
-    const redirects = await getRedirects();
-    const match = redirects.find((r) => r.from === pathname);
-    if (match) {
-      const destination = match.to.startsWith("http")
-        ? match.to
-        : new URL(match.to, req.url).toString();
-      return NextResponse.redirect(destination, { status: match.statusCode });
-    }
-  }
-
+const adminMiddleware = clerkMiddleware(async (auth, req: NextRequest) => {
   if (isProtectedRoute(req)) {
     await auth.protect();
   }
 });
+
+// Clerk runs only where auth matters. On public pages it would add its
+// scripts, cookies, and (with dev keys) a handshake redirect to every visit.
+export default async function middleware(req: NextRequest, event: NextFetchEvent) {
+  const { pathname } = req.nextUrl;
+  if (pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/")) {
+    return adminMiddleware(req, event);
+  }
+
+  // Dynamic Convex redirects for public paths
+  const redirects = await getRedirects();
+  const match = redirects.find((r) => r.from === pathname);
+  if (match) {
+    const destination = match.to.startsWith("http")
+      ? match.to
+      : new URL(match.to, req.url).toString();
+    return NextResponse.redirect(destination, { status: match.statusCode });
+  }
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
