@@ -49,9 +49,13 @@ export function CoastalHeader() {
   // lets the pointer cross the gap between the trigger and the menu.
   const [hovered, setHovered] = useState<string | null>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A menu opened by hover must not steal or hand back keyboard focus, or the
+  // trigger shows a focus ring after the pointer leaves.
+  const viaHover = useRef(false);
   const hoverIn = (label: string) => {
     if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    viaHover.current = true;
     setHovered(label);
   };
   const hoverOut = () => {
@@ -81,6 +85,7 @@ export function CoastalHeader() {
                 className={`${styles.navLink} ${item.children.some((child) => child.href === pathname) ? styles.activeNav : ""}`}
                 onPointerEnter={() => hoverIn(item.label)}
                 onPointerLeave={hoverOut}
+                onKeyDown={() => { viaHover.current = false; }}
               >
                 {item.label}
                 <ChevronDown size={13} aria-hidden="true" />
@@ -91,6 +96,8 @@ export function CoastalHeader() {
                 sideOffset={12}
                 onPointerEnter={() => hoverIn(item.label)}
                 onPointerLeave={hoverOut}
+                onOpenAutoFocus={(event) => { if (viaHover.current) event.preventDefault(); }}
+                onCloseAutoFocus={(event) => { if (viaHover.current) event.preventDefault(); }}
               >
                 {item.children.map((child) => (
                   <DropdownMenuItem asChild key={child.href}>

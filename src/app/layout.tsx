@@ -1,10 +1,9 @@
 // src/app/layout.tsx
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import Script from "next/script";
 import "./globals.css";
 import { ConvexClientProvider } from "@/providers/ConvexClientProvider";
-import { PHProvider, PostHogPageView } from "@/providers/PostHogProvider";
+import { DeferredAnalytics } from "@/providers/DeferredAnalytics";
 import { Suspense } from "react";
 import { PERSON, SITE_URL, jsonLd, siteGraph } from "@/lib/structured-data";
 
@@ -108,25 +107,16 @@ export default function RootLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: jsonLd(siteGraph()) }}
           />
-          <PHProvider>
-            <ConvexClientProvider>
-              <Suspense fallback={null}>
-                <PostHogPageView />
-              </Suspense>
+          <ConvexClientProvider>
+            <Suspense fallback={null}>
+              <DeferredAnalytics />
+            </Suspense>
 
-              {/* 👇 Global page container */}
-              <div className="site-shell mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-                {children}
-              </div>
-            </ConvexClientProvider>
-          </PHProvider>
-          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-4RZ5XQXZ9Y" strategy="lazyOnload" />
-          <Script id="google-analytics" strategy="lazyOnload">
-            {`window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-4RZ5XQXZ9Y');`}
-          </Script>
+            {/* 👇 Global page container */}
+            <div className="site-shell mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+              {children}
+            </div>
+          </ConvexClientProvider>
         </body>
       </html>
   );
