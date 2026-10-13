@@ -689,7 +689,30 @@
 .quoteSizer * {
   animation: none !important;
 }
-.ramblings blockquote s { text-decoration-color: var(--canopy-coral, #d99b81); text-decoration-thickness: 2px; opacity: .7; }
+/* A quick marker swipe through the old word, and the new one picked out in blue. */
+.ramblings blockquote s {
+  position: relative;
+  text-decoration: none;
+  color: var(--coast-muted);
+  white-space: nowrap;
+}
+.ramblings blockquote s::after {
+  content: "";
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: 50%;
+  height: .16em;
+  border-radius: 999px;
+  background: #d9776a;
+  transform: rotate(-5deg);
+  opacity: .9;
+}
+.ramblings blockquote ins {
+  text-decoration: none;
+  color: var(--coast-accent);
+  font-weight: 600;
+}
 .ramblings blockquote {
   align-self: center;
 }

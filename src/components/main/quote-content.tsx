@@ -49,7 +49,7 @@ export const QUOTES: ReactNode[] = [
   <MarqueeQuote key="marquee">
     I still mourn the death of the <Code>&lt;marquee&gt;</Code> tag.
   </MarqueeQuote>,
-  <>The <s>mountains</s> beaches never judged my code. The ocean doesn’t either.</>,
+  <>The <s>mountains</s> <ins>beaches</ins> never judged my code. The ocean doesn’t either.</>,
   <>
     Expected Website Completion Date: May 20, 1999
     <QuoteImage
