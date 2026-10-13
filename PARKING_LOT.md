@@ -168,3 +168,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   around the link page's link card. **Standing rule: never call `useQuery` from a component in
   the root layout without an error boundary, and deploy Convex BEFORE (or with) the frontend that
   depends on it — the two deploys are independent and the frontend always wins the race.**
+- **2026-10-13 — Admin upload UI for the resume.** Resume now lives in Convex storage
+  (ADR-002); updates go through `scripts/upload-resume.sh` from the CLI only. An Admin →
+  Career tab uploader would remove the CLI step. The script also uploads PDF then Word in two
+  steps, so a failure halfway leaves a mismatched pair live.
