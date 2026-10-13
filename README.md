@@ -1,282 +1,206 @@
 # Chris Lane Jones — Beach Portfolio
 
-Coastal portfolio built with Next.js 16, React 19, TypeScript, and Tailwind CSS v4. Features animated React Three Fiber beach scenes, responsive light and dark themes, and an admin dashboard backed by Convex.
+A coastal home for my work, writing, and life beyond the browser. Built with Next.js, React, and Convex, with animated beach scenes in React Three Fiber.
 
-This repository contains the beach redesign of [Chris Lane Jones’s portfolio](https://www.chrislanejones.com). Publishing this repository does not deploy the redesign to that site.
+After eight years in Virginia, we traded mountains for beaches and returned to Florida in 2026. This redesign brings that move into the site: shoreline photography, seashells, browser windows on sand, and a little radio for the coding soundtrack.
 
-![Image of Light and Dark Mode](public/Repo-Cover-V3.webp)
+[Portfolio](https://www.chrislanejones.com) · [GitHub](https://github.com/chrislanejones) · [Local setup](#run-locally)
 
-## 🚀 Tech Stack
+![Beach portfolio homepage in light mode, with aerial coastline photography and client logos.](docs/images/beach-home-light.webp)
 
-- **Framework:** [Next.js](https://nextjs.org/) 16 (App Router)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) v4
-- **Animations:** [Framer Motion](https://www.framer.com/motion/)
-- **3D scenes:** [React Three Fiber](https://r3f.docs.pmnd.rs/) and [Three.js](https://threejs.org/)
-- **Database:** [Convex](https://www.convex.dev/) (real-time backend)
-- **File Uploads:** [UploadThing](https://uploadthing.com/) (CDN-hosted media)
-- **Authentication:** [Clerk](https://clerk.com/)
-- **Analytics:** [PostHog](https://posthog.com/) (product analytics & session recording) and [Google Analytics 4](https://analytics.google.com/) (gtag)
-- **UI Components:** [Radix UI](https://www.radix-ui.com/), [shadcn/ui](https://ui.shadcn.com/)
-- **Drag & Drop:** Native HTML5 drag events (admin reordering — no library)
-- **Icons:** [Lucide React](https://lucide.dev/guide/packages/lucide-react), [React Icons](https://react-icons.github.io/react-icons/), [Simple Icons](https://simpleicons.org/)
-- **Package Manager:** [pnpm](https://pnpm.io/)
+<details>
+<summary>View dark mode</summary>
 
-## ✨ Features
+![Beach portfolio homepage in dark mode.](docs/images/beach-home-dark.webp)
 
-### 🎨 Frontend
+</details>
 
-- Coastal homepage with browser-style project previews on sand
-- Animated shoreline, seashells, sandcastle, and beach umbrella scenes
-- Dark mode with system preference detection
-- Smooth animations with Framer Motion
-- Fully responsive design
-- Radio-style music player
-- Conference photo gallery with a full-width umbrella-inspired drawer
-- Project showcase with carousel
-- Blog post pages with rich content, including interactive stepper widgets rendered by one shared React component (`src/components/blog/`) that posts embed with `<div data-stepper="…">`
-- Conference archive with year/event pages, transparent WebP logos, and event photo galleries
-- Career timeline with downloadable resume (PDF & DOCX)
-- Site history timeline
-- React & WordPress maintenance services pages
-- Auto-generated `/sitemap.xml` (static + Convex-sourced blog slugs, 1h revalidation)
-- Centralized animation system (`src/lib/animations.ts`) — shared spring variants used across all pages
+This repository contains the beach redesign. The portfolio link above points to the main site; publishing this repository does not deploy the redesign.
 
-### 🔐 Admin Dashboard
+## Around the site
 
-- Clerk authentication, gated to the owner — every Convex admin function checks the caller's Clerk user id against an allowlist (`convex/authz.ts`), not just "is anyone signed in"
-- **Media Manager** - Drag-and-drop image assignment to pages and blog posts
-- **Blog Post Manager** - Create and edit blog posts with UploadThing media uploads
-- **Career Timeline Manager** - Manage work history and experiences
-- **Projects Manager** - Add and manage featured projects with GitHub/live links
-- **Links Manager** - Curate and organize browser tabs/resource links
-- **Settings Manager** - Update site metadata and SEO
-- **SEO Manager** - Per-page SEO metadata served via Convex HTTP (`/seo?path=`)
-- Real-time updates with Convex
+- **Selected work:** browser-style project previews on sand, including the Image Horse editor, its marketing website, and Alembic.
+- **Beyond the browser:** latest writing, rotating ramblings, conference fan shots, and a radio-style music player with a track display.
+- **Beach scenes:** moving shoreline details, small shells, drifting particles, and a sandcastle and bucket near the water.
+- **Conference archive:** event and year pages, transparent WebP logos, photo galleries, and notes from the conference trail.
+- **More pages:** career history, downloadable résumé, useful browser tabs, site history, contact, and React and WordPress maintenance services.
+- **Light and dark themes:** responsive layouts, keyboard-accessible controls, and reduced-motion support. Beach animation pauses when its scene or browser tab is hidden.
 
-### 📊 Analytics
+## Stack
 
-- PostHog analytics with session recording
-- Google Analytics 4 (gtag)
+| Layer | Tools |
+| --- | --- |
+| Application | Next.js 16 App Router, React 19, TypeScript |
+| Styling | Tailwind CSS 4, CSS Modules, locally hosted fonts |
+| Motion and 3D | Framer Motion, React Three Fiber, Three.js |
+| Content and backend | Convex queries, mutations, storage metadata, and HTTP endpoints |
+| Authentication | Clerk, with an owner allowlist for admin access |
+| Media uploads | UploadThing |
+| Interface primitives | Radix UI, shadcn/ui, Vaul, Lucide |
+| Analytics | PostHog and Google Analytics |
+| Package management | pnpm |
 
-## 🗂️ Project Structure
+Exact dependency versions live in [package.json](package.json) and [pnpm-lock.yaml](pnpm-lock.yaml).
 
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── about/
-│   ├── blog/
-│   ├── browser-tabs/
-│   ├── career-and-resume/
-│   ├── conferences/
-│   │   └── [year]/[slug]/  # Dynamic conference talk pages
-│   ├── contact/
-│   ├── link-page/
-│   ├── logo-page/
-│   ├── projects/
-│   ├── react-maintenance/
-│   ├── site-history/
-│   ├── site-map/
-│   ├── wordpress-maintenance/
-│   ├── admin/              # Protected dashboard (Clerk auth)
-│   └── admin-showcase/     # Public preview of the admin (screenshots pending)
-├── components/
-│   ├── layout/             # Header, Footer
-│   ├── main/               # Homepage bento grid content blocks
-│   ├── coastal/            # Beach design, 3D scenes, radio, shared page styles
-│   ├── page/               # Shared page components (Banner, Card, Gallery)
-│   └── ui/                 # shadcn/ui primitives
-├── lib/                    # Utilities: SEO, animations, page headers
-├── providers/              # Convex, PostHog, Clerk providers
-└── types/                  # Shared TypeScript types
+## Run locally
 
-convex/                     # Backend: queries, mutations, HTTP endpoints
-├── authz.ts                # Owner-only admin gate (requireAdmin / isAdmin)
-├── auth.config.ts          # Clerk → Convex JWT issuer
-├── blogPosts.ts
-├── browserLinks.ts
-├── conferences.ts
-├── careerTimeline.ts
-├── projects.ts
-├── clients.ts
-├── contactMessages.ts
-├── crons.ts                # Daily cleanup of stale SEO entries
-├── homeGallery.ts
-├── media.ts
-├── navigation.ts
-├── pageHeaders.ts
-├── redirects.ts
-├── seo.ts
-├── siteSettings.ts
-└── http.ts                 # HTTP actions (sitemap-data, SEO endpoint)
-```
+Use Node.js **22 (22.13 or newer) or 24+**, pnpm, and your own Convex and Clerk projects. UploadThing supports admin media uploads; PostHog supports analytics.
 
-## 🌐 Pages & Routes
-
-| Route | Description |
-|-------|-------------|
-| `/` | Coastal homepage |
-| `/about` | Bio, hiking, and community background |
-| `/blog` | Blog post listing |
-| `/blog/[slug]` | Individual blog post |
-| `/projects` | Full-stack project portfolio |
-| `/career-and-resume` | Career timeline with downloadable resume |
-| `/conferences` | Conference index |
-| `/conferences/[year]` | Conferences by year |
-| `/conferences/[year]/[slug]` | Individual conference talk |
-| `/browser-tabs` | Curated developer resource links |
-| `/contact` | Contact form |
-| `/link-page` | Social and portfolio links |
-| `/logo-page` | Logo design story |
-| `/site-history` | 18-year site evolution timeline |
-| `/site-map` | Full site map and changelog |
-| `/wordpress-maintenance` | WordPress maintenance service |
-| `/react-maintenance` | React app maintenance service |
-| `/admin` | Protected CMS dashboard |
-| `/admin-showcase` | Public preview of the admin dashboard's tabs (screenshots pending) |
-
-## 🚦 Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/en/) 20+ and [pnpm](https://pnpm.io/)
-- [Clerk](https://clerk.com/) account
-- [Convex](https://www.convex.dev/) account
-- [UploadThing](https://uploadthing.com/) account
-- [PostHog](https://posthog.com/) account (for analytics)
-- [Google Analytics](https://analytics.google.com/) property (for gtag)
-
-### Installation
-
-1. Clone the repository:
+### 1. Install dependencies
 
 ```bash
 git clone https://github.com/chrislanejones/future-chrislanejones-beach.git
 cd future-chrislanejones-beach
+pnpm install --frozen-lockfile
 ```
 
-2. Install dependencies:
+### 2. Connect Convex
 
 ```bash
-pnpm install
+pnpm exec convex dev
 ```
 
-3. Set up environment variables:
+Follow the CLI prompts to select or create a development project. It writes deployment configuration to `.env.local` and syncs the functions in `convex/`. Keep this process running while developing.
 
-Create a `.env.local` file in the root directory:
+### 3. Configure the frontend
 
-```bash
-# Convex
-NEXT_PUBLIC_CONVEX_URL=your_convex_deployment_url
-NEXT_PUBLIC_CONVEX_SITE_URL=your_convex_site_url   # used for sitemap & SEO HTTP endpoints
+Add your own values to `.env.local`, preserving the deployment values written by Convex:
+
+```dotenv
+# Convex deployment and public endpoints
 CONVEX_DEPLOYMENT=dev:your-deployment-name
+NEXT_PUBLIC_CONVEX_URL=https://your-deployment-name.convex.cloud
+NEXT_PUBLIC_CONVEX_SITE_URL=https://your-deployment-name.convex.site
 
-# Clerk
+# Clerk application keys
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
 
-# UploadThing (v7 uses a single token)
+# Clerk user IDs allowed to upload media through the Next.js API
+ADMIN_USER_IDS=user_your_clerk_user_id
+
+# UploadThing v7 token for admin uploads
 UPLOADTHING_TOKEN=your_uploadthing_token
 
-# PostHog Analytics — must be a project key starting with phc_, NOT a personal phx_ key
-NEXT_PUBLIC_POSTHOG_KEY=phc_your_posthog_project_key
+# PostHog project key and ingestion host
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_project_key
 NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
-
-# Google Analytics
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
-4. Initialize Convex:
+`.env.local` is ignored by Git. The current app initializes Clerk, Convex, and PostHog in its root providers; configure those integrations or adjust the corresponding providers when adapting the site.
+
+### 4. Configure backend authentication
+
+In Clerk, create a JWT template named `convex` using the Convex template. Set these variables on your **Convex development deployment**, using the dashboard or CLI:
 
 ```bash
-npx convex dev
+pnpm exec convex env set CLERK_JWT_ISSUER_DOMAIN https://your-clerk-frontend-api-domain
+pnpm exec convex env set ADMIN_USER_IDS user_your_clerk_user_id
 ```
 
-5. Seed the database (optional):
+Use the Clerk issuer URL for the same application as your frontend keys. Set `ADMIN_USER_IDS` in both environments: Convex uses it for content administration, and Next.js uses it for upload authorization. Without an override, the code defaults to the original portfolio owner's allowlist.
 
-Sign in at `/admin`, open the **Settings → Data Management** panel, pick the
-data sources you want, and click **Reseed**. The seed mutations are admin-gated,
-so this is done from the dashboard rather than the CLI.
+See [convex/auth.config.ts](convex/auth.config.ts), [convex/authz.ts](convex/authz.ts), and the [upload endpoint](src/app/api/uploadthing/core.ts).
 
-6. Run the development server:
+### 5. Start the website
+
+In a second terminal:
 
 ```bash
 pnpm dev
 ```
 
-> **Note:** Run `npx convex dev` in a separate terminal alongside `pnpm dev` to keep the Convex backend in sync during development.
+Open [localhost:3000](http://localhost:3000). To use Webpack explicitly:
 
-Open [http://localhost:3000](http://localhost:3000) to view the site.
-
-## 📦 Key Dependencies
-
-```json
-{
-  "next": "16.3.5",
-  "react": "^19.2.8",
-  "typescript": "^6.0.3",
-  "tailwindcss": "^4.3.3",
-  "framer-motion": "^13.1.1",
-  "convex": "^1.45.0",
-  "@clerk/nextjs": "7.8.4",
-  "uploadthing": "^7.7.4",
-  "@uploadthing/react": "^7.3.3",
-  "@radix-ui/react-*": "pinned per-package (see package.json)",
-  "lucide-react": "^1.39.0",
-  "posthog-js": "^1.424.1"
-}
+```bash
+pnpm dev --webpack
 ```
 
-## 🎯 Admin Dashboard
+Sign in at `/admin` with an allowed Clerk account. The Settings → Data Management panel provides seed controls for supported content sections. Content records live in the connected Convex deployment; cloning this repository does not copy the existing database.
 
-Access the admin dashboard at `/admin` (requires authentication via Clerk):
+## Commands
 
-### Media Manager
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Run the Next.js development server |
+| `pnpm dev --webpack` | Run development with Webpack |
+| `pnpm exec convex dev` | Sync and watch the development backend |
+| `pnpm exec tsc --noEmit` | Check TypeScript |
+| `pnpm lint` | Run ESLint on `src/` and `convex/` |
+| `pnpm exec next build --webpack` | Build the production frontend with Webpack |
+| `pnpm start` | Serve an existing production build |
 
-- Upload images to UploadThing CDN
-- Organize media by pages and blog posts
-- Drag-and-drop to assign images to content
-- Search and filter capabilities
-- Real-time preview
+The production build needs valid environment variables and a reachable Convex deployment because several pages load content during rendering.
 
-### Content Management
+## Content and customization
 
-- **Blog Posts**: Create, edit, and publish blog posts with rich content
-- **Comments & Likes**: Moderate blog comments (approve or delete) and see like counts per post
-- **Career Timeline**: Manage work experience and career milestones
-- **Browser Links**: Curate resource collections and bookmarks
-- **Projects**: Add and manage portfolio projects with GitHub/live links and category tags
-- **Clients**: Manage client logos, icons, and links displayed in the homepage slider
-- **Conferences**: Create conference entries with year, slug, and talk details; auto-generates dynamic routes
-- **Pages & Menu**: Reorder header/footer navigation and edit each page's banner title, breadcrumb label, and description
-- **Messages**: Inbox for contact-form submissions — mark read/unread, delete
-- **SEO Manager**: Per-page title and meta description stored in Convex; supports reseed with upsert
-- **Redirects**: Create and toggle 301/302 redirects handled at runtime via Convex — no redeploy needed
-- **Settings**: Update site metadata, SEO, and configuration
+Convex manages projects, blog posts, conferences, career entries, clients, links, gallery content, page headers, navigation, and SEO. The admin dashboard also includes contact messages, media management, and redirects.
 
-All changes are saved in real-time to Convex and immediately reflected on the live site.
+Some homepage sections subscribe to live Convex queries and use local fallbacks. Conference and blog routes fetch data on the server and use revalidation, so edits to those pages may take a short time to appear.
 
-### ♻️ Reseeding Data
+| What to change | Where to start |
+| --- | --- |
+| Homepage structure and copy | [src/app/page.tsx](src/app/page.tsx) |
+| Shared coastal colors and layouts | [src/components/coastal/coastal.module.css](src/components/coastal/coastal.module.css) |
+| Beach animation and visibility handling | [src/components/coastal/coast-floor.tsx](src/components/coastal/coast-floor.tsx) |
+| Shells, waves, and sandcastle | `src/components/coastal/` scene and geometry files |
+| Project presentation and fallback content | [src/data/project-presentation.ts](src/data/project-presentation.ts), [src/data/projects-data.ts](src/data/projects-data.ts) |
+| Conference photos and captions | [src/data/conference-photos.ts](src/data/conference-photos.ts) |
+| Conference slider fallback entries | [src/data/conferences.ts](src/data/conferences.ts) |
+| Logos, photography, and downloads | [public/](public/) |
+| Person and site metadata | [src/lib/structured-data.ts](src/lib/structured-data.ts), [src/app/layout.tsx](src/app/layout.tsx) |
 
-The Settings tab includes a **Data Management** panel that lets you reseed any content module directly from the browser. Select one or more data sources and click **Reseed** — existing records are updated (upserted), not skipped.
+When adapting this project, update the personal content, domains, authentication configuration, and analytics settings. The Google Analytics ID is currently set directly in `src/app/layout.tsx`; a `NEXT_PUBLIC_GA_ID` environment variable does not control it.
 
-## 🚢 Deployment
+## Routes
 
-- Connect this repository to a separate Vercel project and configure its environment variables to deploy the beach frontend. This repository does not configure or change the original portfolio’s deployment.
-- Convex does **not** deploy with the frontend. Run `npx convex deploy` separately whenever anything in `convex/` changes.
-- Admin writes are gated in code, not just by being signed in: `requireAdmin`/`isAdmin` in `convex/authz.ts` check the caller's Clerk user id against an allowlist. Override it with the `ADMIN_USER_IDS` env var — set it in both the Convex deployment (`npx convex env set ADMIN_USER_IDS "..."`) and the Next.js app env, since `src/app/api/uploadthing/core.ts` reads the same variable for upload gating.
-- Auth needs a Clerk JWT template named `convex` on whichever Clerk instance `CLERK_JWT_ISSUER_DOMAIN` points at (see `convex/auth.config.ts`).
-- Changing a Vercel environment variable doesn't take effect until the next deploy.
+| Route | Content |
+| --- | --- |
+| `/` | Coastal homepage |
+| `/about` | Background, interests, and conference slider |
+| `/projects` | Project portfolio |
+| `/blog` and `/blog/[slug]` | Writing and individual articles |
+| `/conferences` | Conference archive |
+| `/conferences/[year]` | Events for a year |
+| `/conferences/[year]/[slug]` | Event details and available photos |
+| `/career-and-resume` | Career timeline and résumé downloads |
+| `/browser-tabs` | Curated developer resources |
+| `/contact` | Contact form |
+| `/link-page` | Social and portfolio links |
+| `/logo-page` | Logo story |
+| `/site-history` | Earlier versions of the site |
+| `/react-maintenance` | React maintenance services |
+| `/wordpress-maintenance` | WordPress maintenance services |
+| `/site-map` | Page directory |
+| `/admin-showcase` | Overview of the content management tools |
+| `/admin` | Protected content management dashboard |
 
-## 📄 License
+## Project layout
 
-This project is open source and available under the [MIT License](LICENSE).
+```text
+src/
+  app/                 Pages, route handlers, metadata, and admin routes
+  components/coastal/  Beach design, 3D scenes, radio, galleries, and page shells
+  components/blog/     Interactive article components
+  components/ui/       Shared interface primitives
+  data/                Local content, presentation settings, and fallbacks
+  lib/                 SEO, structured data, formatting, and server helpers
+  providers/           Convex/Clerk integration and PostHog
+convex/                Database schema, backend functions, and generated bindings
+public/                WebP assets, fonts, audio, and downloads
+docs/images/           Screenshots used in this README
+```
 
-## 👤 Author
+## Deployment
 
-**Chris Lane Jones**
+Connect this repository's `main` branch to a Vercel project and configure its frontend environment variables. Use matching Clerk and Convex production settings, including the Clerk `convex` JWT template and admin allowlist.
 
-- Website: [chrislanejones.com](https://chrislanejones.com)
-- GitHub: [@chrislanejones](https://github.com/chrislanejones)
-- LinkedIn: [/in/chrislanejones](https://linkedin.com/in/chrislanejones)
-- Twitter: [@cljwebdev](https://twitter.com/cljwebdev)
+Deploy backend changes separately with `pnpm exec convex deploy` after selecting the intended production project. Publishing frontend code alone does not deploy Convex functions or transfer development content to production. Populate the destination deployment through the admin tools or a deliberate data import.
+
+This repository can be deployed independently of the original portfolio. Local session records, source-image drafts, environment files, and temporary browser output are excluded from Git.
+
+## License and author
+
+Code is available under the [MIT License](LICENSE). Third-party logos, photographs, fonts, and other media may have their own terms.
+
+Built by [Chris Lane Jones](https://www.chrislanejones.com) · [GitHub](https://github.com/chrislanejones) · [LinkedIn](https://linkedin.com/in/chrislanejones)
