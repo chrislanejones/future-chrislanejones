@@ -118,31 +118,12 @@ export default function BlogPostPage({
   const stepperRootsRef = useRef<Root[]>([]);
 
   // The article HTML is server-rendered (children), and React never touches
-  // it again. This effect only enhances that DOM:
-  //   1) legacy inline <script>s, which the server copy drops, run here
-  //   2) BlogStepper widgets mount into their <div data-stepper="id"> markers
-  //      (one shared component instead of a copy pasted per post)
+  // it again. This effect only mounts BlogStepper widgets into their
+  // <div data-stepper="id"> markers. Only IDs registered in STEPPER_CONFIGS
+  // mount; post content can never run its own scripts.
   useEffect(() => {
     const article = articleRef.current;
     if (!article || !renderedContent) return;
-
-    const tpl = document.createElement("template");
-    tpl.innerHTML = renderedContent;
-    tpl.content.querySelectorAll("script").forEach((old) => {
-      if (old.src) {
-        const s = document.createElement("script");
-        for (const attr of Array.from(old.attributes)) {
-          s.setAttribute(attr.name, attr.value);
-        }
-        article.appendChild(s);
-      } else if (old.textContent) {
-        try {
-          new Function(old.textContent)();
-        } catch (err) {
-          console.error("[blog] inline script failed:", err);
-        }
-      }
-    });
 
     const markers = article.querySelectorAll<HTMLElement>("[data-stepper]");
     markers.forEach((el) => {

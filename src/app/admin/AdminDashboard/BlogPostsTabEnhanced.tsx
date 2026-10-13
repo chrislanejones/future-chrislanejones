@@ -1,5 +1,6 @@
 "use client";
 
+import { renderPostHtml } from "@/lib/blog-content";
 import React, { useState, useEffect } from "react";
 import {
   Search,
@@ -679,7 +680,7 @@ const BlogPostsTabEnhanced = () => {
                   <div
                     className="p-4 bg-(--color-muted-accent) rounded-xl prose prose-sm dark:prose-invert max-w-none min-h-[200px]"
                     dangerouslySetInnerHTML={{
-                      __html: formData.content || "<p>No content yet...</p>",
+                      __html: renderPostHtml(formData.content) || "<p>No content yet...</p>",
                     }}
                   />
                 )}

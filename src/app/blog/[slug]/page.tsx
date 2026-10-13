@@ -6,7 +6,7 @@ import { api } from "../../../../convex/_generated/api";
 import BlogPostPage from "./BlogPostPage";
 import { jsonLd as toJsonLd } from "@/lib/structured-data";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
-import { renderPostHtml, stripScripts } from "@/lib/blog-content";
+import { renderPostHtml } from "@/lib/blog-content";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 const SITE_URL = "https://www.chrislanejones.com";
@@ -116,7 +116,7 @@ export default async function Page({
         <article
           className="blog-content max-w-none mb-8"
           dangerouslySetInnerHTML={{
-            __html: stripScripts(renderPostHtml(post.content)),
+            __html: renderPostHtml(post.content),
           }}
         />
       </BlogPostPage>

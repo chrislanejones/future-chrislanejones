@@ -1,5 +1,6 @@
 // src/app/admin/components/HtmlEditorEnhanced.tsx
 "use client";
+import { sanitizePostHtml } from "@/lib/blog-content";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Bold,
@@ -39,8 +40,19 @@ export const HtmlEditorEnhanced: React.FC<HtmlEditorProps> = ({
   // when the DOM already matches, so typing never resets the caret.
   useLayoutEffect(() => {
     const el = editorRef.current;
-    if (!isHtml && el && el.innerHTML !== value) el.innerHTML = value;
+    if (isHtml || !el) return;
+    const safe = sanitizePostHtml(value);
+    if (el.innerHTML !== safe) el.innerHTML = safe;
   }, [value, isHtml]);
+
+  // Pasted HTML goes through the same allowlist as published posts.
+  const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const html = event.clipboardData.getData("text/html");
+    if (!html) return;
+    event.preventDefault();
+    document.execCommand("insertHTML", false, sanitizePostHtml(html));
+    updateContent();
+  };
 
   const execCommand = (command: string, value?: string) => {
     document.execCommand(command, false, value);
@@ -186,6 +198,7 @@ export const HtmlEditorEnhanced: React.FC<HtmlEditorProps> = ({
         <div
           ref={editorRef}
           onInput={updateContent}
+          onPaste={handlePaste}
           contentEditable
           className="min-h-64 p-4 focus:outline-none text-ink prose prose-invert max-w-none"
           suppressContentEditableWarning
