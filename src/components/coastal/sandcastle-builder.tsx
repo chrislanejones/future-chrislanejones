@@ -1,0 +1,93 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { Component, useEffect, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { ArrowUpRight, BrickWall, Castle, Eraser, Flag, RotateCw, Undo2, Waves } from "lucide-react";
+import { castleReducer, initialCastle, type CastleTool } from "./sandcastle-model";
+import coastal from "./coastal.module.css";
+import styles from "./sandcastle-builder.module.css";
+
+const Scene = dynamic(() => import("./sandcastle-scene"), { ssr: false, loading: () => <p className={styles.loading}>Getting the beach ready…</p> });
+const tools = [{ id: "tower", label: "Tower", icon: Castle }, { id: "wall", label: "Wall", icon: BrickWall }, { id: "flag", label: "Flag", icon: Flag }, { id: "erase", label: "Eraser", icon: Eraser }] as const;
+
+function subscribe(callback: () => void) {
+  const theme = new MutationObserver(callback);
+  theme.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  const motion = matchMedia("(prefers-reduced-motion: reduce)");
+  motion.addEventListener("change", callback);
+  document.addEventListener("visibilitychange", callback);
+  return () => { theme.disconnect(); motion.removeEventListener("change", callback); document.removeEventListener("visibilitychange", callback); };
+}
+function environment() {
+  return `${document.documentElement.classList.contains("dark")}:${matchMedia("(prefers-reduced-motion: reduce)").matches}:${document.hidden}`;
+}
+class BeachBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? <p className={styles.loading}>The 3D beach couldn’t start. Try enabling WebGL or refreshing the page.</p> : this.props.children; }
+}
+
+export function SandcastleBuilder() {
+  const [state, dispatch] = useReducer(castleReducer, initialCastle);
+  const [tool, setTool] = useState<CastleTool>("tower");
+  const [rotated, setRotated] = useState(false);
+  const [cursor, setCursor] = useState({ x: 0, z: 1 });
+  const aimedSpot = useRef(cursor);
+  const [loaded, setLoaded] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const host = useRef<HTMLDivElement>(null);
+  const [dark, reduced, hidden] = useSyncExternalStore(subscribe, environment, () => "false:true:false").split(":");
+  useEffect(() => {
+    if (!host.current) return;
+    const preload = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setLoaded(true); preload.disconnect(); } }, { rootMargin: "300px" });
+    const visibility = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    preload.observe(host.current); visibility.observe(host.current);
+    return () => { preload.disconnect(); visibility.disconnect(); };
+  }, []);
+  function place(x = aimedSpot.current.x, z = aimedSpot.current.z) {
+    aimedSpot.current = { x, z };
+    setCursor({ x, z });
+    dispatch({ type: "place", tool, x, z, rotated });
+  }
+  return <section id="mountains-to-beaches" className={`${coastal.container} ${styles.builder}`} aria-labelledby="coast-title">
+    <div className={styles.copy}>
+      <Waves size={36} strokeWidth={1.3} aria-hidden="true" />
+      <h2 id="coast-title">From mountains<br />to beaches.</h2>
+      <p>After eight years in Virginia, we hit undo and traded mountains for beaches. We are back in Florida as of 2026.</p>
+      <Link href="/about" className={styles.about}>More about me <ArrowUpRight size={16} aria-hidden="true" /></Link>
+      <div className={styles.toolHeading}><h3>Leave a little castle.</h3><p>Pick a piece, then tap the sand.</p></div>
+      <div className={styles.tools} role="group" aria-label="Sandcastle tools">
+        {tools.map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={20} aria-hidden="true" />{label}</button>)}
+      </div>
+      <div className={styles.options}>
+        <button type="button" disabled={tool !== "wall"} onClick={() => setRotated(value => !value)} aria-pressed={rotated} aria-label="Rotate wall"><RotateCw size={16} aria-hidden="true" />Rotate wall</button>
+        <button type="button" onClick={() => place()}>{tool === "erase" ? "Erase at marker" : "Place at marker"}</button>
+      </div>
+      <p className={styles.status} role="status" aria-live="polite">{state.message}</p>
+    </div>
+    <div className={styles.playground}>
+      <div ref={host} className={styles.stage} role="group" aria-label="Sandcastle building area" aria-describedby="sandcastle-help" tabIndex={0}
+        onKeyDown={event => {
+          const offsets: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+          if (offsets[event.key]) {
+            event.preventDefault(); const [dx, dz] = offsets[event.key];
+            const point = aimedSpot.current;
+            const next = { x: Math.max(-3, Math.min(3, point.x + dx)), z: Math.max(-2, Math.min(2, point.z + dz)) };
+            aimedSpot.current = next;
+            setCursor(next);
+          } else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); place(); }
+          else if (event.key === "Delete" || event.key === "Backspace") { event.preventDefault(); dispatch({ type: "place", tool: "erase", ...aimedSpot.current, rotated }); }
+          else if (event.key.toLowerCase() === "r") { event.preventDefault(); setRotated(value => !value); }
+          else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); dispatch({ type: "undo" }); }
+        }}>
+        {loaded ? <BeachBoundary><Scene pieces={state.pieces} tool={tool} cursor={cursor} dark={dark === "true"} moving={visible && reduced === "false" && hidden === "false"} onPlace={place} onAim={point => { aimedSpot.current = point; }} /></BeachBoundary> : <p className={styles.loading}>Your patch of beach.</p>}
+      </div>
+      <div className={styles.beachFooter}>
+        <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
+        <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
+      </div>
+      <p id="sandcastle-help" className={styles.help}>Tap to build. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes it. Add a flag on top of a tower.</p>
+    </div>
+  </section>;
+}

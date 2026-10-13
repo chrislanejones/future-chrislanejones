@@ -43,6 +43,14 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      ...[
+        ["/wordpress-maintenance-hero.jpg", "/wordpress-maintenance-hero.webp"],
+        ["/Repo-Cover.jpg", "/Repo-Cover.webp"],
+        ["/Repo-Cover-V2.jpg", "/Repo-Cover-V2.webp"],
+        ["/conferences/All-Things-Open-2024-Smaller.png", "/conferences/All-Things-Open-2024-Smaller.webp"],
+        ["/conferences/That-Conference-Logo-LowRes.png", "/conferences/That-Conference-Logo-LowRes.webp"],
+        ["/conferences/RenderATL-2024-Logo-Green.png", "/conferences/RenderATL-2024-Logo-Green.webp"],
+      ].map(([source, destination]) => ({ source, destination, permanent: true })),
       {
         source: "/career",
         destination: "/career-and-resume",
@@ -61,6 +69,7 @@ const nextConfig = {
     ];
   },
   images: {
+    qualities: [60, 75],
     remotePatterns: [
       {
         protocol: "https",

@@ -94,7 +94,7 @@ function Shore({ moving, dark, mobile }: SceneProps & { mobile: boolean }) {
   );
 }
 
-function Bucket() {
+export function Bucket() {
   const handle = useMemo(
     () =>
       new TubeGeometry(

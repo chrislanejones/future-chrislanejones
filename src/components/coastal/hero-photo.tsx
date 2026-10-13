@@ -61,6 +61,7 @@ export function HeroPhoto() {
         src="/gallery/Florida-Coast-Aerial.webp"
         alt="An aerial view of the Florida coast, with a sandy beach beside the Atlantic Ocean"
         fill
+        quality={60}
         sizes="(max-width: 1440px) 100vw, 1400px"
         loading="eager"
         fetchPriority="high"

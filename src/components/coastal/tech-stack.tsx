@@ -106,7 +106,7 @@ export function CoastalTech() {
               ))}
             </div>
           </div>
-          <div className={styles.aiTools}>
+          <div>
             <h3>Current AI tools</h3>
             <div className={styles.aiGrid}>
               {aiTools.map((tool) => (

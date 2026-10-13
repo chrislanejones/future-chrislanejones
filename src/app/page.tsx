@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowUpRight, Waves } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { CoastalHeader, CoastalFooter } from "@/components/coastal/navigation";
 import {
   CoastalClients,
@@ -12,6 +12,7 @@ import { CoastalMusic } from "@/components/coastal/music-player";
 import { CoastalTech } from "@/components/coastal/tech-stack";
 import { Reveal } from "@/components/coastal/reveal";
 import { CoastFloor } from "@/components/coastal/coast-floor";
+import { SandcastleBuilder } from "@/components/coastal/sandcastle-builder";
 import { HeroPhoto } from "@/components/coastal/hero-photo";
 import styles from "@/components/coastal/coastal.module.css";
 import { getPageSEO } from "@/lib/seo";
@@ -105,29 +106,7 @@ export default function Home() {
           </div>
         </section>
         <CoastalTech />
-        <section
-          id="mountains-to-beaches"
-          className={`${styles.container} ${styles.contactSection}`}
-          aria-labelledby="coast-title"
-        >
-          <CoastFloor variant="castle" />
-          <Reveal className={styles.contactCopy}>
-            <Waves size={44} strokeWidth={1.3} aria-hidden="true" />
-            <h2 id="coast-title">
-              From mountains
-              <br />
-              to beaches.
-            </h2>
-            <p>
-              After eight years in Virginia, we hit undo and traded mountains
-              for beaches. We are back in Florida as of 2026.
-            </p>
-            <Link href="/about" className={styles.primaryButton}>
-              More about me <ArrowUpRight size={19} aria-hidden="true" />
-            </Link>
-          </Reveal>
-          <div className={styles.beachSceneSpace} aria-hidden="true" />
-        </section>
+        <SandcastleBuilder />
       </main>
       <CoastalFooter />
     </div>

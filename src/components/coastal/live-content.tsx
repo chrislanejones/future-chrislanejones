@@ -71,6 +71,7 @@ function ProjectView({ projects }: { projects: Project[] }) {
                 title={plain(presentation.title)}
                 image={presentation.image}
                 imageFit={presentation.imageFit}
+                imageAspectRatio={presentation.imageAspectRatio}
                 href={url}
                 sizes={
                   index === 0
@@ -309,6 +310,7 @@ function GalleryView({ items }: { items: GalleryPhoto[] }) {
           alt={items[0].alt}
           fill
           sizes="(max-width: 767px) 90vw, 30vw"
+          quality={60}
           className={styles.coverImage}
         />
         <div className={styles.galleryFooter}>

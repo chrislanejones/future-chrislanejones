@@ -32,6 +32,7 @@ const fragmentShader = /* glsl */ `
   uniform float uTime;
   uniform float uAspect;
   uniform float uDetail;
+  uniform float uDark;
   uniform float uCaustics;
   uniform vec3 uSand;
   uniform vec3 uWetSand;
@@ -45,6 +46,13 @@ const fragmentShader = /* glsl */ `
     float ripple = sin(p.y * 165.0 + sin(p.x * 23.0) * 1.8);
     float sandNoise = grain(floor(p * 1700.0));
     vec3 sand = uSand + ripple * uDetail * 0.22 + (sandNoise - 0.5) * uDetail;
+    // Warm mineral grains and irregular wind ridges give night sand its own
+    // surface, while keeping contrast low enough for the writing above it.
+    float ridge = sin(p.y * 105.0 + sin(p.x * 8.0 + p.y * 3.0) * 3.5);
+    float mineral = grain(floor(p * 680.0) + 19.3) - 0.5;
+    vec3 nightSand = uSand + vec3(1.0, 0.86, 0.65)
+      * (ridge * 0.004 + (sandNoise - 0.5) * 0.020 + mineral * 0.009);
+    sand = mix(sand, nightSand, uDark);
 
     // The tide curls around the upper-right corner; the reading area stays calm.
     float shore = vUv.x + vUv.y * 0.26 - 1.06
@@ -83,9 +91,10 @@ function Sand({ moving, dark }: SceneProps) {
       uTime: { value: 0 },
       uAspect: { value: width / height },
       uDetail: { value: dark ? 0.0025 : 0.055 },
+      uDark: { value: dark ? 1 : 0 },
       uCaustics: { value: dark ? 0.012 : 0.07 },
-      uSand: { value: new Color(dark ? "#182c30" : "#eee4d2") },
-      uWetSand: { value: new Color(dark ? "#233d40" : "#c3c8b4") },
+      uSand: { value: new Color(dark ? "#514737" : "#eee4d2") },
+      uWetSand: { value: new Color(dark ? "#343b34" : "#c3c8b4") },
       uWater: { value: new Color(dark ? "#346c75" : "#8cbdba") },
       uFoam: { value: new Color(dark ? "#c7ddd2" : "#f9fcf1") },
     }),
@@ -106,7 +115,7 @@ function Sand({ moving, dark }: SceneProps) {
         uniforms={uniforms}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        toneMapped={dark}
+        toneMapped={false}
       />
     </mesh>
   );

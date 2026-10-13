@@ -22,6 +22,7 @@ This repository contains the beach redesign. The portfolio link above points to 
 - **Selected work:** browser-style project previews on sand, including the Image Horse editor, its marketing website, and Alembic.
 - **Beyond the browser:** latest writing, rotating ramblings, conference fan shots, and a radio-style music player with a track display.
 - **Beach scenes:** moving shoreline details, small shells, drifting particles, and a sandcastle and bucket near the water.
+- **Sandcastle builder:** place towers, rotate walls, add flags, and erase pieces on an interactive React Three Fiber beach. Supports mouse, touch, keyboard placement, undo, and clearing the sand.
 - **Conference archive:** event and year pages, transparent WebP logos, photo galleries, and notes from the conference trail.
 - **More pages:** career history, downloadable résumé, useful browser tabs, site history, contact, and React and WordPress maintenance services.
 - **Light and dark themes:** responsive layouts, keyboard-accessible controls, and reduced-motion support. Beach animation pauses when its scene or browser tab is hidden.

@@ -46,26 +46,26 @@ export function ConferencePanel({ photos, title = "Conference fan shots", descri
           }
         }}
       >
-        <div className={styles.conferencePanelInner}>
-          <DrawerClose asChild>
-            <button
-              type="button"
-              className={styles.conferenceClose}
-              aria-label="Close photo gallery"
-            >
-              <X size={20} aria-hidden="true" />
-            </button>
-          </DrawerClose>
-          <div className={styles.conferencePanelHeader}>
-            <div>
-              <DrawerTitle className={styles.conferencePanelTitle}>
-                {title}
-              </DrawerTitle>
-              <DrawerDescription className={styles.conferencePanelDescription}>
-                {description}
-              </DrawerDescription>
-            </div>
+        <DrawerClose asChild>
+          <button
+            type="button"
+            className={styles.conferenceClose}
+            aria-label="Close photo gallery"
+          >
+            <X size={20} aria-hidden="true" />
+          </button>
+        </DrawerClose>
+        <div className={styles.conferencePanelHeader}>
+          <div>
+            <DrawerTitle className={styles.conferencePanelTitle}>
+              {title}
+            </DrawerTitle>
+            <DrawerDescription className={styles.conferencePanelDescription}>
+              {description}
+            </DrawerDescription>
           </div>
+        </div>
+        <div className={styles.conferencePanelInner}>
           <div className={styles.conferencePanelBody}>
             <div>
               <figure className={styles.conferencePhoto}>

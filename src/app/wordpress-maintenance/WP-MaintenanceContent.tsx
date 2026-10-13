@@ -49,7 +49,7 @@ export default function ServicesPage() {
     <MaintenancePage
       kind="WordPress"
       plus="SEO"
-      image="/wordpress-maintenance-hero.jpg"
+      image="/wordpress-maintenance-hero.webp"
       title="Keep your website running well."
       services={services}
       basicFeatures={[

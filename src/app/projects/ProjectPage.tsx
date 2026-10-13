@@ -63,6 +63,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           title={plain(presentation.title)}
           image={presentation.image}
           imageFit={presentation.imageFit}
+          imageAspectRatio={presentation.imageAspectRatio}
           href={primaryLink}
           sizes="(max-width: 767px) 90vw, 50vw"
         />

@@ -6,12 +6,14 @@ export function ProjectPreview({
   title,
   image,
   imageFit = "contain",
+  imageAspectRatio,
   href,
   sizes,
 }: {
   title: string;
   image?: string;
   imageFit?: "contain" | "fill" | "cover";
+  imageAspectRatio?: number;
   href?: string;
   sizes: string;
 }) {
@@ -32,7 +34,7 @@ export function ProjectPreview({
               : "Project preview"}
           </span>
         </span>
-        <span className={styles.browserScreen}>
+        <span className={styles.browserScreen} style={{ aspectRatio: imageAspectRatio }}>
           {image ? (
             <Image
               src={image}

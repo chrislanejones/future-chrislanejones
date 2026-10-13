@@ -1,8 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import localFont from "next/font/local";
 import { Pause, Play, SkipForward, Volume2 } from "lucide-react";
 import styles from "./coastal.module.css";
+
+const radioScript = localFont({
+  src: "../../../public/fonts/Yellowtail-Regular.ttf",
+  weight: "400",
+  display: "swap",
+  preload: false,
+});
 
 const tracks = [
   {
@@ -97,7 +105,11 @@ export function CoastalMusic() {
             {playing ? track.artist : "Press play to listen"}
           </p>
         </div>
-        <div className={styles.radioSpeaker} aria-hidden="true" />
+        <div className={styles.radioSpeaker} aria-hidden="true">
+          <span className={`${styles.radioBadge} ${radioScript.className}`}>
+            Tidecaster
+          </span>
+        </div>
         <div className={styles.playerControls}>
           <Volume2 size={17} aria-hidden="true" />
           <input

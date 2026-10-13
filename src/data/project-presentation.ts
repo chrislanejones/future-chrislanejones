@@ -32,7 +32,7 @@ export function isImageHorseApp(project: ProjectMedia) {
   ].includes(project.title.trim().toLowerCase());
 }
 
-/** Keep the editor's current preview and destination consistent with legacy CMS data. */
+/** Keep refreshed project previews and destinations consistent with legacy CMS data. */
 export function projectPresentation(project: ProjectMedia) {
   if (isImageHorseApp(project)) {
     return {
@@ -40,14 +40,26 @@ export function projectPresentation(project: ProjectMedia) {
       description:
         "A browser-based image annotation and editing tool powered by Rust/WASM for pixel-level operations and React + TypeScript for the UI. Edits run in WebAssembly on your own machine and originals live in the browser's IndexedDB.",
       image: "/projects/Image-Horse-WebApp.webp",
-      imageFit: "fill" as const,
+      imageFit: "contain" as const,
+      imageAspectRatio: 1799 / 1002,
       href: "https://edit.imagehorse.app/",
+    };
+  }
+  if (project.title.trim().toLowerCase().startsWith("alembic")) {
+    return {
+      title: project.title,
+      description: project.description,
+      image: "/projects/Alembic-AI-Website.webp",
+      imageFit: "contain" as const,
+      imageAspectRatio: 1920 / 810,
+      href: "https://getalembic.com/",
     };
   }
   return {
     title: project.title,
     description: project.description,
     image: project.image,
+    imageAspectRatio: undefined,
     imageFit: project.title.trim().toLowerCase() === imageHorseMarketingProject.title.toLowerCase()
       ? "cover" as const
       : "contain" as const,
