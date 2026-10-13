@@ -2,10 +2,10 @@
 
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import { Color, DoubleSide, OrthographicCamera, Shape, type Group, type ShaderMaterial, type Texture } from "three";
+import { Color, DoubleSide, OrthographicCamera, Shape, type BufferGeometry, type Group, type ShaderMaterial, type Texture } from "three";
 import { Bucket } from "./beach-castle-scene";
-import { makeShellTexture } from "./shell-geometry";
-import type { CastlePiece, CastleTool } from "./sandcastle-model";
+import { makeShellGeometries, makeShellTexture, type ShellKind } from "./shell-geometry";
+import { pieceElevation, type CastlePiece, type CastleTool } from "./sandcastle-model";
 
 type Props = {
   pieces: CastlePiece[];
@@ -69,7 +69,10 @@ function CameraFit() {
   return null;
 }
 
-function SandPiece({ piece, texture, dark, elevation = 0 }: { piece: CastlePiece; texture: Texture; dark: boolean; elevation?: number }) {
+const SHELL_KINDS: ShellKind[] = ["scallop", "clam", "spiral"];
+type Shells = Record<ShellKind, BufferGeometry>;
+
+function SandPiece({ piece, texture, shells, dark, elevation = 0 }: { piece: CastlePiece; texture: Texture; shells: Shells; dark: boolean; elevation?: number }) {
   const color = dark ? "#bca47a" : "#dfc491";
   const material = <meshStandardMaterial color={color} map={texture} roughness={1} />;
   const flag = useMemo(() => {
@@ -77,12 +80,13 @@ function SandPiece({ piece, texture, dark, elevation = 0 }: { piece: CastlePiece
     shape.moveTo(0, 0); shape.lineTo(.56, -.16); shape.lineTo(0, -.32); shape.closePath();
     return shape;
   }, []);
+  const stacked = piece.level === 1;
   return (
     <group position={[piece.x * SPACING, 0, piece.z * SPACING]} rotation={[0, piece.rotated ? Math.PI / 2 : 0, 0]}>
-      {piece.kind === "tower" && <>
-        <mesh position={[0, .08, 0]} scale={[1, .12, 1]} receiveShadow>
+      {piece.kind === "tower" && <group position={[0, elevation, 0]} scale={stacked ? [.82, 1, .82] : 1}>
+        {!stacked && <mesh position={[0, .08, 0]} scale={[1, .12, 1]} receiveShadow>
           <sphereGeometry args={[.55, 24, 10]} />{material}
-        </mesh>
+        </mesh>}
         <mesh position={[0, .69, 0]} castShadow receiveShadow>
           <cylinderGeometry args={[.35, .45, 1.3, 32]} />{material}
         </mesh>
@@ -96,7 +100,47 @@ function SandPiece({ piece, texture, dark, elevation = 0 }: { piece: CastlePiece
           </mesh>;
         })}
         <mesh position={[0, .87, .37]}><boxGeometry args={[.1, .23, .018]} /><meshStandardMaterial color="#756045" /></mesh>
+      </group>}
+      {piece.kind === "bucket" && <group position={[0, elevation, 0]} scale={stacked ? [.8, 1, .8] : 1}>
+        {/* A bucket mold: wider at the base, with the ridges of the bucket pressed into the sand. */}
+        {!stacked && <mesh position={[0, .07, 0]} scale={[1.1, .11, 1.1]} receiveShadow>
+          <sphereGeometry args={[.55, 24, 10]} />{material}
+        </mesh>}
+        <mesh position={[0, .5, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[.4, .5, 1, 40]} />{material}
+        </mesh>
+        {[.22, .5, .78].map(y => <mesh key={y} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+          <torusGeometry args={[.5 - y * .1, .028, 8, 40]} />{material}
+        </mesh>)}
+        <mesh position={[0, 1, 0]} castShadow>
+          <cylinderGeometry args={[.36, .4, .05, 40]} />{material}
+        </mesh>
+        <mesh position={[.12, 1.03, -.08]} scale={[1, .5, 1]}>
+          <sphereGeometry args={[.09, 12, 8]} />{material}
+        </mesh>
+      </group>}
+      {piece.kind === "moat" && <>
+        <mesh position={[0, .005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+          <ringGeometry args={[.2, .52, 48]} />
+          <meshStandardMaterial color={dark ? "#4a9aa0" : "#86c2c2"} roughness={.3} metalness={.1} />
+        </mesh>
+        <mesh position={[0, .012, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[.44, .48, 48]} />
+          <meshBasicMaterial color="#e4f2ef" transparent opacity={.5} depthWrite={false} />
+        </mesh>
+        <mesh position={[0, .03, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
+          <torusGeometry args={[.54, .06, 8, 48]} />
+          <meshStandardMaterial color={dark ? "#8f7a58" : "#c9ad7a"} map={texture} roughness={1} />
+        </mesh>
+        <mesh position={[0, .04, 0]} scale={[1, .35, 1]} castShadow receiveShadow>
+          <sphereGeometry args={[.2, 20, 10]} />{material}
+        </mesh>
       </>}
+      {piece.kind === "shell" && <group position={[.14, elevation + .02, .1]} rotation={[-Math.PI / 2, 0, (piece.id * 1.7) % (Math.PI * 2)]} scale={.3}>
+        <mesh geometry={shells[SHELL_KINDS[piece.id % 3]]} castShadow>
+          <meshStandardMaterial color={piece.id % 2 ? "#f4e4cf" : "#e9c9b6"} map={texture} roughness={.75} />
+        </mesh>
+      </group>}
       {piece.kind === "wall" && <>
         <mesh position={[0, .39, 0]} castShadow receiveShadow><boxGeometry args={[1.08, .74, .36]} />{material}</mesh>
         {[-.39, 0, .39].map(x => <mesh key={x} position={[x, .84, 0]} castShadow><boxGeometry args={[.23, .22, .39]} />{material}</mesh>)}
@@ -119,7 +163,8 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
   const clock = useRef(0);
   const { invalidate } = useThree();
   const texture = useMemo(() => makeShellTexture(), []);
-  useEffect(() => () => texture.dispose(), [texture]);
+  const shells = useMemo(() => makeShellGeometries(), []);
+  useEffect(() => () => { texture.dispose(); Object.values(shells).forEach(geometry => geometry.dispose()); }, [texture, shells]);
   const uniforms = useMemo(() => ({ uTime: { value: 0 }, uDetail: { value: dark ? .018 : .035 }, uSand: { value: new Color(dark ? "#756448" : "#ddc397") }, uWater: { value: new Color(dark ? "#2e6970" : "#86bcbc") } }), [dark]);
   useEffect(() => {
     if (marker.current) { marker.current.position.set(cursor.x * SPACING, .028, cursor.z * SPACING); marker.current.visible = true; }
@@ -138,8 +183,7 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.025, 0]} receiveShadow>
       <planeGeometry args={[80, 80]} /><shadowMaterial opacity={dark ? .22 : .16} transparent />
     </mesh>
-    {pieces.map(piece => <SandPiece key={piece.id} piece={piece} texture={texture} dark={dark}
-      elevation={piece.kind === "flag" ? (pieces.find(p => p.x === piece.x && p.z === piece.z && p.kind !== "flag")?.kind === "tower" ? 1.4 : pieces.some(p => p.x === piece.x && p.z === piece.z && p.kind === "wall") ? .85 : 0) : 0} />)}
+    {pieces.map(piece => <SandPiece key={piece.id} piece={piece} texture={texture} shells={shells} dark={dark} elevation={pieceElevation(pieces, piece)} />)}
     <group position={[-2.2, 0, 1.5]} scale={.65}><Bucket /></group>
     <group ref={marker}>
       <mesh rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[.43, .47, 48]} /><meshBasicMaterial color={tool === "erase" ? "#ed9c84" : "#fff4d9"} transparent opacity={.85} depthWrite={false} /></mesh>

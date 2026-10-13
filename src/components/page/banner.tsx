@@ -10,7 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { ReactNode } from "react";
-import WireframeTerrain from "./wireframe-terrain";
+import { BeachBanner } from "../coastal/beach-banner";
 
 interface BannerProps {
   title: string;
@@ -30,7 +30,7 @@ export default function Banner({
 }: BannerProps) {
   return (
     <motion.div className="relative py-1 lg:py-12">
-      <WireframeTerrain variant="right" />
+
 
       <div className="relative z-10 flex flex-col lg:flex-row items-start lg:justify-between gap-6 px-3">
         <div className="text-left flex-1">
@@ -75,6 +75,7 @@ export default function Banner({
           </p>
         )}
       </div>
+      <BeachBanner />
     </motion.div>
   );
 }

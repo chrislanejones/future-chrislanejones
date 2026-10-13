@@ -9,6 +9,13 @@ export type LogoVariant = {
 
 export const logoVariants: LogoVariant[] = [
   {
+    title: "Waves Logo",
+    description:
+      "The 2026 logo. When we moved back to Florida, the mountain gave way to three waves in the site's teal. It's simple enough to read as a browser tab at 16 pixels, and it matches the drawn shorelines across the site.",
+    image: "/site-icons/Waves-Logo.webp",
+    imageAlt: "Three white waves on a rounded teal square",
+  },
+  {
     title: "Tracing Mountain",
     description:
       "The original line-art sketch with layered mountain ranges, flowing horizon lines, and careful attention to depth. This version shows the complete vision with all the detailed landscape elements.",

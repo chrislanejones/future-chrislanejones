@@ -5,6 +5,7 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
 import BlogPostPage from "./BlogPostPage";
 import { jsonLd as toJsonLd } from "@/lib/structured-data";
+import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { renderPostHtml, stripScripts } from "@/lib/blog-content";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
@@ -38,7 +39,7 @@ export async function generateMetadata({
     if (!post) return {};
     const canonical = `${SITE_URL}/blog/${slug}`;
     const ogImage = absoluteImage(post.coverImage);
-    const images = ogImage ? [{ url: ogImage, alt: post.title }] : undefined;
+    const images = [{ url: ogImage ?? `${SITE_URL}${DEFAULT_OG_IMAGE}`, alt: post.title }];
     return {
       title: post.title,
       description: post.excerpt,
@@ -52,13 +53,13 @@ export async function generateMetadata({
         modifiedTime: new Date(post.updatedAt).toISOString(),
         authors: ["Chris Lane Jones"],
         ...(post.tags && { tags: post.tags }),
-        ...(images && { images }),
+        images,
       },
       twitter: {
-        card: images ? "summary_large_image" : "summary",
+        card: "summary_large_image",
         title: post.title,
         description: post.excerpt,
-        ...(images && { images }),
+        images,
       },
     };
   } catch {

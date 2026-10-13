@@ -1329,7 +1329,7 @@
   letter-spacing: -0.055em;
   line-height: 1.05;
 }
-.pageIntro > p {
+.pageIntro h1 + p {
   margin-top: 24px;
   max-width: 700px;
   font-size: 18px;
@@ -1702,7 +1702,7 @@
   .breadcrumb {
     margin-bottom: 24px;
   }
-  .pageIntro > p {
+  .pageIntro h1 + p {
     font-size: 16px;
     margin-top: 20px;
   }

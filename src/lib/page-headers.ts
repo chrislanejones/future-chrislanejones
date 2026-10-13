@@ -40,7 +40,7 @@ export const staticPageHeaders: Record<
     title: "About the Logo",
     breadcrumbPage: "Logo",
     description:
-      "The mountain in my logo represents more than just a visual element—it's a symbol of the journey. Each peak conquered in code, each valley navigated through debugging, mirrors the Shenandoah trails I hiked for eight years in Virginia.",
+      "My logo started as a mountain from eight years on the Shenandoah trails. When we moved back to Florida in 2026, it became three waves. Here is every version.",
   },
   "/projects": {
     title: "Projects",

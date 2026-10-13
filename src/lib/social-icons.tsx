@@ -121,7 +121,8 @@ export function SocialIcon({
   iconKey: string;
   size?: number;
 }) {
-  return createElement(socialIconComponent(iconKey), { size });
+  // Decorative: every caller pairs the icon with visible text or an aria-label.
+  return createElement(socialIconComponent(iconKey), { size, "aria-hidden": true, focusable: "false" });
 }
 
 export function socialIconLabel(key: string): string {

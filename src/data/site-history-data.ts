@@ -66,7 +66,15 @@ export const siteHistorySections: SiteHistorySection[] = [
     description:
       "In 2025, I moved the site to Next.js, React, TypeScript, Tailwind CSS, and Framer Motion.\n\nI finally had the creative freedom I'd been craving. Framer Motion made animations smooth and intuitive. The component-based architecture meant I could build reusable pieces and iterate quickly. TypeScript caught bugs before they reached production. Tailwind made styling fast and consistent.\n\nThe bento grid layout, the smooth page transitions, the interactive components, the dark mode—all of this would have been significantly harder in WordPress. React gave me the tools to build the portfolio site I'd always envisioned.\n\nLooking ahead, I'm excited to continue to push what's possible with modern web technologies. The journey continues.",
     image: "/site-history/New-React-Website.webp",
-    imageAlt: "Current Next.js and React website with modern animations",
+    imageAlt: "2025 Next.js and React website with a bento grid and animations",
     imagePosition: "left",
+  },
+  {
+    title: "2026 - The Beach Site",
+    description:
+      "In 2026 we moved back to Florida after eight years in Virginia, and the site moved with us. I traded the mountain theme for the coast: sand and sea colors, an aerial shot of the Florida coastline on the home page, and a waves icon where the mountain used to be.\n\nThe stack stayed Next.js, React, and TypeScript, with Convex holding the content behind a custom admin. What changed was the feel. Every inner page opens on a drawn shoreline with drifting waves. Click it and a surfer rides through, then a dolphin jumps.\n\nAt the bottom of the home page there's a 3D sandcastle builder made with React Three Fiber. Flip a bucket, stack a tower on it, dig a moat, and top it off with a flag or a shell. Four corners and four walls make a fort.\n\nIt's the most fun I've had building this site, and it finally looks like where I live.",
+    image: "/site-history/Beach-Website-2026.webp",
+    imageAlt: "2026 beach redesign with an aerial Florida coastline behind the home page hero",
+    imagePosition: "right",
   },
 ];

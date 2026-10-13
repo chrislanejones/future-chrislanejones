@@ -1,3 +1,4 @@
+import { BeachBanner } from "@/components/coastal/beach-banner";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Waves } from "lucide-react";
@@ -40,13 +41,15 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <header className={coastal.pageIntro}>
-        <nav aria-label="Breadcrumb" className={coastal.breadcrumb}>
-          <Link href="/">Home</Link><span aria-hidden="true">/</span>
-          <Link href="/conferences">Conferences</Link><span aria-hidden="true">/</span>
-          <Link href={`/conferences/${conf.year}`}>{conf.year}</Link>
-        </nav>
-        <h1>{conf.name}.</h1>
-        <p>{conferenceDates(conf)}{conf.city ? ` · ${conf.city}` : ""}</p>
+        <BeachBanner>
+          <nav aria-label="Breadcrumb" className={coastal.breadcrumb}>
+            <Link href="/">Home</Link><span aria-hidden="true">/</span>
+            <Link href="/conferences">Conferences</Link><span aria-hidden="true">/</span>
+            <Link href={`/conferences/${conf.year}`}>{conf.year}</Link>
+          </nav>
+          <h1>{conf.name}.</h1>
+          <p>{conferenceDates(conf)}{conf.city ? ` · ${conf.city}` : ""}</p>
+        </BeachBanner>
       </header>
       <article className={styles.detail}>
         <div className={styles.detailLogo}>

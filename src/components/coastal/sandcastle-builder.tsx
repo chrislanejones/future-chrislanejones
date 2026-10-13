@@ -3,13 +3,18 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Component, useEffect, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { ArrowUpRight, BrickWall, Castle, Eraser, Flag, RotateCw, Undo2, Waves } from "lucide-react";
+import { ArrowUpRight, BrickWall, Castle, Droplets, Eraser, Flag, PaintBucket, RotateCw, Shell, Undo2, Waves } from "lucide-react";
 import { castleReducer, initialCastle, type CastleTool } from "./sandcastle-model";
 import coastal from "./coastal.module.css";
 import styles from "./sandcastle-builder.module.css";
 
 const Scene = dynamic(() => import("./sandcastle-scene"), { ssr: false, loading: () => <p className={styles.loading}>Getting the beach ready…</p> });
-const tools = [{ id: "tower", label: "Tower", icon: Castle }, { id: "wall", label: "Wall", icon: BrickWall }, { id: "flag", label: "Flag", icon: Flag }, { id: "erase", label: "Eraser", icon: Eraser }] as const;
+const tools = [
+  { id: "tower", label: "Tower", icon: Castle }, { id: "bucket", label: "Bucket", icon: PaintBucket },
+  { id: "wall", label: "Wall", icon: BrickWall }, { id: "moat", label: "Moat", icon: Droplets },
+  { id: "flag", label: "Flag", icon: Flag }, { id: "shell", label: "Shell", icon: Shell },
+  { id: "erase", label: "Eraser", icon: Eraser },
+] as const;
 
 function subscribe(callback: () => void) {
   const theme = new MutationObserver(callback);
@@ -87,7 +92,7 @@ export function SandcastleBuilder() {
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
         <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
       </div>
-      <p id="sandcastle-help" className={styles.help}>Tap to build. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes it. Add a flag on top of a tower.</p>
+      <p id="sandcastle-help" className={styles.help}>Tap to build. Flip a bucket for a molded castle, then stack a tower or another bucket on top of it. Dig a moat, and finish with a flag or a shell on top. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
     </div>
   </section>;
 }
