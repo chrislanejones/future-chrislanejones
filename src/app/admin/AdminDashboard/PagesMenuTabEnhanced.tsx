@@ -179,7 +179,7 @@ const ExternalLinksPanel = ({
         <form onSubmit={handleSubmit} className="mb-3 space-y-2">
           <input
             type="text"
-            placeholder="Label (e.g. Old Website)"
+            placeholder="Label (e.g. GitHub)"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             className="w-full px-2 py-1.5 text-sm border border-(--color-border) rounded-lg bg-(--color-panel) text-(--color-ink) focus:outline-none focus:ring-1 focus:ring-accent"

@@ -160,7 +160,6 @@ export function useFooterNavSections() {
             { href: "/site-map", label: "Change Log / Site Map", order: 2 },
             { href: "/admin-showcase", label: "Admin Showcase", order: 3 },
             { href: "/404", label: "404 Music Lounge", order: 4 },
-            { href: "https://old.chrislanejones.com", label: "Old Website", isExternal: true, order: 5 },
           ],
         },
       ] as FooterNavSection[];
