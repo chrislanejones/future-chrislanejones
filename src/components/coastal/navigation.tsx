@@ -96,8 +96,7 @@ export function CoastalHeader() {
                 sideOffset={12}
                 onPointerEnter={() => hoverIn(item.label)}
                 onPointerLeave={hoverOut}
-                onOpenAutoFocus={(event) => { if (viaHover.current) event.preventDefault(); }}
-                onCloseAutoFocus={(event) => { if (viaHover.current) event.preventDefault(); }}
+                onCloseAutoFocus={(event: Event) => { if (viaHover.current) event.preventDefault(); }}
               >
                 {item.children.map((child) => (
                   <DropdownMenuItem asChild key={child.href}>
