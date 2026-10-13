@@ -128,23 +128,15 @@ export function BeachBanner({ children }: { children?: ReactNode }) {
             onAnimationEnd={(e) => e.target === e.currentTarget && setDolphin(null)}
           >
             <svg viewBox="0 0 120 44" className={styles.dolphinArt}>
-              <defs>
-                <linearGradient id="dolphin-skin" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" className={styles.skinTop} />
-                  <stop offset="1" className={styles.skinLow} />
-                </linearGradient>
-              </defs>
-              <path d="M77 12.5 C74 6 68 2 60 0.8 C63 4.5 63.5 9 61 13.8 Z" className={styles.fin} />
-              <path d="M18 25.5 C12 22 8 17 3 14 C6 19 8 23 11 27 C8 31 6 35 4 40 C10 36 14 32 18 29.5 Z" className={styles.fin} />
-              <path d="M118 30 C116 28.5 113 27.6 110 27 C108 22 104 19 98 17.5 C86 13 70 11.5 56 13 C42 14.5 30 19 20 24.5 L16 26 L16 29 C26 30.5 38 34 52 37 C68 40 86 38.5 98 35.5 C104 34 110 32 118 30 Z" fill="url(#dolphin-skin)" />
-              <path d="M100 30 C90 27 74 27 58 30 C46 32 34 31 24 28 C36 33 48 36.4 60 36.2 C78 36 92 33 100 30 Z" className={styles.flank} />
-              <path d="M117 30.6 C110 32 104 33.6 98 34.6 C86 36.6 70 37.6 56 35.6 C66 34 78 32.6 88 31.4 C96 30.4 104 30.6 110 29.8 Z" className={styles.belly} />
-              <path d="M94 33.5 C90 38 85 41 79 42.5 C82 39 84 36 86 33.5 Z" className={styles.fin} />
-              <path d="M60 15.4 C74 13.2 88 14 98 18.4 C88 16.2 74 15.8 60 15.4 Z" className={styles.shine} />
-              <path d="M117.5 30.2 C114 31.1 110.5 31.1 107.5 30" className={styles.mouth} />
-              <ellipse cx="91" cy="15.6" rx="1.1" ry=".55" className={styles.eye} />
-              <circle cx="104" cy="26" r="1.5" className={styles.eye} />
-              <circle cx="104.5" cy="25.5" r=".5" className={styles.glint} />
+              <defs><linearGradient id="dolphin-skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" className={styles.skinTop}/><stop offset="1" className={styles.skinLow}/></linearGradient></defs>
+              <path d="M56 10 C 60 2, 68 -1, 76 1 C 70 4, 65 9, 63 13 Z" className={styles.fin}/>
+              <path d="M17 23 C 10 19, 4 18, 0 20 C 4 23, 8 27, 12 30 C 14 28, 16 26, 17 25 Z" className={styles.fin}/>
+              <path d="M16 22 C 26 12, 50 7, 72 8 C 86 8, 98 10, 104 17 C 106 20, 109 22, 112 23 C 113.5 23.5, 113.5 25, 112 25.5 C 109 26, 106 26, 104 25.5 C 96 31, 78 33, 60 33 C 42 33, 28 30, 16 26 Z" fill="url(#dolphin-skin)"/>
+              <path d="M28 29 C 48 33, 80 32, 103 25.5 C 100 28, 74 31, 46 30.5 C 38 30, 32 29.5, 28 29 Z" className={styles.belly}/>
+              <path d="M34 15 C 54 10, 76 9, 96 13 C 76 11, 54 12, 34 15 Z" className={styles.shine}/>
+              <path d="M80 28 C 76 33, 72 36, 68 37 C 73 36, 78 33, 83 30 Z" className={styles.fin}/>
+              <path d="M104 25.5 C 107 25.8, 110 25.6, 112 25" className={styles.mouth}/>
+              <circle cx="99" cy="18" r="1.5" className={styles.eye}/><circle cx="99.5" cy="17.5" r=".5" className={styles.glint}/>
             </svg>
           </div>
         )}

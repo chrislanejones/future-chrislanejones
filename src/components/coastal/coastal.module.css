@@ -740,6 +740,7 @@
 .quoteSizer * {
   animation: none !important;
 }
+.ramblings blockquote s { text-decoration-color: var(--canopy-coral, #d99b81); text-decoration-thickness: 2px; opacity: .7; }
 .ramblings blockquote {
   align-self: center;
 }

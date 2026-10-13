@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, ChevronDown, Menu, Waves } from "lucide-react";
@@ -45,6 +45,19 @@ export function CoastalHeader() {
   const pathname = usePathname();
   const items = useHeaderNavItems();
   const [open, setOpen] = useState(false);
+  // Desktop dropdowns open on hover as well as click; a short grace period
+  // lets the pointer cross the gap between the trigger and the menu.
+  const [hovered, setHovered] = useState<string | null>(null);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverIn = (label: string) => {
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    setHovered(label);
+  };
+  const hoverOut = () => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => setHovered(null), 150);
+  };
   return (
     <header className={`${styles.container} ${styles.header}`}>
       <a href="#main-content" className={styles.skipLink}>
@@ -58,9 +71,16 @@ export function CoastalHeader() {
       >
         {items.map((item) =>
           item.children ? (
-            <DropdownMenu key={item.label}>
+            <DropdownMenu
+              key={item.label}
+              modal={false}
+              open={hovered === item.label || undefined}
+              onOpenChange={(next) => { if (!next) setHovered(null); }}
+            >
               <DropdownMenuTrigger
                 className={`${styles.navLink} ${item.children.some((child) => child.href === pathname) ? styles.activeNav : ""}`}
+                onPointerEnter={() => hoverIn(item.label)}
+                onPointerLeave={hoverOut}
               >
                 {item.label}
                 <ChevronDown size={13} aria-hidden="true" />
@@ -69,6 +89,8 @@ export function CoastalHeader() {
                 className={styles.dropdown}
                 align="start"
                 sideOffset={12}
+                onPointerEnter={() => hoverIn(item.label)}
+                onPointerLeave={hoverOut}
               >
                 {item.children.map((child) => (
                   <DropdownMenuItem asChild key={child.href}>
