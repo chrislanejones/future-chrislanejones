@@ -680,8 +680,8 @@
   margin: 8px 0;
   padding: 10px 14px;
   border-radius: 10px;
-  background: var(--color-button);
-  color: var(--color-on-button);
+  background: var(--coast-accent);
+  color: var(--coast-on-accent);
   transition: background-color 160ms ease, transform 160ms ease;
 }
 .tabsGroup li:last-child .tabLink {
@@ -695,13 +695,13 @@
 }
 .tabLink small {
   display: block;
-  color: color-mix(in srgb, var(--color-on-button) 78%, transparent);
+  color: color-mix(in srgb, var(--coast-on-accent) 78%, transparent);
   font-size: 12px;
   margin-top: 2px;
 }
 .tabLink:hover {
-  background: color-mix(in srgb, var(--color-button) 85%, white);
-  color: var(--color-on-button);
+  background: color-mix(in srgb, var(--coast-accent) 85%, white);
+  color: var(--coast-on-accent);
 }
 .tabLink > svg {
   flex-shrink: 0;

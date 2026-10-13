@@ -35,9 +35,9 @@ export const buttonVariants = cva(
           "border border-transparent",
         ].join(" "),
         solid: [
-          "bg-(--color-button) shadow-glow",
-          "hover:bg-(--color-button)/85",
-          "text-(--color-on-button)",
+          "bg-(--color-accent) shadow-glow",
+          "hover:bg-(--color-accent)/85",
+          "text-(--color-on-accent)",
           "border border-transparent",
         ].join(" "),
         outline: [
