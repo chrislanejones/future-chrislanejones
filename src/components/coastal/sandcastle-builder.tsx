@@ -8,7 +8,10 @@ import { castleReducer, initialCastle, type CastleTool } from "./sandcastle-mode
 import coastal from "./coastal.module.css";
 import styles from "./sandcastle-builder.module.css";
 
-const Scene = dynamic(() => import("./sandcastle-scene"), { ssr: false, loading: () => <BucketLoader /> });
+const loadScene = () => import("./sandcastle-scene");
+const Scene = dynamic(loadScene, { ssr: false, loading: () => null });
+/** The bucket always fills to the brim, even when the scene is already cached. */
+const FILL_MS = 2200;
 
 /** Outlined bucket and shovel; the bucket fills from the bottom while the 3D scene downloads. */
 function BucketLoader() {
@@ -65,6 +68,15 @@ export function SandcastleBuilder() {
   const [cursor, setCursor] = useState({ x: 0, z: 1 });
   const aimedSpot = useRef(cursor);
   const [loaded, setLoaded] = useState(false);
+  const [sceneReady, setSceneReady] = useState(false);
+  const [filled, setFilled] = useState(false);
+  useEffect(() => {
+    if (!loaded) return;
+    let live = true;
+    loadScene().then(() => { if (live) setSceneReady(true); });
+    const timer = setTimeout(() => setFilled(true), FILL_MS);
+    return () => { live = false; clearTimeout(timer); };
+  }, [loaded]);
   const [visible, setVisible] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const [dark, reduced, hidden] = useSyncExternalStore(subscribe, environment, () => "false:true:false").split(":");
@@ -112,6 +124,7 @@ export function SandcastleBuilder() {
           else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); dispatch({ type: "undo" }); }
         }}>
         {loaded ? <BeachBoundary><Scene pieces={state.pieces} tool={tool} cursor={cursor} dark={dark === "true"} moving={visible && reduced === "false" && hidden === "false"} onPlace={place} onAim={point => { aimedSpot.current = point; }} /></BeachBoundary> : <p className={styles.loading}>Your patch of beach.</p>}
+        {loaded && !(filled && sceneReady) && <BucketLoader />}
       </div>
       <div className={styles.beachFooter}>
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
