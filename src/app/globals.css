@@ -16,6 +16,8 @@
   --color-accent: #6ea34d; /* green-500, brighter & fresher */
   --color-accent-alt: #3b82f6; /* blue-500 */
   --color-on-accent: #ffffff;
+  --color-button: #1f5c52; /* solid link buttons: deep sea green, white text in both themes */
+  --color-on-button: #ffffff;
 
   --color-border: #e5e7eb; /* gray-200, subtle */
   --radius: 12px;
@@ -59,6 +61,8 @@
   --color-accent: #6ea34d; /* Tailwind green-400, softer neon */
   --color-accent-alt: #60a5fa; /* Tailwind blue-400 */
   --color-on-accent: #0b0d10; /* dark text on accent */
+  --color-button: #1f5c52;
+  --color-on-button: #ffffff;
 
   --color-border: #1f242b;
   --color-focus-ring: #ffffff; /* near-white — high contrast on dark backgrounds */

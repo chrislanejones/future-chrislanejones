@@ -72,8 +72,7 @@ function CameraFit() {
 const SHELL_KINDS: ShellKind[] = ["scallop", "clam", "spiral"];
 type Shells = Record<ShellKind, BufferGeometry>;
 
-type Links = { n: boolean; e: boolean; s: boolean; w: boolean; ne: boolean; nw: boolean; se: boolean; sw: boolean };
-const DIAGONAL = Math.SQRT2 * (SPACING / 2);
+type Links = { n: boolean; e: boolean; s: boolean; w: boolean };
 const HALF = SPACING / 2;
 
 function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { piece: CastlePiece; texture: Texture; shells: Shells; dark: boolean; elevation?: number; links?: Links }) {
@@ -126,15 +125,11 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { pie
         </mesh>
       </group>}
       {piece.kind === "moat" && (links && Object.values(links).some(Boolean) ? <>
-        {/* Linked moats run to the tile edge or corner, so neighbors join into lines, Vs, corners, and rings. */}
+        {/* Linked moats run to the tile edge, so neighbors join into lines, corners, and rings. */}
         {[{ on: links.n, pos: [0, -HALF / 2] as const, len: HALF, turn: 0 },
           { on: links.s, pos: [0, HALF / 2] as const, len: HALF, turn: Math.PI },
           { on: links.e, pos: [HALF / 2, 0] as const, len: HALF, turn: Math.PI / 2 },
           { on: links.w, pos: [-HALF / 2, 0] as const, len: HALF, turn: -Math.PI / 2 },
-          { on: links.ne, pos: [HALF / 2, -HALF / 2] as const, len: DIAGONAL, turn: Math.PI / 4 },
-          { on: links.nw, pos: [-HALF / 2, -HALF / 2] as const, len: DIAGONAL, turn: -Math.PI / 4 },
-          { on: links.se, pos: [HALF / 2, HALF / 2] as const, len: DIAGONAL, turn: Math.PI * 3 / 4 },
-          { on: links.sw, pos: [-HALF / 2, HALF / 2] as const, len: DIAGONAL, turn: -Math.PI * 3 / 4 },
           { on: true, pos: [0, 0] as const, len: .5, turn: 0 }].filter(part => part.on).map((part, i) => <group key={i} position={[part.pos[0], 0, part.pos[1]]} rotation={[0, part.turn, 0]}>
           <mesh position={[0, .004, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
             <planeGeometry args={[.68, part.len + .18]} />
@@ -186,11 +181,10 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { pie
   );
 }
 
-/** Which neighboring tiles also hold a moat; diagonals only count when the orthogonal path between them is open. */
+/** Which side-by-side tiles also hold a moat. Diagonals don't join: around a castle they drew an X through the middle. */
 function moatLinks(moats: Set<string>, x: number, z: number): Links {
   const at = (dx: number, dz: number) => moats.has(`${x + dx},${z + dz}`);
-  const diagonal = (dx: number, dz: number) => at(dx, dz) && !(at(dx, 0) && at(0, dz));
-  return { n: at(0, -1), s: at(0, 1), e: at(1, 0), w: at(-1, 0), ne: diagonal(1, -1), nw: diagonal(-1, -1), se: diagonal(1, 1), sw: diagonal(-1, 1) };
+  return { n: at(0, -1), s: at(0, 1), e: at(1, 0), w: at(-1, 0) };
 }
 
 function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
