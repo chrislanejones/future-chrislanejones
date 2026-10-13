@@ -72,7 +72,8 @@ function CameraFit() {
 const SHELL_KINDS: ShellKind[] = ["scallop", "clam", "spiral"];
 type Shells = Record<ShellKind, BufferGeometry>;
 
-type Links = { n: boolean; e: boolean; s: boolean; w: boolean };
+type Links = { n: boolean; e: boolean; s: boolean; w: boolean; ne: boolean; nw: boolean; se: boolean; sw: boolean };
+const DIAGONAL = Math.SQRT2 * (SPACING / 2);
 const HALF = SPACING / 2;
 
 function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { piece: CastlePiece; texture: Texture; shells: Shells; dark: boolean; elevation?: number; links?: Links }) {
@@ -124,20 +125,28 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { pie
           <sphereGeometry args={[.09, 12, 8]} />{material}
         </mesh>
       </group>}
-      {piece.kind === "moat" && (links && (links.n || links.e || links.s || links.w) ? <>
-        {/* Linked moats run to the tile edge, so neighbors join into lines, corners, and squares. */}
-        {[{ on: links.n, pos: [0, 0, -HALF / 2] as const, size: [.42, HALF] as const },
-          { on: links.s, pos: [0, 0, HALF / 2] as const, size: [.42, HALF] as const },
-          { on: links.e, pos: [HALF / 2, 0, 0] as const, size: [HALF, .42] as const },
-          { on: links.w, pos: [-HALF / 2, 0, 0] as const, size: [HALF, .42] as const },
-          { on: true, pos: [0, 0, 0] as const, size: [.42, .42] as const }].filter(part => part.on).map((part, i) => <group key={i} position={[part.pos[0], 0, part.pos[2]]}>
+      {piece.kind === "moat" && (links && Object.values(links).some(Boolean) ? <>
+        {/* Linked moats run to the tile edge or corner, so neighbors join into lines, Vs, corners, and rings. */}
+        {[{ on: links.n, pos: [0, -HALF / 2] as const, len: HALF, turn: 0 },
+          { on: links.s, pos: [0, HALF / 2] as const, len: HALF, turn: Math.PI },
+          { on: links.e, pos: [HALF / 2, 0] as const, len: HALF, turn: Math.PI / 2 },
+          { on: links.w, pos: [-HALF / 2, 0] as const, len: HALF, turn: -Math.PI / 2 },
+          { on: links.ne, pos: [HALF / 2, -HALF / 2] as const, len: DIAGONAL, turn: Math.PI / 4 },
+          { on: links.nw, pos: [-HALF / 2, -HALF / 2] as const, len: DIAGONAL, turn: -Math.PI / 4 },
+          { on: links.se, pos: [HALF / 2, HALF / 2] as const, len: DIAGONAL, turn: Math.PI * 3 / 4 },
+          { on: links.sw, pos: [-HALF / 2, HALF / 2] as const, len: DIAGONAL, turn: -Math.PI * 3 / 4 },
+          { on: true, pos: [0, 0] as const, len: .5, turn: 0 }].filter(part => part.on).map((part, i) => <group key={i} position={[part.pos[0], 0, part.pos[1]]} rotation={[0, part.turn, 0]}>
           <mesh position={[0, .004, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-            <planeGeometry args={[part.size[0] + .16, part.size[1] + .16]} />
-            <meshStandardMaterial color={dark ? "#6a5b45" : "#c9ad7a"} map={texture} roughness={1} />
+            <planeGeometry args={[.68, part.len + .18]} />
+            <meshStandardMaterial color={dark ? "#5c4e3b" : "#bfa171"} map={texture} roughness={1} />
           </mesh>
           <mesh position={[0, .008, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-            <planeGeometry args={[part.size[0], part.size[1]]} />
-            <meshStandardMaterial color={dark ? "#4a9aa0" : "#86c2c2"} roughness={.3} metalness={.1} />
+            <planeGeometry args={[.5, part.len + .02]} />
+            <meshStandardMaterial color={dark ? "#3f8a90" : "#79b8b8"} roughness={.3} metalness={.1} />
+          </mesh>
+          <mesh position={[0, .011, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[.3, part.len]} />
+            <meshBasicMaterial color={dark ? "#58a3a8" : "#9dd0ce"} transparent opacity={.55} depthWrite={false} />
           </mesh>
         </group>)}
       </> : <>
@@ -177,6 +186,13 @@ function SandPiece({ piece, texture, shells, dark, elevation = 0, links }: { pie
   );
 }
 
+/** Which neighboring tiles also hold a moat; diagonals only count when the orthogonal path between them is open. */
+function moatLinks(moats: Set<string>, x: number, z: number): Links {
+  const at = (dx: number, dz: number) => moats.has(`${x + dx},${z + dz}`);
+  const diagonal = (dx: number, dz: number) => at(dx, dz) && !(at(dx, 0) && at(0, dz));
+  return { n: at(0, -1), s: at(0, 1), e: at(1, 0), w: at(-1, 0), ne: diagonal(1, -1), nw: diagonal(-1, -1), se: diagonal(1, 1), sw: diagonal(-1, 1) };
+}
+
 function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
   const marker = useRef<Group>(null);
   const shader = useRef<ShaderMaterial>(null);
@@ -206,7 +222,7 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
       <planeGeometry args={[80, 80]} /><shadowMaterial opacity={dark ? .22 : .16} transparent />
     </mesh>
     {pieces.map(piece => <SandPiece key={piece.id} piece={piece} texture={texture} shells={shells} dark={dark} elevation={pieceElevation(pieces, piece)}
-      links={piece.kind === "moat" ? { n: moats.has(`${piece.x},${piece.z - 1}`), s: moats.has(`${piece.x},${piece.z + 1}`), e: moats.has(`${piece.x + 1},${piece.z}`), w: moats.has(`${piece.x - 1},${piece.z}`) } : undefined} />)}
+      links={piece.kind === "moat" ? moatLinks(moats, piece.x, piece.z) : undefined} />)}
     <group position={[-2.2, 0, 1.5]} scale={.65}><Bucket /></group>
     <group ref={marker}>
       <mesh rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[.43, .47, 48]} /><meshBasicMaterial color={tool === "erase" ? "#ed9c84" : "#fff4d9"} transparent opacity={.85} depthWrite={false} /></mesh>
