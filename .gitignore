@@ -73,3 +73,7 @@ rolled_repo/
 
 # Fallow
 .fallow/
+
+# Resumes live in Convex storage, never in git (docs/adr/002)
+*[Rr]esume*.pdf
+*[Rr]esume*.docx
