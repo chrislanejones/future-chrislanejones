@@ -650,3 +650,74 @@
 :global(.dark) .lineArt {
   filter: invert(1);
 }
+
+/* Browser tabs page: groups pack into columns (no holes beside short groups),
+ * and link rows are compact with a favicon. Scoped here so the link page keeps its look. */
+.tabsGrid {
+  columns: 3 300px;
+  column-gap: 20px;
+}
+.tabsGroup {
+  break-inside: avoid;
+  margin-bottom: 20px;
+  background: var(--coast-panel);
+  border-radius: 18px;
+  padding: 20px 22px 12px;
+}
+.tabsGroup h2 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+.tabsGroup ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tabLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--coast-line);
+}
+.tabsGroup li:last-child .tabLink {
+  border-bottom: 0;
+}
+.tabLink span {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+  line-height: 1.3;
+}
+.tabLink small {
+  display: block;
+  color: var(--coast-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.tabLink:hover {
+  color: var(--coast-accent);
+}
+.tabLink > svg {
+  flex-shrink: 0;
+}
+.tabFavicon,
+.tabFallback {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 5px;
+}
+.tabFavicon {
+  object-fit: contain;
+}
+.tabLink .tabFallback {
+  /* beats `.tabLink span { flex: 1 }`, which would stretch the tile */
+  flex: 0 0 20px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--coast-on-accent);
+  background: var(--coast-accent);
+}

@@ -13,6 +13,40 @@ export type BrowserLinkItem = {
   favicon?: string;
 };
 
+/**
+ * Site icon: the Convex favicon first, then Google's favicon service for the domain,
+ * then a lettered tile if both fail.
+ */
+function Favicon({ src, domain }: { src?: string; domain: string }) {
+  const host = domain.replace(/^www\./, "");
+  const sources = [src, `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`].filter(
+    (s): s is string => Boolean(s),
+  );
+  const [attempt, setAttempt] = useState(0);
+  if (attempt >= sources.length) {
+    return (
+      <span className={styles.tabFallback} aria-hidden="true">
+        {host.charAt(0).toUpperCase()}
+      </span>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- remote icons from many hosts; next/image would need every host allowlisted
+    <img
+      key={sources[attempt]}
+      className={styles.tabFavicon}
+      src={sources[attempt]}
+      alt=""
+      width={20}
+      height={20}
+      loading="lazy"
+      decoding="async"
+      referrerPolicy="no-referrer"
+      onError={() => setAttempt((a) => a + 1)}
+    />
+  );
+}
+
 export default function BrowserTabs() {
   const links = useQuery(api.browserLinks.getAll);
   const [search, setSearch] = useState("");
@@ -54,9 +88,9 @@ export default function BrowserTabs() {
           ))}
         </div>
       ) : categories.length ? (
-        <div className={styles.resourceGrid}>
+        <div className={styles.tabsGrid}>
           {categories.map((category) => (
-            <section key={category} className={styles.resourceGroup}>
+            <section key={category} className={styles.tabsGroup}>
               <h2>{category}</h2>
               <ul>
                 {filtered
@@ -65,11 +99,12 @@ export default function BrowserTabs() {
                   .map((link) => (
                     <li key={link._id}>
                       <a
-                        className={styles.resourceLink}
+                        className={styles.tabLink}
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
+                        <Favicon src={link.favicon} domain={link.domain} />
                         <span>
                           {link.label}
                           <small>{link.domain}</small>
