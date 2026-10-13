@@ -91,7 +91,7 @@ export function SandcastleBuilder() {
         {tools.map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={20} aria-hidden="true" />{label}</button>)}
       </div>
       <div className={styles.options}>
-        <button type="button" disabled={tool !== "wall"} onClick={() => setRotated(value => !value)} aria-pressed={rotated} aria-label="Rotate wall"><RotateCw size={16} aria-hidden="true" />Rotate wall</button>
+        <button type="button" disabled={tool !== "wall"} onClick={() => { setRotated(value => !value); dispatch({ type: "rotate", ...aimedSpot.current }); }} aria-pressed={rotated} aria-label="Rotate wall"><RotateCw size={16} aria-hidden="true" />Rotate wall</button>
         <button type="button" onClick={() => place()}>{tool === "erase" ? "Erase at marker" : "Place at marker"}</button>
       </div>
       <p className={styles.status} role="status" aria-live="polite">{state.message}</p>
@@ -108,7 +108,7 @@ export function SandcastleBuilder() {
             setCursor(next);
           } else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); place(); }
           else if (event.key === "Delete" || event.key === "Backspace") { event.preventDefault(); dispatch({ type: "place", tool: "erase", ...aimedSpot.current, rotated }); }
-          else if (event.key.toLowerCase() === "r") { event.preventDefault(); setRotated(value => !value); }
+          else if (event.key.toLowerCase() === "r") { event.preventDefault(); setRotated(value => !value); dispatch({ type: "rotate", ...aimedSpot.current }); }
           else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); dispatch({ type: "undo" }); }
         }}>
         {loaded ? <BeachBoundary><Scene pieces={state.pieces} tool={tool} cursor={cursor} dark={dark === "true"} moving={visible && reduced === "false" && hidden === "false"} onPlace={place} onAim={point => { aimedSpot.current = point; }} /></BeachBoundary> : <p className={styles.loading}>Your patch of beach.</p>}
@@ -117,7 +117,7 @@ export function SandcastleBuilder() {
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
         <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
       </div>
-      <p id="sandcastle-help" className={styles.help}>Tap to build. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats next to each other, straight or diagonal, and they join into lines, Vs, corners, and rings. Finish with a flag or a shell on top. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
+      <p id="sandcastle-help" className={styles.help}>Tap to build. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats next to each other, straight or diagonal, and they join into lines, Vs, corners, and rings. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
     </div>
   </section>;
 }

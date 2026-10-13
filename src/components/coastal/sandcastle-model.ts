@@ -12,6 +12,7 @@ export type CastlePiece = {
 export type CastleState = { pieces: CastlePiece[]; history: CastlePiece[][]; nextId: number; message: string };
 export type CastleAction =
   | { type: "place"; tool: CastleTool; x: number; z: number; rotated: boolean }
+  | { type: "rotate"; x: number; z: number }
   | { type: "undo" }
   | { type: "clear" };
 
@@ -68,6 +69,11 @@ export function castleReducer(state: CastleState, action: CastleAction): CastleS
     return previous ? { ...state, pieces: previous, history: state.history.slice(0, -1), message: "Last change undone." } : state;
   }
   if (action.type === "clear") return state.pieces.length ? save([], "Fresh sand. Build something new.") : state;
+  if (action.type === "rotate") {
+    const wall = state.pieces.find(piece => piece.kind === "wall" && piece.x === action.x && piece.z === action.z);
+    if (!wall) return { ...state, message: "Point the marker at a wall to turn it." };
+    return save(state.pieces.map(piece => piece.id === wall.id ? { ...piece, rotated: !piece.rotated } : piece), "Wall turned.");
+  }
   const { tool, x, z, rotated } = action;
   if (!Number.isInteger(x) || !Number.isInteger(z) || Math.abs(x) > 3 || Math.abs(z) > 2) return state;
   const atSpot = state.pieces.filter(piece => piece.x === x && piece.z === z);
@@ -93,6 +99,8 @@ export function castleReducer(state: CastleState, action: CastleAction): CastleS
   }
 
   if (!topStructure) return place(0, `${LABEL[tool]} added.`);
+  // Tapping a wall with the wall tool turns it instead of refusing.
+  if (tool === "wall" && topStructure.kind === "wall") return castleReducer(state, { type: "rotate", x, z });
   if (topStructure.kind === "bucket" && topStructure.level < MAX_LEVEL && STACKABLE.has(tool)) {
     if (atSpot.some(piece => piece.kind === "flag" || piece.kind === "shell")) return { ...state, message: "Clear the flag or shell off that bucket before stacking on it." };
     const level = (topStructure.level + 1) as 1 | 2;
