@@ -106,15 +106,15 @@
 .skin { fill: #e9b48c; }
 .hair { fill: #5a3a24; }
 .dolphin {
-  width: clamp(66px, 6.2vw, 92px);
-  top: 14%;
+  width: clamp(70px, 6.6vw, 98px);
+  top: -6%;
   animation: leap 1.9s cubic-bezier(.35, 0, .65, 1) forwards;
 }
 .skinTop { stop-color: #47727d; }
 .skinLow { stop-color: #8fb3b9; }
-.fin { fill: #436c76; }
+.fin { fill: #3d6670; }
 .flank { fill: #a9c6c9; opacity: .8; }
-.belly { fill: #eef4f1; }
+.belly { fill: #e6f0ee; opacity: .9; }
 .shine { fill: #ffffff; opacity: .3; }
 .mouth { fill: none; stroke: #2b4c54; stroke-width: .8; stroke-linecap: round; }
 .glint { fill: #ffffff; }
@@ -133,11 +133,11 @@
   to { transform: translateY(4px) rotate(3deg); }
 }
 @keyframes leap {
-  0% { transform: translate(-40px, 40%) rotate(-38deg); opacity: 0; }
+  0% { transform: translate(-40px, 45%) rotate(-12deg); opacity: 0; }
   12% { opacity: 1; }
-  50% { transform: translate(20px, -90%) rotate(0deg); }
+  50% { transform: translate(20px, -55%) rotate(18deg); }
   88% { opacity: 1; }
-  100% { transform: translate(80px, 45%) rotate(42deg); opacity: 0; }
+  100% { transform: translate(80px, 50%) rotate(52deg); opacity: 0; }
 }
 .banner { cursor: pointer; }
 .content { cursor: auto; }
