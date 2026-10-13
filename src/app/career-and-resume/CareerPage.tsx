@@ -71,7 +71,7 @@ export default function CareerPage() {
           <div className={styles.actions}>
             <a
               className={styles.action}
-              href="/career-files/Chris-Lane-Jones-October-Resume.pdf"
+              href="/career-and-resume/download/pdf"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -79,7 +79,7 @@ export default function CareerPage() {
             </a>
             <a
               className={styles.action}
-              href="/career-files/Chris-Lane-Jones-October-Resume.docx"
+              href="/career-and-resume/download/docx"
               download
             >
               <Download aria-hidden="true" /> Resume (Word)

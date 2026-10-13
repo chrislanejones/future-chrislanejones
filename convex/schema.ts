@@ -148,6 +148,16 @@ export default defineSchema({
     .index("by_order", ["order"])
     .index("by_created", ["createdAt"]),
 
+  // The downloadable resume, one row per format. The files live in Convex
+  // storage, not /public, so they never land in the git repo (see
+  // convex/resume.ts and docs/adr/002).
+  resumeFiles: defineTable({
+    kind: v.union(v.literal("pdf"), v.literal("docx")),
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    updatedAt: v.number(),
+  }).index("by_kind", ["kind"]),
+
   media: defineTable({
     url: v.string(),
     filename: v.string(),

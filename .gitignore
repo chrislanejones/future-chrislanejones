@@ -79,3 +79,6 @@ rolled_repo/
 /output/
 /docs/sessions/
 /Beach website redesign.zip
+# Resumes live in Convex storage, never in git (docs/adr/002)
+*[Rr]esume*.pdf
+*[Rr]esume*.docx

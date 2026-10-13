@@ -23,6 +23,7 @@ import type * as navigation from "../navigation.js";
 import type * as pageHeaders from "../pageHeaders.js";
 import type * as projects from "../projects.js";
 import type * as redirects from "../redirects.js";
+import type * as resume from "../resume.js";
 import type * as seo from "../seo.js";
 import type * as siteSettings from "../siteSettings.js";
 import type * as socialLinks from "../socialLinks.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   pageHeaders: typeof pageHeaders;
   projects: typeof projects;
   redirects: typeof redirects;
+  resume: typeof resume;
   seo: typeof seo;
   siteSettings: typeof siteSettings;
   socialLinks: typeof socialLinks;
