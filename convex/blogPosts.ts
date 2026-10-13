@@ -616,7 +616,7 @@ The "borrow checker is fighting me" frustration usually comes from trying to wri
     const tags = ["Rust", "Memory Management", "Performance", "Programming Languages"];
     const excerpt = "Compile-time ownership vs runtime tracing — stepped through side by side. Watch the same heap value live, alias, move, and die under two different memory strategies.";
     const title = "Rust borrow checker vs garbage collector";
-    const coverImage = "/blog/rust-vs-gc.webp";
+    const coverImage = "/blog/rust-borrow-checker-vs-garbage-collector-v2.webp";
 
     const existing = await ctx.db
       .query("blogPosts")
