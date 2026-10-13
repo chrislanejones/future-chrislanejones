@@ -22,7 +22,7 @@ export const staticPageHeaders: Record<
     title: "Career",
     breadcrumbPage: "Career",
     description:
-      "Following the trail from video production to web development—navigating frameworks, communities, and mountain views along the way.",
+      "Senior web engineering, enterprise CMS platforms, and AI automation. Explore my experience and download my October 2026 resume.",
   },
   "/conferences": {
     title: "Conferences",

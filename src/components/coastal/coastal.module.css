@@ -753,10 +753,47 @@
   --coast-soft: #ffffff45;
   color: #173f4a;
   position: relative;
-  padding-top: 8px;
+  padding-top: 72px;
   height: 100%;
   display: flex;
   flex-direction: column;
+}
+/* Telescoping antenna: a chrome rod leaning off the top-right, with a ball tip and a mount. */
+.radioAntenna {
+  position: absolute;
+  right: 22%;
+  top: 0;
+  width: 7px;
+  height: 118px;
+  border-radius: 4px;
+  background:
+    linear-gradient(transparent 32%, #00000026 32% 33.5%, transparent 33.5% 64%, #00000026 64% 65.5%, transparent 65.5%),
+    linear-gradient(90deg, #7f8c85, #f4f7f2 45%, #9aa79f);
+  transform-origin: 50% 100%;
+  transform: rotate(32deg);
+  z-index: 0;
+}
+.radioAntenna::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  margin-left: -6.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffffff, #a9b5ad 60%, #6f7c75);
+}
+.radioAntenna::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 18px;
+  height: 12px;
+  margin-left: -9px;
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(90deg, #8a988f, #d9e0d6 50%, #8a988f);
 }
 .radioHandle {
   flex-shrink: 0;

@@ -87,6 +87,7 @@ export function CoastalMusic() {
           setError("This track is unavailable. Try the next track.");
         }}
       />
+      <div className={styles.radioAntenna} aria-hidden="true" />
       <div className={styles.radioHandle} aria-hidden="true" />
       <div className={styles.radioBody}>
         <div className={styles.radioLabel} aria-hidden="true">

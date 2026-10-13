@@ -66,7 +66,8 @@ export default function CareerPage() {
         <div className={styles.panel}>
           <h2>Resume</h2>
           <p>
-            Download my resume for my work experience, skills, and projects.
+            October 2026 · Senior Web Engineer, AI Automation & CMS Architect.
+            Download my latest experience, technical skills, and projects.
           </p>
           <div className={styles.actions}>
             <a

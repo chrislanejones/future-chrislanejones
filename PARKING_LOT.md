@@ -50,7 +50,8 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - **2026-07-08 — Dead admin hooks.** `src/app/admin/hooks/useBlogMutation.ts` (a stub that
   fakes API calls with setTimeout), `useCareerEffect`, `useSeoEffect`, `useLinksEffect`,
   and `useEngagementEffect` are imported nowhere. The stub in particular is misleading —
-  it looks like the real blog save path. Candidates for deletion (Felix).
+  it looks like the real blog save path. Candidates for deletion (Felix). **RESOLVED 10-13-2026** — the five unused hooks and `HtmlEditor.tsx` were removed.
+
 - **2026-07-08 — MediaDrawer uses native `confirm()`** for permanent media deletion while
   every other destructive action uses a custom modal. Inconsistent UX; replace with the
   shared confirm modal pattern.
@@ -106,7 +107,8 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   behind it; ~~its BlueSky link 404s~~ — false alarm: the link works in a
   browser and the handle resolves (the audit's curl sent no user agent).
   Fixed in the same pass: the card's "Next.js 14" copy (now 16) and a
-  `/logo` link that should have been `/logo-page`.
+  `/logo` link that should have been `/logo-page`. **RESOLVED 10-13-2026** — `/blog` and `/admin-showcase` are in the Sitemap card now.
+
 - **2026-09-23 — Codeberg repo metadata still unchecked.** Tried to verify
   the Codeberg mirror's description/website field for this audit;
   codeberg.org was unreachable from this sandbox (curl and WebFetch both
@@ -172,3 +174,26 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   (ADR-002); updates go through `scripts/upload-resume.sh` from the CLI only. An Admin →
   Career tab uploader would remove the CLI step. The script also uploads PDF then Word in two
   steps, so a failure halfway leaves a mismatched pair live.
+- **10-13-2026 — Add the VITA major IT projects dashboard as a project.** Chris built
+  https://www.vita.virginia.gov/demo/major-it-projects-current-and-forecast-expenditure/
+  for VITA. Needs a card in `src/data/projects-data.ts` (or the Convex projects table via
+  /admin → Projects), a screenshot in `public/projects/`, and a short description in his voice. **RESOLVED 10-13-2026** — added to Projects (Convex + fallback snapshot).
+
+- **10-13-2026 — Resume WIP in the beach worktree diverges from prod.** The committed
+  `convex/resume.ts` (ported from old main, `getDownload`/`setFile`) is what prod Convex runs
+  and what the live career page uses. The uncommitted working-tree `convex/resume.ts`
+  (`getCurrent`/`publishOctober2026`) and `CareerPage.tsx` edits are a different design.
+  Do NOT run `convex deploy` from this worktree while they're uncommitted: it would replace
+  `getDownload` and break the live resume links. Either drop the WIP or finish it and deploy
+  both halves together. **RESOLVED 10-13-2026** — the WIP put resume files back in git, against ADR-002, so only its copy changes shipped; the Old Website footer link was deleted in prod. The WIP is saved at `/tmp/claude-trash/2026-10-13/resume-wip.patch`.
+
+- **10-13-2026 — Mobile performance follow-ups (home scores 74 mobile / 98 desktop).**
+  Remaining Lighthouse savings on `/`: gtag.js is 159 KB and the single largest download
+  (consider dropping GA for PostHog alone, or loading it only after consent); two
+  render-blocking CSS chunks (~340 ms); the shared client chunk (`3x023…`, ~800 ms CPU at
+  4x slowdown) — audit framer-motion and lucide imports for tree-shaking; project preview
+  images could be served at 640w on phones (61 KB).
+- **10-13-2026 — Clerk is scoped to /admin now.** `ClerkProvider` lives in
+  `src/providers/ConvexAdminProvider.tsx`, mounted by `src/app/admin/layout.tsx`; the public
+  site uses a plain `ConvexProvider`. Any future public page that needs `useAuth`/`useUser`
+  must mount inside that provider or it will throw.
