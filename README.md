@@ -1,8 +1,8 @@
-# Chris Lane Jones Portfolio
+# Chris Lane Jones — Beach Portfolio
 
-Modern portfolio website built with Next.js 16, React 19, TypeScript, and Tailwind CSS v4. Features a bento grid layout, dark mode, Framer Motion animations, and an admin dashboard backed by a Convex database for content management.
+Coastal portfolio built with Next.js 16, React 19, TypeScript, and Tailwind CSS v4. Features animated React Three Fiber beach scenes, responsive light and dark themes, and an admin dashboard backed by Convex.
 
-Live at [www.chrislanejones.com](https://www.chrislanejones.com).
+This repository contains the beach redesign of [Chris Lane Jones’s portfolio](https://www.chrislanejones.com). Publishing this repository does not deploy the redesign to that site.
 
 ![Image of Light and Dark Mode](public/Repo-Cover-V3.webp)
 
@@ -12,6 +12,7 @@ Live at [www.chrislanejones.com](https://www.chrislanejones.com).
 - **Language:** [TypeScript](https://www.typescriptlang.org/)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/) v4
 - **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **3D scenes:** [React Three Fiber](https://r3f.docs.pmnd.rs/) and [Three.js](https://threejs.org/)
 - **Database:** [Convex](https://www.convex.dev/) (real-time backend)
 - **File Uploads:** [UploadThing](https://uploadthing.com/) (CDN-hosted media)
 - **Authentication:** [Clerk](https://clerk.com/)
@@ -25,15 +26,16 @@ Live at [www.chrislanejones.com](https://www.chrislanejones.com).
 
 ### 🎨 Frontend
 
-- Modern bento grid homepage layout
+- Coastal homepage with browser-style project previews on sand
+- Animated shoreline, seashells, sandcastle, and beach umbrella scenes
 - Dark mode with system preference detection
 - Smooth animations with Framer Motion
 - Fully responsive design
-- Interactive music player
-- Photo gallery with Polaroid-style drawer
+- Radio-style music player
+- Conference photo gallery with a full-width umbrella-inspired drawer
 - Project showcase with carousel
 - Blog post pages with rich content, including interactive stepper widgets rendered by one shared React component (`src/components/blog/`) that posts embed with `<div data-stepper="…">`
-- Conference archive with year/talk pages
+- Conference archive with year/event pages, transparent WebP logos, and event photo galleries
 - Career timeline with downloadable resume (PDF & DOCX)
 - Site history timeline
 - React & WordPress maintenance services pages
@@ -81,6 +83,7 @@ src/
 ├── components/
 │   ├── layout/             # Header, Footer
 │   ├── main/               # Homepage bento grid content blocks
+│   ├── coastal/            # Beach design, 3D scenes, radio, shared page styles
 │   ├── page/               # Shared page components (Banner, Card, Gallery)
 │   └── ui/                 # shadcn/ui primitives
 ├── lib/                    # Utilities: SEO, animations, page headers
@@ -112,7 +115,7 @@ convex/                     # Backend: queries, mutations, HTTP endpoints
 
 | Route | Description |
 |-------|-------------|
-| `/` | Bento grid homepage |
+| `/` | Coastal homepage |
 | `/about` | Bio, hiking, and community background |
 | `/blog` | Blog post listing |
 | `/blog/[slug]` | Individual blog post |
@@ -148,8 +151,8 @@ convex/                     # Backend: queries, mutations, HTTP endpoints
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/chrislanejones/future-chrislanejones.git
-cd future-chrislanejones
+git clone https://github.com/chrislanejones/future-chrislanejones-beach.git
+cd future-chrislanejones-beach
 ```
 
 2. Install dependencies:
@@ -259,7 +262,7 @@ The Settings tab includes a **Data Management** panel that lets you reseed any c
 
 ## 🚢 Deployment
 
-- The frontend deploys automatically via Vercel on push to the GitHub `origin` remote. Codeberg is a mirror — pushing there alone does not deploy.
+- Connect this repository to a separate Vercel project and configure its environment variables to deploy the beach frontend. This repository does not configure or change the original portfolio’s deployment.
 - Convex does **not** deploy with the frontend. Run `npx convex deploy` separately whenever anything in `convex/` changes.
 - Admin writes are gated in code, not just by being signed in: `requireAdmin`/`isAdmin` in `convex/authz.ts` check the caller's Clerk user id against an allowlist. Override it with the `ADMIN_USER_IDS` env var — set it in both the Convex deployment (`npx convex env set ADMIN_USER_IDS "..."`) and the Next.js app env, since `src/app/api/uploadthing/core.ts` reads the same variable for upload gating.
 - Auth needs a Clerk JWT template named `convex` on whichever Clerk instance `CLERK_JWT_ISSUER_DOMAIN` points at (see `convex/auth.config.ts`).

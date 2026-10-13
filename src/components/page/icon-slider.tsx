@@ -4,6 +4,7 @@ import { AnimatePresence, motion, wrap } from "framer-motion";
 import { useState, SVGProps, forwardRef, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import styles from "./icon-slider.module.css";
 
 export type SliderItem = {
   name: string;
@@ -35,7 +36,7 @@ interface IconSliderProps {
 /* -------------------------------------------------------------------------- */
 
 const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
-  ({ items, direction }, ref) => {
+  ({ items, variant }, ref) => {
     return (
       <motion.div
         ref={ref}
@@ -78,7 +79,7 @@ const ItemGroup = forwardRef<HTMLDivElement, ItemGroupProps>(
                 alt={item.alt ?? `${item.name} logo`}
                 width={300}
                 height={200}
-                className="client-logo object-contain w-auto h-32 sm:h-40 lg:h-48 opacity-90 group-hover:opacity-100 transition-all duration-300"
+                className={`${variant === "no-filter" ? "" : "client-logo "}object-contain max-w-full w-auto h-32 sm:h-40 lg:h-48 opacity-90 group-hover:opacity-100 transition-all duration-300`}
                 sizes="(max-width: 640px) 100vw,
                        (max-width: 1024px) 50vw,
                        25vw"
@@ -206,11 +207,9 @@ export default function IconSlider({
                 setDirection(i > selectedGroup ? 1 : -1);
                 setSelectedGroup(i);
               }}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                i === selectedGroup
-                  ? "bg-(--color-ink) scale-110"
-                  : "bg-(--color-inner-card) hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
-              }`}
+              type="button"
+              className={styles.dot}
+              aria-current={i === selectedGroup ? "true" : undefined}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
@@ -240,11 +239,9 @@ export default function IconSlider({
                     setDirection(i > selectedGroup ? 1 : -1);
                     setSelectedGroup(i);
                   }}
-                  className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                    i === selectedGroup
-                      ? "bg-(--color-ink) scale-110"
-                      : "bg-(--color-inner-card) hover:bg-gray-800/70 dark:hover:bg-gray-300/70"
-                  }`}
+                  type="button"
+                  className={styles.dot}
+                  aria-current={i === selectedGroup ? "true" : undefined}
                   aria-label={`Go to slide ${i + 1}`}
                 />
               ))}

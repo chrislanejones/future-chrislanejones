@@ -1,19 +1,6 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
-import Card from "@/components/page/card";
-import {
-  FileText,
-  ExternalLink,
-  Home,
-  Briefcase,
-  Code,
-  Book,
-  MessageSquare,
-  Users,
-  Mountain,
-} from "lucide-react";
+import { ArrowUpRight, Home, Briefcase, Book, Users } from "lucide-react";
+import styles from "@/components/coastal/interior.module.css";
 
 const sitemapSections = [
   {
@@ -39,6 +26,8 @@ const sitemapSections = [
     title: "Content & Resources",
     icon: <Book className="w-5 h-5" />,
     links: [
+      { label: "Blog", href: "/blog" },
+      { label: "Admin Showcase", href: "/admin-showcase" },
       { label: "Browser Tabs", href: "/browser-tabs" },
       { label: "Conferences", href: "/conferences" },
       { label: "Site History", href: "/site-history" },
@@ -73,124 +62,54 @@ const sitemapSections = [
 export default function SiteMapPage() {
   return (
     <>
-      {/* Two Column Layout: Changelog (left) | Sitemap (right) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Changelog Card */}
-        <Card
-          size="small"
-          delay={0.1}
-          className="flex flex-col"
-          style={{ minHeight: "auto" }}
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <FileText className="w-6 h-6 text-accent" />
-            <h2 className="">Changelog</h2>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center text-center py-12">
-            <div className="space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
-                <Code className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="text-muted">Coming Soon</h3>
-              <p className="text-muted max-w-sm">
-                Detailed version history and site updates will be documented
-                here. Check back soon for a comprehensive changelog.
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        {/* Sitemap Card */}
-        <Card
-          size="small"
-          delay={0.2}
-          className="flex flex-col"
-          style={{ minHeight: "auto" }}
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <Mountain className="w-6 h-6 text-accent" />
-            <h2 className="">Site Map</h2>
-          </div>
-
-          <div className="space-y-6 flex-1">
-            {sitemapSections.map((section, index) => (
-              <motion.div
-                key={section.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 * index }}
-                className="space-y-3"
-              >
-                <div className="flex items-center gap-2 text-accent">
-                  {section.icon}
-                  <h3 className="uppercase tracking-wide">{section.title}</h3>
-                </div>
-
-                <ul className="space-y-2 pl-7">
-                  {section.links.map((link) => (
-                    <li key={link.href}>
-                      {link.external ? (
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted hover:text-accent transition-colors inline-flex items-center gap-1.5 group"
-                        >
-                          {link.label}
-                          <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </a>
-                      ) : (
-                        <Link
-                          href={link.href}
-                          className="text-muted hover:text-accent transition-colors inline-block"
-                        >
-                          {link.label}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </Card>
+      <div className={`${styles.split} ${styles.section}`}>
+        {sitemapSections.map((section) => (
+          <section className={styles.resourceGroup} key={section.title}>
+            <h2 className="flex items-center gap-3">
+              {section.icon}
+              {section.title}
+            </h2>
+            <ul>
+              {section.links.map((link) => (
+                <li key={link.href}>
+                  {link.external ? (
+                    <a
+                      className={styles.resourceLink}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span>{link.label}</span>
+                      <ArrowUpRight size={18} aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <Link className={styles.resourceLink} href={link.href}>
+                      <span>{link.label}</span>
+                      <ArrowUpRight size={18} aria-hidden="true" />
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
-
-      {/* Full Width Card - Tech Stack */}
-      <Card
-        size="full"
-        delay={0.3}
-        className="mt-6"
-        style={{ minHeight: "auto" }}
-      >
-        <div className="text-center space-y-4">
-          <h2 className="">Built With</h2>
-          <p className="text-muted max-w-2xl mx-auto">
-            This site is built with Next.js 16, React, TypeScript, Tailwind CSS,
-            and Framer Motion. Hosted on Vercel with data managed through
-            Convex.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 pt-4">
-            {[
-              "Next.js",
-              "React",
-              "TypeScript",
-              "Tailwind CSS",
-              "Framer Motion",
-              "Vercel",
-              "Convex",
-            ].map((tech) => (
-              <span
-                key={tech}
-                className="px-4 py-2 rounded-full bg-accent/10 text-accent"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
+      <section className={styles.panel}>
+        <h2>How this site is built</h2>
+        <p>
+          Next.js, React, TypeScript, Tailwind CSS, Framer Motion, and React
+          Three Fiber, with content managed in Convex and hosting on Vercel.
+        </p>
+        <div className={styles.actions}>
+          <Link className={styles.textLink} href="/site-history">
+            Explore the site history{" "}
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
+          <a className={styles.textLink} href="/sitemap.xml">
+            XML sitemap <ArrowUpRight size={18} aria-hidden="true" />
+          </a>
         </div>
-      </Card>
+      </section>
     </>
   );
 }

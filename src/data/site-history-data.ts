@@ -62,9 +62,9 @@ export const siteHistorySections: SiteHistorySection[] = [
     imagePosition: "right",
   },
   {
-    title: "2025 - Future: Modern React & Framer Motion",
+    title: "2025 - Modern React & Framer Motion",
     description:
-      "This is the site you're looking at right now—built with Next.js 14, React, TypeScript, Tailwind CSS, and Framer Motion.\n\nI finally had the creative freedom I'd been craving. Framer Motion made animations smooth and intuitive. The component-based architecture meant I could build reusable pieces and iterate quickly. TypeScript caught bugs before they reached production. Tailwind made styling fast and consistent.\n\nThe bento grid layout, the smooth page transitions, the interactive components, the dark mode—all of this would have been significantly harder in WordPress. React gave me the tools to build the portfolio site I'd always envisioned.\n\nLooking ahead, I'm excited to continuing to push what's possible with modern web technologies. The journey continues.",
+      "In 2025, I moved the site to Next.js, React, TypeScript, Tailwind CSS, and Framer Motion.\n\nI finally had the creative freedom I'd been craving. Framer Motion made animations smooth and intuitive. The component-based architecture meant I could build reusable pieces and iterate quickly. TypeScript caught bugs before they reached production. Tailwind made styling fast and consistent.\n\nThe bento grid layout, the smooth page transitions, the interactive components, the dark mode—all of this would have been significantly harder in WordPress. React gave me the tools to build the portfolio site I'd always envisioned.\n\nLooking ahead, I'm excited to continue to push what's possible with modern web technologies. The journey continues.",
     image: "/site-history/New-React-Website.webp",
     imageAlt: "Current Next.js and React website with modern animations",
     imagePosition: "left",

@@ -73,3 +73,9 @@ rolled_repo/
 
 # Fallow
 .fallow/
+
+# Local design references, generated source images, and session evidence
+/.playwright-mcp/
+/output/
+/docs/sessions/
+/Beach website redesign.zip

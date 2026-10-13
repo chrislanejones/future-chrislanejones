@@ -1,7 +1,7 @@
 // src/app/site-history/page.tsx
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import ConvexBanner from "@/components/page/ConvexBanner";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
+import styles from "@/components/coastal/interior.module.css";
+import { CoastalPageIntro } from "@/components/coastal/page-intro";
 import SiteHistoryPage from "@/app/site-history/SiteHistoryPage";
 import { getPageSEO } from "@/lib/seo";
 
@@ -13,13 +13,11 @@ export async function generateMetadata() {
 
 export default function SiteHistory() {
   return (
-    <>
-      <Header />
-      <ConvexBanner path="/site-history" />
-      <main id="main-content">
+    <CoastalPageShell>
+      <CoastalPageIntro path="/site-history" />
+      <div className={styles.content}>
         <SiteHistoryPage />
-      </main>
-      <Footer />
-    </>
+      </div>
+    </CoastalPageShell>
   );
 }

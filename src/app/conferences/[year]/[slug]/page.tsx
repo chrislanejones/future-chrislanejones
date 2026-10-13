@@ -1,70 +1,32 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "../../../../../convex/_generated/api";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
+import { getConferences } from "@/lib/conferences-server";
+import { conferenceHref } from "@/lib/conferences";
 import ConferenceDetailPage from "./ConferenceDetailPage";
 
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-
+type Params = Promise<{ year: string; slug: string }>;
 export const revalidate = 60;
-
-// Prerender every known conference at build time; new ones still render on
-// demand (dynamicParams defaults to true) and then cache via ISR.
 export async function generateStaticParams() {
-  const all = await convex.query(api.conferences.getAll, {});
-  return all.map((c) => ({ year: String(c.year), slug: c.slug }));
+  return (await getConferences()).map((conf) => ({ year: String(conf.year), slug: conf.slug }));
 }
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ year: string; slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { year, slug } = await params;
-  const all = await convex.query(api.conferences.getAll, {});
-  const conf = all.find((c) => String(c.year) === year && c.slug === slug);
-  if (!conf) return {};
-  const title = `${conf.name} ${conf.year} — Notes`;
-  const description =
-    conf.description ??
-    `Notes and highlights from ${conf.name} ${conf.year}${conf.city ? ` in ${conf.city}` : ""}.`;
-  const canonical = `https://www.chrislanejones.com/conferences/${year}/${slug}`;
+  const conf = (await getConferences()).find((item) => String(item.year) === year && item.slug === slug);
+  if (!conf) notFound();
+  const title = `${conf.name} ${conf.year}`;
+  const description = conf.description ?? `${conf.name} ${conf.year}${conf.city ? ` in ${conf.city}` : ""}.`;
+  const url = `https://www.chrislanejones.com${conferenceHref(conf)}`;
   return {
-    title,
-    description,
-    alternates: { canonical },
-    openGraph: {
-      title,
-      description,
-      url: canonical,
-      images: conf.logo ? [conf.logo] : undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: conf.logo ? [conf.logo] : undefined,
-    },
+    title, description, alternates: { canonical: url },
+    openGraph: { title, description, url, images: conf.logo ? [conf.logo] : undefined },
+    twitter: { card: "summary_large_image", title, description, images: conf.logo ? [conf.logo] : undefined },
   };
 }
-
-export default async function ConferenceDetailRoute({
-  params,
-}: {
-  params: Promise<{ year: string; slug: string }>;
-}) {
+export default async function ConferenceDetailRoute({ params }: { params: Params }) {
   const { year, slug } = await params;
-  const all = await convex.query(api.conferences.getAll, {});
-  const conf = all.find((c) => String(c.year) === year && c.slug === slug);
+  const conferences = await getConferences();
+  const conf = conferences.find((item) => String(item.year) === year && item.slug === slug);
   if (!conf) notFound();
-
-  return (
-    <>
-      <Header />
-      <ConferenceDetailPage conference={conf} />
-      <Footer />
-    </>
-  );
+  return <CoastalPageShell><ConferenceDetailPage conference={conf} conferences={conferences} /></CoastalPageShell>;
 }

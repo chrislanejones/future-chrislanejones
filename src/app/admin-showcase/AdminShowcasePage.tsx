@@ -1,7 +1,14 @@
-"use client";
-
-import Card from "@/components/page/card";
-import { Layout } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowUpRight,
+  Layout,
+  Search,
+  Navigation,
+  Settings,
+  Images,
+  Files,
+} from "lucide-react";
+import styles from "@/components/coastal/interior.module.css";
 
 type Showcase = {
   title: string;
@@ -55,53 +62,38 @@ const sections: Showcase[] = [
   },
 ];
 
+const icons = [Layout, Search, Navigation, Settings, Images, Files];
 export default function AdminShowcasePage() {
   return (
-    <div className="site-container py-12 space-y-12">
-      <Card size="full" delay={0.05}>
-        <div className="p-2 max-w-3xl space-y-4">
-          <h2 className="text-ink">A Convex-backed admin for this site</h2>
-          <p className="text-muted leading-relaxed">
-            This portfolio is a Next.js app on Vercel with a custom admin
-            powered by Convex for the database and Clerk for auth.
-            Everything content-shaped — page headers, SEO metadata, projects,
-            clients, blog posts, conferences, navigation, redirects — is
-            editable from the dashboard and reflected live without a redeploy.
-            The admin route itself is gated and hidden from the public footer.
-          </p>
-          <p className="text-muted leading-relaxed">
-            Screenshots below show each major area.
-          </p>
+    <>
+      <section className={`${styles.panel} ${styles.section}`}>
+        <h2>A Convex-backed admin for this site</h2>
+        <p>
+          This portfolio runs on Next.js and Vercel, with a custom Convex admin
+          and Clerk authentication. Projects, articles, conferences, navigation,
+          and page metadata can be edited from one dashboard.
+        </p>
+        <div className={styles.actions}>
+          <Link
+            className={styles.textLink}
+            href="/blog/convex-setup-building-the-perfect-backend-for-your-portfolio"
+          >
+            Read about the backend <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
         </div>
-      </Card>
-
-      <div className="grid grid-cols-1 gap-8">
-        {sections.map((section, index) => (
-          <Card key={section.title} size="full" delay={0.1 + index * 0.05}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-2">
-              <div
-                role="img"
-                aria-label={section.alt}
-                className="relative w-full aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-accent/15 via-white/5 to-accent/10 border border-(--color-border) flex flex-col items-center justify-center gap-3 p-6 text-center"
-              >
-                <Layout className="w-10 h-10 text-accent/60" aria-hidden />
-                <span className="text-xs uppercase tracking-wide text-muted">
-                  Screenshot coming soon
-                </span>
-                <span className="text-sm text-ink font-medium line-clamp-2">
-                  {section.title}
-                </span>
-              </div>
-              <div className="flex flex-col justify-center space-y-3">
-                <h3 className="text-ink">{section.title}</h3>
-                <p className="text-muted leading-relaxed">
-                  {section.description}
-                </p>
-              </div>
-            </div>
-          </Card>
-        ))}
+      </section>
+      <div className={styles.serviceGrid}>
+        {sections.map((section, i) => {
+          const Icon = icons[i];
+          return (
+            <section key={section.title} className={styles.serviceItem}>
+              <Icon size={28} aria-hidden="true" />
+              <h2>{section.title}</h2>
+              <p>{section.description}</p>
+            </section>
+          );
+        })}
       </div>
-    </div>
+    </>
   );
 }

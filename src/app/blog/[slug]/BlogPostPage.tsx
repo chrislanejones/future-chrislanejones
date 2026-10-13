@@ -12,9 +12,8 @@ import { createRoot, type Root } from "react-dom/client";
 import { renderPostHtml } from "@/lib/blog-content";
 import { BlogStepper } from "@/components/blog/BlogStepper";
 import { STEPPER_CONFIGS } from "@/components/blog/stepper-configs";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import Banner from "@/components/page/banner";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
+import styles from "@/components/coastal/interior.module.css";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -93,24 +92,27 @@ export default function BlogPostPage({
 
   const livePost = useQuery(
     api.blogPosts.getPostBySlug,
-    params.slug ? { slug: params.slug } : "skip"
+    params.slug ? { slug: params.slug } : "skip",
   );
   // undefined = still connecting (use the server copy); null = unpublished.
   const post = livePost === undefined ? initialPost : livePost;
   const userLikeStatus = useQuery(
     api.blogPosts.getUserLikeStatus,
-    userIdentifier && post?._id ? { postId: post._id, userIdentifier } : "skip"
+    userIdentifier && post?._id ? { postId: post._id, userIdentifier } : "skip",
   );
   const comments = useQuery(
     api.blogPosts.getComments,
-    post?._id ? { postId: post._id } : "skip"
+    post?._id ? { postId: post._id } : "skip",
   );
 
   const toggleLike = useMutation(api.blogPosts.toggleLike);
   const addComment = useMutation(api.blogPosts.addComment);
 
   const postContent = post?.content;
-  const renderedContent = useMemo(() => renderPostHtml(postContent), [postContent]);
+  const renderedContent = useMemo(
+    () => renderPostHtml(postContent),
+    [postContent],
+  );
 
   const articleRef = useRef<HTMLDivElement>(null);
   const stepperRootsRef = useRef<Root[]>([]);
@@ -166,9 +168,8 @@ export default function BlogPostPage({
 
   if (post === null) {
     return (
-      <>
-        <Header />
-        <main id="main-content" className="site-container py-12">
+      <CoastalPageShell>
+        <div className={styles.article}>
           <div className="text-center py-12">
             <h1 className="text-2xl font-bold text-ink mb-4">Post Not Found</h1>
             <p className="text-muted mb-8">
@@ -181,23 +182,20 @@ export default function BlogPostPage({
               </Link>
             </Button>
           </div>
-        </main>
-        <Footer />
-      </>
+        </div>
+      </CoastalPageShell>
     );
   }
 
   if (!post) {
     return (
-      <>
-        <Header />
-        <main id="main-content" className="site-container py-12">
+      <CoastalPageShell>
+        <div className={styles.article}>
           <div className="flex justify-center items-center py-12">
             <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
           </div>
-        </main>
-        <Footer />
-      </>
+        </div>
+      </CoastalPageShell>
     );
   }
 
@@ -228,9 +226,8 @@ export default function BlogPostPage({
   };
 
   return (
-    <>
-      <Header />
-      <main className="site-container py-12">
+    <CoastalPageShell>
+      <div className={`${styles.content} ${styles.article}`}>
         {/* Back to Blog */}
         <div className="mb-8">
           <Button asChild variant="outline" size="sm">
@@ -241,27 +238,23 @@ export default function BlogPostPage({
           </Button>
         </div>
 
-        <Banner
-          title={post.title}
-          breadcrumbPage={post.title}
-          parentBreadcrumbs={[{ label: "Blog", href: "/blog" }]}
-        />
+        <h1 className={styles.articleTitle}>{post.title}</h1>
 
-        <Card size="full" className="overflow-hidden">
+        <div className={styles.articleBody}>
           {post.coverImage && (
-            <div className="relative w-full aspect-[21/9]">
+            <div className={styles.articleCover}>
               <Image
                 src={post.coverImage}
                 alt={post.title}
                 fill
                 sizes="(max-width: 1280px) 100vw, 1280px"
-                className="object-cover"
+                className="object-contain"
                 priority
               />
             </div>
           )}
 
-          <div className="p-8">
+          <div>
             {/* Meta Info */}
             <div className="flex flex-wrap items-center gap-4 text-muted mb-8 pb-6 border-b border-(--color-border)">
               <div className="flex items-center gap-2">
@@ -271,6 +264,7 @@ export default function BlogPostPage({
                     year: "numeric",
                     month: "long",
                     day: "numeric",
+                    timeZone: "UTC",
                   })}
                 </time>
               </div>
@@ -320,7 +314,7 @@ export default function BlogPostPage({
             {/* Comments Section */}
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="">Comments ({comments?.length || 0})</h3>
+                <h2 className="text-2xl">Comments ({comments?.length || 0})</h2>
                 <Button
                   onClick={() => setShowCommentForm(!showCommentForm)}
                   variant="outline"
@@ -450,9 +444,8 @@ export default function BlogPostPage({
               )}
             </div>
           </div>
-        </Card>
-      </main>
-      <Footer />
-    </>
+        </div>
+      </div>
+    </CoastalPageShell>
   );
 }

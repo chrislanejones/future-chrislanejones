@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import { aiTools } from "@/data/ai-tools";
 import {
   siReact,
   siRust,
@@ -22,18 +24,6 @@ import {
   siSvelte,
   siKubernetes,
 } from "simple-icons";
-const aiTools = [
-  "Claude Code",
-  "Codex",
-  "MCP",
-  "N8n",
-  "Xiaomi MiniMo",
-  "Replicate",
-  "Firecrawl",
-  "Browserbase",
-  "OpenCode",
-  "Gemini",
-];
 import { Reveal } from "./reveal";
 import styles from "./coastal.module.css";
 
@@ -63,12 +53,24 @@ const learning = [
   ["Svelte", siSvelte],
   ["Kubernetes", siKubernetes],
 ] as const;
-function Technology({ name, path }: { name: string; path: string }) {
+function Technology({
+  name,
+  path,
+  svg,
+}: {
+  name: string;
+  path?: string;
+  svg?: ReactNode;
+}) {
   return (
     <div className={styles.technology}>
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-        <path d={path} />
-      </svg>
+      <span className={styles.technologyIcon} aria-hidden="true">
+        {svg ?? (
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d={path} />
+          </svg>
+        )}
+      </span>
       <span>{name}</span>
     </div>
   );
@@ -104,11 +106,16 @@ export function CoastalTech() {
               ))}
             </div>
           </div>
-          <div>
+          <div className={styles.aiTools}>
             <h3>Current AI tools</h3>
-            <div className={styles.aiList}>
+            <div className={styles.aiGrid}>
               {aiTools.map((tool) => (
-                <span key={tool}>{tool}</span>
+                <Technology
+                  key={tool.name}
+                  name={tool.name}
+                  path={tool.icon?.path}
+                  svg={tool.svg}
+                />
               ))}
             </div>
           </div>

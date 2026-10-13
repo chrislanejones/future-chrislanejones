@@ -10,55 +10,7 @@ import { FaGithub } from "react-icons/fa";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
-// Static fallback shown while Convex loads
-const FALLBACK = [
-  {
-    title: "Image Horse",
-    description:
-      "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
-    features: [
-      "Offline-friendly and keyboard-navigable",
-      "Undo/redo, rotation/flip, pagination",
-      "Bulk crop mirroring across selected images",
-    ],
-    image: "/projects/Image-Horse-App.webp",
-    githubUrl:
-      "https://github.com/chrislanejones/multi-image-compress-and-edit",
-    codebergUrl: "",
-    vercelUrl: "https://edit.imagehorse.app/",
-    customUrl: "",
-  },
-  {
-    title: "Go Web Crawler",
-    description:
-      "This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content.",
-    features: [
-      "Built in Go (Golang) for high concurrency and efficient network operations",
-      "Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
-      "Features bot protection detection for systems like Cloudflare, Incapsula, and Sucuri",
-    ],
-    image: "/projects/Web-Crawler-Golang-App.webp",
-    githubUrl: "https://github.com/chrislanejones/webcrawler-go",
-    codebergUrl: "",
-    vercelUrl: "",
-    customUrl: "",
-  },
-  {
-    title: "Vim/Neovim Shortcut Finder",
-    description:
-      "Interactive app to discover and master Vim/Neovim shortcuts via intuitive search and contextual learning.",
-    features: [
-      "Interactive shortcut search and filtering",
-      "Context-aware command suggestions",
-      "Custom shortcut collection builder",
-    ],
-    image: "/projects/MPC-Vim-Filter-Tool.webp",
-    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
-    codebergUrl: "",
-    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
-    customUrl: "",
-  },
-];
+import { featuredProjects as FALLBACK } from "@/data/projects-data";
 
 export default function ProjectsContent() {
   const convexProjects = useQuery(api.projects.getFeatured);
@@ -86,8 +38,8 @@ export default function ProjectsContent() {
     currentProject.githubUrl?.trim() !== "" && currentProject.githubUrl;
   const hasCodeberg =
     currentProject.codebergUrl?.trim() !== "" && currentProject.codebergUrl;
-  const hasVercel =
-    currentProject.vercelUrl?.trim() !== "" && currentProject.vercelUrl;
+  const liveUrl = currentProject.vercelUrl?.trim() || currentProject.customUrl?.trim();
+  const hasVercel = Boolean(liveUrl);
 
   return (
     <>
@@ -169,7 +121,7 @@ export default function ProjectsContent() {
             )}
 
             <Button
-              onClick={() => hasVercel && window.open(currentProject.vercelUrl!)}
+              onClick={() => hasVercel && window.open(liveUrl)}
               variant="neutral"
               size="icon"
               round

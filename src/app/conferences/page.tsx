@@ -1,30 +1,18 @@
-import { ConvexHttpClient } from "convex/browser";
-import { api } from "../../../convex/_generated/api";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import ConvexBanner from "@/components/page/ConvexBanner";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
+import { CoastalPageIntro } from "@/components/coastal/page-intro";
 import ConferencesPage from "./ConferencesPage";
 import { getPageSEO } from "@/lib/seo";
-
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+import { getConferences } from "@/lib/conferences-server";
 
 export const revalidate = 60;
-
-export async function generateMetadata() {
-  return await getPageSEO("/conferences");
-}
+export async function generateMetadata() { return getPageSEO("/conferences"); }
 
 export default async function ConferencesRoute() {
-  const conferences = await convex.query(api.conferences.getAll, {});
-
+  const conferences = await getConferences();
   return (
-    <>
-      <Header />
-      <ConvexBanner path="/conferences" />
-      <main id="main-content">
-        <ConferencesPage conferences={conferences} />
-      </main>
-      <Footer />
-    </>
+    <CoastalPageShell>
+      <CoastalPageIntro path="/conferences" />
+      <ConferencesPage conferences={conferences} />
+    </CoastalPageShell>
   );
 }

@@ -1,121 +1,105 @@
-// src/app/blog/BlogPage.tsx
 "use client";
 
-import { Card } from "@/components/page/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 import type { Doc } from "../../../convex/_generated/dataModel";
 import Link from "next/link";
-import { Calendar, Heart, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Search } from "lucide-react";
 import Image from "next/image";
+import styles from "@/components/coastal/interior.module.css";
 
-// Helper function to get badge color variant based on index
-const getBadgeVariant = (index: number) => {
-  const variants = [
-    "blue",
-    "green",
-    "purple",
-    "orange",
-    "pink",
-    "cyan",
-    "yellow",
-    "red",
-  ] as const;
-  return variants[index % variants.length];
-};
-
-// Posts are fetched server-side and passed in, so the list (titles, excerpts,
-// and links) is present in the initial HTML for crawlers instead of behind a
-// client-only useQuery that rendered an empty spinner on the server.
+// Initial posts and article links stay server-rendered; search enhances the list.
 export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
+  const [search, setSearch] = useState("");
+  const query = search.trim().toLowerCase();
+  const filtered = posts.filter((post) =>
+    [post.title, post.excerpt, ...(post.tags ?? [])]
+      .join(" ")
+      .toLowerCase()
+      .includes(query),
+  );
   return (
-    <div className="site-container py-12">
-      {posts.length === 0 ? (
-        <Card size="full" className="text-center">
-          <p className="p text-ink">No blog posts yet. Check back soon!</p>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post, index) => (
-            <Card
-              key={post._id}
-              size="small"
-              delay={0.1 + index * 0.05}
-              className="overflow-hidden flex flex-col"
-            >
+    <>
+      <div className={styles.toolbar}>
+        <p aria-live="polite">
+          {filtered.length} {filtered.length === 1 ? "article" : "articles"}
+        </p>
+        <label className={styles.search}>
+          <Search size={20} aria-hidden="true" />
+          <span className="sr-only">Search articles</span>
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search articles or topics"
+          />
+        </label>
+      </div>
+      {filtered.length ? (
+        <div className={styles.postGrid}>
+          {filtered.map((post) => (
+            <article key={post._id} className={styles.post}>
               {post.coverImage && (
-                <Link href={`/blog/${post.slug}`} className="block">
-                  <div className="relative w-full aspect-video bg-white/5">
-                    <Image
-                      src={post.coverImage}
-                      alt={post.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover"
-                    />
-                  </div>
-                </Link>
-              )}
-
-              <div className="flex-1 p-6 flex flex-col">
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="nav-link inline-block mb-2"
+                  className={styles.postMedia}
+                  tabIndex={-1}
+                  aria-hidden="true"
                 >
-                  <h3 className="text-ink tracking-tight line-clamp-2">
-                    {post.title}
-                  </h3>
+                  <Image
+                    src={post.coverImage}
+                    alt=""
+                    fill
+                    sizes="(max-width: 767px) 90vw, 50vw"
+                  />
                 </Link>
-
-                <div className="flex items-center gap-4 text-ink mb-3">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    <time dateTime={new Date(post.createdAt).toISOString()}>
-                      {new Date(post.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </time>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Heart className="w-3 h-3" />
-                    <span>{post.likesCount || 0}</span>
-                  </div>
-                </div>
-
-                <p className="text-ink mb-4 line-clamp-3 flex-1">
-                  {post.excerpt}
-                </p>
-
-                {post.tags && post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.slice(0, 3).map((tag, index) => (
-                      <Badge key={tag} variant={getBadgeVariant(index)}>
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-
-                <div className="mt-auto">
-                  <Button
-                    asChild
-                    variant="neutral"
-                    size="sm"
-                    className="w-full"
-                  >
-                    <Link href={`/blog/${post.slug}`}>
-                      Read More
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Link>
-                  </Button>
-                </div>
+              )}
+              <div className={styles.meta}>
+                <time dateTime={new Date(post.createdAt).toISOString()}>
+                  {new Date(post.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </time>
+                <span>{post.likesCount ?? 0} likes</span>
               </div>
-            </Card>
+              <h2>
+                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+              </h2>
+              <p>{post.excerpt}</p>
+              {!!post.tags?.length && (
+                <div className={styles.tags}>
+                  {post.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </div>
+              )}
+              <Link
+                className={styles.textLink}
+                href={`/blog/${post.slug}`}
+                aria-label={`Read ${post.title}`}
+              >
+                Read article <ArrowUpRight size={17} aria-hidden="true" />
+              </Link>
+            </article>
           ))}
         </div>
+      ) : (
+        <div className={styles.empty}>
+          <h2>{posts.length ? "No matching articles" : "No articles yet"}</h2>
+          <p>
+            {posts.length
+              ? "Try another title or topic."
+              : "New writing will appear here."}
+          </p>
+          {search && (
+            <button className={styles.action} onClick={() => setSearch("")}>
+              Clear search
+            </button>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }

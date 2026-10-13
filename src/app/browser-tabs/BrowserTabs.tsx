@@ -1,11 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import BrowserCard from "@/components/page/browser-card";
+import { ArrowUpRight, Search } from "lucide-react";
+import styles from "@/components/coastal/interior.module.css";
 
-// Strong typing for what BrowserCard receives per link
 export type BrowserLinkItem = {
   href: string;
   label: string;
@@ -14,61 +14,89 @@ export type BrowserLinkItem = {
 };
 
 export default function BrowserTabs() {
-  const allLinks = useQuery(api.browserLinks.getAll) ?? [];
-  const categories = useQuery(api.browserLinks.getCategories) ?? [];
-
-  const linkCategories = categories.map((cat) => ({
-    title: cat.category,
-    color: cat.color as
-      | "blue"
-      | "red"
-      | "yellow"
-      | "green"
-      | "pink"
-      | "purple"
-      | "cyan"
-      | "orange",
-    links: allLinks
-      .filter((link) => link.category === cat.category)
-      .sort((a, b) => a.order - b.order)
-      .map<BrowserLinkItem>((link) => ({
-        href: link.href,
-        label: link.label,
-        domain: link.domain,
-        favicon: link.favicon,
-      })),
-  }));
-
-  if (!allLinks.length) {
-    return (
-      <>
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-[#4ade80] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-            <p>Loading links...</p>
-          </div>
-        </div>
-      </>
-    );
-  }
-
+  const links = useQuery(api.browserLinks.getAll);
+  const [search, setSearch] = useState("");
+  const query = search.trim().toLowerCase();
+  const filtered = (links ?? []).filter((link) =>
+    [link.label, link.domain, link.category]
+      .join(" ")
+      .toLowerCase()
+      .includes(query),
+  );
+  const categories = [...new Set(filtered.map((link) => link.category))].sort();
   return (
     <>
-      {/* Provide TooltipProvider context for individual link tooltips */}
-      <TooltipProvider delayDuration={100}>
-        {/* Grid of BrowserCards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6 mt-10">
-          {linkCategories.map((category, categoryIndex) => (
-            <BrowserCard
-              key={category.title}
-              title={category.title}
-              color={category.color}
-              links={category.links}
-              delay={0.05 + categoryIndex * 0.05}
-            />
+      <div className={styles.toolbar}>
+        <p aria-live="polite">
+          {links === undefined
+            ? "Loading saved links…"
+            : `${filtered.length} saved links`}
+        </p>
+        <label className={styles.search}>
+          <Search size={20} aria-hidden="true" />
+          <span className="sr-only">Search browser tabs</span>
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Find a tool, site, or category"
+          />
+        </label>
+      </div>
+      {links === undefined ? (
+        <div
+          className={styles.resourceGrid}
+          aria-busy="true"
+          aria-label="Loading browser tabs"
+        >
+          {[0, 1, 2].map((i) => (
+            <div key={i} className={styles.panel} style={{ minHeight: 220 }} />
           ))}
         </div>
-      </TooltipProvider>
+      ) : categories.length ? (
+        <div className={styles.resourceGrid}>
+          {categories.map((category) => (
+            <section key={category} className={styles.resourceGroup}>
+              <h2>{category}</h2>
+              <ul>
+                {filtered
+                  .filter((link) => link.category === category)
+                  .sort((a, b) => a.order - b.order)
+                  .map((link) => (
+                    <li key={link._id}>
+                      <a
+                        className={styles.resourceLink}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span>
+                          {link.label}
+                          <small>{link.domain}</small>
+                        </span>
+                        <ArrowUpRight size={18} aria-hidden="true" />
+                      </a>
+                    </li>
+                  ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <div className={styles.empty}>
+          <h2>{search ? "No matching tabs" : "No saved tabs yet"}</h2>
+          <p>
+            {search
+              ? "Try a different site, tool, or category."
+              : "Useful links will appear here."}
+          </p>
+          {search && (
+            <button className={styles.action} onClick={() => setSearch("")}>
+              Clear search
+            </button>
+          )}
+        </div>
+      )}
     </>
   );
 }

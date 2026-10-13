@@ -73,10 +73,10 @@ export const staticPageHeaders: Record<
       "The evolution of chrislanejones.com through various technologies, frameworks, and design iterations—from WordPress 2.1 to modern Next.js.",
   },
   "/site-map": {
-    title: "Site Map & Changelog",
-    breadcrumbPage: "Changelog",
+    title: "Site Map",
+    breadcrumbPage: "Site Map",
     description:
-      "Explore all available pages on chrislanejones.com and Track site updates",
+      "Explore the pages, writing, projects, and resources on chrislanejones.com.",
   },
   "/wordpress-maintenance": {
     title: "WordPress Site Maintenance",
@@ -94,7 +94,7 @@ export const staticPageHeaders: Record<
     title: "Website Convex Admin",
     breadcrumbPage: "Admin Showcase",
     description:
-      "A tour of the custom admin powering this site — built on Next.js, Convex, and Clerk. Screenshots of every major tab.",
+      "A tour of the content tools powering this site, built with Next.js, Convex, and Clerk.",
   },
   "/fallback": {
     title: "Page",

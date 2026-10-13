@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760" fill="none">
+  <defs>
+    <linearGradient id="sand" x1="110" y1="0" x2="880" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0e2c7"/>
+      <stop offset=".5" stop-color="#e6d2ad"/>
+      <stop offset="1" stop-color="#d4b98d"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-30%" width="140%" height="160%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" stitchTiles="stitch" seed="14"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="soft-light"/>
+    </filter>
+    <filter id="dapple" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="8"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+  <path fill="url(#sand)" d="M0 0h1000v760H0z"/>
+  <g filter="url(#soft)" stroke-linecap="round">
+    <g stroke="#a88653" stroke-width="7" opacity=".14">
+      <path d="M-120 150C120 0 245 135 480 20S805-50 1080-95"/>
+      <path d="M-100 197C110 39 265 173 491 61S839-10 1090-49"/>
+      <path d="M-90 246C130 86 277 214 505 104S849 31 1100 1"/>
+      <path d="M-100 296C144 132 290 260 520 150S872 74 1120 50"/>
+      <path d="M-70 665C160 507 405 706 670 557S935 575 1100 478"/>
+      <path d="M-70 718C158 557 417 756 682 609S950 621 1120 534"/>
+      <path d="M-60 770C172 611 431 804 692 661S961 673 1130 589"/>
+      <path d="M-50 826C190 665 445 859 705 713S979 728 1140 646"/>
+    </g>
+    <g stroke="#fff4db" stroke-width="10" opacity=".25" transform="translate(-2 -10)">
+      <path d="M-120 150C120 0 245 135 480 20S805-50 1080-95"/>
+      <path d="M-100 197C110 39 265 173 491 61S839-10 1090-49"/>
+      <path d="M-90 246C130 86 277 214 505 104S849 31 1100 1"/>
+      <path d="M-100 296C144 132 290 260 520 150S872 74 1120 50"/>
+      <path d="M-70 665C160 507 405 706 670 557S935 575 1100 478"/>
+      <path d="M-70 718C158 557 417 756 682 609S950 621 1120 534"/>
+      <path d="M-60 770C172 611 431 804 692 661S961 673 1130 589"/>
+      <path d="M-50 826C190 665 445 859 705 713S979 728 1140 646"/>
+    </g>
+  </g>
+  <path fill="#ad8f61" filter="url(#dapple)" opacity=".1" style="mix-blend-mode:multiply" d="M0 0h1000v760H0z"/>
+  <path fill="#d9c5a0" filter="url(#grain)" opacity=".3" style="mix-blend-mode:soft-light" d="M0 0h1000v760H0z"/>
+</svg>

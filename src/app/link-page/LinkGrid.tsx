@@ -4,9 +4,8 @@ import { FaChrome, FaExternalLinkAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Card from "@/components/page/card";
 import Image from "next/image";
-import { SiteLogo } from "@/components/page/links";
+import styles from "@/components/coastal/interior.module.css";
 import Link from "next/link";
-import { SimpleModeToggle } from "@/components/simple-mode-toggle";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { Doc } from "../../../convex/_generated/dataModel";
@@ -99,7 +98,7 @@ function LinkList() {
   if (pageLinks && allRows.length === 0) {
     return (
       <p className="text-center py-8 text-sm text-muted">
-        No links yet. Add them in Admin &rarr; Profile &amp; Social.
+        Links will appear here soon.
       </p>
     );
   }
@@ -124,20 +123,9 @@ export default function LinkGrid() {
   const avatar = profile?.avatar || FALLBACK_AVATAR;
 
   return (
-    <>
-      {/* Header with Logo and Theme Toggle */}
-      <div className="flex items-center justify-between py-4">
-        <Link href="/" className="group inline-flex items-center gap-3">
-          <div className="grid place-content-center">
-            <SiteLogo />
-          </div>
-          <span className="whitespace-nowrap">Chris Lane Jones</span>
-        </Link>
-        <SimpleModeToggle />
-      </div>
-
+    <div className={styles.linkHub}>
       {/* Grid Layout: 2 columns, 2 rows - using grid-area equivalent with Tailwind */}
-      <div className="grid md:grid-cols-2 grid-cols-1 sm:grid-cols-1 md:grid-rows-2 gap-6 md:auto-rows-fr">
+      <div className="grid md:grid-cols-2 grid-cols-1 sm:grid-cols-1 gap-6">
         {/* Card 1: Main Avatar and Info - Top Left (grid-area: 1 / 1 / 2 / 2) */}
         <Card size="small" delay={0.1} className="h-full">
           <div className="flex flex-col items-center gap-4">
@@ -192,8 +180,11 @@ export default function LinkGrid() {
                       rel="noopener noreferrer"
                     >
                       {link.favicon ? (
-                        <img
+                        <Image
                           src={link.favicon}
+                          width={16}
+                          height={16}
+                          unoptimized
                           alt=""
                           className="w-4 h-4 mr-2 rounded"
                         />
@@ -209,8 +200,7 @@ export default function LinkGrid() {
               <div className="text-center py-8 text-muted">
                 <p className="text-sm">No featured links yet.</p>
                 <p className="text-xs mt-2">
-                  Mark links as “Featured” in the admin panel to display them
-                  here.
+                  Explore the full collection of saved browser tabs below.
                 </p>
               </div>
             )}
@@ -227,6 +217,6 @@ export default function LinkGrid() {
           </div>
         </Card>
       </div>
-    </>
+    </div>
   );
 }

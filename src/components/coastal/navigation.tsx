@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUpRight, ChevronDown, Menu, Waves } from "lucide-react";
 import {
   useHeaderNavItems,
@@ -41,6 +42,7 @@ function Brand() {
 }
 
 export function CoastalHeader() {
+  const pathname = usePathname();
   const items = useHeaderNavItems();
   const [open, setOpen] = useState(false);
   return (
@@ -57,7 +59,9 @@ export function CoastalHeader() {
         {items.map((item) =>
           item.children ? (
             <DropdownMenu key={item.label}>
-              <DropdownMenuTrigger className={styles.navLink}>
+              <DropdownMenuTrigger
+                className={`${styles.navLink} ${item.children.some((child) => child.href === pathname) ? styles.activeNav : ""}`}
+              >
                 {item.label}
                 <ChevronDown size={13} aria-hidden="true" />
               </DropdownMenuTrigger>
@@ -70,6 +74,9 @@ export function CoastalHeader() {
                   <DropdownMenuItem asChild key={child.href}>
                     <Link
                       href={child.href!}
+                      aria-current={
+                        pathname === child.href ? "page" : undefined
+                      }
                       target={child.isExternal ? "_blank" : undefined}
                       rel={child.isExternal ? "noopener noreferrer" : undefined}
                     >
@@ -83,8 +90,8 @@ export function CoastalHeader() {
             <Link
               key={item.label}
               href={item.href!}
-              className={`${styles.navLink} ${item.href === "/" ? styles.activeNav : ""} ${item.href === "/contact" ? styles.contactNav : ""}`}
-              aria-current={item.href === "/" ? "page" : undefined}
+              className={`${styles.navLink} ${item.href === pathname ? styles.activeNav : ""} ${item.href === "/contact" ? styles.contactNav : ""}`}
+              aria-current={item.href === pathname ? "page" : undefined}
               target={item.isExternal ? "_blank" : undefined}
               rel={item.isExternal ? "noopener noreferrer" : undefined}
             >
@@ -120,6 +127,9 @@ export function CoastalHeader() {
                         <Link
                           key={child.href}
                           href={child.href!}
+                          aria-current={
+                            pathname === child.href ? "page" : undefined
+                          }
                           onClick={() => setOpen(false)}
                           target={child.isExternal ? "_blank" : undefined}
                           rel={
@@ -134,6 +144,7 @@ export function CoastalHeader() {
                   ) : (
                     <Link
                       href={item.href!}
+                      aria-current={pathname === item.href ? "page" : undefined}
                       onClick={() => setOpen(false)}
                       target={item.isExternal ? "_blank" : undefined}
                       rel={item.isExternal ? "noopener noreferrer" : undefined}

@@ -1,6 +1,5 @@
 // app/projects/page.tsx
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
 import ProjectGrid from "@/app/projects/ProjectPage";
 import { getPageSEO } from "@/lib/seo";
 
@@ -12,10 +11,8 @@ export async function generateMetadata() {
 
 export default function ProjectsPage() {
   return (
-    <>
-      <Header />
+    <CoastalPageShell>
       <ProjectGrid />
-      <Footer />
-    </>
+    </CoastalPageShell>
   );
 }

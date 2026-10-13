@@ -15,6 +15,19 @@ export type Conference = {
 
 export const conferences: Conference[] = [
   {
+    slug: "rvatech-code-cloud-2025",
+    name: "RVAtech / Code & Cloud",
+    year: 2025,
+    dates: { start: "2025-11-20" },
+    city: "Richmond, VA",
+    venue: "Hippodrome Theater, 528 North 2nd Street, Richmond, VA 23219",
+    url: "https://rvatech.com/rvatech-events/2025-rvatech-code-cloud-conference/",
+    topics: ["Cloud", "Software Development"],
+    coverImage: "/conferences/RVAtech-Code-Cloud-Outlined.webp",
+    summary: "Code & Cloud at Richmond’s historic Hippodrome Theater. Sessions ran from 9AM to 5PM on November 20, 2025.",
+    talkLinks: [{ label: "Hippodrome parking information & map", url: "https://rvatech.com/wp-content/uploads/2025/11/PARKING-LOT-TWO-LOTS-1.pdf" }],
+  },
+  {
     slug: "all-things-open-2025",
     name: "All Things Open",
     year: 2025,
@@ -36,7 +49,7 @@ export const conferences: Conference[] = [
     venue: "Hilton Salt Lake City Center (main venue), plus offsite events",
     url: "https://www.epicweb.dev/conf",
     topics: ["Full-stack Web", "React", "Testing", "DX"],
-    coverImage: "/conferences/Epic-Web-Logo-2025.webp",
+    coverImage: "/conferences/Epic-Web-Outlined.webp",
     summary:
       "Epic Web Conf is a curated full-stack conference founded by Kent C. Dodds' EpicWeb.dev, bringing together framework authors, library maintainers, and working engineers to discuss building great UX and great DX. The 2025 edition took place in downtown Salt Lake City with a free livestream and hands-on workshops before/around the main program.\n\nSessions focused on pragmatic patterns for React and modern web apps (routing, data loading, server components, testing), plus real-world tooling—Vite/Vitest, Playwright, auth, caching, and performance. The hallway track was a highlight, with creators and practitioners trading hard-won lessons you can apply immediately to production apps.",
   },
@@ -49,7 +62,7 @@ export const conferences: Conference[] = [
     venue: "Carolina Theatre",
     url: "https://allthingsai.org/",
     topics: ["AI/ML", "Open Source", "MLOps", "Safety"],
-    coverImage: "/conferences/All-Things-Open-AI-2025.webp",
+    coverImage: "/conferences/All-Things-Open-AI-2025-Transparent-Faces.webp",
     summary:
       "All Things Open.AI is a practitioner-focused spinoff from the All Things Open team, created to explore the real-world impact of AI across tooling, platforms, and organizations. The inaugural 2025 event ran two days at the Carolina Theatre in Durham, bringing together engineers, data scientists, and product leaders for dense, vendor-neutral content on the AI stack.\n\nTalks emphasized applied machine learning, model governance, safety and security, and the intersection of open source with rapidly evolving AI tooling. The format mirrored ATO's community ethos—multi-track sessions, hands-on workshops, and hallway track networking—aimed at helping teams ship responsible AI in production.",
   },
@@ -62,7 +75,7 @@ export const conferences: Conference[] = [
     venue: "Raleigh Convention Center",
     url: "https://2024.allthingsopen.org/",
     topics: ["Open Source", "Cloud", "AI/ML", "DevOps"],
-    coverImage: "/conferences/All-Things-Open-2024-Smaller.png",
+    coverImage: "/conferences/All-Things-Open-2024-Smaller.webp",
     summary:
       "All Things Open 2024 brought thousands of engineers, maintainers, and tech leaders to downtown Raleigh for three days of open source talks, hands-on sessions, and community meetups at the Raleigh Convention Center.",
   },
@@ -88,7 +101,7 @@ export const conferences: Conference[] = [
     venue: "Kalahari Resorts & Conventions",
     url: "https://thatconference.com/wi/2024/",
     topics: ["Full-stack", "Community", "Career"],
-    coverImage: "/conferences/That-Conference-Logo-LowRes.png",
+    coverImage: "/conferences/That-Conference-Logo-LowRes.webp",
     summary:
       "Camp-style, family-friendly developer conference in the Wisconsin Dells, known for deep-dive technical talks alongside community and family activities.",
   },
@@ -99,7 +112,7 @@ export const conferences: Conference[] = [
     city: "Atlanta, GA",
     url: "https://www.renderatl.com/",
     topics: ["Frontend", "AI", "Cloud", "Leadership"],
-    coverImage: "/conferences/RenderATL-2024-Logo-Green.png",
+    coverImage: "/conferences/RenderATL-2024-Logo-Green.webp",
     summary:
       "A multi-day tech conference and expo in Atlanta covering frontend frameworks, AI, and leadership, with workshops, career programming, and a large sponsor hall.",
   },
@@ -112,7 +125,7 @@ export const conferences: Conference[] = [
     venue: "Science Museum of Virginia",
     url: "https://rvajavascript.com/",
     topics: ["JavaScript", "TypeScript", "Node.js", "React"],
-    coverImage: "/conferences/RVAJS-Conf-Richmond-2023.webp",
+    coverImage: "/conferences/RVAJS-Outlined.webp",
     summary:
       "A one-day JavaScript conference hosted by rvatech/ with talks spanning TypeScript, Node, React, tooling, and architecture.",
   },
@@ -162,7 +175,7 @@ export const conferences: Conference[] = [
     venue: "Keiser University",
     url: "https://jacksonville.wordcamp.org/2018/",
     topics: ["WordPress", "Community"],
-    coverImage: "/conferences/Jacksonville-WordCamp-2018.webp",
+    coverImage: "/conferences/Jacksonville-WordCamp-2018-Outlined.webp",
     summary:
       "Two-day WordCamp with multi-track sessions and a KidsCamp, hosted at Keiser University and focused on practical WordPress skills.",
   },
@@ -188,7 +201,7 @@ export const conferences: Conference[] = [
     venue: "Mission Health / A-B Tech Conference Center",
     url: "https://asheville.wordcamp.org/2017/",
     topics: ["WordPress", "Community"],
-    coverImage: "/conferences/WordCamp-Asheville-2017.webp",
+    coverImage: "/conferences/WordCamp-Asheville-2017-Outlined.webp",
     summary:
       "Regional WordCamp covering WordPress development, content, and design, held at the A-B Tech campus conference center.",
   },
@@ -201,7 +214,7 @@ export const conferences: Conference[] = [
     venue: "Watermark Community Church",
     url: "https://churchm.ag/echo-conference-2013-design/",
     topics: ["Church Media", "Creative Tech"],
-    coverImage: "/conferences/Echohub-Media-Conference-Dallas-2013.webp",
+    coverImage: "/conferences/Echohub-2013-Outlined.webp",
     summary:
       "A church media/creative conference for artists, geeks, and storytellers, hosted at Watermark Community Church in Dallas.",
   },

@@ -1,64 +1,13 @@
 "use client";
-
-import { motion } from "framer-motion";
-import { cardVariants } from "@/lib/animations";
 import Image from "next/image";
-
-import Card from "@/components/page/card";
-import { Button } from "@/components/ui/button";
-import GalleryDrawer, { GalleryPhoto } from "@/components/page/gallery-drawer";
-import { timelineEvents } from "@/data/career-timeline";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import React from "react";
-import type { LucideIcon } from "lucide-react";
-import {
-  GraduationCap,
-  Video,
-  Star,
-  Lightbulb,
-  Mountain,
-  Home,
-  Users,
-  Code2,
-  Briefcase,
-  Award,
-  BookOpen,
-  Coffee,
-  Rocket,
-  Target,
-} from "lucide-react";
-
-const cn = (...classes: Array<string | undefined | null | false>) =>
-  classes.filter(Boolean).join(" ");
-
-// Lucide icon mapping helper
-const iconMap: Record<string, LucideIcon> = {
-  // New Lucide icon names
-  GraduationCap,
-  Video,
-  Star,
-  Lightbulb,
-  Mountain,
-  Home,
-  Users,
-  Code2,
-  Briefcase,
-  Award,
-  BookOpen,
-  Coffee,
-  Rocket,
-  Target,
-  // Legacy icon names for backwards compatibility with static data
-  GradIcon: GraduationCap,
-  VideoIcon: Video,
-  StarIcon: Star,
-  BulbIcon: Lightbulb,
-  MountainsIcon: Mountain,
-  HomeIcon: Home,
-  MeetupIcon: Users,
-  ReactWPIcon: Code2,
-};
+import { Briefcase, Download, MapPin } from "lucide-react";
+import GalleryDrawer, {
+  type GalleryPhoto,
+} from "@/components/page/gallery-drawer";
+import { timelineEvents } from "@/data/career-timeline";
+import styles from "@/components/coastal/interior.module.css";
 
 const photos: GalleryPhoto[] = [
   {
@@ -88,262 +37,79 @@ const photos: GalleryPhoto[] = [
   },
 ];
 
-function TimelineTrail() {
-  const convexEvents = useQuery(api.careerTimeline.getAllEvents);
-
-  // Fallback to static data if convex data is loading or empty
-  const events =
-    convexEvents && convexEvents.length > 0
-      ? convexEvents.map((event) => {
-          const IconComponent = iconMap[event.iconName] || iconMap["Star"];
-          return {
-            year: event.year,
-            title: event.title,
-            description: event.description,
-            location: event.location,
-            icon: React.createElement(IconComponent, { className: "w-6 h-6" }),
-          };
-        })
-      : timelineEvents;
-
-  return (
-    <div className="mb-12">
-      <h2 className="mb-8 text-center">Career Journey</h2>
-
-      {/* Timeline container - max width for desktop */}
-      <div className="relative max-w-5xl mx-auto">
-        {/* Dotted vertical line - left on mobile, center on desktop */}
-        <div className="absolute top-0 bottom-0 left-[23px] md:left-1/2 md:-translate-x-1/2 border-l-4 border-dotted border-green-500 z-0" />
-
-        {/* Timeline events */}
-        <div className="relative">
-          {events.map((event, index) => {
-            const isLeftSide = index % 2 === 0;
-
-            return (
-              <motion.div
-                key={`${event.year}-${index}`}
-                className="relative mb-6 md:mb-8"
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
-                custom={0.05 + index * 0.05}
-              >
-                {/* 3-column grid on desktop: [left card] [icon] [right card] */}
-                <div className="flex items-start md:grid md:grid-cols-[1fr_48px_1fr] md:gap-8">
-                  {/* LEFT SIDE CONTENT (Desktop only, even indices) */}
-                  <div
-                    className={cn(
-                      "hidden md:block",
-                      !isLeftSide && "md:invisible"
-                    )}
-                  >
-                    {isLeftSide && (
-                      <Card
-                        size="full"
-                        style={{ minHeight: "auto" }}
-                        className="text-right"
-                      >
-                        <time className="block text-green-500 mb-2">
-                          {event.year}
-                        </time>
-                        <h3 className="mb-2">{event.title}</h3>
-                        <p className="text-muted leading-relaxed mb-3">
-                          {event.description}
-                        </p>
-                        {event.location && (
-                          <div className="inline-flex items-center gap-1.5 text-muted/80 flex-row-reverse">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                            </svg>
-                            {event.location}
-                          </div>
-                        )}
-                      </Card>
-                    )}
-                  </div>
-
-                  {/* CENTER ICON (always visible) */}
-                  <div className="relative z-10 shrink-0 w-12 h-12 rounded-full bg-green-500 dark:border-[#111418] shadow-lg flex items-center justify-center text-white md:mx-auto">
-                    {event.icon}
-                  </div>
-
-                  {/* RIGHT SIDE CONTENT */}
-                  <div
-                    className={cn(
-                      // Mobile: always visible, takes remaining space
-                      "flex-1 ml-6 md:ml-0",
-                      // Desktop: only visible on odd indices
-                      isLeftSide && "md:invisible md:hidden"
-                    )}
-                  >
-                    <Card
-                      size="full"
-                      style={{ minHeight: "auto" }}
-                      className="text-left"
-                    >
-                      <time className="block text-green-500 mb-2">
-                        {event.year}
-                      </time>
-                      <h3 className="mb-2">{event.title}</h3>
-                      <p className="text-muted leading-relaxed mb-3">
-                        {event.description}
-                      </p>
-                      {event.location && (
-                        <div className="inline-flex items-center gap-1.5 text-muted/80">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                          {event.location}
-                        </div>
-                      )}
-                    </Card>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PhotoGalleryCard() {
-  return (
-    <Card size="small" delay={0.2} className="overflow-hidden flex flex-col">
-      <div className="image-container relative flex-1 min-h-[200px]">
-        <Image
-          alt="Samsung 49-inch Odyssey G9 setup"
-          src="/setups/Samsung-49-inch-Odyssey-G9.webp"
-          className="absolute inset-0 w-full h-full object-cover opacity-70"
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-base/80 via-base/20 to-transparent"></div>
-      </div>
-
-      <div className="grid grid-cols-[auto_1fr] items-start gap-4 mt-4 px-4 pb-4">
-        <GalleryDrawer
-          photos={photos}
-          title="Gallery"
-          description="Photos of Various Setups."
-          animationDelay={0.2}
-        />
-        <div>
-          <span className="">Setup Photo Gallery</span>
-          <p className="text-muted">98% React Developer these days - I still do WordPress from time to time</p>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function ResumeDownloadCard() {
-  return (
-    <Card size="small" delay={0.3} className="flex flex-col justify-center">
-      <h2 className="mb-4">Resume</h2>
-      <p className="text-muted mb-6">
-        Download my resume to learn more about my work experience, skills, and
-        projects.
-      </p>
-
-      <div className="flex flex-col gap-3">
-        <Button asChild variant="base" size="lg" className="justify-start">
-          <a
-            href="/career-files/Chris_Lane_Jones_Resume_Sept_2026.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            Download Resume (PDF)
-          </a>
-        </Button>
-
-        <Button asChild variant="base" size="lg" className="justify-start">
-          <a
-            href="/career-files/Chris_Lane_Jones_Resume_Sept_2026.docx"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            Download Resume (Word)
-          </a>
-        </Button>
-
-      </div>
-    </Card>
-  );
-}
-
-const CareerPage: React.FC = () => {
+export default function CareerPage() {
+  const liveEvents = useQuery(api.careerTimeline.getAllEvents);
+  const events = liveEvents ?? timelineEvents;
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        <PhotoGalleryCard />
-        <ResumeDownloadCard />
-      </div>
-
-      {/* Timeline with individual cards */}
-      <TimelineTrail />
+      <section
+        className={`${styles.split} ${styles.section}`}
+        aria-label="Resume and workspaces"
+      >
+        <div className={styles.gallery}>
+          <Image
+            src="/setups/Samsung-49-inch-Odyssey-G9.webp"
+            alt="My desk with a Samsung Odyssey G9 monitor"
+            fill
+            sizes="(max-width: 767px) 90vw, 50vw"
+            priority
+          />
+          <div className={styles.galleryCaption}>
+            <h2>Behind the screen</h2>
+            <GalleryDrawer
+              photos={photos}
+              title="Setup Photo Gallery"
+              description="Workspaces and coding with friends over the years."
+            />
+          </div>
+        </div>
+        <div className={styles.panel}>
+          <h2>Resume</h2>
+          <p>
+            Download my resume for my work experience, skills, and projects.
+          </p>
+          <div className={styles.actions}>
+            <a
+              className={styles.action}
+              href="/career-files/Chris_Lane_Jones_Resume_Sept_2026.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Download aria-hidden="true" /> Resume (PDF)
+            </a>
+            <a
+              className={styles.action}
+              href="/career-files/Chris_Lane_Jones_Resume_Sept_2026.docx"
+              download
+            >
+              <Download aria-hidden="true" /> Resume (Word)
+            </a>
+          </div>
+        </div>
+      </section>
+      <section className={styles.section}>
+        <h2>Career journey</h2>
+        <ol className={styles.timeline}>
+          {events.map((event, index) => (
+            <li key={`${event.year}-${index}`}>
+              <time>{event.year}</time>
+              <div className={styles.timelineIcon}>
+                <Briefcase size={20} aria-hidden="true" />
+              </div>
+              <div>
+                <h3>{event.title}</h3>
+                <p>{event.description}</p>
+                {event.location && (
+                  <small>
+                    <MapPin size={15} aria-hidden="true" />
+                    {event.location}
+                  </small>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
     </>
   );
-};
-
-export default CareerPage;
+}

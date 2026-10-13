@@ -13,12 +13,14 @@ import {
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { clients as staticClients } from "@/data/clients";
-import GalleryDrawer, {
-  type GalleryPhoto,
-} from "@/components/page/gallery-drawer";
+import type { GalleryPhoto } from "@/components/page/gallery-drawer";
+import { ConferencePanel } from "./conference-panel";
 import { QUOTES } from "@/components/main/quote-content";
 import { Reveal } from "./reveal";
+import { ProjectPreview } from "./project-preview";
 import styles from "./coastal.module.css";
+import { featuredProjects } from "@/data/projects-data";
+import { imageHorseMarketingProject, projectPresentation } from "@/data/project-presentation";
 
 // Public content remains reactive and admin-managed. Each section can recover
 // independently if its query fails, without blanking the rest of the homepage.
@@ -47,43 +49,14 @@ type Project = {
   customUrl?: string;
   features?: string[];
 };
-const fallbackProjects: Project[] = [
-  {
-    title: "Image Horse",
-    description:
-      "A browser-based image annotation and editing tool powered by Rust/WASM for pixel-level operations and React + TypeScript for the UI.",
-    image: "/projects/Image-Horse-App.webp",
-    githubUrl:
-      "https://github.com/chrislanejones/multi-image-compress-and-edit",
-    vercelUrl: "https://edit.imagehorse.app/",
-  },
-  {
-    title: "Go Web Crawler",
-    description:
-      "A Go-based crawler that scans websites and documents for the links and text you need.",
-    image: "/projects/Web-Crawler-Golang-App.webp",
-    githubUrl: "https://github.com/chrislanejones/webcrawler-go",
-  },
-  {
-    title: "Vim/Neovim Shortcut Finder",
-    description:
-      "Find and learn Vim commands with an interactive, searchable shortcut reference.",
-    image: "/projects/MPC-Vim-Filter-Tool.webp",
-    githubUrl: "https://github.com/chrislanejones/MPC-Vim-filter-tool",
-    vercelUrl: "https://mpc-vim-filter-tool.vercel.app/",
-  },
-];
+const fallbackProjects: Project[] = featuredProjects;
 
 function ProjectView({ projects }: { projects: Project[] }) {
   return (
     <div className={styles.projectGrid}>
       {projects.slice(0, 3).map((project, index) => {
-        const url =
-          project.customUrl ||
-          project.vercelUrl ||
-          project.githubUrl ||
-          project.codebergUrl ||
-          "/projects";
+        const presentation = projectPresentation(project);
+        const url = presentation.href || "/projects";
         const external = /^https?:\/\//.test(url);
         return (
           <Reveal
@@ -94,34 +67,17 @@ function ProjectView({ projects }: { projects: Project[] }) {
             delay={index * 0.06}
           >
             <article className={styles.project}>
-              <a
+              <ProjectPreview
+                title={plain(presentation.title)}
+                image={presentation.image}
+                imageFit={presentation.imageFit}
                 href={url}
-                target={external ? "_blank" : undefined}
-                rel={external ? "noopener noreferrer" : undefined}
-                className={styles.projectImage}
-                aria-label={`Explore ${plain(project.title)}`}
-              >
-                {project.image ? (
-                  <Image
-                    src={project.image}
-                    alt={`${plain(project.title)} project preview`}
-                    fill
-                    sizes={
-                      index === 0
-                        ? "(max-width: 767px) 90vw, 60vw"
-                        : "(max-width: 767px) 90vw, 32vw"
-                    }
-                    className={styles.previewImage}
-                  />
-                ) : (
-                  <span className={styles.noPreview}>
-                    Explore {plain(project.title)}
-                  </span>
-                )}
-                <span className={styles.imageAction}>
-                  <ArrowUpRight size={24} aria-hidden="true" />
-                </span>
-              </a>
+                sizes={
+                  index === 0
+                    ? "(max-width: 767px) 90vw, 60vw"
+                    : "(max-width: 767px) 90vw, 32vw"
+                }
+              />
               <div className={styles.projectInfo}>
                 <h3>
                   <a
@@ -129,10 +85,20 @@ function ProjectView({ projects }: { projects: Project[] }) {
                     target={external ? "_blank" : undefined}
                     rel={external ? "noopener noreferrer" : undefined}
                   >
-                    {plain(project.title)}
+                    {plain(presentation.title)}
                   </a>
                 </h3>
-                <p>{plain(project.description)}</p>
+                <p>{plain(presentation.description)}</p>
+                {project.title === imageHorseMarketingProject.title && project.features?.length ? (
+                  <ul className={styles.projectFeatures}>
+                    {project.features.map((feature) => (
+                      <li key={feature}>
+                        <ArrowRight size={15} aria-hidden="true" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
                 {index === 0 && (
                   <div className={styles.projectLinks}>
                     <a
@@ -345,14 +311,10 @@ function GalleryView({ items }: { items: GalleryPhoto[] }) {
           sizes="(max-width: 767px) 90vw, 30vw"
           className={styles.coverImage}
         />
-      </div>
-      <div className={styles.galleryFooter}>
-        <h3>Conference fan shots</h3>
-        <GalleryDrawer
-          photos={items}
-          title="Conference fan shots"
-          animationDelay={0}
-        />
+        <div className={styles.galleryFooter}>
+          <h3>Conference fan shots</h3>
+          <ConferencePanel photos={items} />
+        </div>
       </div>
     </div>
   );
@@ -390,7 +352,16 @@ function RamblingsView({
           <RefreshCw size={17} aria-hidden="true" />
         </button>
       </div>
-      <blockquote aria-live="polite">{QUOTES[index]}</blockquote>
+      <div className={styles.quoteBody}>
+        <blockquote aria-live="polite">{QUOTES[index]}</blockquote>
+        <div className={styles.quoteSizer} aria-hidden="true" inert>
+          {QUOTES.map((quote, quoteIndex) => (
+            <div className={styles.quoteMeasure} key={quoteIndex}>
+              {quote}
+            </div>
+          ))}
+        </div>
+      </div>
       <Link href="/about" className={styles.quoteAuthor}>
         <Image
           src={avatar}

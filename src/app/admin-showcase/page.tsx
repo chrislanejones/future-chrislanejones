@@ -1,6 +1,6 @@
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import ConvexBanner from "@/components/page/ConvexBanner";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
+import styles from "@/components/coastal/interior.module.css";
+import { CoastalPageIntro } from "@/components/coastal/page-intro";
 import AdminShowcasePage from "./AdminShowcasePage";
 import { getPageSEO } from "@/lib/seo";
 
@@ -12,13 +12,11 @@ export async function generateMetadata() {
 
 export default function AdminShowcase() {
   return (
-    <>
-      <Header />
-      <ConvexBanner path="/admin-showcase" />
-      <main id="main-content">
+    <CoastalPageShell>
+      <CoastalPageIntro path="/admin-showcase" />
+      <div className={styles.content}>
         <AdminShowcasePage />
-      </main>
-      <Footer />
-    </>
+      </div>
+    </CoastalPageShell>
   );
 }

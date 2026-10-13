@@ -99,7 +99,8 @@ export default async function Page({
       url: SITE_URL,
     },
     mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
-    ...(post.tags && post.tags.length > 0 && { keywords: post.tags.join(", ") }),
+    ...(post.tags &&
+      post.tags.length > 0 && { keywords: post.tags.join(", ") }),
   };
 
   return (

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Waves } from "lucide-react";
 import { CoastalHeader, CoastalFooter } from "@/components/coastal/navigation";
@@ -12,6 +11,8 @@ import {
 import { CoastalMusic } from "@/components/coastal/music-player";
 import { CoastalTech } from "@/components/coastal/tech-stack";
 import { Reveal } from "@/components/coastal/reveal";
+import { CoastFloor } from "@/components/coastal/coast-floor";
+import { HeroPhoto } from "@/components/coastal/hero-photo";
 import styles from "@/components/coastal/coastal.module.css";
 import { getPageSEO } from "@/lib/seo";
 
@@ -29,15 +30,7 @@ export default function Home() {
           className={`${styles.container} ${styles.hero}`}
           aria-labelledby="hero-title"
         >
-          <Image
-            src="/gallery/Florida-Coast-Aerial.webp"
-            alt="An aerial view of the Florida coast, with a sandy beach beside the Atlantic Ocean"
-            fill
-            sizes="(max-width: 1440px) 100vw, 1400px"
-            loading="eager"
-            fetchPriority="high"
-            className={styles.heroImage}
-          />
+          <HeroPhoto />
           <div className={styles.heroShade} />
           <div className={styles.heroContent}>
             <p className={styles.eyebrow}>
@@ -82,36 +75,43 @@ export default function Home() {
           <CoastalProjects />
         </section>
         <section
-          className={`${styles.container} ${styles.offlineSection}`}
+          id="beyond-the-browser"
+          className={styles.offlineSection}
           aria-labelledby="offline-title"
         >
-          <Reveal className={styles.sectionHeading}>
-            <h2 id="offline-title">Beyond the browser.</h2>
-            <p className={styles.sectionDescription}>
-              My ramblings, latest blog posts, music, and conference fan shots.
-            </p>
-          </Reveal>
-          <div className={styles.personalGrid}>
-            <Reveal className={styles.ramblingsSlot}>
-              <CoastalRamblings />
+          <CoastFloor />
+          <div className={`${styles.container} ${styles.offlineContent}`}>
+            <Reveal className={styles.sectionHeading}>
+              <h2 id="offline-title">Beyond the browser.</h2>
+              <p className={styles.sectionDescription}>
+                My ramblings, latest blog posts, music, and conference fan
+                shots.
+              </p>
             </Reveal>
-            <Reveal className={styles.musicSlot} delay={0.05}>
-              <CoastalMusic />
-            </Reveal>
-            <Reveal className={styles.journalSlot} delay={0.1}>
-              <CoastalJournal />
-            </Reveal>
-            <Reveal className={styles.gallerySlot} delay={0.15}>
-              <CoastalGallery />
-            </Reveal>
+            <div className={styles.personalGrid}>
+              <Reveal className={styles.journalSlot}>
+                <CoastalJournal />
+              </Reveal>
+              <Reveal className={styles.ramblingsSlot} delay={0.05}>
+                <CoastalRamblings />
+              </Reveal>
+              <Reveal className={styles.gallerySlot} delay={0.1}>
+                <CoastalGallery />
+              </Reveal>
+              <Reveal className={styles.musicSlot} delay={0.15}>
+                <CoastalMusic />
+              </Reveal>
+            </div>
           </div>
         </section>
         <CoastalTech />
         <section
+          id="mountains-to-beaches"
           className={`${styles.container} ${styles.contactSection}`}
           aria-labelledby="coast-title"
         >
-          <Reveal>
+          <CoastFloor variant="castle" />
+          <Reveal className={styles.contactCopy}>
             <Waves size={44} strokeWidth={1.3} aria-hidden="true" />
             <h2 id="coast-title">
               From mountains
@@ -126,6 +126,7 @@ export default function Home() {
               More about me <ArrowUpRight size={19} aria-hidden="true" />
             </Link>
           </Reveal>
+          <div className={styles.beachSceneSpace} aria-hidden="true" />
         </section>
       </main>
       <CoastalFooter />

@@ -1,9 +1,9 @@
 // src/app/blog/page.tsx
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../convex/_generated/api";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import ConvexBanner from "@/components/page/ConvexBanner";
+import { CoastalPageShell } from "@/components/coastal/page-shell";
+import styles from "@/components/coastal/interior.module.css";
+import { CoastalPageIntro } from "@/components/coastal/page-intro";
 import BlogPage from "./BlogPage";
 import { getPageSEO } from "@/lib/seo";
 
@@ -19,13 +19,11 @@ export default async function Page() {
   const posts = await convex.query(api.blogPosts.getAllPosts, {});
 
   return (
-    <>
-      <Header />
-      <ConvexBanner path="/blog" />
-      <main id="main-content">
+    <CoastalPageShell>
+      <CoastalPageIntro path="/blog" />
+      <div className={styles.content}>
         <BlogPage posts={posts} />
-      </main>
-      <Footer />
-    </>
+      </div>
+    </CoastalPageShell>
   );
 }

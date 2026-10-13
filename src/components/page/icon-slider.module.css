@@ -1,0 +1,27 @@
+.dot {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--coast-ink, var(--color-ink));
+  background: transparent;
+}
+
+.dot::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.dot[aria-current="true"]::before {
+  background: currentColor;
+}
+
+.dot:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
