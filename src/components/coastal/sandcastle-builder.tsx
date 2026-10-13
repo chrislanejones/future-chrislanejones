@@ -117,7 +117,7 @@ export function SandcastleBuilder() {
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
         <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
       </div>
-      <p id="sandcastle-help" className={styles.help}>Tap to build. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats side by side and they join into lines, corners, and a ring around a castle. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
+      <p id="sandcastle-help" className={styles.help}>Tap the darker packed sand to build. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats side by side and they join into lines, corners, and a ring around a castle. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
     </div>
   </section>;
 }
