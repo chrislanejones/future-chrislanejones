@@ -192,27 +192,7 @@ function moatLinks(moats: Set<string>, x: number, z: number): Links {
   return { n: at(0, -1), s: at(0, 1), e: at(1, 0), w: at(-1, 0) };
 }
 
-/** The buildable patch: packed sand with a ragged, hand-smoothed edge around the 7x5 grid. */
-function makePatch() {
-  const w = 3.3 * SPACING + .55, h = 2.3 * SPACING + .55, steps = 64;
-  const noise = (i: number) => { const v = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return v - Math.floor(v); };
-  const shape = new Shape();
-  for (let i = 0; i < steps; i++) {
-    const t = i / steps, edge = (t * 4) % 1, side = Math.floor(t * 4);
-    const wobble = (noise(i) - .5) * .34 + Math.sin(i * 1.7) * .06;
-    let x = 0, y = 0;
-    if (side === 0) { x = -w + edge * 2 * w; y = h + wobble; }
-    else if (side === 1) { x = w + wobble; y = h - edge * 2 * h; }
-    else if (side === 2) { x = w - edge * 2 * w; y = -h + wobble; }
-    else { x = -w + wobble; y = -h + edge * 2 * h; }
-    if (i === 0) shape.moveTo(x, y); else shape.lineTo(x, y);
-  }
-  shape.closePath();
-  return shape;
-}
-
 function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
-  const patch = useMemo(() => makePatch(), []);
   const marker = useRef<Group>(null);
   const shader = useRef<ShaderMaterial>(null);
   const press = useRef<{ x: number; y: number } | null>(null);
@@ -236,15 +216,6 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.04, 0]} receiveShadow>
       <planeGeometry args={[80, 80]} />
       <shaderMaterial ref={shader} uniforms={uniforms} vertexShader={sandVertex} fragmentShader={sandFragment} toneMapped={false} />
-    </mesh>
-    {/* A lighter, slightly larger copy underneath reads as the raked rim of the packed patch. */}
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.034, 0]} scale={[1.035, 1.05, 1]} receiveShadow>
-      <shapeGeometry args={[patch]} />
-      <meshStandardMaterial color={dark ? "#7b6a4b" : "#e3cb9f"} roughness={1} />
-    </mesh>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.032, 0]} receiveShadow>
-      <shapeGeometry args={[patch]} />
-      <meshStandardMaterial color={dark ? "#6c5c41" : "#d4b886"} roughness={1} />
     </mesh>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.025, 0]} receiveShadow>
       <planeGeometry args={[80, 80]} /><shadowMaterial opacity={dark ? .22 : .16} transparent />

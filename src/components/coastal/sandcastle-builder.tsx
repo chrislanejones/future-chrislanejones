@@ -14,7 +14,7 @@ const Scene = dynamic(loadScene, { ssr: false, loading: () => null });
 const FILL_MS = 2200;
 
 /** Outlined bucket and shovel; the bucket fills from the bottom while the 3D scene downloads. */
-function BucketLoader() {
+function BucketLoader({ running }: { running: boolean }) {
   return (
     <div className={styles.loader} role="status" aria-live="polite">
       <svg className={styles.loaderArt} viewBox="0 0 120 120" aria-hidden="true">
@@ -22,7 +22,7 @@ function BucketLoader() {
           <clipPath id="bucket-fill-clip"><polygon points="31,42 89,42 82,104 38,104" /></clipPath>
         </defs>
         <g clipPath="url(#bucket-fill-clip)">
-          <rect className={styles.loaderFill} x="28" y="40" width="64" height="66" />
+          <rect className={`${styles.loaderFill} ${running ? styles.loaderFilling : ""}`} x="28" y="40" width="64" height="66" />
         </g>
         <g fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
           <polygon points="31,42 89,42 82,104 38,104" />
@@ -70,20 +70,28 @@ export function SandcastleBuilder() {
   const [loaded, setLoaded] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [filled, setFilled] = useState(false);
+  // Download early, but only start pouring once the game is actually on screen.
   useEffect(() => {
     if (!loaded) return;
     let live = true;
     loadScene().then(() => { if (live) setSceneReady(true); });
-    const timer = setTimeout(() => setFilled(true), FILL_MS);
-    return () => { live = false; clearTimeout(timer); };
+    return () => { live = false; };
   }, [loaded]);
   const [visible, setVisible] = useState(false);
+  // Becomes true the first time the game is on screen; the bucket starts pouring then.
+  const [seen, setSeen] = useState(false);
   const host = useRef<HTMLDivElement>(null);
   const [dark, reduced, hidden] = useSyncExternalStore(subscribe, environment, () => "false:true:false").split(":");
+  const pouring = loaded && seen;
+  useEffect(() => {
+    if (!pouring) return;
+    const timer = setTimeout(() => setFilled(true), FILL_MS);
+    return () => clearTimeout(timer);
+  }, [pouring]);
   useEffect(() => {
     if (!host.current) return;
     const preload = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setLoaded(true); preload.disconnect(); } }, { rootMargin: "300px" });
-    const visibility = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    const visibility = new IntersectionObserver(([entry]) => { setVisible(entry.isIntersecting); if (entry.isIntersecting) setSeen(true); });
     preload.observe(host.current); visibility.observe(host.current);
     return () => { preload.disconnect(); visibility.disconnect(); };
   }, []);
@@ -124,13 +132,13 @@ export function SandcastleBuilder() {
           else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); dispatch({ type: "undo" }); }
         }}>
         {loaded ? <BeachBoundary><Scene pieces={state.pieces} tool={tool} cursor={cursor} dark={dark === "true"} moving={visible && reduced === "false" && hidden === "false"} onPlace={place} onAim={point => { aimedSpot.current = point; }} /></BeachBoundary> : <p className={styles.loading}>Your patch of beach.</p>}
-        {loaded && !(filled && sceneReady) && <BucketLoader />}
+        {loaded && !(filled && sceneReady) && <BucketLoader running={pouring} />}
       </div>
       <div className={styles.beachFooter}>
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
         <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
       </div>
-      <p id="sandcastle-help" className={styles.help}>Tap the darker packed sand to build. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats side by side and they join into lines, corners, and a ring around a castle. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
+      <p id="sandcastle-help" className={styles.help}>Tap to build; the ring shows where a piece will go. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats side by side and they join into lines, corners, and a ring around a castle. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
     </div>
   </section>;
 }

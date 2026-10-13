@@ -73,6 +73,8 @@ function ProjectView({ projects }: { projects: Project[] }) {
                 imageFit={presentation.imageFit}
                 imageAspectRatio={presentation.imageAspectRatio}
                 href={url}
+                githubUrl={project.githubUrl}
+                codebergUrl={project.codebergUrl}
                 sizes={
                   index === 0
                     ? "(max-width: 767px) 90vw, 60vw"

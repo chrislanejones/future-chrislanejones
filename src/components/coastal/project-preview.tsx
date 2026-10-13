@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { SocialIcon } from "@/lib/social-icons";
 import styles from "./coastal.module.css";
 
 export function ProjectPreview({
@@ -9,6 +10,8 @@ export function ProjectPreview({
   imageAspectRatio,
   href,
   sizes,
+  githubUrl,
+  codebergUrl,
 }: {
   title: string;
   image?: string;
@@ -16,7 +19,13 @@ export function ProjectPreview({
   imageAspectRatio?: number;
   href?: string;
   sizes: string;
+  githubUrl?: string;
+  codebergUrl?: string;
 }) {
+  const repos = [
+    { key: "github", label: "GitHub", url: githubUrl },
+    { key: "codeberg", label: "Codeberg", url: codebergUrl },
+  ].filter((repo) => repo.url && /^https?:\/\//.test(repo.url) && repo.url !== href);
   const external = /^https?:\/\//.test(href ?? "");
   const content = (
     <>
@@ -59,7 +68,7 @@ export function ProjectPreview({
       )}
     </>
   );
-  return href ? (
+  const card = href ? (
     <a
       href={href}
       target={external ? "_blank" : undefined}
@@ -71,5 +80,19 @@ export function ProjectPreview({
     </a>
   ) : (
     <div className={styles.projectImage}>{content}</div>
+  );
+  if (!repos.length) return card;
+  // Repo buttons sit beside the card's arrow but outside its link, so they're real links of their own.
+  return (
+    <div className={styles.projectImageWrap}>
+      {card}
+      <div className={`${styles.repoActions} ${href ? "" : styles.repoActionsAlone}`}>
+        {repos.map((repo) => (
+          <a key={repo.key} href={repo.url} target="_blank" rel="noopener noreferrer" aria-label={`${title} on ${repo.label}`} title={repo.label}>
+            <SocialIcon iconKey={repo.key} size={19} />
+          </a>
+        ))}
+      </div>
+    </div>
   );
 }

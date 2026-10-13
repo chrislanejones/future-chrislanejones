@@ -66,6 +66,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           imageAspectRatio={presentation.imageAspectRatio}
           href={primaryLink}
           sizes="(max-width: 767px) 90vw, 50vw"
+          githubUrl={project.githubUrl}
+          codebergUrl={project.codebergUrl}
         />
         <div className={styles.archiveProjectInfo}>
           <h2>

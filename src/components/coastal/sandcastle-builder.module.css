@@ -25,12 +25,13 @@
 .loader { position: absolute; inset: 0; z-index: 2; background: inherit; display: grid; place-content: center; justify-items: center; gap: 10px; color: #173f4a; font-size: 13px; text-align: center; }
 :global(.dark) .loader { color: #fff6e8; }
 .loaderArt { width: 112px; height: 112px; overflow: visible; }
-.loaderFill { fill: var(--coast-accent); transform-box: fill-box; transform-origin: bottom; animation: bucketFill 2.2s cubic-bezier(.45, 0, .3, 1) forwards; }
+.loaderFill { fill: var(--coast-accent); transform-box: fill-box; transform-origin: bottom; transform: translateY(100%); }
+.loaderFilling { animation: bucketFill 2.2s cubic-bezier(.45, 0, .3, 1) forwards; }
 @keyframes bucketFill {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
-@media (prefers-reduced-motion: reduce) { .loaderFill { animation: none; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .loaderFill, .loaderFilling { animation: none; transform: translateY(0); } }
 .beachFooter { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 9px; font-size: 12px; color: var(--coast-muted); }
 .beachFooter > div { display: flex; gap: 20px; }
 .beachFooter button { color: var(--coast-ink); }

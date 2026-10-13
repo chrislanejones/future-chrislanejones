@@ -608,6 +608,35 @@
     opacity 180ms,
     transform 180ms;
 }
+.projectImageWrap {
+  position: relative;
+}
+.repoActions {
+  position: absolute;
+  right: 66px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+.repoActionsAlone {
+  right: 16px;
+}
+.repoActions a {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  background: #f6f5f0;
+  color: #173f4a;
+  border-radius: 999px;
+  transition: background-color 160ms, color 160ms;
+}
+.repoActions a:hover,
+.repoActions a:focus-visible {
+  background: var(--coast-accent);
+  color: var(--coast-on-accent);
+}
 .projectImage:hover .imageAction,
 .projectImage:focus-visible .imageAction {
   opacity: 1;
