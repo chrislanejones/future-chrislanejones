@@ -240,11 +240,11 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
     {/* A lighter, slightly larger copy underneath reads as the raked rim of the packed patch. */}
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.034, 0]} scale={[1.035, 1.05, 1]} receiveShadow>
       <shapeGeometry args={[patch]} />
-      <meshStandardMaterial color={dark ? "#86754f" : "#ecd8ae"} roughness={1} />
+      <meshStandardMaterial color={dark ? "#7b6a4b" : "#e3cb9f"} roughness={1} />
     </mesh>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.032, 0]} receiveShadow>
       <shapeGeometry args={[patch]} />
-      <meshStandardMaterial color={dark ? "#5c4c34" : "#c9ab79"} roughness={1} />
+      <meshStandardMaterial color={dark ? "#6c5c41" : "#d4b886"} roughness={1} />
     </mesh>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.025, 0]} receiveShadow>
       <planeGeometry args={[80, 80]} /><shadowMaterial opacity={dark ? .22 : .16} transparent />
