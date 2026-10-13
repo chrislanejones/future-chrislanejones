@@ -98,10 +98,6 @@ export default function RootLayout({
         <body
           className={`${interphases.className} ${interphases.variable} antialiased`}
           suppressHydrationWarning
-          style={{
-            backgroundColor: "var(--color-base)",
-            color: "var(--color-ink)",
-          }}
         >
           <script
             type="application/ld+json"

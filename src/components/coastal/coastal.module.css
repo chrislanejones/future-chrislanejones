@@ -2,51 +2,17 @@
    Shape rule: 20px media containers, pill buttons, 12px menus.
    Layers: content 1; navigation menus and dialogs use the existing Radix 50. */
 .coastalPage {
-  --coast-base: #f6f5f0;
-  --coast-panel: #eeeee6;
-  --coast-soft: #e8eff0;
-  --coast-ink: #173f4a;
-  --coast-muted: #53676a;
-  --coast-accent: #235967;
-  --coast-on-accent: #f8fbfa;
-  --coast-line: #d4ddda;
-  --color-base: var(--coast-base);
-  --color-panel: var(--coast-panel);
-  --color-inner-card: var(--coast-soft);
-  --color-ink: var(--coast-ink);
-  --color-foreground: var(--coast-ink);
-  --color-muted: var(--coast-muted);
-  --color-accent: var(--coast-accent);
-  --color-on-accent: var(--coast-on-accent);
-  --color-border: var(--coast-line);
-  --color-surface-hover: var(--coast-soft);
-  --color-focus-ring: var(--coast-accent);
   color: var(--coast-ink);
   background: var(--coast-base);
   padding-bottom: 1px;
   overflow: clip;
   font-weight: 400;
 }
-:global(.dark) .coastalPage {
-  --coast-base: #12282e;
-  --coast-panel: #1a343b;
-  --coast-soft: #203e46;
-  --coast-ink: #e6efec;
-  --coast-muted: #b0c3c5;
-  --coast-accent: #a7d3d7;
-  --coast-on-accent: #163b45;
-  --coast-line: #365159;
-}
 :global(.site-shell):has(.coastalPage) {
   max-width: none;
   padding: 0;
 }
-:global(body):has(.coastalPage) {
-  background: #f6f5f0;
-}
-:global(.dark) :global(body):has(.coastalPage) {
-  background: #12282e;
-}
+
 .coastalPage a,
 .coastalPage button {
   -webkit-tap-highlight-color: transparent;
@@ -130,12 +96,8 @@
   box-shadow: none;
   border-color: transparent;
   background: transparent;
-  width: 36px;
-  height: 36px;
-}
-.menuButton {
-  display: none;
-  padding: 10px;
+  width: 44px;
+  height: 44px;
 }
 .skipLink {
   position: absolute;
@@ -152,91 +114,18 @@
   transform: translateY(0);
 }
 .dropdown {
-  background: #f6f5f0;
-  color: #173f4a;
-  border-color: #d4ddda;
+  background: var(--coast-base);
+  color: var(--coast-ink);
+  border-color: var(--coast-line);
   padding: 8px;
   border-radius: 12px;
-}
-:global(.dark) .dropdown {
-  background: #1a343b;
-  color: #e6efec;
-  border-color: #365159;
 }
 .dropdown a {
   padding: 10px 12px;
 }
 .dropdown a:focus {
-  background: #e8eff0;
-  color: #173f4a;
-}
-.mobileMenu {
-  background: #f6f5f0;
-  color: #173f4a;
-  width: 100vw;
-  height: 100dvh;
-  padding: 28px 24px 40px;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-:global(.dark) .mobileMenu {
-  background: #12282e;
-  color: #e6efec;
-}
-.mobileMenu > h2 {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: #53676a;
-}
-:global(.dark) .mobileMenu > h2 {
-  color: #b0c3c5;
-}
-.menuDescription {
-  margin-top: 8px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #53676a;
-}
-:global(.dark) .menuDescription {
-  color: #b0c3c5;
-}
-.mobileLinks {
-  margin-top: 28px;
-  display: grid;
-  gap: 14px;
-  flex: 1;
-}
-.mobileLinks p {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: #53676a;
-  padding-block: 10px 2px;
-}
-:global(.dark) .mobileLinks p {
-  color: #b0c3c5;
-}
-.mobileLinks a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: clamp(26px, 7.5vw, 34px);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  padding-block: 9px;
-}
-.mobileLinks a svg {
-  width: 22px;
-  height: 22px;
-  opacity: 0.55;
-  flex: none;
-}
-.mobileLinks a[aria-current="page"] {
-  color: var(--coast-accent);
+  background: var(--coast-soft);
+  color: var(--coast-ink);
 }
 .hero {
   position: relative;
@@ -1656,6 +1545,8 @@
   }
 }
 @media (max-width: 1023px) {
+  .desktopNav { display: none; }
+  .headerActions { margin-left: auto; }
   .featuredStory .aboutStory {
     gap: 32px;
   }
@@ -1825,10 +1716,6 @@
   .headerActions {
     margin-left: auto;
     gap: 2px;
-  }
-  .menuButton {
-    display: inline-flex;
-    align-items: center;
   }
   .hero {
     min-height: 590px;
@@ -2077,4 +1964,9 @@
 }
 .ramblings blockquote img {
   max-width: 150px;
+}
+
+@media (max-width: 359px) {
+  .header .brand > svg { display: none; }
+  .header .brand { font-size: 1rem; }
 }

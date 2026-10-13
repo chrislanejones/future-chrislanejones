@@ -130,7 +130,7 @@
   color: #b45309;
   border-color: rgba(245, 158, 11, 0.45);
 }
-html[data-theme="dark"] .bstep-warn {
+html.dark .bstep-warn {
   color: #fbbf24;
 }
 

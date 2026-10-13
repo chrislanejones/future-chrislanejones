@@ -93,6 +93,8 @@ const AdminSidebarContent = ({
                 <Button
                   variant={activeTab === tab.id ? "accent" : "outline"}
                   size="sm"
+                  aria-label={tab.label}
+                  aria-pressed={activeTab === tab.id}
                   onClick={() => onTabChange(tab.id)}
                   className={`w-full justify-start gap-3 ${
                     isCollapsed ? "justify-center px-0" : ""

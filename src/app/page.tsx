@@ -24,7 +24,7 @@ export async function generateMetadata() {
 
 export default function Home() {
   return (
-    <div className={styles.coastalPage}>
+    <div className={styles.coastalPage} data-coastal-theme data-coastal-page>
       <CoastalHeader />
       <main id="main-content" tabIndex={-1}>
         <section

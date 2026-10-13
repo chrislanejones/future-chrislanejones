@@ -13,70 +13,50 @@ const badgeVariants = cva(
   // shared base styles
   "inline-flex items-center rounded-full px-2.5 py-0.5 font-medium " +
     "transition-colors select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 " +
-    "[background-color:var(--badge-bg)] [color:var(--badge-text)] [font-size:var(--step-0)] [line-height:1.5]",
+    "bg-base text-ink [font-size:var(--step-0)] [line-height:1.5]",
   {
     variants: {
       variant: {
         default: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
           border border-(--color-border)
           focus-visible:ring-(--color-accent)
         `,
 
         blue: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
           border border-(--color-accent-alt)
           focus-visible:ring-(--color-accent-alt)
         `,
         red: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#ef4444]
-          focus-visible:ring-[#ef4444]
+          border border-(--color-tag-red)
+          focus-visible:ring-(--color-tag-red)
         `,
         yellow: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#eab308]
-          focus-visible:ring-[#eab308]
+          border border-(--color-tag-yellow)
+          focus-visible:ring-(--color-tag-yellow)
         `,
         green: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
           border border-(--color-accent)
           focus-visible:ring-(--color-accent)
         `,
         pink: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#ec4899]
-          focus-visible:ring-[#ec4899]
+          border border-(--color-tag-pink)
+          focus-visible:ring-(--color-tag-pink)
         `,
         purple: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#a855f7]
-          focus-visible:ring-[#a855f7]
+          border border-(--color-tag-purple)
+          focus-visible:ring-(--color-tag-purple)
         `,
         cyan: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#06b6d4]
-          focus-visible:ring-[#06b6d4]
+          border border-(--color-tag-cyan)
+          focus-visible:ring-(--color-tag-cyan)
         `,
         orange: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#f97316]
-          focus-visible:ring-[#f97316]
+          border border-(--color-tag-orange)
+          focus-visible:ring-(--color-tag-orange)
         `,
         dark: `
-          [--badge-bg:#f3f4f6] [--badge-text:#111827]
-          dark:[--badge-bg:#0b0d10] dark:[--badge-text:#ffffff]
-          border border-[#0f172a]
-          focus-visible:ring-[#0f172a]
+          border border-(--color-tag-dark)
+          focus-visible:ring-(--color-tag-dark)
         `,
       },
     },
@@ -98,12 +78,9 @@ export function Badge({ className, variant, ...props }: BadgeProps) {
     <span
       className={cn(
         badgeVariants({ variant }),
-        "font-medium leading-none tracking-tight"
+        "font-medium leading-none tracking-tight",
+        className
       )}
-      style={{
-        backgroundColor: 'var(--color-base)',
-        color: 'var(--color-ink)',
-      }}
       {...props}
     />
   );

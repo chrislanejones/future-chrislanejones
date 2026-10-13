@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, ChevronDown, Menu, Waves } from "lucide-react";
+import { ArrowUpRight, ChevronDown, Waves } from "lucide-react";
 import {
   useHeaderNavItems,
   useFooterNavSections,
@@ -16,13 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+import { MobileNavigation } from "./mobile-navigation";
 import styles from "./coastal.module.css";
 
 function Brand() {
@@ -44,7 +38,6 @@ function Brand() {
 export function CoastalHeader() {
   const pathname = usePathname();
   const items = useHeaderNavItems();
-  const [open, setOpen] = useState(false);
   // Desktop dropdowns open on hover as well as click; a short grace period
   // lets the pointer cross the gap between the trigger and the menu.
   const [hovered, setHovered] = useState<string | null>(null);
@@ -91,6 +84,7 @@ export function CoastalHeader() {
                 <ChevronDown size={13} aria-hidden="true" />
               </DropdownMenuTrigger>
               <DropdownMenuContent
+                data-coastal-theme
                 className={styles.dropdown}
                 align="start"
                 sideOffset={12}
@@ -133,59 +127,7 @@ export function CoastalHeader() {
       </nav>
       <div className={styles.headerActions}>
         <SimpleModeToggle />
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger
-            className={styles.menuButton}
-            aria-label="Open navigation"
-          >
-            <Menu size={22} aria-hidden="true" />
-          </SheetTrigger>
-          <SheetContent side="top" className={`${styles.mobileMenu} !h-dvh !max-w-none !border-0`}>
-            <SheetTitle>Explore the site</SheetTitle>
-            <SheetDescription className={styles.menuDescription}>
-              Work, writing, and a little life outside the editor.
-            </SheetDescription>
-            <nav aria-label="Mobile navigation" className={styles.mobileLinks}>
-              {items.map((item) => (
-                <div key={item.label}>
-                  {item.children ? (
-                    <>
-                      <p>{item.label}</p>
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href!}
-                          aria-current={
-                            pathname === child.href ? "page" : undefined
-                          }
-                          onClick={() => setOpen(false)}
-                          target={child.isExternal ? "_blank" : undefined}
-                          rel={
-                            child.isExternal ? "noopener noreferrer" : undefined
-                          }
-                        >
-                          {child.label}
-                          <ArrowUpRight size={16} aria-hidden="true" />
-                        </Link>
-                      ))}
-                    </>
-                  ) : (
-                    <Link
-                      href={item.href!}
-                      aria-current={pathname === item.href ? "page" : undefined}
-                      onClick={() => setOpen(false)}
-                      target={item.isExternal ? "_blank" : undefined}
-                      rel={item.isExternal ? "noopener noreferrer" : undefined}
-                    >
-                      {item.label}
-                      <ArrowUpRight size={16} aria-hidden="true" />
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
+        <MobileNavigation items={items} pathname={pathname} />
       </div>
     </header>
   );

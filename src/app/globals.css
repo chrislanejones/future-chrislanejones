@@ -1,5 +1,21 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-interphases), ui-sans-serif, system-ui, sans-serif;
+  --text-body: var(--type-body);
+  --text-heading: var(--type-heading);
+  --text-display: var(--type-display);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
 
 :root {
   --color-base: #f9fafb; /* soft off-white, cleaner base */
@@ -30,9 +46,18 @@
   --step-3: clamp(1.45rem, 1.2rem + 1vw, 1.75rem); /* smaller h2 */
   --step-4: clamp(2rem, 1.45rem + 2.3vw, 2.5rem); /* h1 stays same */
   --weight-regular: 400;
-  --weight-demibold: 600;
+  --weight-semibold: 600;
   --weight-bold: 700;
   --weight-black: 900;
+
+  /* Category badge outlines; text/background use the shared semantic palette. */
+  --color-tag-red: #ef4444;
+  --color-tag-yellow: #eab308;
+  --color-tag-pink: #ec4899;
+  --color-tag-purple: #a855f7;
+  --color-tag-cyan: #06b6d4;
+  --color-tag-orange: #f97316;
+  --color-tag-dark: #0f172a;
 
   /* Sidebar variables */
   --sidebar: #ffffff;
@@ -72,6 +97,51 @@
   --sidebar-accent-foreground: #f3f4f6;
   --sidebar-border: #1f242b;
   --sidebar-ring: #6b7280;
+}
+
+/* Coastal theme SSOT. Apply the scope to page roots AND portaled surfaces. */
+[data-coastal-theme],
+body:has([data-coastal-page]) {
+  --coast-base: #f6f5f0;
+  --coast-panel: #eeeee6;
+  --coast-soft: #e8eff0;
+  --coast-ink: #173f4a;
+  --coast-muted: #53676a;
+  --coast-accent: #235967;
+  --coast-on-accent: #f8fbfa;
+  --coast-line: #d4ddda;
+  --color-base: var(--coast-base);
+  --color-panel: var(--coast-panel);
+  --color-inner-card: var(--coast-soft);
+  --color-ink: var(--coast-ink);
+  --color-foreground: var(--coast-ink);
+  --color-muted: var(--coast-muted);
+  --color-accent: var(--coast-accent);
+  --color-on-accent: var(--coast-on-accent);
+  --color-border: var(--coast-line);
+  --color-surface-hover: var(--coast-soft);
+  --color-focus-ring: var(--coast-accent);
+  --coast-control-line: #708b90;
+  --type-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --type-heading: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  --type-display: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+  --radius-media: 20px;
+  --radius-control: 12px;
+  --radius-pill: 999px;
+  --motion-fast: 160ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dark [data-coastal-theme],
+.dark body:has([data-coastal-page]) {
+  --coast-base: #12282e;
+  --coast-panel: #1a343b;
+  --coast-soft: #203e46;
+  --coast-ink: #e6efec;
+  --coast-muted: #b0c3c5;
+  --coast-accent: #a7d3d7;
+  --coast-on-accent: #163b45;
+  --coast-line: #365159;
+  --coast-control-line: #779298;
 }
 
 html,
@@ -269,7 +339,6 @@ p {
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); /* soft dark halo for contrast */
   font-weight: 500;
   border: none !important; /* remove borders/rings universally */
-  outline: none !important;
 }
 
 @layer base {
@@ -286,26 +355,7 @@ p {
     cursor: pointer;
   }
 
-  :root {
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-  .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+
 }
 
 body {
@@ -320,15 +370,6 @@ body {
 
 html.dark .client-logo,
 .dark .client-logo {
-  filter: brightness(0) invert(1);
-}
-
-/* Client logo filters - dark in light mode, white in dark mode */
-.client-logo {
-  filter: grayscale(1) brightness(0.3) contrast(1.25);
-}
-
-html.dark .client-logo {
   filter: brightness(0) invert(1);
 }
 
@@ -542,10 +583,6 @@ html.dark .client-logo {
   background: var(--color-muted-accent);
 }
 
-/* strong / em */
-.blog-content strong { font-weight: var(--weight-bold); }
-.blog-content em { font-style: italic; }
-
 /* first element — no top margin */
 .blog-content > *:first-child { margin-top: 0; }
 .blog-content > *:last-child  { margin-bottom: 0; }
@@ -634,7 +671,8 @@ html.dark .client-logo {
   outline-offset: 2px;
 }
 
-/* Image overlay buttons intentionally suppress focus rings (decorative) */
+/* Interactive image overlays keep a visible keyboard indicator. */
 .image-overlay-text:focus-visible {
-  outline: none !important;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }

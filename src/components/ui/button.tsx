@@ -31,7 +31,7 @@ export const buttonVariants = cva(
         accent: [
           "bg-(--color-accent) shadow-glow",
           "hover:bg-(--color-accent)/90",
-          "text-black",
+          "text-(--color-on-accent)",
           "border border-transparent",
         ].join(" "),
         solid: [

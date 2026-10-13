@@ -1,0 +1,85 @@
+.guide { padding-block: 64px 0; color: var(--coast-ink); font-size: var(--type-body); }
+.guide p, .guide li, .guide label, .guide button, .guide a, .guide code { font-size: var(--type-body); }
+.guide p { line-height: 1.65; }
+.guide h2 { font-size: var(--type-heading); line-height: 1.2; letter-spacing: -.035em; font-weight: var(--weight-semibold); }
+.guide h3 { font-size: var(--type-body); font-weight: var(--weight-semibold); }
+.hero { max-width: 950px; padding-bottom: 64px; }
+.kicker { color: var(--coast-muted); margin-bottom: 24px; }
+.hero h1 { font-size: var(--type-display); line-height: 1.03; letter-spacing: -.055em; font-weight: var(--weight-semibold); }
+.intro { max-width: 48ch; margin-top: 28px; color: var(--coast-muted); }
+.actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 28px; }
+.actions a, .actions button, .section > button { height: auto; min-height: 48px; padding: 12px 20px; box-shadow: none; }
+.balance { display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; }
+.proportions { display: grid; grid-template-columns: 6fr 3fr 1fr; min-height: 280px; border: 1px solid var(--coast-line); border-radius: var(--radius-media); overflow: hidden; }
+.proportions > div { padding: 22px 12px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+.proportions > div > span:first-child { font-size: var(--type-heading); font-weight: var(--weight-semibold); }
+.sixty { background: var(--coast-base); }
+.thirty { background: var(--coast-soft); }
+.ten { background: var(--coast-accent); color: var(--coast-on-accent); }
+.ten > span:last-child { writing-mode: vertical-rl; }
+.balanceCopy p { margin-top: 18px; color: var(--coast-muted); max-width: 55ch; }
+.section { padding-top: 96px; scroll-margin-top: 24px; }
+.sectionHead { max-width: 65ch; margin-bottom: 32px; }
+.sectionHead p { margin-top: 16px; color: var(--coast-muted); }
+.swatches { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 40px 24px; margin-bottom: 32px; }
+.swatch { min-width: 0; }
+.paint { height: 148px; border-radius: var(--radius-control); border: 1px solid var(--coast-line); }
+.swatchTitle { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.swatchTitle button { flex: none; min-width: 44px; min-height: 44px; box-shadow: none; }
+.swatch p { color: var(--coast-muted); }
+.swatch .hex { color: var(--coast-ink); font-weight: var(--weight-semibold); margin-bottom: 8px; }
+.swatch code { display: block; margin-top: 8px; overflow-wrap: anywhere; color: var(--coast-muted); font-family: inherit; }
+.notice { min-height: 2em; margin-top: 12px; color: var(--coast-muted); }
+.checker { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--coast-control-line); border-radius: var(--radius-media); overflow: hidden; }
+.preview { padding: clamp(24px,4vw,64px); background: var(--preview-base); color: var(--preview-ink); display: flex; flex-direction: column; justify-content: center; }
+.specimen { font-size: var(--type-display); font-weight: var(--weight-semibold); line-height: 1.15; margin-bottom: 32px; }
+.preview .sampleTitle { font-size: var(--type-heading); font-weight: var(--weight-semibold); margin-bottom: 12px; }
+.preview p { max-width: 35ch; }
+.checkerControls { padding: clamp(24px,3vw,40px); background: var(--coast-panel); }
+.selects { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.selects > div { display: grid; gap: 8px; min-width: 0; }
+.selects label { font-weight: var(--weight-semibold); }
+.selects select { min-height: 48px; width: 100%; min-width: 0; border: 1px solid var(--coast-control-line); border-radius: var(--radius-control); padding: 10px; background: var(--coast-base); color: var(--coast-ink); font: inherit; }
+.checkerControls > button { min-height: 44px; margin-block: 12px; padding-inline: 0; box-shadow: none; }
+.checkerControls .ratio { font-size: var(--type-display); line-height: 1.2; letter-spacing: -.05em; font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+.results { margin-top: 24px; display: grid; gap: 12px; }
+.results li { display: flex; justify-content: space-between; gap: 20px; }
+.footnote { margin-top: 20px; max-width: 75ch; color: var(--coast-muted); }
+.guide a:not([class]) { text-decoration: underline; text-underline-offset: 4px; }
+.typeSamples { display: grid; gap: 32px; }
+.typeSamples > div { padding-bottom: 28px; border-bottom: 1px solid var(--coast-line); }
+.typeSamples span, .typeSamples code { color: var(--coast-muted); font-family: inherit; }
+.typeSamples p { margin-block: 12px; max-width: 65ch; }
+.typeSamples .typeDisplay { font-size: var(--type-display); line-height: 1.1; letter-spacing: -.045em; }
+.typeSamples .typeHeading { font-size: var(--type-heading); line-height: 1.2; }
+.typeSamples .typeBody { font-size: var(--type-body); }
+.mobileSection { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 96px; padding: 48px; background: var(--coast-soft); border-radius: var(--radius-media); }
+.mobileSection p { margin-top: 20px; color: var(--coast-muted); }
+.mobileRules { display: grid; gap: 24px; }
+.mobileRules li { display: flex; gap: 14px; line-height: 1.6; }
+.mobileRules svg { flex: none; width: 20px; margin-top: 3px; color: var(--coast-accent); }
+.mobileRules strong { display: block; }
+.guideFooter { padding-block: 48px; color: var(--coast-muted); }
+.guideFooter a { display: inline-block; margin-top: 12px; }
+@media (max-width: 900px) {
+  .balance, .mobileSection { grid-template-columns: 1fr; gap: 28px; }
+  .swatches { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 600px) {
+  .guide { padding-top: 32px; }
+  .hero { padding-bottom: 40px; }
+  .hero h1 { font-size: var(--type-display); }
+  .actions { flex-direction: column; align-items: stretch; }
+  .section { padding-top: 56px; }
+  .proportions { min-height: 220px; }
+  .proportions > div { padding: 16px 8px; }
+  .proportions > div > span:first-child { font-size: var(--type-body); }
+  .checker { grid-template-columns: 1fr; }
+  .preview { min-height: 280px; }
+  .swatches { column-gap: 16px; }
+  .paint { height: 112px; }
+  .swatchTitle { align-items: flex-start; }
+  .swatchTitle h3 { padding-top: 10px; }
+  .mobileSection { padding: 24px; margin-top: 56px; }
+}
+@media (max-width: 359px) { .swatches, .selects { grid-template-columns: 1fr; } }
