@@ -140,7 +140,7 @@ export function CoastalHeader() {
           >
             <Menu size={22} aria-hidden="true" />
           </SheetTrigger>
-          <SheetContent className={styles.mobileMenu}>
+          <SheetContent side="top" className={`${styles.mobileMenu} !h-dvh !max-w-none !border-0`}>
             <SheetTitle>Explore the site</SheetTitle>
             <SheetDescription className={styles.menuDescription}>
               Work, writing, and a little life outside the editor.

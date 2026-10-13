@@ -173,15 +173,29 @@
 .mobileMenu {
   background: #f6f5f0;
   color: #173f4a;
-  width: min(90vw, 420px);
+  width: 100vw;
+  height: 100dvh;
+  padding: 28px 24px 40px;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
 }
 :global(.dark) .mobileMenu {
   background: #12282e;
   color: #e6efec;
 }
+.mobileMenu > h2 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #53676a;
+}
+:global(.dark) .mobileMenu > h2 {
+  color: #b0c3c5;
+}
 .menuDescription {
-  margin-top: 10px;
+  margin-top: 8px;
   font-size: 14px;
   line-height: 1.6;
   color: #53676a;
@@ -190,22 +204,39 @@
   color: #b0c3c5;
 }
 .mobileLinks {
-  margin-top: 26px;
+  margin-top: 28px;
   display: grid;
-  gap: 20px;
+  gap: 14px;
+  flex: 1;
 }
 .mobileLinks p {
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding-block: 8px;
+  letter-spacing: 0.12em;
+  color: #53676a;
+  padding-block: 10px 2px;
+}
+:global(.dark) .mobileLinks p {
+  color: #b0c3c5;
 }
 .mobileLinks a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 16px;
-  padding-block: 11px;
+  font-size: clamp(26px, 7.5vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  padding-block: 9px;
+}
+.mobileLinks a svg {
+  width: 22px;
+  height: 22px;
+  opacity: 0.55;
+  flex: none;
+}
+.mobileLinks a[aria-current="page"] {
+  color: var(--coast-accent);
 }
 .hero {
   position: relative;
