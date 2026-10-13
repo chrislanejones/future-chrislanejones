@@ -22,6 +22,16 @@
 :global(.dark) .stage { background: #756448; }
 .loading { position: absolute; inset: 0; display: grid; place-content: center; padding: 30px; color: #173f4a; text-align: center; }
 :global(.dark) .loading { color: #fff6e8; }
+.loader { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; color: #173f4a; font-size: 13px; text-align: center; }
+:global(.dark) .loader { color: #fff6e8; }
+.loaderArt { width: 112px; height: 112px; overflow: visible; }
+.loaderFill { fill: var(--coast-accent); transform-box: fill-box; transform-origin: bottom; animation: bucketFill 1.8s ease-in-out infinite; }
+@keyframes bucketFill {
+  0% { transform: translateY(100%); }
+  70% { transform: translateY(0); }
+  100% { transform: translateY(0); opacity: .35; }
+}
+@media (prefers-reduced-motion: reduce) { .loaderFill { animation: none; transform: translateY(45%); } }
 .beachFooter { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 9px; font-size: 12px; color: var(--coast-muted); }
 .beachFooter > div { display: flex; gap: 20px; }
 .beachFooter button { color: var(--coast-ink); }

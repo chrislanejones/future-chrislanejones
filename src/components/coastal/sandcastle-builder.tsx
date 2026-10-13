@@ -8,7 +8,32 @@ import { castleReducer, initialCastle, type CastleTool } from "./sandcastle-mode
 import coastal from "./coastal.module.css";
 import styles from "./sandcastle-builder.module.css";
 
-const Scene = dynamic(() => import("./sandcastle-scene"), { ssr: false, loading: () => <p className={styles.loading}>Getting the beach ready…</p> });
+const Scene = dynamic(() => import("./sandcastle-scene"), { ssr: false, loading: () => <BucketLoader /> });
+
+/** Outlined bucket and shovel; the bucket fills from the bottom while the 3D scene downloads. */
+function BucketLoader() {
+  return (
+    <div className={styles.loader} role="status" aria-live="polite">
+      <svg className={styles.loaderArt} viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <clipPath id="bucket-fill-clip"><polygon points="31,42 89,42 82,104 38,104" /></clipPath>
+        </defs>
+        <g clipPath="url(#bucket-fill-clip)">
+          <rect className={styles.loaderFill} x="28" y="40" width="64" height="66" />
+        </g>
+        <g fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="31,42 89,42 82,104 38,104" />
+          <rect x="27" y="35" width="66" height="8" rx="3" />
+          <path d="M33 35 Q60 4 87 35" />
+          <path d="M108 16 L98 88" />
+          <path d="M102 12 l12 4" />
+          <path d="M90 90 l16 2 l-1 10 q-6 8 -14 2 z" />
+        </g>
+      </svg>
+      <p>Getting the beach ready…</p>
+    </div>
+  );
+}
 const tools = [
   { id: "tower", label: "Tower", icon: Castle }, { id: "bucket", label: "Bucket", icon: PaintBucket },
   { id: "wall", label: "Wall", icon: BrickWall }, { id: "moat", label: "Moat", icon: Droplets },
