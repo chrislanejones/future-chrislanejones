@@ -32,21 +32,6 @@ import {
 } from "lucide-react";
 import type { Doc } from "../../../../convex/_generated/dataModel";
 
-// Helper function to get badge color variant based on index
-const getBadgeVariant = (index: number) => {
-  const variants = [
-    "blue",
-    "green",
-    "purple",
-    "orange",
-    "pink",
-    "cyan",
-    "yellow",
-    "red",
-  ] as const;
-  return variants[index % variants.length];
-};
-
 // Simple function to generate user identifier (could be improved with actual user system)
 function getUserIdentifier() {
   if (typeof window === "undefined") return "anonymous";
@@ -274,7 +259,7 @@ export default function BlogPostPage({
               </div>
               <div className="flex items-center gap-2">
                 <Heart
-                  className={`w-4 h-4 ${userLikeStatus?.liked ? "fill-current text-red-500" : ""}`}
+                  className={`w-4 h-4 ${userLikeStatus?.liked ? "fill-current text-(--color-accent)" : ""}`}
                 />
                 <span>{post.likesCount || 0} likes</span>
               </div>
@@ -291,8 +276,8 @@ export default function BlogPostPage({
             {post.tags && post.tags.length > 0 && (
               <div className="mb-8 pb-6 border-b border-(--color-border)">
                 <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag, index) => (
-                    <Badge key={tag} variant={getBadgeVariant(index)}>
+                  {post.tags.map((tag) => (
+                    <Badge key={tag}>
                       {tag}
                     </Badge>
                   ))}
@@ -314,7 +299,7 @@ export default function BlogPostPage({
                 {userLikeStatus?.liked ? "Liked" : "Like this post"}
               </Button>
               {likeError && (
-                <p role="alert" className="mt-2 text-red-500">
+                <p role="alert" className="mt-2 text-(--color-danger)">
                   {likeError}
                 </p>
               )}
@@ -416,7 +401,7 @@ export default function BlogPostPage({
                       </Button>
                     </div>
                     {commentError && (
-                      <p role="alert" className="text-red-500">
+                      <p role="alert" className="text-(--color-danger)">
                         {commentError}
                       </p>
                     )}
