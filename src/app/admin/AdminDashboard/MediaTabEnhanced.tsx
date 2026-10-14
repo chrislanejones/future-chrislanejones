@@ -506,62 +506,116 @@ const MediaTabEnhanced = () => {
           </div>
         </div>
 
-        {/* Main Image Grid/List */}
+        {/* Main panel: the home gallery's six slots, or the selected library view. */}
         <div className="flex-1 min-w-0 overflow-auto">
-          <div className="grid grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((position) => {
-              const item = getGalleryItemByPosition(position);
-              return (
-                <div key={position}>
-                  <p className="text-xs text-muted mb-2">
-                    {position === 1 ? "Featured Image" : `Slot ${position}`}
-                  </p>
-                  <button
-                    onClick={() => handleGallerySlotClick(position)}
-                    className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
-                      item
-                        ? "bg-(--color-muted-accent)"
-                        : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
-                    }`}
-                  >
-                    {item ? (
-                      <>
-                        <Image
-                          src={item.url}
-                          alt={item.alt}
-                          fill
-                          className="object-cover"
-                          sizes="200px"
-                        />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                          <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
-                            Replace
-                          </span>
-                          <Button
-                            variant="destructive"
-                            size="icon-sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveGalleryImage(position);
-                            }}
-                            className="size-6"
-                            aria-label="Remove image from slot"
-                          >
-                            <Trash2 className="w-3 h-3" aria-hidden="true" />
-                          </Button>
+          {selectedView === "home-gallery" ? (
+            <div className="grid grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((position) => {
+                const item = getGalleryItemByPosition(position);
+                return (
+                  <div key={position}>
+                    <p className="text-xs text-muted mb-2">
+                      {position === 1 ? "Featured Image" : `Slot ${position}`}
+                    </p>
+                    <button
+                      onClick={() => handleGallerySlotClick(position)}
+                      className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
+                        item
+                          ? "bg-(--color-muted-accent)"
+                          : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
+                      }`}
+                    >
+                      {item ? (
+                        <>
+                          <Image
+                            src={item.url}
+                            alt={item.alt}
+                            fill
+                            className="object-cover"
+                            sizes="200px"
+                          />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                            <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
+                              Replace
+                            </span>
+                            <Button
+                              variant="destructive"
+                              size="icon-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveGalleryImage(position);
+                              }}
+                              className="size-6"
+                              aria-label="Remove image from slot"
+                            >
+                              <Trash2 className="w-3 h-3" aria-hidden="true" />
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-muted">
+                          <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
+                          <span className="text-xs">Add image</span>
                         </div>
-                      </>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-muted">
-                        <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
-                        <span className="text-xs">Add image</span>
-                      </div>
-                    )}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                      )}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : filteredImages.length === 0 ? (
+            <div className="h-full min-h-48 flex flex-col items-center justify-center text-muted">
+              <ImageIcon className="w-8 h-8 mb-2" aria-hidden="true" />
+              <p className="text-sm">
+                {searchQuery ? `No images match "${searchQuery}".` : "No images here yet."}
+              </p>
+            </div>
+          ) : viewMode === "grid" ? (
+            <ul className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" aria-label="Images">
+              {filteredImages.map((img) => (
+                <li key={img._id} className="bg-(--color-panel) border border-(--color-border) rounded-xl overflow-hidden">
+                  <div className="relative aspect-square bg-(--color-muted-accent)">
+                    <Image src={img.url} alt={img.altText || ""} fill className="object-cover" sizes="240px" />
+                  </div>
+                  <div className="p-3 space-y-1">
+                    <p className="text-sm font-medium text-ink truncate" title={img.filename}>{img.filename}</p>
+                    <p className="text-xs text-muted truncate">{img.assignedToTitle || "Unassigned"}</p>
+                    <div className="flex gap-2 pt-1">
+                      <Button variant="secondary" size="sm" className="flex-1" onClick={() => handleEditImage(img)}>
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(img._id)}
+                        aria-label={`Delete ${img.filename}`} className="text-(--color-danger) hover:bg-(--color-danger)/10">
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <ul className="divide-y divide-(--color-border) bg-(--color-panel) border border-(--color-border) rounded-xl" aria-label="Images">
+              {filteredImages.map((img) => (
+                <li key={img._id} className="flex items-center gap-3 p-3">
+                  <div className="relative size-12 shrink-0 rounded-lg overflow-hidden bg-(--color-muted-accent)">
+                    <Image src={img.url} alt={img.altText || ""} fill className="object-cover" sizes="48px" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-ink truncate">{img.filename}</p>
+                    <p className="text-xs text-muted truncate">
+                      {img.assignedToTitle || "Unassigned"}
+                      {img.size ? ` · ${Math.round(img.size / 1024)} KB` : ""}
+                    </p>
+                  </div>
+                  <Button variant="secondary" size="sm" onClick={() => handleEditImage(img)}>Edit</Button>
+                  <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(img._id)}
+                    aria-label={`Delete ${img.filename}`} className="text-(--color-danger) hover:bg-(--color-danger)/10">
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
