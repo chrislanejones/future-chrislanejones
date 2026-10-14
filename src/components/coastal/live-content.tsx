@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  ArrowUpRight,
   RefreshCw,
 } from "lucide-react";
 import { useQuery } from "convex/react";
@@ -16,6 +15,9 @@ import { GalleryPanel, type GalleryPhoto } from "./gallery-panel";
 import { QUOTES } from "@/components/main/quote-content";
 import { ProjectCard, type ProjectCardData } from "./project-card";
 import styles from "./coastal.module.css";
+import interior from "./interior.module.css";
+import { BlogPostCard } from "./blog-post-card";
+import type { Doc } from "../../../convex/_generated/dataModel";
 import { featuredProjects } from "@/data/projects-data";
 import { imageHorseMarketingProject } from "@/data/project-presentation";
 import { Button } from "@/components/ui/button";
@@ -34,8 +36,6 @@ export class ContentBoundary extends Component<
     return this.state.failed ? this.props.fallback : this.props.children;
   }
 }
-
-const plain = (text: string) => text.replace(/[\u2013\u2014]/g, "-");
 
 const fallbackProjects: ProjectCardData[] = featuredProjects;
 
@@ -138,64 +138,42 @@ export function CoastalClients() {
   );
 }
 
-function JournalView({
-  posts,
-}: {
-  posts?: { _id: string; title: string; slug: string; createdAt: number }[];
-}) {
-  return (
-    <div className={styles.journal}>
-      <h3>Latest writing</h3>
-      <p>Things I learn, build, and occasionally break.</p>
-      <div className={styles.journalPosts} aria-busy={posts === undefined}>
-        {posts === undefined ? (
-          [0, 1].map((index) => (
-            <div
-              key={index}
-              className={styles.postSkeleton}
-              aria-hidden="true"
-            />
-          ))
-        ) : posts.length ? (
-          [...posts]
-            .sort((a, b) => b.createdAt - a.createdAt)
-            .slice(0, 2)
-            .map((post) => (
-              <Link key={post._id} href={`/blog/${post.slug}`}>
-                <span>
-                  {plain(post.title)}
-                  <time dateTime={new Date(post.createdAt).toISOString()}>
-                    {new Intl.DateTimeFormat("en-US", {
-                      month: "short",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    }).format(post.createdAt)}
-                  </time>
-                </span>
-                <ArrowUpRight size={22} aria-hidden="true" />
-              </Link>
-            ))
-        ) : (
-          <p className={styles.emptyPosts}>
-            More writing is on the way. Browse the blog for articles and
-            tutorials.
-          </p>
-        )}
+type Post = Doc<"blogPosts">;
+// The two newest posts as full cards, the same card as /blog.
+function LatestPostsView({ posts }: { posts?: Post[] }) {
+  if (posts === undefined)
+    return (
+      <div className={interior.postGrid} aria-busy="true">
+        {[0, 1].map((index) => (
+          <div key={index} className={styles.postSkeleton} aria-hidden="true" />
+        ))}
       </div>
-      <Link href="/blog" className={styles.textLink}>
-        Read the blog <ArrowUpRight size={17} aria-hidden="true" />
-      </Link>
+    );
+  if (!posts.length)
+    return (
+      <p className={styles.emptyPosts}>
+        More writing is on the way. Browse the blog for articles and tutorials.
+      </p>
+    );
+  return (
+    <div className={interior.postGrid}>
+      {[...posts]
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .slice(0, 2)
+        .map((post) => (
+          <BlogPostCard key={post._id} post={post} heading="h3" />
+        ))}
     </div>
   );
 }
-function LiveJournal() {
+function LiveLatestPosts() {
   const posts = useQuery(api.blogPosts.getAllPosts);
-  return <JournalView posts={posts} />;
+  return <LatestPostsView posts={posts} />;
 }
-export function CoastalJournal() {
+export function CoastalLatestPosts() {
   return (
-    <ContentBoundary fallback={<JournalView posts={[]} />}>
-      <LiveJournal />
+    <ContentBoundary fallback={<LatestPostsView posts={[]} />}>
+      <LiveLatestPosts />
     </ContentBoundary>
   );
 }
@@ -240,10 +218,10 @@ function GalleryView({ items }: { items: GalleryPhoto[] }) {
           className={styles.coverImage}
         />
         <div className={styles.galleryFooter}>
-          <h3>Conference fan shots</h3>
+          <h3>Conference photos</h3>
           <GalleryPanel
             photos={items}
-            title="Conference fan shots"
+            title="Conference photos"
             description="People I’ve met along the way."
             label="Open conference photo gallery"
           />

@@ -144,11 +144,11 @@
 .postMedia:hover img {
   transform: scale(1.025);
 }
-.post h2 {
+.postTitle {
   font-size: var(--type-heading);
   margin-block: 12px;
 }
-.post h2 a:hover {
+.postTitle a:hover {
   color: var(--coast-accent);
 }
 .post p {

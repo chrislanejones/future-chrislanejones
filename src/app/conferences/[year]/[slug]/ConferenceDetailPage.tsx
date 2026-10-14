@@ -73,7 +73,7 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
         <section className={styles.photoSection} aria-labelledby="conference-photos-title">
           <div className={styles.photoHeading}>
             <div><h2 id="conference-photos-title">{photoTitle}</h2><p>{photoDescription}</p></div>
-            <GalleryPanel photos={photos} title={isPersonalPhoto ? photoTitle : "Conference fan shots"} description={isPersonalPhoto ? photoDescription : "People I’ve met along the way."} label="Open conference photo gallery" />
+            <GalleryPanel photos={photos} title={isPersonalPhoto ? photoTitle : "Conference photos"} description={isPersonalPhoto ? photoDescription : "People I’ve met along the way."} label="Open conference photo gallery" />
           </div>
           <div className={styles.photos} data-single={photos.length === 1}>
             {photos.map((photo) => (
