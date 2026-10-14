@@ -1,6 +1,5 @@
 // src/data/navigation-seed.ts
 
-import React from "react";
 import type { NavLink } from "../components/page/links";
 
 // Original static structure for header navigation items

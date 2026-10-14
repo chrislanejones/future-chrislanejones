@@ -1,7 +1,7 @@
 "use client";
 
 import { renderPostHtml } from "@/lib/blog-content";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Search,
   Plus,
@@ -11,8 +11,6 @@ import {
   EyeOff,
   Save,
   X,
-  AlertCircle,
-  CheckCircle,
   Tag,
   Image as ImageIcon,
   Calendar as CalendarIcon,
@@ -25,7 +23,7 @@ import { HtmlEditorEnhanced } from "../components/HtmlEditorEnhanced";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Calendar } from "@/components/ui/calendar";

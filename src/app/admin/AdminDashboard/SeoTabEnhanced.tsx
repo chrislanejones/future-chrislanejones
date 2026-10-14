@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Search,
   Save,
@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id, Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -323,7 +323,6 @@ export const SeoTabEnhanced = () => {
     !!selectedPage &&
     selectedPage.path !== "/fallback" &&
     !!(selectedPage.seoEntry || selectedPage.headerEntry);
-
 
   return (
     <div className="grid grid-cols-3 gap-6 h-full">

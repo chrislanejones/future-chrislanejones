@@ -11,7 +11,7 @@ import {
   Heading2,
   Code,
   LinkIcon,
-  Image,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -196,7 +196,7 @@ export const HtmlEditorEnhanced: React.FC<HtmlEditorProps> = ({
             aria-label="Insert Image"
             title="Insert Image"
           >
-            <Image className="w-4 h-4" />
+            <ImageIcon className="w-4 h-4" aria-hidden="true" />
           </Button>
         )}
 

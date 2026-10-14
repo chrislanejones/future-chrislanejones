@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Search,
   Plus,
   Edit2,
   Trash2,
   Save,
-  Star,
   GripVertical,
   ExternalLink,
 } from "lucide-react";
