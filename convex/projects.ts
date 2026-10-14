@@ -1,16 +1,21 @@
 // convex/projects.ts
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import schema from "./schema";
 
 import { requireAdmin as requireAuth } from "./authz";
 
 export const getAll = query({
+  args: {},
+  returns: v.array(schema.doc("projects")),
   handler: async (ctx) => {
     return ctx.db.query("projects").order("desc").collect();
   },
 });
 
 export const getFeatured = query({
+  args: {},
+  returns: v.array(schema.doc("projects")),
   handler: async (ctx) => {
     const items = await ctx.db
       .query("projects")

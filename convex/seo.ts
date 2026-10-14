@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
+import schema from "./schema";
 
 const KNOWN_PATHS = new Set([
   "/",
@@ -23,6 +24,8 @@ const KNOWN_PATHS = new Set([
 import { requireAdmin as requireAuth } from "./authz";
 
 export const getAllSEO = query({
+  args: {},
+  returns: v.array(schema.doc("seoMetadata")),
   handler: async (ctx) => {
     return await ctx.db.query("seoMetadata").collect();
   },
@@ -94,7 +97,11 @@ export const deleteSEO = mutation({
   },
 });
 
+const cleanupResult = v.object({ removed: v.number(), paths: v.array(v.string()) });
+
 export const getStaleSEOPaths = query({
+  args: {},
+  returns: v.array(v.object({ path: v.string(), title: v.string() })),
   handler: async (ctx) => {
     const all = await ctx.db.query("seoMetadata").collect();
     return all
@@ -104,6 +111,8 @@ export const getStaleSEOPaths = query({
 });
 
 export const cleanupStaleSEO = internalMutation({
+  args: {},
+  returns: cleanupResult,
   handler: async (ctx) => {
     const all = await ctx.db.query("seoMetadata").collect();
     const stale = all.filter((entry) => !KNOWN_PATHS.has(entry.path));
@@ -115,6 +124,8 @@ export const cleanupStaleSEO = internalMutation({
 });
 
 export const cleanupStaleSEOPublic = mutation({
+  args: {},
+  returns: cleanupResult,
   handler: async (ctx) => {
     await requireAuth(ctx);
     const all = await ctx.db.query("seoMetadata").collect();
@@ -127,6 +138,14 @@ export const cleanupStaleSEOPublic = mutation({
 });
 
 export const seedSEOData = mutation({
+  args: {},
+  returns: v.object({
+    success: v.boolean(),
+    total: v.number(),
+    inserted: v.number(),
+    updated: v.number(),
+    message: v.string(),
+  }),
   handler: async (ctx) => {
     await requireAuth(ctx);
     const pages = [
