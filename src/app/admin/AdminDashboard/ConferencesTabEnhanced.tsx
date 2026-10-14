@@ -16,6 +16,7 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorDisplay } from "../components/ErrorDisplay";
@@ -604,28 +605,13 @@ const ConferencesTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Conference?</h3>
-            <p className="text-muted mb-6">This cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDelete(deleteConfirm as Id<"conferences">)}
-                variant="secondary"
-                className="flex-1 text-red-500"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="secondary"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Conference?"
+          description="This cannot be undone."
+          onConfirm={() => handleDelete(deleteConfirm as Id<"conferences">)}
+        />
       )}
 
       <MediaDrawer

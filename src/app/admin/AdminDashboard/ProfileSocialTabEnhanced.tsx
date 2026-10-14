@@ -21,6 +21,7 @@ import Image from "next/image";
 import { api } from "../../../../convex/_generated/api";
 import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { SOCIAL_ICONS, SocialIcon } from "@/lib/social-icons";
@@ -710,28 +711,13 @@ const LinksGroup = ({
       </div>
 
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete link?</h3>
-            <p className="text-muted mb-6">This cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDelete(deleteConfirm)}
-                variant="secondary"
-                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-600"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="secondary"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete link?"
+          description="This cannot be undone."
+          onConfirm={() => handleDelete(deleteConfirm)}
+        />
       )}
     </div>
   );

@@ -19,6 +19,7 @@ import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 // Derived from the Convex schema (SSOT). The hand-rolled copy was missing the
 // schema's screenshotUrl / screenshotUpdatedAt fields.
@@ -48,6 +49,9 @@ const LinksManagerTabEnhanced = () => {
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [deleteCategoryConfirm, setDeleteCategoryConfirm] = useState<
+    string | null
+  >(null);
 
   const [formData, setFormData] = useState({
     href: "",
@@ -174,19 +178,12 @@ const LinksManagerTabEnhanced = () => {
 
   const handleDeleteCategory = async (category: string) => {
     try {
-      const count = getLinksInCategory(category).length;
-      if (
-        confirm(
-          `Delete "${category}" and all ${count} link(s)? This cannot be undone.`
-        )
-      ) {
-        await deleteCategory({ category });
-        setSelectedCategory(
-          categories.find((c) => c.category !== category)?.category || ""
-        );
-        setSuccess(`Category "${category}" deleted!`);
-        setTimeout(() => setSuccess(null), 3000);
-      }
+      await deleteCategory({ category });
+      setSelectedCategory(
+        categories.find((c) => c.category !== category)?.category || ""
+      );
+      setSuccess(`Category "${category}" deleted!`);
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("Failed to delete category")
@@ -396,28 +393,24 @@ const LinksManagerTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Link?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDeleteLink(deleteConfirm)}
-                variant="secondary"
-                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-600"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="secondary"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Link?"
+          onConfirm={() => handleDeleteLink(deleteConfirm)}
+        />
+      )}
+
+      {deleteCategoryConfirm && (
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteCategoryConfirm(null)}
+          title="Delete Category?"
+          description={`Delete "${deleteCategoryConfirm}" and all ${
+            getLinksInCategory(deleteCategoryConfirm).length
+          } link(s)? This cannot be undone.`}
+          onConfirm={() => handleDeleteCategory(deleteCategoryConfirm)}
+        />
       )}
 
       {/* Add Category Modal */}
@@ -555,7 +548,7 @@ const LinksManagerTabEnhanced = () => {
             <div className="flex items-center gap-2">
               {selectedCategory && (
                 <Button
-                  onClick={() => handleDeleteCategory(selectedCategory)}
+                  onClick={() => setDeleteCategoryConfirm(selectedCategory)}
                   variant="ghost"
                   size="icon"
                   className="text-(--color-danger) hover:bg-(--color-danger)/10"

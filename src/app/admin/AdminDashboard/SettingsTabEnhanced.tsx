@@ -31,6 +31,7 @@ import type { Id } from "../../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
@@ -737,33 +738,22 @@ const SettingsTabEnhanced = () => {
 
         {/* Delete Redirect Modal */}
         {deleteRedirectConfirm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-              <h3 className="text-lg font-bold text-ink mb-4">Delete Redirect?</h3>
-              <p className="text-muted mb-6">This cannot be undone.</p>
-              <div className="flex gap-2">
-                <Button
-                  onClick={async () => {
-                    try {
-                      await deleteRedirectMutation({ id: deleteRedirectConfirm });
-                      setDeleteRedirectConfirm(null);
-                      success("Redirect deleted");
-                    } catch (err) {
-                      console.error("Failed to delete redirect:", err);
-                      showError("Failed to delete redirect");
-                    }
-                  }}
-                  variant="secondary"
-                  className="flex-1 text-red-500"
-                >
-                  Delete
-                </Button>
-                <Button onClick={() => setDeleteRedirectConfirm(null)} variant="secondary" className="flex-1">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </div>
+          <ConfirmDialog
+            open
+            onOpenChange={(open) => !open && setDeleteRedirectConfirm(null)}
+            title="Delete Redirect?"
+            description="This cannot be undone."
+            onConfirm={async () => {
+              try {
+                await deleteRedirectMutation({ id: deleteRedirectConfirm });
+                setDeleteRedirectConfirm(null);
+                success("Redirect deleted");
+              } catch (err) {
+                console.error("Failed to delete redirect:", err);
+                showError("Failed to delete redirect");
+              }
+            }}
+          />
         )}
 
         {/* Site Health Section */}
