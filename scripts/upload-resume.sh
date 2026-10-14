@@ -15,9 +15,9 @@ fi
 upload() {
   local kind="$1" file="$2" type="$3"
   local url id
-  url=$(npx convex run --prod resume:generateUploadUrl | jq -r .)
+  url=$(pnpm exec convex run --prod resume:generateUploadUrl | jq -r .)
   id=$(curl -sS -X POST -H "Content-Type: $type" --data-binary @"$file" "$url" | jq -r .storageId)
-  npx convex run --prod resume:setFile \
+  pnpm exec convex run --prod resume:setFile \
     "{\"kind\":\"$kind\",\"storageId\":\"$id\",\"filename\":\"Chris_Lane_Jones_Resume.$kind\"}"
   echo "$kind -> $id"
 }
