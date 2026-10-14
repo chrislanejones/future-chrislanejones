@@ -601,12 +601,11 @@ const LinksManagerTabEnhanced = () => {
                           checked={!!link.featured}
                           onCheckedChange={() => handleToggleFeatured(link)}
                           id={`featured-${link._id}`}
-                          className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-zinc-600 [&>span]:bg-white [&>span]:shadow-md"
                         />
                         <label
                           htmlFor={`featured-${link._id}`}
                           className={`text-xs font-medium cursor-pointer select-none whitespace-nowrap ${
-                            link.featured ? "text-emerald-500" : "text-muted"
+                            link.featured ? "text-ink" : "text-muted"
                           }`}
                         >
                           Featured On Other Pages

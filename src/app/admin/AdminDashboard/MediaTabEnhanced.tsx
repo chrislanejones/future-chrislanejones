@@ -349,9 +349,7 @@ const MediaTabEnhanced = () => {
             >
               All Images
               <span
-                className={`text-xs ml-2 ${
-                  selectedView === "all" ? "opacity-70" : "opacity-70"
-                }`}
+                className="text-xs ml-2"
               >
                 ({totalImages})
               </span>
@@ -368,9 +366,7 @@ const MediaTabEnhanced = () => {
             >
               Unassigned
               <span
-                className={`text-xs ml-2 ${
-                  selectedView === "unassigned" ? "opacity-70" : "opacity-70"
-                }`}
+                className="text-xs ml-2"
               >
                 ({organizedMedia.unassigned.length})
               </span>
@@ -406,7 +402,7 @@ const MediaTabEnhanced = () => {
                         <span
                           className={`text-xs ml-2 ${
                             selectedView === `page-${page.id}`
-                              ? "opacity-70"
+                              ? ""
                               : "text-muted"
                           }`}
                         >
@@ -449,7 +445,7 @@ const MediaTabEnhanced = () => {
                         <span
                           className={`text-xs ml-2 ${
                             selectedView === `post-${post.id}`
-                              ? "opacity-70"
+                              ? ""
                               : "text-muted"
                           }`}
                         >
@@ -490,7 +486,7 @@ const MediaTabEnhanced = () => {
                     <span
                       className={`text-xs ml-auto ${
                         selectedView === "home-gallery"
-                          ? "opacity-70"
+                          ? ""
                           : "text-muted"
                       }`}
                     >

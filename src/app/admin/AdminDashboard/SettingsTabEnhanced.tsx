@@ -541,7 +541,7 @@ const SettingsTabEnhanced = () => {
                         key={i}
                         className={`${
                           log.type === "success"
-                            ? "text-emerald-500"
+                            ? "text-(--color-success)"
                             : log.type === "error"
                               ? "text-(--color-danger)"
                               : "text-muted"
