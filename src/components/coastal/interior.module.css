@@ -28,11 +28,15 @@
 }
 .content :is(input:not([type="radio"]), textarea, select) {
   background: var(--coast-base);
-  border: 1px solid var(--coast-line);
+  /* Control edge, not the faint divider: 3:1 against the page (design guide). */
+  border: 1px solid var(--coast-control-line);
   border-radius: var(--radius-control);
   color: var(--coast-ink);
   min-height: 48px;
   font-size: var(--type-body);
+}
+.content :is(input, textarea, select)[aria-invalid="true"] {
+  border-color: var(--color-danger);
 }
 .content :is(input, textarea)::placeholder {
   color: var(--coast-muted);
@@ -654,7 +658,7 @@
   break-inside: avoid;
   margin-bottom: 20px;
   background: var(--coast-panel);
-  border-radius: 18px;
+  border-radius: var(--radius-media);
   padding: 20px 22px 12px;
 }
 .tabsGroup h2 {
@@ -672,7 +676,7 @@
   gap: 12px;
   margin: 8px 0;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: var(--coast-accent);
   color: var(--coast-on-accent);
   transition: background-color 160ms ease, transform 160ms ease;
