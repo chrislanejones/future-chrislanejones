@@ -91,6 +91,7 @@ export default function BlogPostPage({
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
+  const [likeError, setLikeError] = useState<string | null>(null);
 
   const livePost = useQuery(
     api.blogPosts.getPostBySlug,
@@ -184,11 +185,15 @@ export default function BlogPostPage({
 
   const handleLike = async () => {
     if (!post?._id || !userIdentifier) return;
+    setLikeError(null);
     try {
       await toggleLike({ postId: post._id, userIdentifier });
     } catch (err) {
-      // Rate-limited or rejected; the like count simply doesn't change.
-      console.warn("Like failed:", err);
+      setLikeError(
+        err instanceof ConvexError && typeof err.data === "string"
+          ? err.data
+          : "Couldn't save your like. Please try again.",
+      );
     }
   };
 
@@ -308,6 +313,11 @@ export default function BlogPostPage({
                 />
                 {userLikeStatus?.liked ? "Liked" : "Like this post"}
               </Button>
+              {likeError && (
+                <p role="alert" className="mt-2 text-red-500">
+                  {likeError}
+                </p>
+              )}
             </div>
 
             {/* Comments Section */}

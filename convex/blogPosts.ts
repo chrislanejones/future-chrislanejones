@@ -378,7 +378,10 @@ export const getAllLikesAdmin = query({
   args: {},
   handler: async (ctx) => {
     if (!(await isAdmin(ctx))) return { total: 0, byPost: [] };
-    const posts = await ctx.db.query("blogPosts").take(LIST_LIMIT);
+    const posts = await ctx.db
+      .query("blogPosts")
+      .order("desc")
+      .take(LIST_LIMIT);
     const byPost = posts
       .filter((post) => (post.likesCount ?? 0) > 0)
       .map((post) => ({
