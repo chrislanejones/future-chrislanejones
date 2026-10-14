@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { preload } from "react-dom";
 import { ArrowUpRight, Check, Code2 } from "lucide-react";
 import { ProjectPreview } from "@/components/coastal/project-preview";
 import { PageIntro } from "@/components/coastal/page-intro";
@@ -38,6 +39,10 @@ const isValidUrl = (url: string | undefined): boolean =>
 const FALLBACK_APPS: Project[] = fallbackProjects.filter((project) => project.category === "app");
 const FALLBACK_WEBSITES: Project[] = fallbackProjects.filter((project) => project.category === "website");
 
+// Measured preview widths: ~86vw in the one-column layout, ~41vw in two
+// columns, capped at 608px once the container stops growing (1600px+).
+const PREVIEW_SIZES = "(max-width: 767px) 86vw, (min-width: 1600px) 608px, 41vw";
+
 /* ------------------------------- Components ------------------------------- */
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
@@ -65,7 +70,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           imageFit={presentation.imageFit}
           imageAspectRatio={presentation.imageAspectRatio}
           href={primaryLink}
-          sizes="(max-width: 767px) 90vw, 50vw"
+          sizes={PREVIEW_SIZES}
+          priority={index === 0}
           githubUrl={project.githubUrl}
           codebergUrl={project.codebergUrl}
         />
@@ -128,6 +134,9 @@ function ProjectGridSection({ projects }: { projects: Project[] }) {
 }
 
 export default function ProjectGrid() {
+  // The first card's sand backdrop is the mobile LCP element, and as a CSS
+  // background it is otherwise found only after the stylesheet loads.
+  preload("/textures/project-sand.svg", { as: "image", fetchPriority: "high" });
   const [activeTab, setActiveTab] = useState<"apps" | "clients">("apps");
   const appsConvex = useQuery(api.pageHeaders.getPageHeaderByPath, {
     path: "/projects/apps",
