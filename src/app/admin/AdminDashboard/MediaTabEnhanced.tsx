@@ -11,6 +11,7 @@ import {
   ChevronRight,
   ImageIcon,
   Home,
+  Pencil,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -559,6 +560,23 @@ const MediaTabEnhanced = () => {
                         </div>
                       )}
                     </button>
+                    {item && (
+                      <div className="mt-2 flex items-start justify-between gap-2">
+                        <p className="text-xs text-muted line-clamp-2" title={item.alt}>
+                          {item.alt || "No alt text"}
+                        </p>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="shrink-0 gap-1"
+                          onClick={() => handleEditGalleryMetadata(position)}
+                          aria-label={`Edit details for ${position === 1 ? "the featured image" : `slot ${position}`}`}
+                        >
+                          <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                          Edit details
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -628,6 +646,51 @@ const MediaTabEnhanced = () => {
           onConfirm={() => handleDeleteImage(deleteConfirm as Id<"media">)}
         />
       )}
+
+      {/* Edit Gallery Slot Metadata Modal */}
+      <Modal
+        open={editingGallerySlot !== null}
+        onOpenChange={(open) => !open && setEditingGallerySlot(null)}
+        title={editingGallerySlot === 1 ? "Featured Image Details" : `Slot ${editingGallerySlot} Details`}
+        className="max-w-sm"
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="gallery-alt" className="block text-sm font-medium text-ink mb-2">
+              Alt Text
+            </label>
+            <input
+              id="gallery-alt"
+              type="text"
+              value={galleryAltText}
+              onChange={(e) => setGalleryAltText(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Describe the image for screen readers..."
+            />
+          </div>
+          <div>
+            <label htmlFor="gallery-description" className="block text-sm font-medium text-ink mb-2">
+              Caption
+            </label>
+            <textarea
+              id="gallery-description"
+              value={galleryDescription}
+              onChange={(e) => setGalleryDescription(e.target.value)}
+              rows={3}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none resize-none"
+              placeholder="Shown under the photo in the gallery..."
+            />
+          </div>
+        </div>
+        <div className="flex gap-2 mt-6">
+          <Button onClick={handleSaveGalleryMetadata} variant="primary" className="flex-1" disabled={!galleryAltText.trim()}>
+            Save
+          </Button>
+          <Button onClick={() => setEditingGallerySlot(null)} variant="secondary" className="flex-1">
+            Cancel
+          </Button>
+        </div>
+      </Modal>
 
       {/* Edit Image Metadata Modal */}
       <Modal
