@@ -104,13 +104,17 @@ export function SandcastleBuilder() {
   const [cursor, setCursor] = useState({ x: 0, z: 1 });
   const aimedSpot = useRef(cursor);
   const [loaded, setLoaded] = useState(false);
-  const [sceneReady, setSceneReady] = useState(false);
+  // Settled = the scene code finished downloading, or failed to. On failure the
+  // lazy Scene throws and BeachBoundary shows its message, so the bucket must
+  // step aside either way instead of pouring forever.
+  const [sceneSettled, setSceneSettled] = useState(false);
   const [filled, setFilled] = useState(false);
   // Download early, but only start pouring once the game is actually on screen.
   useEffect(() => {
     if (!loaded) return;
     let live = true;
-    loadScene().then(() => { if (live) setSceneReady(true); });
+    const settle = () => { if (live) setSceneSettled(true); };
+    loadScene().then(settle, settle);
     return () => { live = false; };
   }, [loaded]);
   const [visible, setVisible] = useState(false);
@@ -168,7 +172,7 @@ export function SandcastleBuilder() {
           else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); dispatch({ type: "undo" }); }
         }}>
         {loaded ? <BeachBoundary><Scene pieces={state.pieces} tool={tool} cursor={cursor} dark={dark === "true"} moving={visible && reduced === "false" && hidden === "false"} onPlace={place} onAim={point => { aimedSpot.current = point; }} /></BeachBoundary> : <p className={styles.loading}>Your patch of beach.</p>}
-        {loaded && !(filled && sceneReady) && <BucketLoader running={pouring} />}
+        {loaded && !(filled && sceneSettled) && <BucketLoader running={pouring} />}
       </div>
       <div className={styles.beachFooter}>
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
