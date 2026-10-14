@@ -101,12 +101,6 @@ const serialize = (policy) =>
 // per-request nonce, which would make every static and ISR page dynamic.
 const contentSecurityPolicy = serialize(directives);
 
-// Report-only: the script policy a nonce-based setup would enforce. Each
-// violation logs "[Report Only]" in the console and nothing is blocked.
-const contentSecurityPolicyReportOnly = serialize({
-  "script-src": ["'self'", ...(isDev ? ["'unsafe-eval'"] : []), ...scriptHosts],
-});
-
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -116,7 +110,6 @@ const securityHeaders = [
     value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
   },
   { key: "Content-Security-Policy", value: contentSecurityPolicy },
-  { key: "Content-Security-Policy-Report-Only", value: contentSecurityPolicyReportOnly },
 ];
 
 /** @type {import('next').NextConfig} */

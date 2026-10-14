@@ -19,9 +19,11 @@ PostHog, GA4, UploadThing, the Wistia embed on the 404 page, and the Vercel
 Toolbar on preview builds only. It sets `object-src 'none'`, `base-uri 'self'`,
 `form-action 'self'`, `frame-ancestors 'none'` and `upgrade-insecure-requests`.
 `'unsafe-eval'` is only sent by `next dev`. `script-src` keeps `'unsafe-inline'`
-and `style-src` keeps `'unsafe-inline'`. A second, report-only header carries
-`script-src` without `'unsafe-inline'` so the console shows what a nonce policy
-would block. Whether to adopt nonces is left to Chris.
+and `style-src` keeps `'unsafe-inline'`. No report-only header is sent: a
+`script-src` without `'unsafe-inline'` flags every inline script Next.js writes
+on every page load, which buries real console errors and costs the Lighthouse
+Best Practices score without telling us anything new. Whether to adopt nonces
+is left to Chris.
 
 ## Consequences
 + Scripts, connections, frames, fonts, media and workers from unlisted hosts
