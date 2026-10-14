@@ -14,6 +14,21 @@ const panelClass =
   "fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-(--color-border) bg-(--color-panel) p-6";
 const titleClass = "text-lg font-bold text-ink";
 
+// Callers open these from state, not a Radix Trigger, so Radix has nothing
+// to refocus on close. Remember the opener and hand focus back to it.
+function useReturnFocus() {
+  const opener = React.useRef<HTMLElement | null>(null);
+  return {
+    onOpenAutoFocus: () => {
+      opener.current = document.activeElement as HTMLElement | null;
+    },
+    onCloseAutoFocus: (event: Event) => {
+      event.preventDefault();
+      if (opener.current?.isConnected) opener.current.focus();
+    },
+  };
+}
+
 interface ModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -30,11 +45,13 @@ export function Modal({
   children,
   className,
 }: ModalProps) {
+  const returnFocus = useReturnFocus();
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className={overlayClass} />
         <DialogPrimitive.Content
+          {...returnFocus}
           aria-describedby={undefined}
           className={cn(
             panelClass,
@@ -85,11 +102,15 @@ export function ConfirmDialog({
   cancelLabel = "Cancel",
   onConfirm,
 }: ConfirmDialogProps) {
+  const returnFocus = useReturnFocus();
   return (
     <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialog.Portal>
         <AlertDialog.Overlay className={overlayClass} />
-        <AlertDialog.Content className={cn(panelClass, "max-w-sm")}>
+        <AlertDialog.Content
+          {...returnFocus}
+          className={cn(panelClass, "max-w-sm")}
+        >
           <AlertDialog.Title className={cn(titleClass, "mb-4")}>
             {title}
           </AlertDialog.Title>

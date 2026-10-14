@@ -16,7 +16,7 @@ export function Spinner({
       className={cn("flex flex-col items-center justify-center py-12", className)}
     >
       <Loader2
-        className="w-8 h-8 animate-spin text-accent mb-3"
+        className="w-8 h-8 animate-spin text-(--color-accent) mb-3"
         aria-hidden="true"
       />
       <p className="text-muted">{label}</p>
