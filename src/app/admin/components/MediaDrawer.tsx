@@ -242,7 +242,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                     }
                   }}
                   variant="ghost"
-                  className="w-full text-red-500 hover:text-red-600 hover:bg-red-500/10 gap-2"
+                  className="w-full text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10 gap-2"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete Permanently

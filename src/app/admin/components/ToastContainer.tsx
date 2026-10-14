@@ -27,7 +27,7 @@ export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
             toast.type === "success"
               ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
               : toast.type === "error"
-                ? "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400"
+                ? "bg-red-500/10 border-red-500/30 text-(--color-danger)"
                 : toast.type === "loading"
                   ? "bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400"
                   : "bg-zinc-500/10 border-zinc-500/30 text-zinc-600 dark:text-zinc-400"

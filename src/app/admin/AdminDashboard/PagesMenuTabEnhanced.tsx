@@ -119,7 +119,7 @@ const DraggableExternalLinkItem = ({
         )}
         <button
           onClick={onDelete}
-          className="shrink-0 p-0.5 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          className="shrink-0 p-0.5 text-(--color-danger) opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
           title={`Delete "${link.label}"`}
         >
           <Trash2 className="w-3 h-3" aria-hidden="true" />
@@ -279,7 +279,7 @@ const HeaderNavItemComponent = ({
         </div>
         <button
           onClick={onDelete}
-          className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
           title={`Delete "${item.label}"`}
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -299,7 +299,7 @@ const HeaderNavItemComponent = ({
                 </div>
                 <button
                   onClick={() => onDeleteChild(child._id)}
-                  className="shrink-0 p-1 text-red-500 opacity-0 group-hover/child:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover/child:opacity-100 hover:bg-red-500/10 rounded transition-all"
                   title={`Delete "${child.label}"`}
                 >
                   <Trash2 className="w-3 h-3" aria-hidden="true" />
@@ -344,7 +344,7 @@ const FooterSectionComponent = ({
         </div>
         <button
           onClick={onDelete}
-          className="shrink-0 p-1 text-red-500 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
           title={`Delete "${section.title}"`}
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -368,7 +368,7 @@ const FooterSectionComponent = ({
                 </div>
                 <button
                   onClick={() => onDeleteLink(link._id)}
-                  className="shrink-0 p-1 text-red-500 opacity-0 group-hover/link:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover/link:opacity-100 hover:bg-red-500/10 rounded transition-all"
                   title={`Delete "${link.label}"`}
                 >
                   <Trash2 className="w-3 h-3" aria-hidden="true" />

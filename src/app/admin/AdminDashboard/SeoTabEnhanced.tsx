@@ -312,7 +312,7 @@ export const SeoTabEnhanced = () => {
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-green-500";
     if (score >= 50) return "text-yellow-500";
-    return "text-red-500";
+    return "text-(--color-danger)";
   };
 
   const getScoreBgColor = (score: number) => {
@@ -484,7 +484,7 @@ export const SeoTabEnhanced = () => {
                 {canDelete &&
                   (confirmDelete ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-red-500">
+                      <span className="text-xs text-(--color-danger)">
                         Delete this entry?
                       </span>
                       <Button
@@ -492,7 +492,7 @@ export const SeoTabEnhanced = () => {
                         disabled={isDeleting}
                         variant="outline"
                         size="sm"
-                        className="gap-1 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                        className="gap-1 text-(--color-danger) border-red-500/40 hover:bg-red-500/10"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         {isDeleting ? "Deleting..." : "Confirm"}
@@ -510,7 +510,7 @@ export const SeoTabEnhanced = () => {
                       onClick={() => setConfirmDelete(true)}
                       variant="outline"
                       size="sm"
-                      className="gap-2 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                      className="gap-2 text-(--color-danger) border-red-500/40 hover:bg-red-500/10"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete

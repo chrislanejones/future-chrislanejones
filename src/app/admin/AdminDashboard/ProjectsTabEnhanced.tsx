@@ -442,7 +442,7 @@ const ProjectsTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selectedProject._id)}
                         variant="outline"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -598,7 +598,7 @@ const ProjectsTabEnhanced = () => {
             <h3 className="text-lg font-bold text-ink mb-4">Delete Project?</h3>
             <p className="text-muted mb-6">This action cannot be undone.</p>
             <div className="flex gap-2">
-              <Button onClick={() => handleDelete(deleteConfirm as Id<"projects">)} variant="outline" className="flex-1 text-red-500">
+              <Button onClick={() => handleDelete(deleteConfirm as Id<"projects">)} variant="outline" className="flex-1 text-(--color-danger)">
                 Delete
               </Button>
               <Button onClick={() => setDeleteConfirm(null)} variant="outline" className="flex-1">

@@ -399,7 +399,7 @@ const LinksManagerTabEnhanced = () => {
               <Button
                 onClick={() => handleDeleteLink(deleteConfirm)}
                 variant="outline"
-                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                className="flex-1 text-(--color-danger) hover:bg-red-500/10 hover:text-(--color-danger)"
               >
                 Delete
               </Button>
@@ -546,7 +546,7 @@ const LinksManagerTabEnhanced = () => {
               {selectedCategory && (
                 <Button
                   onClick={() => handleDeleteCategory(selectedCategory)}
-                  className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition"
+                  className="p-2 text-(--color-danger) hover:bg-red-500/10 rounded-lg transition"
                   title="Delete category"
                   variant="outline"
                 >
@@ -633,7 +633,7 @@ const LinksManagerTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(link._id)}
                         variant="ghost"
                         size="sm"
-                        className="p-2 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="p-2 text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

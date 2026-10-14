@@ -331,7 +331,7 @@ const ClientsTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selectedClient._id)}
                         variant="outline"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -355,7 +355,7 @@ const ClientsTabEnhanced = () => {
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-ink">
-                  Company Name <span className="text-red-500">*</span>
+                  Company Name <span className="text-(--color-danger)">*</span>
                 </label>
                 <Input
                   value={formData.name}
@@ -367,7 +367,7 @@ const ClientsTabEnhanced = () => {
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-ink">
-                  Website URL <span className="text-red-500">*</span>
+                  Website URL <span className="text-(--color-danger)">*</span>
                 </label>
                 <Input
                   value={formData.url}
@@ -450,7 +450,7 @@ const ClientsTabEnhanced = () => {
               <Button
                 onClick={() => handleDelete(deleteConfirm as Id<"clients">)}
                 variant="outline"
-                className="flex-1 text-red-500"
+                className="flex-1 text-(--color-danger)"
               >
                 Delete
               </Button>
