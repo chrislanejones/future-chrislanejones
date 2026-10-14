@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
+import { useId, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import styles from "./beach-banner.module.css";
 
 const COOLDOWN_MS = 2000;
@@ -15,6 +15,60 @@ function wavePath(y: number, amp: number, from = -400, to = 1800) {
 /** Same wavy top edge, closed down to the bottom so it can be filled. */
 function waveFill(y: number, amp: number) {
   return `${wavePath(y, amp)} V240 H-400 Z`;
+}
+
+/** The sea, drifting waves, wet sand and dry sand along the bottom of a banner. */
+export function Shoreline({ className }: { className?: string }) {
+  // Unique gradient ids, so two shorelines on one page don't share defs.
+  const id = useId();
+  const sea = `${id}-sea`;
+  const sand = `${id}-sand`;
+  return (
+    <svg className={className} viewBox="0 108 1400 132" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <defs>
+        <linearGradient id={sea} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" className={styles.seaFar} />
+          <stop offset="1" className={styles.seaNear} />
+        </linearGradient>
+        <linearGradient id={sand} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" className={styles.sandTop} />
+          <stop offset="1" className={styles.sandLow} />
+        </linearGradient>
+      </defs>
+
+      <rect y="108" width="1400" height="132" fill={`url(#${sea})`} />
+      <path d="M0 108.5 H1400" className={styles.horizon} />
+
+      <g className={styles.driftSlow}>
+        <path d={wavePath(124, 2)} className={styles.ripple} />
+        <path d={wavePath(140, 3)} className={styles.ripple} />
+      </g>
+      <g className={styles.driftFast}>
+        <path d={wavePath(156, 4)} className={styles.ripple} />
+      </g>
+
+      <g className={styles.swash}>
+        <path d={waveFill(178, 6)} className={styles.wetSand} />
+        <path d={wavePath(178, 6)} className={styles.foam} />
+      </g>
+      <path d={waveFill(192, 5)} fill={`url(#${sand})`} />
+
+      <g className={styles.shells}>
+        <ellipse cx="220" cy="214" rx="5" ry="3" />
+        <ellipse cx="640" cy="222" rx="4" ry="2.5" />
+        <ellipse cx="1210" cy="210" rx="5" ry="3" />
+      </g>
+    </svg>
+  );
+}
+
+/** The shoreline as a standalone strip, e.g. along the top of the photo gallery. */
+export function ShoreStrip({ className }: { className?: string }) {
+  return (
+    <div className={`${styles.shoreStrip} ${className ?? ""}`} aria-hidden="true">
+      <Shoreline className={styles.shoreStripArt} />
+    </div>
+  );
 }
 
 /**
@@ -61,41 +115,7 @@ export function BeachBanner({ children }: { children?: ReactNode }) {
         </svg>
       </div>
 
-      <svg className={styles.shore} viewBox="0 108 1400 132" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="beach-sea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className={styles.seaFar} />
-            <stop offset="1" className={styles.seaNear} />
-          </linearGradient>
-          <linearGradient id="beach-sand" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" className={styles.sandTop} />
-            <stop offset="1" className={styles.sandLow} />
-          </linearGradient>
-        </defs>
-
-        <rect y="108" width="1400" height="132" fill="url(#beach-sea)" />
-        <path d="M0 108.5 H1400" className={styles.horizon} />
-
-        <g className={styles.driftSlow}>
-          <path d={wavePath(124, 2)} className={styles.ripple} />
-          <path d={wavePath(140, 3)} className={styles.ripple} />
-        </g>
-        <g className={styles.driftFast}>
-          <path d={wavePath(156, 4)} className={styles.ripple} />
-        </g>
-
-        <g className={styles.swash}>
-          <path d={waveFill(178, 6)} className={styles.wetSand} />
-          <path d={wavePath(178, 6)} className={styles.foam} />
-        </g>
-        <path d={waveFill(192, 5)} fill="url(#beach-sand)" />
-
-        <g className={styles.shells}>
-          <ellipse cx="220" cy="214" rx="5" ry="3" />
-          <ellipse cx="640" cy="222" rx="4" ry="2.5" />
-          <ellipse cx="1210" cy="210" rx="5" ry="3" />
-        </g>
-      </svg>
+      <Shoreline className={styles.shore} />
 
       <div className={styles.critters} aria-hidden="true">
         {surfer && (
