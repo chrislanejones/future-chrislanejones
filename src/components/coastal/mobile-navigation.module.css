@@ -38,6 +38,30 @@
 @media (max-width: 1023px) {
   .trigger { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 44px; min-height: 44px; }
 }
+/* Tablets: the same full-screen menu in two columns. Top-level links pair up
+   on the first row, then each group (About, Work) takes a column. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .header { padding-inline: 40px; }
+  .menu .close { right: 32px; }
+  .navigation {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+    align-content: start;
+    align-items: start;
+    padding: 8px 40px 32px;
+  }
+  .footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 32px;
+    padding-inline: 40px;
+  }
+  .footer p { margin: 0; }
+  .footer .contact { grid-column: 2; grid-row: 1 / span 2; width: auto; min-width: 280px; }
+  .guide { grid-column: 1; margin-top: 4px; justify-content: flex-start; }
+}
 @media (max-height: 600px) {
   .header { padding-block: 16px; }
   .menu .title { margin-top: 12px; }
