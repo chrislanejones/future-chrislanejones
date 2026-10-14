@@ -29,7 +29,7 @@ export function Reveal({
             { transform: "translateY(16px)", opacity: 0.6 },
             { transform: "none", opacity: 1 },
           ],
-          { duration: 650, delay: delay * 1000, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+          { duration: 650, delay: delay * 1000, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "backwards" },
         );
       },
       { threshold: 0.12 },
