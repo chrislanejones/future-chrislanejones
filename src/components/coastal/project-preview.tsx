@@ -10,6 +10,7 @@ export function ProjectPreview({
   imageAspectRatio,
   href,
   sizes,
+  priority = false,
   githubUrl,
   codebergUrl,
 }: {
@@ -19,6 +20,8 @@ export function ProjectPreview({
   imageAspectRatio?: number;
   href?: string;
   sizes: string;
+  /** Only for the first card in view: fetch it early instead of lazily. */
+  priority?: boolean;
   githubUrl?: string;
   codebergUrl?: string;
 }) {
@@ -50,6 +53,8 @@ export function ProjectPreview({
               alt={`${title} project preview`}
               fill
               sizes={sizes}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
               className={styles.previewImage}
               style={{
                 objectFit: imageFit,
