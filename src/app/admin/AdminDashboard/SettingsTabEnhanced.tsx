@@ -179,7 +179,6 @@ const SettingsTabEnhanced = () => {
     removeToast,
     success,
     error: showError,
-    loading: showLoading,
   } = useToast();
   const logEndRef = useRef<HTMLDivElement>(null);
 

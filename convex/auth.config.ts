@@ -6,7 +6,7 @@
 //   npx convex env set CLERK_JWT_ISSUER_DOMAIN https://clerk.chrislanejones.com --prod
 // (create a "convex" JWT template on the production instance too). Falls back to
 // the current dev instance so nothing changes until that env var is set.
-export default {
+const authConfig = {
   providers: [
     {
       domain:
@@ -16,3 +16,5 @@ export default {
     },
   ],
 };
+
+export default authConfig;

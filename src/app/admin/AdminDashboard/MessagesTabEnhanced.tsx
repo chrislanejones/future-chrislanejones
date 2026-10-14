@@ -50,15 +50,6 @@ const MessagesTabEnhanced = () => {
     setSelectedMessage((unreadMessage || messages[0]) as ContactMessage);
   }
 
-  const handleMarkAsRead = async (id: Id<"contactMessages">) => {
-    try {
-      await markAsRead({ id });
-      setSelectedMessage((prev) => prev?._id === id ? { ...prev, read: true } : prev);
-    } catch (err) {
-      console.error("Failed to mark as read:", err);
-    }
-  };
-
   // Mark as read when selected. The state update waits for the mutation, so
   // nothing is set synchronously inside the effect.
   const selectedId = selectedMessage?._id;

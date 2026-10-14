@@ -557,6 +557,9 @@ const LinksManagerTabEnhanced = () => {
                     <GripVertical className="w-4 h-4 text-muted shrink-0 cursor-move" />
 
                     {link.favicon && (
+                      // Favicons come from whatever site each link points at, so they
+                      // can't go through next/image's fixed remote-host allowlist.
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={link.favicon}
                         alt=""

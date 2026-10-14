@@ -57,7 +57,6 @@ const AdminSidebarContent = ({
   tabs,
   activeTab,
   onTabChange,
-  onSignOut,
   subsectionsByTab,
   activeSubsection,
   onSubsectionChange,
@@ -65,7 +64,6 @@ const AdminSidebarContent = ({
   tabs: { id: string; label: string; icon: LucideIcon }[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
-  onSignOut: () => void;
   subsectionsByTab: Record<string, SubItem[]>;
   activeSubsection: string;
   onSubsectionChange: (id: string) => void;
@@ -292,7 +290,6 @@ const AdminDashboard = () => {
           tabs={tabs}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          onSignOut={handleSignOut}
           subsectionsByTab={subsectionsByTab}
           activeSubsection={resolvedSubsection}
           onSubsectionChange={handleSubsectionChange}

@@ -18,7 +18,6 @@ import {
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
-import { useUploadThing } from "@/utils/uploadthing";
 import { HtmlEditorEnhanced } from "../components/HtmlEditorEnhanced";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,6 @@ const BlogPostsTabEnhanced = () => {
   const createPost = useMutation(api.blogPosts.createPost);
   const updatePost = useMutation(api.blogPosts.updatePost);
   const deletePost = useMutation(api.blogPosts.deletePost);
-  const createMedia = useMutation(api.media.create);
 
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -56,34 +54,9 @@ const BlogPostsTabEnhanced = () => {
   const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
     null
   );
-  const [isUploading, setIsUploading] = useState(false);
   const [isMediaDrawerOpen, setIsMediaDrawerOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-
-  const { startUpload } = useUploadThing("mediaUploader", {
-    onClientUploadComplete: async (res) => {
-      try {
-        if (res && res[0]) {
-          await createMedia({
-            url: res[0].url,
-            filename: res[0].name || "Blog cover image",
-            size: res[0].size,
-          });
-          setFormData({ ...formData, coverImage: res[0].url });
-        }
-      } catch (err) {
-        console.error("Failed to save uploaded media:", err);
-        setSaveStatus("error");
-      } finally {
-        setIsUploading(false);
-      }
-    },
-    onUploadError: (error: Error) => {
-      console.error("Upload error:", error);
-      setIsUploading(false);
-    },
-  });
 
   const [formData, setFormData] = useState(() => ({
     title: "",

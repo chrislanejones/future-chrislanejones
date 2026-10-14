@@ -51,7 +51,6 @@ const ProjectsTabEnhanced = () => {
   const deleteProjectMutation = useMutation(api.projects.deleteProject);
   const toggleFeatured = useMutation(api.projects.toggleFeatured);
   const swapFeaturedOrder = useMutation(api.projects.swapFeaturedOrder);
-  const createMedia = useMutation(api.media.create);
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isCreating, setIsCreating] = useState(false);

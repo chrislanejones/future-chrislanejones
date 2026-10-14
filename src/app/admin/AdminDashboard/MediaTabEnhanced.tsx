@@ -32,9 +32,6 @@ type GalleryItem = Doc<"homeGallery">;
 const MediaTabEnhanced = () => {
   const organizedMedia = useQuery(api.media.getOrganized);
   const deleteMediaMutation = useMutation(api.media.deleteMedia);
-  const createMedia = useMutation(api.media.create);
-  const assignMedia = useMutation(api.media.assign);
-  const unassignMedia = useMutation(api.media.unassign);
   const updateMedia = useMutation(api.media.update);
 
   // Home Gallery

@@ -118,47 +118,4 @@ export function CardFooter({
   return <div className={`p-4 shrink-0 ${className}`}>{children}</div>;
 }
 
-export function CardImage({
-  src,
-  alt,
-  className = "",
-  priority = false,
-  fill = false,
-  sizes = "(max-width: 768px) 100vw, 50vw",
-  ...props
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-  priority?: boolean;
-  fill?: boolean;
-  sizes?: string;
-} & Omit<React.ComponentPropsWithoutRef<typeof motion.img>, "src" | "alt">) {
-  return (
-    <div className="relative overflow-hidden rounded-xl aspect-[16/9]">
-      {fill ? (
-        <motion.img
-          src={src}
-          alt={alt}
-          className={`object-cover w-full h-full border border-(--color-border) ${className}`}
-          initial={{ scale: 1.1, opacity: 0.8 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          {...props}
-        />
-      ) : (
-        <motion.img
-          src={src}
-          alt={alt}
-          className={`object-cover w-full h-full border border-(--color-border) ${className}`}
-          initial={{ scale: 1.1, opacity: 0.8 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          {...props}
-        />
-      )}
-    </div>
-  );
-}
-
 export default Card;

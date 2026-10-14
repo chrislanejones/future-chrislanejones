@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
 
 import { requireAdmin as requireAuth } from "./authz";
 // CORRECTED IMPORT PATH: Use the path alias "@/data/navigation-seed"
