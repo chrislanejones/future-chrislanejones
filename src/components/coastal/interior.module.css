@@ -651,16 +651,21 @@
   padding: 0;
   margin: 0;
 }
+/* Quiet list rows: a surface one step off the panel and the normal text color, so a
+   page of 51 links reads calmly in both themes. The accent only shows on hover/focus. */
 .tabLink {
   display: flex;
   align-items: center;
   gap: 12px;
   margin: 8px 0;
   padding: 10px 14px;
+  /* The outline keeps each row distinct where the soft surface is close to the panel (light mode). */
+  border: 1px solid var(--coast-line);
   border-radius: var(--radius-control);
-  background: var(--coast-accent);
-  color: var(--coast-on-accent);
-  transition: background-color 160ms ease, transform 160ms ease;
+  background: var(--coast-soft);
+  color: var(--coast-ink);
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease;
 }
 .tabsGroup li:last-child .tabLink {
   margin-bottom: 0;
@@ -673,16 +678,27 @@
 }
 .tabLink small {
   display: block;
-  color: color-mix(in srgb, var(--coast-on-accent) 78%, transparent);
+  color: var(--coast-muted);
   font-size: var(--type-caption);
   margin-top: 2px;
 }
-.tabLink:hover {
-  background: color-mix(in srgb, var(--coast-accent) 85%, white);
-  color: var(--coast-on-accent);
+.tabLink:hover,
+.tabLink:focus-visible {
+  background: color-mix(in srgb, var(--coast-soft) 82%, var(--coast-accent));
+  border-color: var(--coast-accent);
+  color: var(--coast-ink);
 }
 .tabLink > svg {
   flex-shrink: 0;
+  color: var(--coast-muted);
+  transition: color .15s ease;
+}
+.tabLink:hover > svg,
+.tabLink:focus-visible > svg {
+  color: var(--coast-accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tabLink, .tabLink > svg { transition: none; }
 }
 .tabFavicon,
 .tabFallback {
@@ -693,6 +709,11 @@
 }
 .tabFavicon {
   object-fit: contain;
+}
+/* Many favicons are black (GitHub, Vercel); on dark rows they sit on a small light chip. */
+:global(.dark) .tabFavicon {
+  padding: 2px;
+  background: var(--coast-ink);
 }
 .tabLink .tabFallback {
   /* beats `.tabLink span { flex: 1 }`, which would stretch the tile */
