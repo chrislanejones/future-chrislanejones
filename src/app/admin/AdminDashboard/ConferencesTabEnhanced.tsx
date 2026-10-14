@@ -274,7 +274,7 @@ const ConferencesTabEnhanced = () => {
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{conf.name}</p>
-                <p className="text-xs text-muted truncate">{formatDateRange(conf)}</p>
+                <p className={`text-xs truncate ${selected?._id === conf._id && !isCreating ? "" : "text-muted"}`}>{formatDateRange(conf)}</p>
               </div>
             </div>
           ))}
