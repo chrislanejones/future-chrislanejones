@@ -1,6 +1,6 @@
 // src/components/page/contact-form.tsx
 "use client";
-import { useState, useEffect, useMemo } from "react"; // Added useMemo
+import { useState, useMemo } from "react"; // Added useMemo
 import { motion } from "framer-motion";
 import { Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import Card from "@/components/page/card";

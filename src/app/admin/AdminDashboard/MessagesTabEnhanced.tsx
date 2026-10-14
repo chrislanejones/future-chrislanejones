@@ -9,10 +9,6 @@ import {
   Phone,
   Calendar,
   ExternalLink,
-  CheckCircle,
-  X,
-  Filter,
-  RefreshCw,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";

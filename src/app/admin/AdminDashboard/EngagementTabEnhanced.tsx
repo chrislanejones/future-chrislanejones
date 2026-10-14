@@ -1,18 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Search,
   Heart,
   MessageCircle,
   CheckCircle,
-  X,
   Trash2,
   ExternalLink,
-  Filter,
   ThumbsUp,
-  ThumbsDown,
-  Eye,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";

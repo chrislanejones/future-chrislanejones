@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Plus,
   Edit2,
   Trash2,
   Save,
-  X,
   GripVertical,
   Calendar,
-  MapPin,
   Briefcase,
   GraduationCap,
   Video,

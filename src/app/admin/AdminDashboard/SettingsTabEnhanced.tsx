@@ -18,7 +18,6 @@ import {
   Activity,
   Globe,
   Bot,
-  Image as ImageIcon,
   ArrowRight,
   Plus,
   Edit2,
@@ -34,7 +33,6 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
-import Image from "next/image";
 
 interface DataSource {
   id: string;
