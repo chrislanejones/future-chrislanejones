@@ -560,11 +560,12 @@
 .offlineContent .sectionHeading {
   max-width: 740px;
 }
+/* Two columns: writing over the radio, the speech bubble over the fan shots. */
 .personalGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-  grid-template-areas: "journal quote music" "journal gallery music";
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px 32px;
+  grid-template-areas: "journal quote" "music gallery";
 }
 .ramblingsSlot {
   grid-area: quote;
@@ -735,7 +736,7 @@
   --coast-soft: #ffffff45;
   color: var(--coast-deep);
   position: relative;
-  padding-top: 72px;
+  padding-top: 48px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -749,7 +750,7 @@
   right: 22%;
   top: 0;
   width: 7px;
-  height: 118px;
+  height: 86px;
   border-radius: 4px;
   background:
     linear-gradient(transparent 32%, #00000026 32% 33.5%, transparent 33.5% 64%, #00000026 64% 65.5%, transparent 65.5%),
@@ -782,26 +783,31 @@
 }
 .radioHandle {
   flex-shrink: 0;
-  width: 54%;
-  height: 38px;
+  width: 34%;
+  height: 30px;
   margin: 0 auto -3px;
   border: 10px solid #a4b4a7;
   border-bottom: 0;
   border-radius: 22px 22px 0 0;
   box-shadow: inset 0 2px 2px #ffffff70;
 }
+/* A short, wide radio: the display and speaker sit side by side. */
 .radioBody {
   position: relative;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 25px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-areas: "label label" "display speaker" "controls controls" "error error";
+  column-gap: 16px;
+  padding: 20px 22px;
   border: 1px solid #bcc5b4;
   border-radius: 28px;
   background: linear-gradient(135deg, #e7ebdf, #c7d3c5);
   box-shadow: inset 0 2px 1px #ffffffb0, inset 0 -5px 0 #8f9f9140, 0 14px 22px -16px #173f4a80;
 }
 .radioLabel {
+  grid-area: label;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -820,8 +826,9 @@
   text-shadow: 0 0 6px #efa54e;
 }
 .radioDisplay {
-  padding: 18px;
-  min-height: 128px;
+  grid-area: display;
+  padding: 14px 16px;
+  min-height: 104px;
   border: 4px solid #94a297;
   border-radius: 10px;
   color: #a09567;
@@ -852,10 +859,9 @@
   line-height: 1.5;
 }
 .radioSpeaker {
+  grid-area: speaker;
   position: relative;
-  min-height: 155px;
-  flex: 1;
-  margin-top: 22px;
+  min-height: 104px;
   border-radius: 15px;
   border: 1px solid #8b9b8940;
   background: radial-gradient(circle, #344f43 1.1px, #879780 1.5px, transparent 1.8px) 0 0 / 5px 5px, #bac7b6;
@@ -863,15 +869,15 @@
 }
 .radioBadge {
   position: absolute;
-  right: 20px;
-  bottom: 40px;
+  left: 50%;
+  top: 50%;
   padding: 0 5px 7px;
-  font-size: clamp(35px, 3.2vw, 48px);
+  white-space: nowrap;
+  font-size: clamp(30px, 2.6vw, 42px);
   line-height: 1.15;
   letter-spacing: -0.035em;
   word-spacing: 0.04em;
-  transform: rotate(-12deg);
-  transform-origin: right center;
+  transform: translate(-50%, -50%) rotate(-9deg);
   color: #e6bc60;
   background: linear-gradient(175deg, #fff3bd 10%, #e5be65 30%, #9b681f 49%, #f5d987 58%, #c4963f 76%, #f8e3a0 94%);
   background-clip: text;
@@ -911,11 +917,12 @@
   object-fit: cover;
 }
 .playerControls {
+  grid-area: controls;
   position: relative;
   display: flex;
   align-items: center;
   gap: 11px;
-  margin-top: 24px;
+  margin-top: 16px;
 }
 .playerControls > svg {
   color: var(--coast-muted);
@@ -948,6 +955,7 @@
   transform: scale(0.97);
 }
 .audioError {
+  grid-area: error;
   font-size: var(--type-caption);
   margin-top: 15px;
   line-height: 1.5;
@@ -1609,10 +1617,6 @@
   .primaryProject .projectImage {
     aspect-ratio: 0.9;
   }
-  .personalGrid {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: "journal quote" "music gallery";
-  }
   .galleryImage {
     min-height: 280px;
   }
@@ -1835,6 +1839,13 @@
   .ramblings blockquote,
   .radioBody {
     padding: 22px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "label" "display" "speaker" "controls" "error";
+  }
+  .radioSpeaker {
+    min-height: 92px;
+    margin-top: 16px;
   }
   .playerControls {
     margin-top: 20px;
