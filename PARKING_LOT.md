@@ -193,6 +193,10 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   render-blocking CSS chunks (~340 ms); the shared client chunk (`3x023…`, ~800 ms CPU at
   4x slowdown) — audit framer-motion and lucide imports for tree-shaking; project preview
   images could be served at 640w on phones (61 KB).
+  **Re-measured 10-14-2026** (Lighthouse 12, mobile, 3 runs): score **80–88**, TBT ~100 ms, CLS 0,
+  render-blocking ~0 ms, gtag no longer loads during page load. What's left is LCP **3.8–4.6 s**, all
+  of it render delay on the hero photo (it downloads by ~0.7 s). Codex's 3D hero (draft PR #22)
+  replaces that image, so re-measure LCP after it lands instead of tuning the photo now.
 - **10-13-2026 — Clerk is scoped to /admin now.** `ClerkProvider` lives in
   `src/providers/ConvexAdminProvider.tsx`, mounted by `src/app/admin/layout.tsx`; the public
   site uses a plain `ConvexProvider`. Any future public page that needs `useAuth`/`useUser`
