@@ -147,7 +147,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   (github/linkedin/twitter/codepen/youtube) is still on the production `siteSettings` document,
   so the schema keeps it as optional. Nothing reads or writes it. Clean-up is a one-line
   migration that patches the field to `undefined` on the single row, then removes it from
-  `convex/schema.ts` — worth doing on the next Convex migration pass, not on its own.
+  `convex/schema.ts` — worth doing on the next Convex migration pass, not on its own. **RESOLVED 10-14-2026** — the prod row no longer had the field, so it was dropped from the schema with no data migration.
 - **2026-09-27 — Prod social/profile data was imported by CLI, not by the seed buttons.** The
   seed mutations are admin-gated (`requireAdmin`) and `npx convex run` has no Clerk identity,
   so prod was populated with `npx convex import --prod` instead: 16 `socialLinks` rows, the
@@ -173,7 +173,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - **2026-10-13 — Admin upload UI for the resume.** Resume now lives in Convex storage
   (ADR-002); updates go through `scripts/upload-resume.sh` from the CLI only. An Admin →
   Career tab uploader would remove the CLI step. The script also uploads PDF then Word in two
-  steps, so a failure halfway leaves a mismatched pair live.
+  steps, so a failure halfway leaves a mismatched pair live. **RESOLVED 10-14-2026** (PR #24) — Admin → Career Timeline has a Resume files panel; each format uploads and publishes independently.
 - **10-13-2026 — Add the VITA major IT projects dashboard as a project.** Chris built
   https://www.vita.virginia.gov/demo/major-it-projects-current-and-forecast-expenditure/
   for VITA. Needs a card in `src/data/projects-data.ts` (or the Convex projects table via
@@ -209,4 +209,4 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   rate limits + shared owner policy (004), enforced CSP without nonces (005). Chris to accept or edit.
 - **10-14-2026 — Media Manager: no UI for home-gallery slot alt text/description.**
   `handleEditGalleryMetadata`/`handleSaveGalleryMetadata` exist in `MediaTabEnhanced.tsx` but no
-  control opens them; the library view (PR #17) covers per-image alt text and filename.
+  control opens them; the library view (PR #17) covers per-image alt text and filename. **RESOLVED 10-14-2026** (PR #23) — Edit details under each filled slot.
