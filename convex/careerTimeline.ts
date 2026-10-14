@@ -1,10 +1,13 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import schema from "./schema";
 
 import { requireAdmin as requireAuth } from "./authz";
 
 // Get all career timeline events, sorted by order
 export const getAllEvents = query({
+  args: {},
+  returns: v.array(schema.doc("careerTimeline")),
   handler: async (ctx) => {
     const events = await ctx.db
       .query("careerTimeline")
@@ -98,6 +101,8 @@ export const reorderEvents = mutation({
 
 // Seed initial career timeline data
 export const seedTimeline = mutation({
+  args: {},
+  returns: v.object({ message: v.string(), count: v.number() }),
   handler: async (ctx) => {
     await requireAuth(ctx);
     // Check if data already exists

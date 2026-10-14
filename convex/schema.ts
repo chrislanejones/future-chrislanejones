@@ -76,7 +76,9 @@ export default defineSchema({
     createdAt: v.number(),
     read: v.boolean(),
     source: v.string(),
-  }).index("by_created", ["createdAt"]),
+  })
+    .index("by_created", ["createdAt"])
+    .index("by_read", ["read"]),
 
   browserLinks: defineTable({
     href: v.string(),

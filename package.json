@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src convex",
+    "test": "vitest run",
     "seed-seo": "node scripts/seed-seo.js",
     "check-seo": "node scripts/check-seo.js"
   },
   "dependencies": {
     "@clerk/nextjs": "7.9.5",
     "@clerk/themes": "^2.4.57",
+    "@convex-dev/rate-limiter": "^0.4.2",
     "@radix-ui/react-alert-dialog": "^1.1.23",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",
@@ -50,6 +52,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@edge-runtime/vm": "^5.0.0",
     "@effect/language-service": "^0.87.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
@@ -58,11 +61,14 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "autoprefixer": "^10.6.1",
+    "convex-test": "^0.0.61",
     "eslint": "^10.11.0",
     "eslint-config-next": "16.3.8",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
   },
   "pnpm": {
     "overrides": {

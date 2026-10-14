@@ -20,8 +20,10 @@ import type * as homeGallery from "../homeGallery.js";
 import type * as http from "../http.js";
 import type * as media from "../media.js";
 import type * as navigation from "../navigation.js";
+import type * as ownerPolicy from "../ownerPolicy.js";
 import type * as pageHeaders from "../pageHeaders.js";
 import type * as projects from "../projects.js";
+import type * as rateLimits from "../rateLimits.js";
 import type * as redirects from "../redirects.js";
 import type * as resume from "../resume.js";
 import type * as seo from "../seo.js";
@@ -47,8 +49,10 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   media: typeof media;
   navigation: typeof navigation;
+  ownerPolicy: typeof ownerPolicy;
   pageHeaders: typeof pageHeaders;
   projects: typeof projects;
+  rateLimits: typeof rateLimits;
   redirects: typeof redirects;
   resume: typeof resume;
   seo: typeof seo;
@@ -82,4 +86,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  rateLimiter: import("@convex-dev/rate-limiter/_generated/component.js").ComponentApi<"rateLimiter">;
+};

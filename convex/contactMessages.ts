@@ -1,5 +1,6 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { enforceRateLimits, requiredEmail, requiredText } from "./rateLimits";
 
 import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
@@ -7,6 +8,11 @@ import { requireAdmin as requireAuth, isAdmin } from "./authz";
 // are publicly callable, so these MUST gate on the caller's identity — without
 // it, anyone on the internet can read every submission. We return empty results
 // (rather than throwing) when unauthenticated to match the other admin queries.
+//
+// Anonymous callers can grow this table, so admin reads are capped. The newest
+// ADMIN_LIST_LIMIT messages are returned; older ones stay in the database.
+const ADMIN_LIST_LIMIT = 500;
+
 export const getAll = query({
   args: {},
   handler: async (ctx) => {
@@ -15,18 +21,19 @@ export const getAll = query({
       .query("contactMessages")
       .withIndex("by_created")
       .order("desc")
-      .collect();
+      .take(ADMIN_LIST_LIMIT);
   },
 });
 
+// Capped like getAll, so the badge tops out at ADMIN_LIST_LIMIT.
 export const getUnreadCount = query({
   args: {},
   handler: async (ctx) => {
     if (!(await isAdmin(ctx))) return 0;
     const unread = await ctx.db
       .query("contactMessages")
-      .filter((q) => q.eq(q.field("read"), false))
-      .collect();
+      .withIndex("by_read", (q) => q.eq("read", false))
+      .take(ADMIN_LIST_LIMIT);
     return unread.length;
   },
 });
@@ -55,6 +62,14 @@ export const deleteMessage = mutation({
   },
 });
 
+// Every `source` the site's contact forms send (see
+// src/components/page/contact-form.tsx getSource).
+const CONTACT_SOURCES = new Set([
+  "contact-page",
+  "react-maintenance-page",
+  "wordpress-maintenance-page",
+]);
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -64,20 +79,30 @@ export const create = mutation({
     source: v.string(),
   },
   handler: async (ctx, args) => {
-    // Public, unauthenticated mutation — the client form validates, but a direct
-    // Convex call bypasses that. Cap lengths server-side so it can't be used to
-    // bloat storage with megabyte payloads.
-    if (
-      args.name.length > 200 ||
-      args.email.length > 320 ||
-      (args.phone?.length ?? 0) > 50 ||
-      args.message.length > 5000 ||
-      args.source.length > 100
-    ) {
-      throw new Error("Message exceeds allowed length");
+    // Public, unauthenticated mutation. The client form validates, but a direct
+    // Convex call bypasses that, so validate and rate-limit here.
+    const name = requiredText(args.name, "Name", 200);
+    const email = requiredEmail(args.email);
+    const message = requiredText(args.message, "Message", 5000);
+    const phone = args.phone?.trim() || undefined;
+    if (phone && phone.length > 50) throw new ConvexError("Phone is too long");
+    if (!CONTACT_SOURCES.has(args.source)) {
+      throw new ConvexError("Unknown form source");
     }
+
+    await enforceRateLimits(
+      ctx,
+      "contactPerSender",
+      email.toLowerCase(),
+      "contactGlobal",
+    );
+
     return await ctx.db.insert("contactMessages", {
-      ...args,
+      name,
+      email,
+      phone,
+      message,
+      source: args.source,
       read: false,
       createdAt: Date.now(),
     });

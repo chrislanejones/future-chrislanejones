@@ -18,6 +18,7 @@ import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
@@ -89,6 +90,8 @@ export default function BlogPostPage({
     content: "",
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
+  const [likeError, setLikeError] = useState<string | null>(null);
 
   const livePost = useQuery(
     api.blogPosts.getPostBySlug,
@@ -182,7 +185,16 @@ export default function BlogPostPage({
 
   const handleLike = async () => {
     if (!post?._id || !userIdentifier) return;
-    await toggleLike({ postId: post._id, userIdentifier });
+    setLikeError(null);
+    try {
+      await toggleLike({ postId: post._id, userIdentifier });
+    } catch (err) {
+      setLikeError(
+        err instanceof ConvexError && typeof err.data === "string"
+          ? err.data
+          : "Couldn't save your like. Please try again.",
+      );
+    }
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -195,12 +207,22 @@ export default function BlogPostPage({
     )
       return;
 
-    await addComment({
-      postId: post._id,
-      authorName: commentForm.authorName,
-      authorEmail: commentForm.authorEmail,
-      content: commentForm.content,
-    });
+    setCommentError(null);
+    try {
+      await addComment({
+        postId: post._id,
+        authorName: commentForm.authorName,
+        authorEmail: commentForm.authorEmail,
+        content: commentForm.content,
+      });
+    } catch (err) {
+      setCommentError(
+        err instanceof ConvexError && typeof err.data === "string"
+          ? err.data
+          : "Couldn't post your comment. Please try again.",
+      );
+      return;
+    }
 
     setCommentForm({ authorName: "", authorEmail: "", content: "" });
     setShowCommentForm(false);
@@ -291,6 +313,11 @@ export default function BlogPostPage({
                 />
                 {userLikeStatus?.liked ? "Liked" : "Like this post"}
               </Button>
+              {likeError && (
+                <p role="alert" className="mt-2 text-red-500">
+                  {likeError}
+                </p>
+              )}
             </div>
 
             {/* Comments Section */}
@@ -388,6 +415,11 @@ export default function BlogPostPage({
                         Cancel
                       </Button>
                     </div>
+                    {commentError && (
+                      <p role="alert" className="text-red-500">
+                        {commentError}
+                      </p>
+                    )}
                     <p className="text-muted">
                       Comments are moderated and will appear after approval.
                     </p>

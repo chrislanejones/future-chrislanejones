@@ -1,11 +1,13 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import {
   query,
   mutation,
   internalMutation,
   type QueryCtx,
+  type MutationCtx,
 } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { enforceRateLimits, requiredEmail, requiredText } from "./rateLimits";
 
 import { requireAdmin as requireAuth, isAdmin } from "./authz";
 
@@ -191,6 +193,19 @@ export const deletePost = mutation({
   },
 });
 
+// Anonymous likes and comments may only target a post the public can see.
+async function requirePublishedPost(ctx: MutationCtx, postId: Id<"blogPosts">) {
+  const post = await ctx.db.get("blogPosts", postId);
+  if (!post || post.published !== true) {
+    throw new ConvexError("Post not found");
+  }
+  return post;
+}
+
+// Anonymous callers can grow likes and comments, so admin and public reads of
+// them are capped. Lists return the newest LIST_LIMIT rows.
+const LIST_LIMIT = 500;
+
 // Like functionality
 export const toggleLike = mutation({
   args: {
@@ -198,46 +213,39 @@ export const toggleLike = mutation({
     userIdentifier: v.string(),
   },
   handler: async (ctx, args) => {
-    // Public — userIdentifier is an arbitrary client string; cap it so it can't
-    // be used to write oversized rows.
-    if (args.userIdentifier.length > 100) {
-      throw new Error("Invalid identifier");
-    }
+    // Public and anonymous. userIdentifier is a random string from the
+    // visitor's localStorage: low-trust, freely rotatable, never used for
+    // authorization. It only keys the per-visitor rate limit; the global
+    // limit bounds what rotating it can achieve.
+    const userIdentifier = requiredText(args.userIdentifier, "Identifier", 100);
+    const post = await requirePublishedPost(ctx, args.postId);
+    await enforceRateLimits(ctx, "likePerVisitor", userIdentifier, "likeGlobal");
+
     // Check if user already liked this post
     const existingLike = await ctx.db
       .query("blogLikes")
       .withIndex("by_user_post", (q) =>
-        q.eq("userIdentifier", args.userIdentifier).eq("postId", args.postId)
+        q.eq("userIdentifier", userIdentifier).eq("postId", args.postId)
       )
       .first();
 
     if (existingLike) {
       // Remove like
       await ctx.db.delete(existingLike._id);
-
-      // Update likes count
-      const post = await ctx.db.get(args.postId);
-      if (post) {
-        await ctx.db.patch(args.postId, {
-          likesCount: Math.max(0, (post.likesCount || 0) - 1),
-        });
-      }
+      await ctx.db.patch(args.postId, {
+        likesCount: Math.max(0, (post.likesCount || 0) - 1),
+      });
       return { liked: false };
     } else {
       // Add like
       await ctx.db.insert("blogLikes", {
         postId: args.postId,
-        userIdentifier: args.userIdentifier,
+        userIdentifier,
         createdAt: Date.now(),
       });
-
-      // Update likes count
-      const post = await ctx.db.get(args.postId);
-      if (post) {
-        await ctx.db.patch(args.postId, {
-          likesCount: (post.likesCount || 0) + 1,
-        });
-      }
+      await ctx.db.patch(args.postId, {
+        likesCount: (post.likesCount || 0) + 1,
+      });
       return { liked: true };
     }
   },
@@ -270,19 +278,35 @@ export const addComment = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    // Public, unauthenticated — cap lengths so it can't be used to bloat the DB.
-    if (
-      args.authorName.length > 200 ||
-      args.authorEmail.length > 320 ||
-      args.content.length > 5000
-    ) {
-      throw new Error("Comment exceeds allowed length");
+    // Public, unauthenticated. Validate, check the post/parent relationship,
+    // then rate-limit. Comments still start unapproved.
+    const authorName = requiredText(args.authorName, "Name", 200);
+    const authorEmail = requiredEmail(args.authorEmail);
+    const content = requiredText(args.content, "Comment", 5000);
+    await requirePublishedPost(ctx, args.postId);
+    if (args.parentId) {
+      const parent = await ctx.db.get("blogComments", args.parentId);
+      if (!parent || parent.postId !== args.postId) {
+        throw new ConvexError("Parent comment not found");
+      }
     }
+    await enforceRateLimits(
+      ctx,
+      "commentPerAuthor",
+      authorEmail.toLowerCase(),
+      "commentGlobal",
+    );
+
+    const now = Date.now();
     return await ctx.db.insert("blogComments", {
-      ...args,
+      postId: args.postId,
+      parentId: args.parentId,
+      authorName,
+      authorEmail,
+      content,
       approved: false, // Comments need approval by default
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
+      createdAt: now,
+      updatedAt: now,
     });
   },
 });
@@ -295,7 +319,7 @@ export const getComments = query({
       .withIndex("by_post", (q) => q.eq("postId", args.postId))
       .filter((q) => q.eq(q.field("approved"), true))
       .order("asc")
-      .collect();
+      .take(LIST_LIMIT);
     // Public query: never return authorEmail, it's for the admin only.
     return comments.map((c) => ({
       _id: c._id,
@@ -316,7 +340,7 @@ export const getAllCommentsAdmin = query({
     const comments = await ctx.db
       .query("blogComments")
       .order("desc")
-      .collect();
+      .take(LIST_LIMIT);
 
     // Enrich comments with post information
     const enrichedComments = await Promise.all(
@@ -334,54 +358,42 @@ export const getAllCommentsAdmin = query({
   },
 });
 
-// Admin: Get pending comments count
+// Admin: Get pending comments count (capped at LIST_LIMIT)
 export const getPendingCommentsCount = query({
   args: {},
   handler: async (ctx) => {
     if (!(await isAdmin(ctx))) return 0;
     const pendingComments = await ctx.db
       .query("blogComments")
-      .filter((q) => q.eq(q.field("approved"), false))
-      .collect();
+      .withIndex("by_approved", (q) => q.eq("approved", false))
+      .take(LIST_LIMIT);
     return pendingComments.length;
   },
 });
 
-// Admin: Get all likes with post info
+// Admin: Get like totals per post. Reads the likesCount counter that
+// toggleLike maintains on each post instead of scanning blogLikes, which
+// anonymous visitors can grow without bound.
 export const getAllLikesAdmin = query({
   args: {},
   handler: async (ctx) => {
     if (!(await isAdmin(ctx))) return { total: 0, byPost: [] };
-    const likes = await ctx.db
-      .query("blogLikes")
+    const posts = await ctx.db
+      .query("blogPosts")
       .order("desc")
-      .collect();
-
-    // Group by post
-    const postLikesMap = new Map<string, number>();
-    likes.forEach((like) => {
-      const postId = like.postId;
-      postLikesMap.set(postId, (postLikesMap.get(postId) || 0) + 1);
-    });
-
-    // Get post info
-    const postsWithLikes = await Promise.all(
-      Array.from(postLikesMap.entries()).map(async ([postId, count]) => {
-        const post = await ctx.db.get(postId as Id<"blogPosts">);
-        // Type guard: check if post has blogPost properties
-        const blogPost = post && 'title' in post && 'slug' in post ? post : null;
-        return {
-          postId,
-          postTitle: blogPost?.title || "Unknown Post",
-          postSlug: blogPost?.slug || "",
-          likesCount: count,
-        };
-      })
-    );
-
+      .take(LIST_LIMIT);
+    const byPost = posts
+      .filter((post) => (post.likesCount ?? 0) > 0)
+      .map((post) => ({
+        postId: post._id as string,
+        postTitle: post.title,
+        postSlug: post.slug,
+        likesCount: post.likesCount ?? 0,
+      }))
+      .sort((a, b) => b.likesCount - a.likesCount);
     return {
-      total: likes.length,
-      byPost: postsWithLikes.sort((a, b) => b.likesCount - a.likesCount),
+      total: byPost.reduce((sum, p) => sum + p.likesCount, 0),
+      byPost,
     };
   },
 });

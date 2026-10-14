@@ -35,6 +35,10 @@ export const getFeatured = query({
 });
 
 export const getCategories = query({
+  args: {},
+  returns: v.array(
+    v.object({ category: v.string(), color: v.string(), count: v.number() }),
+  ),
   handler: async (ctx) => {
     const links = await ctx.db.query("browserLinks").collect();
     const categoriesMap = new Map<string, { color: string; count: number }>();
@@ -152,6 +156,12 @@ export const toggleFeatured = mutation({
 });
 
 export const seedLinks = mutation({
+  args: {},
+  returns: v.object({
+    success: v.boolean(),
+    inserted: v.number(),
+    message: v.string(),
+  }),
   handler: async (ctx) => {
     await requireAuth(ctx);
     let inserted = 0;
