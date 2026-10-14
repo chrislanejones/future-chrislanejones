@@ -15,10 +15,10 @@
   font-size: var(--type-body);
 }
 .header { flex: none; padding: max(16px, env(safe-area-inset-top)) 24px 16px; }
-.brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: var(--type-brand); font-weight: var(--weight-semibold); letter-spacing: -.03em; line-height: 1.15; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: var(--type-brand); font-weight: var(--weight-semibold); letter-spacing: -.03em; word-spacing: 0.04em; line-height: 1.15; text-decoration: none; }
 .brand small { display: block; margin-top: 2px; color: var(--coast-muted); font-size: var(--type-caption); font-weight: var(--weight-regular); letter-spacing: 0; }
 .brand svg { color: var(--coast-accent); flex: none; }
-.menu .title { color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.2; letter-spacing: -.035em; margin-top: 32px; }
+.menu .title { color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.2; letter-spacing: -.035em; word-spacing: 0.04em; margin-top: 32px; }
 .menu .description { color: var(--coast-muted); font-size: var(--type-body); line-height: 1.5; margin-top: 10px; }
 .menu .close { width: 56px; height: 56px; display: grid; place-items: center; top: max(16px, env(safe-area-inset-top)); right: 16px; margin: 0; opacity: 1; color: var(--coast-ink); background: var(--coast-soft); border: 2px solid currentColor; border-radius: var(--radius-pill); }
 .menu .close svg { width: 28px; height: 28px; }

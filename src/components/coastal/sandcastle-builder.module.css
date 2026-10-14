@@ -1,7 +1,7 @@
 .builder { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.65fr); gap: 36px; margin-top: 100px; padding: 38px; border-radius: 24px; background: var(--coast-panel); }
 .copy { min-width: 0; padding: 10px 0; }
 .copy > svg { color: var(--coast-accent); }
-.copy h2 { font-size: var(--type-display); letter-spacing: -.045em; line-height: 1.08; margin: 18px 0; font-weight: var(--weight-semibold); }
+.copy h2 { font-size: var(--type-display); letter-spacing: -.045em; word-spacing: 0.05em; line-height: 1.08; margin: 18px 0; font-weight: var(--weight-semibold); }
 .copy > p { color: var(--coast-muted); font-size: var(--type-body); line-height: 1.7; }
 .about { display: inline-flex; align-items: center; gap: 10px; font-size: var(--type-caption); margin-top: 16px; text-decoration: underline; text-underline-offset: 4px; }
 .toolHeading { margin-top: 32px; }

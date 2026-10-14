@@ -1,11 +1,11 @@
 .guide { padding-block: 64px 0; color: var(--coast-ink); font-size: var(--type-body); }
 .guide p, .guide li, .guide label, .guide button, .guide a, .guide code { font-size: var(--type-body); }
 .guide p { line-height: 1.65; }
-.guide h2 { font-size: var(--type-heading); line-height: 1.2; letter-spacing: -.035em; font-weight: var(--weight-semibold); }
+.guide h2 { font-size: var(--type-heading); line-height: 1.2; letter-spacing: -.035em; word-spacing: 0.04em; font-weight: var(--weight-semibold); }
 .guide h3 { font-size: var(--type-body); font-weight: var(--weight-semibold); }
 .hero { max-width: 950px; padding-bottom: 64px; }
 .kicker { color: var(--coast-muted); margin-bottom: 24px; }
-.hero h1 { font-size: var(--type-intro); line-height: 1.03; letter-spacing: -.055em; font-weight: var(--weight-semibold); }
+.hero h1 { font-size: var(--type-intro); line-height: 1.03; letter-spacing: -.055em; word-spacing: 0.07em; font-weight: var(--weight-semibold); }
 .intro { max-width: 48ch; margin-top: 28px; color: var(--coast-muted); }
 .actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 28px; }
 .actions a, .actions button, .section > button { height: auto; min-height: 48px; padding: 12px 20px; box-shadow: none; }
@@ -41,7 +41,7 @@
 .selects label { font-weight: var(--weight-semibold); }
 .selects select { min-height: 48px; width: 100%; min-width: 0; border: 1px solid var(--coast-control-line); border-radius: var(--radius-control); padding: 10px; background: var(--coast-base); color: var(--coast-ink); font: inherit; }
 .checkerControls > button { min-height: 44px; margin-block: 12px; padding-inline: 0; box-shadow: none; }
-.checkerControls .ratio { font-size: var(--type-display); line-height: 1.2; letter-spacing: -.05em; font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+.checkerControls .ratio { font-size: var(--type-display); line-height: 1.2; letter-spacing: -.05em; word-spacing: 0.06em; font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
 .results { margin-top: 24px; display: grid; gap: 12px; }
 .results li { display: flex; justify-content: space-between; gap: 20px; }
 .footnote { margin-top: 20px; max-width: 75ch; color: var(--coast-muted); }
@@ -50,7 +50,7 @@
 .typeSamples > div { padding-bottom: 28px; border-bottom: 1px solid var(--coast-line); }
 .typeSamples span, .typeSamples code { color: var(--coast-muted); font-family: inherit; }
 .typeSamples p { margin-block: 12px; max-width: 65ch; }
-.typeSamples .typeDisplay { font-size: var(--type-display); line-height: 1.1; letter-spacing: -.045em; }
+.typeSamples .typeDisplay { font-size: var(--type-display); line-height: 1.1; letter-spacing: -.045em; word-spacing: 0.05em; }
 .typeSamples .typeHeading { font-size: var(--type-heading); line-height: 1.2; }
 .typeSamples .typeBody { font-size: var(--type-body); }
 .mobileSection { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 96px; padding: 48px; background: var(--coast-soft); border-radius: var(--radius-media); }
