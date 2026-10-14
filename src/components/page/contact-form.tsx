@@ -304,9 +304,9 @@ const ContactForm: React.FC<ContactFormProps> = ({
           </div>
           <Button
             type="submit"
-            variant="neutral"
+            variant="ghost"
             size="lg"
-            className="w-full"
+            className="w-full border border-transparent"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

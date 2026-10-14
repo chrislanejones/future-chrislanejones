@@ -39,7 +39,7 @@ export const buttonVariants = cva(
         neutral: cn(
           boxy,
           "bg-(--color-surface-hover) shadow-glow text-foreground",
-          "border border-transparent hover:border-(--color-border)",
+          "hover:border-(--color-border)",
         ),
         // Filled danger for deletes; no teal glow on a red control.
         destructive: [
