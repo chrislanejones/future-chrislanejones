@@ -46,7 +46,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   green text/hover + skip link; mobile menu is `aria-modal` with no focus trap/Escape; theme
   applied in useEffect → FOUC (next-themes is installed but unused); header nav gated behind
   isMounted (CLS); `three` (~600KB) is an unused dependency; `Footer.tsx:12` imports unused
-  `dynamic`. Accent contrast is a design decision — needs sign-off.
+  `dynamic`. Accent contrast is a design decision — needs sign-off. **RESOLVED 10-13/14-2026** — the green accent is retired for coastal teal (design guide, PR #8); the mobile menu is a Radix sheet with focus trap and Escape; `three` is used again (sandcastle, coast floor).
 - **2026-07-08 — Dead admin hooks.** `src/app/admin/hooks/useBlogMutation.ts` (a stub that
   fakes API calls with setTimeout), `useCareerEffect`, `useSeoEffect`, `useLinksEffect`,
   and `useEngagementEffect` are imported nowhere. The stub in particular is misleading —
@@ -54,12 +54,12 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 
 - **2026-07-08 — MediaDrawer uses native `confirm()`** for permanent media deletion while
   every other destructive action uses a custom modal. Inconsistent UX; replace with the
-  shared confirm modal pattern.
+  shared confirm modal pattern. **RESOLVED 10-14-2026** (PR #11) — one `ConfirmDialog` for every destructive admin action.
 - **2026-07-07 — Linting is broken repo-wide.** `pnpm lint` runs `next lint`, which was
   removed in Next 16 ("Invalid project directory provided: .../lint"). Running eslint
   directly fails with `ERR_MODULE_NOT_FOUND: @eslint/eslintrc` from `eslint.config.mjs`
   (dep missing after the security dependency patching). Needs: migrate the lint script to
-  the ESLint CLI and install/repair the flat-config deps.
+  the ESLint CLI and install/repair the flat-config deps. **RESOLVED 2026-09-01** — `pnpm lint` runs `eslint src convex` (see next entry).
 - **2026-09-01 — 146 pre-existing lint problems, now finally visible.** Lint had been
   silently broken (`eslint.config.mjs` imported `@eslint/eslintrc`, which was never
   installed; `pnpm lint` still called `next lint`, removed in Next 16). Both are fixed —
@@ -70,7 +70,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   16e, `@next/next/no-img-element` 3w, plus a handful of `react-hooks/purity`,
   `no-empty-object-type`, `jsx-a11y/alt-text`. None were introduced by the Sept 2026 package
   update — they were always there, just unreported. The 16 `no-unescaped-entities` and 60
-  `no-unused-vars` are mechanical; the 22 `set-state-in-effect` need real thought per site.
+  `no-unused-vars` are mechanical; the 22 `set-state-in-effect` need real thought per site. **MOSTLY RESOLVED 10-14-2026** — 0 errors; 22 warnings left (PR #16 removed 29 unused imports). The rest are half-wired admin pieces (Media gallery-slot metadata editing, unused create/assign/unassign mutations, `onSignOut`, `handleMarkAsRead`) and type-only imports in `convex/`.
 - **2026-09-01 — TypeScript 7 is blocked by typescript-eslint.** TS 7.0.2 typechecks this
   repo clean (only fix needed was react-day-picker v10 renaming `initialFocus` → `autoFocus`),
   but `typescript-eslint` 8.69 hard-refuses TS 7 ("does not support TS 7.0"), which takes
@@ -124,10 +124,10 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `ConferenceDetailPage.tsx:39` doesn't escape `<`; (4) `convex/seo.ts` 97/106/
   117/129 lack `args: {}`; (5) blog inline scripts via `new Function` — keep or
   port to React widgets. Enforce the CSP (rename the header) once the console
-  stays clean.
+  stays clean. **RESOLVED 10-14-2026** — (1) rate limits + validation (PR #1); (2) server-side owner gate on /admin (PR #1); (3) `jsonLd()` escapes `<`; (4) explicit `args` (PR #1); (5) DOMPurify, stored scripts no longer run (469b929); CSP enforced (PR #4).
 - **2026-09-23 — AI/SEO: blog bodies are the biggest remaining gap.** **RESOLVED same day** (f10d3b0): posts now
   serve 250–2,860 words to non-JS crawlers. Leftover: 2 posts (web-worker, Next.js 14) put an
-  `<h1>` inside their body, giving the page two h1s — change it to `##`/`<h2>` in the admin editor.
+  `<h1>` inside their body, giving the page two h1s — change it to `##`/`<h2>` in the admin editor. **RESOLVED 10-14-2026** (PR #18) — the bodies were already h2; the second h1 came from the `loading.tsx` fallback ("One moment."), now a paragraph.
   Crawlers that skip
   JavaScript see ~81 words of a post (title/excerpt only); every other page serves 230–670.
   `/llms-full.txt` now carries full post text as a stopgap, but Google and most AI crawlers
@@ -197,3 +197,16 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `src/providers/ConvexAdminProvider.tsx`, mounted by `src/app/admin/layout.tsx`; the public
   site uses a plain `ConvexProvider`. Any future public page that needs `useAuth`/`useUser`
   must mount inside that provider or it will throw.
+- **10-14-2026 — `braces` advisory has no fix yet (dev only).** High-severity ReDoS in `braces <=3.0.3`
+  via `eslint-config-next > @next/eslint-plugin-next > fast-glob > micromatch`. Lint tooling only,
+  never shipped. `postcss-selector-parser` was patched by override (PR #15). Re-run `pnpm audit`
+  when a fixed `braces`/`micromatch` lands.
+- **10-14-2026 — Codex's hero WIP is behind main.** `~/repo/future-chrislanejones-beach` holds
+  uncommitted 3D coast hero work (`hero-coast-scene.tsx`, `hero-coast-model.ts`, `hero-photo.tsx`,
+  `page.tsx`, `coastal.module.css`) on a base 50+ commits behind `main`. Commit it to a branch and
+  rebase on `main` before shipping; its CSS and `page.tsx` edits overlap today's merges.
+- **10-14-2026 — ADRs 003, 004 and 005 are drafts.** DOMPurify blog sanitizing (003), public-write
+  rate limits + shared owner policy (004), enforced CSP without nonces (005). Chris to accept or edit.
+- **10-14-2026 — Media Manager: no UI for home-gallery slot alt text/description.**
+  `handleEditGalleryMetadata`/`handleSaveGalleryMetadata` exist in `MediaTabEnhanced.tsx` but no
+  control opens them; the library view (PR #17) covers per-image alt text and filename.
