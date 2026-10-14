@@ -4,12 +4,10 @@
 import {
   useState,
   useEffect,
-  useMemo,
   useRef,
   useSyncExternalStore,
 } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { renderPostHtml } from "@/lib/blog-content";
 import { BlogStepper } from "@/components/blog/BlogStepper";
 import { STEPPER_CONFIGS } from "@/components/blog/stepper-configs";
 import { CoastalPageShell } from "@/components/coastal/page-shell";
@@ -97,11 +95,10 @@ export default function BlogPostPage({
   const toggleLike = useMutation(api.blogPosts.toggleLike);
   const addComment = useMutation(api.blogPosts.addComment);
 
+  // The sanitized article comes from the server (children); the browser never
+  // re-renders it, so it doesn't ship the sanitizer. A content change only
+  // re-runs the widget mounting below.
   const postContent = post?.content;
-  const renderedContent = useMemo(
-    () => renderPostHtml(postContent),
-    [postContent],
-  );
 
   const articleRef = useRef<HTMLDivElement>(null);
   const stepperRootsRef = useRef<Root[]>([]);
@@ -112,7 +109,7 @@ export default function BlogPostPage({
   // mount; post content can never run its own scripts.
   useEffect(() => {
     const article = articleRef.current;
-    if (!article || !renderedContent) return;
+    if (!article || !postContent) return;
 
     const markers = article.querySelectorAll<HTMLElement>("[data-stepper]");
     markers.forEach((el) => {
@@ -134,7 +131,7 @@ export default function BlogPostPage({
       // Defer so we never unmount synchronously during the parent's commit.
       setTimeout(() => roots.forEach((r) => r.unmount()), 0);
     };
-  }, [renderedContent]);
+  }, [postContent]);
 
   if (post === null) {
     return (
