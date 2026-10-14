@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Waves } from "lucide-react";
 import { conferenceDates, conferenceHref, type Conference } from "@/lib/conferences";
 import { conferencePhotos } from "@/data/conference-photos";
-import { ConferencePanel } from "@/components/coastal/conference-panel";
+import { GalleryPanel } from "@/components/coastal/gallery-panel";
 import { ConferenceCard } from "@/components/coastal/conference-card";
 import { jsonLd } from "@/lib/structured-data";
 import coastal from "@/components/coastal/coastal.module.css";
@@ -71,7 +71,7 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
         <section className={styles.photoSection} aria-labelledby="conference-photos-title">
           <div className={styles.photoHeading}>
             <div><h2 id="conference-photos-title">{photoTitle}</h2><p>{photoDescription}</p></div>
-            <ConferencePanel photos={photos} title={isPersonalPhoto ? photoTitle : undefined} description={isPersonalPhoto ? photoDescription : undefined} />
+            <GalleryPanel photos={photos} title={isPersonalPhoto ? photoTitle : "Conference fan shots"} description={isPersonalPhoto ? photoDescription : "People I’ve met along the way."} label="Open conference photo gallery" />
           </div>
           <div className={styles.photos} data-single={photos.length === 1}>
             {photos.map((photo) => (

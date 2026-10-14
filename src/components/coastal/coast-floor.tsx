@@ -15,9 +15,6 @@ const CoastScene = dynamic(() => import("./coast-scene"), { ssr: false });
 const BeachCastleScene = dynamic(() => import("./beach-castle-scene"), {
   ssr: false,
 });
-const BeachUmbrellaScene = dynamic(() => import("./beach-umbrella-scene"), {
-  ssr: false,
-});
 
 function subscribeToMotion(callback: () => void) {
   const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -53,7 +50,7 @@ class SceneBoundary extends Component<
 export function CoastFloor({
   variant = "floor",
 }: {
-  variant?: "floor" | "castle" | "umbrella";
+  variant?: "floor" | "castle";
 }) {
   const host = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
@@ -103,20 +100,14 @@ export function CoastFloor({
     <div
       ref={host}
       className={
-        variant === "umbrella"
-          ? styles.umbrellaScene
-          : variant === "castle"
-            ? styles.beachVignette
-            : styles.coastFloor
+        variant === "castle" ? styles.beachVignette : styles.coastFloor
       }
       aria-hidden="true"
       data-coast-motion={moving ? "moving" : "still"}
     >
       {loaded && (
         <SceneBoundary>
-          {variant === "umbrella" ? (
-            <BeachUmbrellaScene moving={moving} dark={dark} />
-          ) : variant === "castle" ? (
+          {variant === "castle" ? (
             <BeachCastleScene moving={moving} dark={dark} />
           ) : (
             <CoastScene moving={moving} dark={dark} />

@@ -13,8 +13,7 @@ import {
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { clients as staticClients } from "@/data/clients";
-import type { GalleryPhoto } from "@/components/page/gallery-drawer";
-import { ConferencePanel } from "./conference-panel";
+import { GalleryPanel, type GalleryPhoto } from "./gallery-panel";
 import { QUOTES } from "@/components/main/quote-content";
 import { Reveal } from "./reveal";
 import { ProjectPreview } from "./project-preview";
@@ -317,7 +316,12 @@ function GalleryView({ items }: { items: GalleryPhoto[] }) {
         />
         <div className={styles.galleryFooter}>
           <h3>Conference fan shots</h3>
-          <ConferencePanel photos={items} />
+          <GalleryPanel
+            photos={items}
+            title="Conference fan shots"
+            description="People I’ve met along the way."
+            label="Open conference photo gallery"
+          />
         </div>
       </div>
     </div>

@@ -3,9 +3,7 @@ import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Briefcase, Download, MapPin } from "lucide-react";
-import GalleryDrawer, {
-  type GalleryPhoto,
-} from "@/components/page/gallery-drawer";
+import { GalleryPanel, type GalleryPhoto } from "@/components/coastal/gallery-panel";
 import { timelineEvents } from "@/data/career-timeline";
 import styles from "@/components/coastal/interior.module.css";
 
@@ -56,10 +54,11 @@ export default function CareerPage() {
           />
           <div className={styles.galleryCaption}>
             <h2>Behind the screen</h2>
-            <GalleryDrawer
+            <GalleryPanel
               photos={photos}
               title="Setup Photo Gallery"
               description="Workspaces and coding with friends over the years."
+              label="Open setup photo gallery"
             />
           </div>
         </div>

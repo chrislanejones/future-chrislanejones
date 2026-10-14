@@ -1109,53 +1109,65 @@
 .galleryFooter button:focus-visible {
   outline-color: var(--coast-foam);
 }
-.conferencePanel {
-  --canopy-cream: #f3e8ce;
-  --canopy-coral: #d99b81;
-  --canopy-sea: #abc8bf;
-  --canopy-base: #f6f2e8;
-  --canopy-rise: clamp(56px, 12.5vw, 180px);
+/* The one photo gallery (GalleryPanel): a bottom drawer with the banner's
+   shoreline along its top edge. */
+.photoPanel {
   width: 100%;
   margin-inline: auto;
   max-height: 94dvh;
-  /* Prevent thumbnail focus from scrolling the whole canopy into Vaul's overscroll filler. */
+  /* Keep thumbnail focus from scrolling the panel into Vaul's overscroll filler. */
   overflow: clip;
   isolation: isolate;
-  border-radius: 50% 50% 0 0 / var(--canopy-rise) var(--canopy-rise) 0 0;
-  background: var(--canopy-base);
-  color: var(--coast-ink);
   border: 0;
-  box-shadow: 0 -20px 80px #12282e26;
+  border-radius: var(--radius-media) var(--radius-media) 0 0;
+  background: var(--coast-base);
+  color: var(--coast-ink);
+  box-shadow: 0 -20px 80px color-mix(in srgb, var(--coast-deep) 15%, transparent);
 }
-.conferencePanel::before {
-  content: "";
+/* Vaul's drag handle sits on the water at the top of the shoreline. */
+.photoPanel > div:first-child {
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  /* Keep the canopy hub below the visible drawer. */
-  background: conic-gradient(from 270deg at 50% 155%,
-    var(--canopy-cream) 0deg 35deg,
-    var(--canopy-coral) 35deg 65deg,
-    var(--canopy-cream) 65deg 90deg,
-    var(--canopy-sea) 90deg 115deg,
-    var(--canopy-cream) 115deg 145deg,
-    var(--canopy-coral) 145deg 180deg);
-  opacity: .32;
-}
-:global(.dark) .conferencePanel {
-  --canopy-cream: #665c46;
-  --canopy-coral: #805341;
-  --canopy-sea: #386961;
-  --canopy-base: #182d31;
-}
-.conferencePanel > div:first-child {
-  flex-shrink: 0;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
   width: 58px;
-  background: currentColor;
-  opacity: 0.2;
+  background: var(--coast-foam);
+  opacity: 0.8;
 }
-.conferencePanelInner {
+.photoPanelShore {
+  flex-shrink: 0;
+}
+.photoPanelHeader {
+  position: relative;
+  flex-shrink: 0;
+  width: min(1100px, 100%);
+  margin-inline: auto;
+  padding: 28px 70px 24px;
+  text-align: center;
+}
+.photoPanelTitle {
+  font-size: var(--type-heading);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  word-spacing: 0.05em;
+}
+.photoPanelDescription {
+  margin-top: 10px;
+  color: var(--coast-muted);
+}
+.photoPanelClose {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+.photoPanelInner {
   position: relative;
   width: min(1100px, 100%);
   margin-inline: auto;
@@ -1164,60 +1176,22 @@
   overscroll-behavior: contain;
   padding: 0 32px max(24px, env(safe-area-inset-bottom));
 }
-.conferencePanelHeader {
-  flex-shrink: 0;
-  width: min(1100px, 100%);
-  margin-inline: auto;
-  padding: 42px 70px 24px;
-  text-align: center;
-}
-.conferencePanelTitle {
-  font-size: var(--type-heading);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-  word-spacing: 0.05em;
-}
-.conferencePanelDescription {
-  margin-top: 10px;
-  color: inherit;
-  opacity: 0.75;
-}
-.umbrellaScene {
-  height: 170px;
-  min-width: 0;
-  pointer-events: none;
-}
-.conferenceClose {
-  position: absolute;
-  top: 70px;
-  right: max(32px, calc((100% - 1100px) / 2 + 32px));
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  z-index: 1;
-}
-.conferencePanelBody {
+.photoPanelBody {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
-.conferencePhoto {
+.photoPanelImage {
   position: relative;
   height: clamp(230px, 46dvh, 480px);
   overflow: hidden;
-  background: #dfdfd5;
+  background: var(--coast-panel);
   border-radius: var(--radius-media);
 }
-:global(.dark) .conferencePhoto {
-  background: var(--coast-panel);
-}
-.conferencePhoto img {
+.photoPanelImage img {
   object-fit: contain;
 }
-.conferencePhotoFooter {
+.photoPanelFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1226,17 +1200,17 @@
   font-size: var(--type-body);
   line-height: 1.5;
 }
-.conferencePhotoFooter span {
+.photoPanelFooter span {
   display: block;
   font-size: var(--type-caption);
   margin-top: 4px;
-  opacity: 0.7;
+  color: var(--coast-muted);
 }
-.conferencePhotoControls {
+.photoPanelControls {
   display: flex;
   gap: 8px;
 }
-.conferencePhotoControls button {
+.photoPanelControls button {
   display: grid;
   place-items: center;
   width: 40px;
@@ -1244,14 +1218,14 @@
   border: 1px solid currentColor;
   border-radius: 50%;
 }
-.conferenceThumbnails {
+.photoPanelThumbs {
   display: flex;
   justify-content: safe center;
   overflow-x: auto;
   gap: 10px;
   padding: 4px;
 }
-.conferenceThumbnails button {
+.photoPanelThumbs button {
   position: relative;
   flex: 0 0 76px;
   aspect-ratio: 1.2;
@@ -1260,14 +1234,14 @@
   border: 3px solid transparent;
   opacity: 0.6;
 }
-.conferenceThumbnails button[aria-pressed="true"] {
+.photoPanelThumbs button[aria-pressed="true"] {
   border-color: currentColor;
   opacity: 1;
 }
-.conferenceThumbnails img {
+.photoPanelThumbs img {
   object-fit: cover;
 }
-.conferencePanel button:focus-visible {
+.photoPanel button:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 4px;
 }
@@ -1680,36 +1654,29 @@
   }
 }
 @media (max-width: 767px) {
-  .conferencePanelInner {
+  .photoPanelInner {
     padding-inline: 16px;
   }
-  .conferencePanelHeader {
-    padding: 28px 56px 24px;
+  .photoPanelHeader {
+    padding: 22px 56px 20px;
   }
-  .conferenceClose {
-    top: 52px;
+  .photoPanelClose {
+    top: 18px;
     right: 16px;
   }
-  .umbrellaScene {
-    height: 145px;
-  }
-  .conferencePanelBody {
-    grid-template-columns: minmax(0, 1fr);
+  .photoPanelBody {
     gap: 18px;
   }
-  .conferencePhoto {
+  .photoPanelImage {
     height: clamp(220px, 39dvh, 360px);
   }
-  .conferenceThumbnails {
-    display: flex;
-    overflow-x: auto;
-    padding: 4px;
+  .photoPanelThumbs {
     gap: 8px;
   }
-  .conferenceThumbnails button {
+  .photoPanelThumbs button {
     flex: 0 0 65px;
   }
-  .conferencePhotoFooter {
+  .photoPanelFooter {
     gap: 12px;
   }
   .pageIntro {
