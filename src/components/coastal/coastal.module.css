@@ -43,6 +43,7 @@
   font-size: var(--type-brand);
   font-weight: var(--weight-semibold);
   letter-spacing: -0.035em;
+  word-spacing: 0.04em;
 }
 .brand > svg {
   width: 41px;
@@ -175,6 +176,7 @@
   font-size: var(--type-hero);
   line-height: 1.02;
   letter-spacing: -0.065em;
+  word-spacing: 0.08em;
   font-weight: var(--weight-semibold);
   max-width: 870px;
 }
@@ -333,6 +335,7 @@
   font-size: var(--type-display);
   line-height: 1.08;
   letter-spacing: -0.05em;
+  word-spacing: 0.06em;
   font-weight: var(--weight-semibold);
 }
 .sectionDescription {
@@ -688,6 +691,7 @@
   font-size: var(--type-heading);
   line-height: 1.22;
   letter-spacing: -0.03em;
+  word-spacing: 0.04em;
 }
 /* Bottom row: face, name, "My ramblings" on the left; the new-quote spin button on the right. */
 .quoteFooter {
@@ -874,6 +878,7 @@
   font-size: clamp(35px, 3.2vw, 48px);
   line-height: 1.15;
   letter-spacing: -0.035em;
+  word-spacing: 0.04em;
   transform: rotate(-12deg);
   transform-origin: right center;
   color: #e6bc60;
@@ -909,6 +914,7 @@
   font-size: var(--type-heading);
   font-weight: var(--weight-semibold);
   letter-spacing: -0.03em;
+  word-spacing: 0.04em;
 }
 .coverImage {
   object-fit: cover;
@@ -1133,6 +1139,7 @@
   font-size: var(--type-heading);
   line-height: 1.1;
   letter-spacing: -0.04em;
+  word-spacing: 0.05em;
 }
 .conferencePanelDescription {
   margin-top: 10px;
@@ -1304,6 +1311,7 @@
   font-size: var(--type-intro);
   font-weight: var(--weight-semibold);
   letter-spacing: -0.055em;
+  word-spacing: 0.07em;
   line-height: 1.05;
 }
 .pageIntro h1 + p {
@@ -1356,6 +1364,7 @@
   font-size: var(--type-heading);
   line-height: 1.15;
   letter-spacing: -0.035em;
+  word-spacing: 0.04em;
   font-weight: var(--weight-semibold);
 }
 .aboutCopy p {
@@ -1393,6 +1402,7 @@
   font-size: var(--type-heading);
   line-height: 1.2;
   letter-spacing: -0.03em;
+  word-spacing: 0.04em;
   font-weight: var(--weight-semibold);
 }
 .archiveProjectInfo > p {
@@ -1503,6 +1513,7 @@
   font-size: var(--type-display);
   line-height: 1.07;
   letter-spacing: -0.05em;
+  word-spacing: 0.06em;
   margin-top: 23px;
   font-weight: var(--weight-semibold);
 }
@@ -1800,6 +1811,7 @@
   }
   .hero h1 {
     letter-spacing: -0.06em;
+    word-spacing: 0.07em;
     line-height: 1.07;
   }
   .heroDescription {

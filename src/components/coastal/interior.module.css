@@ -7,6 +7,7 @@
   font-size: var(--type-display);
   line-height: 1.15;
   letter-spacing: -0.04em;
+  word-spacing: 0.05em;
   font-weight: var(--weight-regular);
 }
 .content h3 {
@@ -201,6 +202,7 @@
 .articleTitle {
   font-size: var(--type-intro);
   letter-spacing: -0.05em;
+  word-spacing: 0.06em;
   line-height: 1.07;
   margin-block: 32px 24px;
   overflow-wrap: anywhere;
@@ -315,6 +317,7 @@
 .timeline time {
   font-size: var(--type-heading);
   letter-spacing: -0.035em;
+  word-spacing: 0.04em;
   padding-top: 8px;
 }
 .timelineIcon {
@@ -488,6 +491,7 @@
 .price {
   font-size: var(--type-display);
   letter-spacing: -0.045em;
+  word-spacing: 0.05em;
   margin-bottom: 24px;
 }
 .price small {
