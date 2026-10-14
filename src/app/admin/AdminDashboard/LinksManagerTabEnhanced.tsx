@@ -7,7 +7,6 @@ import {
   Edit2,
   Trash2,
   Save,
-  X,
   Star,
   GripVertical,
   ExternalLink,
@@ -19,7 +18,7 @@ import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog, Modal } from "@/components/ui/dialog";
 
 // Derived from the Convex schema (SSOT). The hand-rolled copy was missing the
 // schema's screenshotUrl / screenshotUpdatedAt fields.
@@ -262,134 +261,120 @@ const LinksManagerTabEnhanced = () => {
       )}
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-ink">
-                {isEditing ? "Edit Link" : "Add Link"}
-              </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowModal(false)}
-                className="text-muted hover:text-ink"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" aria-hidden="true" />
-              </Button>
-            </div>
+      <Modal
+        open={showModal}
+        onOpenChange={setShowModal}
+        title={isEditing ? "Edit Link" : "Add Link"}
+        className="max-w-md"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              URL *
+            </label>
+            <input
+              type="url"
+              value={formData.href}
+              onChange={(e) =>
+                setFormData({ ...formData, href: e.target.value })
+              }
+              placeholder="https://example.com"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  URL *
-                </label>
-                <input
-                  type="url"
-                  value={formData.href}
-                  onChange={(e) =>
-                    setFormData({ ...formData, href: e.target.value })
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Label *
+            </label>
+            <input
+              type="text"
+              value={formData.label}
+              onChange={(e) =>
+                setFormData({ ...formData, label: e.target.value })
+              }
+              placeholder="My Link"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Favicon URL
+            </label>
+            <input
+              type="url"
+              value={formData.favicon}
+              onChange={(e) =>
+                setFormData({ ...formData, favicon: e.target.value })
+              }
+              placeholder="https://example.com/favicon.ico"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Category
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              {categories.map((cat) => (
+                <option key={cat.category} value={cat.category}>
+                  {cat.category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Color
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {CHROME_COLORS.map((color) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  aria-label={color.name}
+                  onClick={() =>
+                    setFormData({ ...formData, color: color.id })
                   }
-                  placeholder="https://example.com"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                  className={`${color.class} px-3 py-2 rounded-lg transition ${
+                    formData.color === color.id
+                      ? "ring-2 ring-accent"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                  title={color.name}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Label *
-                </label>
-                <input
-                  type="text"
-                  value={formData.label}
-                  onChange={(e) =>
-                    setFormData({ ...formData, label: e.target.value })
-                  }
-                  placeholder="My Link"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Favicon URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.favicon}
-                  onChange={(e) =>
-                    setFormData({ ...formData, favicon: e.target.value })
-                  }
-                  placeholder="https://example.com/favicon.ico"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink focus:outline-none focus:ring-2 focus:ring-accent"
-                >
-                  {categories.map((cat) => (
-                    <option key={cat.category} value={cat.category}>
-                      {cat.category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Color
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {CHROME_COLORS.map((color) => (
-                    <button
-                      key={color.id}
-                      type="button"
-                      aria-label={color.name}
-                      onClick={() =>
-                        setFormData({ ...formData, color: color.id })
-                      }
-                      className={`${color.class} px-3 py-2 rounded-lg transition ${
-                        formData.color === color.id
-                          ? "ring-2 ring-accent"
-                          : "opacity-70 hover:opacity-100"
-                      }`}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button
-                  onClick={handleSaveLink}
-                  variant="primary"
-                  className="flex-1 gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Save
-                </Button>
-                <Button
-                  onClick={() => setShowModal(false)}
-                  variant="secondary"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button
+              onClick={handleSaveLink}
+              variant="primary"
+              className="flex-1 gap-2"
+            >
+              <Save className="w-4 h-4" />
+              Save
+            </Button>
+            <Button
+              onClick={() => setShowModal(false)}
+              variant="secondary"
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-      )}
+      </Modal>
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
@@ -414,83 +399,71 @@ const LinksManagerTabEnhanced = () => {
       )}
 
       {/* Add Category Modal */}
-      {showCategoryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-md w-full border border-border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-ink">Add Category</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowCategoryModal(false)}
-                className="text-muted hover:text-ink"
-                aria-label="Close"
-              >
-                <X className="w-5 h-5" aria-hidden="true" />
-              </Button>
-            </div>
+      <Modal
+        open={showCategoryModal}
+        onOpenChange={setShowCategoryModal}
+        title="Add Category"
+        className="max-w-md"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Category Name *
+            </label>
+            <input
+              type="text"
+              value={categoryFormData.name}
+              onChange={(e) =>
+                setCategoryFormData({ ...categoryFormData, name: e.target.value })
+              }
+              placeholder="My Category"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Category Name *
-                </label>
-                <input
-                  type="text"
-                  value={categoryFormData.name}
-                  onChange={(e) =>
-                    setCategoryFormData({ ...categoryFormData, name: e.target.value })
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Color
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {CHROME_COLORS.map((color) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  aria-label={color.name}
+                  onClick={() =>
+                    setCategoryFormData({ ...categoryFormData, color: color.id })
                   }
-                  placeholder="My Category"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                  className={`${color.class} px-3 py-2 rounded-lg transition ${
+                    categoryFormData.color === color.id
+                      ? "ring-2 ring-accent"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                  title={color.name}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Color
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {CHROME_COLORS.map((color) => (
-                    <button
-                      key={color.id}
-                      type="button"
-                      aria-label={color.name}
-                      onClick={() =>
-                        setCategoryFormData({ ...categoryFormData, color: color.id })
-                      }
-                      className={`${color.class} px-3 py-2 rounded-lg transition ${
-                        categoryFormData.color === color.id
-                          ? "ring-2 ring-accent"
-                          : "opacity-70 hover:opacity-100"
-                      }`}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button
-                  onClick={handleSaveCategory}
-                  variant="primary"
-                  className="flex-1 gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Create Category
-                </Button>
-                <Button
-                  onClick={() => setShowCategoryModal(false)}
-                  variant="secondary"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button
+              onClick={handleSaveCategory}
+              variant="primary"
+              className="flex-1 gap-2"
+            >
+              <Save className="w-4 h-4" />
+              Create Category
+            </Button>
+            <Button
+              onClick={() => setShowCategoryModal(false)}
+              variant="secondary"
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-      )}
+      </Modal>
 
       {/* Main Grid */}
       <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
@@ -606,7 +579,6 @@ const LinksManagerTabEnhanced = () => {
                           checked={!!link.featured}
                           onCheckedChange={() => handleToggleFeatured(link)}
                           id={`featured-${link._id}`}
-                          className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-zinc-600 [&>span]:bg-white [&>span]:shadow-md"
                         />
                         <label
                           htmlFor={`featured-${link._id}`}

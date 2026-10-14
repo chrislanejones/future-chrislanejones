@@ -23,16 +23,15 @@ import {
   Plus,
   Edit2,
   Share2,
-  ToggleLeft,
-  ToggleRight,
   type LucideIcon,
 } from "lucide-react";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
 import Image from "next/image";
@@ -640,17 +639,10 @@ const SettingsTabEnhanced = () => {
                 </div>
                 <div className="flex items-center justify-between pt-2">
                   <label className="flex items-center gap-2 cursor-pointer text-sm text-ink">
-                    <button
-                      type="button"
-                      onClick={() => setRedirectForm((p) => ({ ...p, isActive: !p.isActive }))}
-                      className="text-accent"
-                      aria-pressed={redirectForm.isActive}
-                    >
-                      {redirectForm.isActive
-                        ? <ToggleRight className="w-6 h-6" />
-                        : <ToggleLeft className="w-6 h-6 text-muted" />
-                      }
-                    </button>
+                    <Switch
+                      checked={redirectForm.isActive}
+                      onCheckedChange={(isActive) => setRedirectForm((p) => ({ ...p, isActive }))}
+                    />
                     Active
                   </label>
                   <div className="flex gap-2">
@@ -694,22 +686,17 @@ const SettingsTabEnhanced = () => {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-(--color-panel) text-muted font-mono border border-(--color-border)">
                         {r.statusCode}
                       </span>
-                      <button
-                        onClick={() =>
+                      <Switch
+                        checked={r.isActive}
+                        onCheckedChange={() =>
                           toggleRedirectActive({ id: r._id }).catch((err) => {
                             console.error("Failed to toggle redirect:", err);
                             showError("Failed to toggle redirect");
                           })
                         }
                         title={r.isActive ? "Disable redirect" : "Enable redirect"}
-                        aria-label={r.isActive ? "Disable redirect" : "Enable redirect"}
-                        className="text-accent hover:opacity-70 transition"
-                      >
-                        {r.isActive
-                          ? <ToggleRight className="w-5 h-5" />
-                          : <ToggleLeft className="w-5 h-5 text-muted" />
-                        }
-                      </button>
+                        aria-label={`Redirect ${r.from} active`}
+                      />
                       <Button
                         variant="ghost"
                         size="icon-sm"

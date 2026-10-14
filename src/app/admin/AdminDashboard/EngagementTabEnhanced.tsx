@@ -19,9 +19,9 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/components/ui/dialog";
 
 interface BlogComment {
   _id: Id<"blogComments">;
@@ -155,7 +155,7 @@ const EngagementTabEnhanced = () => {
   };
 
   if (comments === undefined || likesData === undefined) {
-    return <LoadingSpinner message="Loading engagement data..." />;
+    return <Spinner label="Loading engagement data..." />;
   }
 
   return (

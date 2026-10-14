@@ -16,6 +16,7 @@ import { CoastalPageShell } from "@/components/coastal/page-shell";
 import styles from "@/components/coastal/interior.module.css";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
@@ -175,9 +176,7 @@ export default function BlogPostPage({
     return (
       <CoastalPageShell>
         <div className={styles.article}>
-          <div className="flex justify-center items-center py-12">
-            <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <Spinner label="Loading article…" />
         </div>
       </CoastalPageShell>
     );

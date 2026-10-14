@@ -24,7 +24,7 @@ import { useUploadThing } from "@/utils/uploadthing";
 import { HtmlEditorEnhanced } from "../components/HtmlEditorEnhanced";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";

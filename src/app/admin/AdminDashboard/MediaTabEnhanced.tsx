@@ -17,9 +17,9 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog, Modal } from "@/components/ui/dialog";
 import Image from "next/image";
 import { MediaDrawer } from "../components/MediaDrawer";
 
@@ -221,7 +221,7 @@ const MediaTabEnhanced = () => {
   };
 
   if (!organizedMedia) {
-    return <LoadingSpinner message="Loading media..." />;
+    return <Spinner label="Loading media..." />;
   }
 
   const getCurrentImages = (): MediaFile[] => {
@@ -580,63 +580,65 @@ const MediaTabEnhanced = () => {
       )}
 
       {/* Edit Image Metadata Modal */}
-      {isEditDrawerOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">
-              Edit Image Metadata
-            </h3>
+      <Modal
+        open={isEditDrawerOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsEditDrawerOpen(false);
+            setEditingImageId(null);
+          }
+        }}
+        title="Edit Image Metadata"
+        className="max-w-sm"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Alt Text
+            </label>
+            <input
+              type="text"
+              value={editImageAlt}
+              onChange={(e) => setEditImageAlt(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Describe the image..."
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Alt Text
-                </label>
-                <input
-                  type="text"
-                  value={editImageAlt}
-                  onChange={(e) => setEditImageAlt(e.target.value)}
-                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
-                  placeholder="Describe the image..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Filename
-                </label>
-                <input
-                  type="text"
-                  value={editImageFilename}
-                  onChange={(e) => setEditImageFilename(e.target.value)}
-                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
-                  placeholder="Image filename..."
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-2 mt-6">
-              <Button
-                onClick={handleSaveImageMetadata}
-                variant="primary"
-                className="flex-1"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsEditDrawerOpen(false);
-                  setEditingImageId(null);
-                }}
-                variant="secondary"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Filename
+            </label>
+            <input
+              type="text"
+              value={editImageFilename}
+              onChange={(e) => setEditImageFilename(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Image filename..."
+            />
           </div>
         </div>
-      )}
+
+        <div className="flex gap-2 mt-6">
+          <Button
+            onClick={handleSaveImageMetadata}
+            variant="primary"
+            className="flex-1"
+          >
+            Save
+          </Button>
+          <Button
+            onClick={() => {
+              setIsEditDrawerOpen(false);
+              setEditingImageId(null);
+            }}
+            variant="secondary"
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+        </div>
+      </Modal>
 
       {/* Media Drawer for Gallery Image Selection */}
       <MediaDrawer

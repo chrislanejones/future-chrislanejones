@@ -16,7 +16,7 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorDisplay } from "../components/ErrorDisplay";

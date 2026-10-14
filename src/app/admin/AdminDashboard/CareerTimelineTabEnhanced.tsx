@@ -30,9 +30,9 @@ import { api } from "../../../../convex/_generated/api";
 import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ConfirmDialog } from "@/components/ui/dialog";
 
 // Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
 type CareerEvent = Doc<"careerTimeline">;
@@ -224,7 +224,7 @@ const CareerTimelineTabEnhanced = () => {
   };
 
   if (events === undefined) {
-    return <LoadingSpinner message="Loading timeline..." />;
+    return <Spinner label="Loading timeline..." />;
   }
 
   return (
