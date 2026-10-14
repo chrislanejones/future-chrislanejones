@@ -5,7 +5,7 @@ import { oceanClock } from "./ocean-clock";
 
 /*
  * The sea from the hero coast, drawn on its own over the still while the full
- * 3D town loads. Plain WebGL and one full-screen triangle, no three.js, so the
+ * 3D town loads (on phones it is the whole show; the 3D never loads there). Plain WebGL and one full-screen triangle, no three.js, so the
  * water moves within a moment of hydration. Each pixel casts a ray from the hero
  * camera to the ground plane and runs the same sand and surf math as the
  * terrain shader in hero-coast-scene.tsx; keep the two in step. Land pixels are
@@ -21,7 +21,7 @@ const fragment = `
   precision highp float;
   uniform float uTime;
   uniform vec3 uCamera, uForward, uRight, uUp;
-  uniform vec2 uLens;
+  uniform vec2 uLens, uScale, uOffset;
   uniform vec3 uSand, uWet, uShallow, uDeep, uFoam, uFog;
   uniform vec2 uFogRange;
   varying vec2 vNdc;
@@ -41,7 +41,8 @@ const fragment = `
     return mix(pow(c, vec3(.41666)) * 1.055 - .055, c * 12.92, vec3(lessThanEqual(c, vec3(.0031308))));
   }
   void main() {
-    vec3 ray = uForward + vNdc.x * uLens.x * uRight + vNdc.y * uLens.y * uUp;
+    vec2 ndc = vNdc * uScale + uOffset;
+    vec3 ray = uForward + ndc.x * uLens.x * uRight + ndc.y * uLens.y * uUp;
     if (ray.y >= 0.) discard;
     float depth = -uCamera.y / ray.y;
     vec2 p = (uCamera + ray * depth).xz;
@@ -91,6 +92,9 @@ const sub = (a: Vec3, b: Vec3): Vec3 => [a[0]-b[0], a[1]-b[1], a[2]-b[2]];
 const cross = (a: Vec3, b: Vec3): Vec3 => [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
 const unit = (a: Vec3): Vec3 => { const l = Math.hypot(...a); return [a[0]/l, a[1]/l, a[2]/l]; };
 
+// Size of public/hero/coast-*.webp, captured from the 3D at the desktop camera.
+const STILL = { width:1400, height:680 };
+
 type Scene = { gl: WebGLRenderingContext; at: (name: string) => WebGLUniformLocation | null };
 
 export function HeroOceanLite({ moving, dark, className }: { moving: boolean; dark: boolean; className?: string }) {
@@ -120,7 +124,18 @@ export function HeroOceanLite({ moving, dark, className }: { moving: boolean; da
     const at = (name: string) => gl.getUniformLocation(program, name);
     gl.uniform2f(at("uFogRange"), 85, 180);
 
-    // Matches CameraComposition in hero-coast-scene.tsx.
+    // The desktop camera from CameraComposition in hero-coast-scene.tsx, framed
+    // like the still: same 1400x680 shot, same object-fit cover and position,
+    // so the sea lands on the still's sea at any hero size, phones included.
+    const eye: Vec3 = [8, 30, 48];
+    const forward = unit(sub([-1, 0, -3], eye));
+    const right = unit(cross(forward, [0, 1, 0]));
+    const lens = Math.tan(37 * Math.PI / 360);
+    gl.uniform3fv(at("uCamera"), eye);
+    gl.uniform3fv(at("uForward"), forward);
+    gl.uniform3fv(at("uRight"), right);
+    gl.uniform3fv(at("uUp"), cross(right, forward));
+    gl.uniform2f(at("uLens"), lens * STILL.width / STILL.height, lens);
     const frame = () => {
       const width = element.clientWidth, height = element.clientHeight;
       if (!width || !height) return;
@@ -128,17 +143,15 @@ export function HeroOceanLite({ moving, dark, className }: { moving: boolean; da
       element.width = Math.round(width * ratio);
       element.height = Math.round(height * ratio);
       gl.viewport(0, 0, element.width, element.height);
-      const mobile = width < 600, targetX = mobile ? 4 : -1;
-      const eye: Vec3 = [targetX + 9, 30, 48];
-      const forward = unit(sub([targetX, 0, -3], eye));
-      const right = unit(cross(forward, [0, 1, 0]));
-      const up = cross(right, forward);
-      const lens = Math.tan((mobile ? 48 : 37) * Math.PI / 360);
-      gl.uniform3fv(at("uCamera"), eye);
-      gl.uniform3fv(at("uForward"), forward);
-      gl.uniform3fv(at("uRight"), right);
-      gl.uniform3fv(at("uUp"), up);
-      gl.uniform2f(at("uLens"), lens * width / height, lens);
+      const poster = element.parentElement?.querySelector("img");
+      const [px, py] = (poster ? getComputedStyle(poster).objectPosition : "50% 50%")
+        .split(" ").map(value => parseFloat(value) / 100);
+      const cover = Math.max(width / STILL.width, height / STILL.height);
+      const shownWidth = STILL.width * cover, shownHeight = STILL.height * cover;
+      const left = (width - shownWidth) * (Number.isFinite(px) ? px : .5);
+      const top = (height - shownHeight) * (Number.isFinite(py) ? py : .5);
+      gl.uniform2f(at("uScale"), width / shownWidth, height / shownHeight);
+      gl.uniform2f(at("uOffset"), (width - 2 * left) / shownWidth - 1, 1 - height / shownHeight + 2 * top / shownHeight);
     };
     frame();
     const resize = new ResizeObserver(frame);

@@ -54,6 +54,11 @@ export function HeroPhoto() {
     const start = () => {
       // ?hero=lite holds the page at the still-plus-ocean stage, for checking it.
       if (!seen || !settled || idle || location.search.includes("hero=lite")) return;
+      // Phones keep the still and the moving sea: the 3D costs ~275 KB of
+      // script and a long model build there. A hero under 600px wide (the 3D's
+      // own mobile cutoff) means a viewport under 632px. Data Saver opts out too.
+      const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+      if (matchMedia("(max-width: 631px)").matches || connection?.saveData) return;
       idle = "requestIdleCallback" in window
         ? requestIdleCallback(() => setLoaded(true), { timeout:2000 })
         : setTimeout(() => setLoaded(true), 300) as unknown as number;

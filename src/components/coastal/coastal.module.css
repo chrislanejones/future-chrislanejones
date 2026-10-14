@@ -150,6 +150,13 @@
   object-fit: cover;
   object-position: 50% 50%;
 }
+/* Phones show the beach and sea side of the still. The sea layer reads this
+   position, so it stays lined up. 631px matches the 3D cutoff in hero-photo. */
+@media (max-width: 631px) {
+  .heroPoster {
+    object-position: 74% 50%;
+  }
+}
 .heroPosterDark,
 :global(.dark) .heroPosterLight {
   display: none;
@@ -358,14 +365,29 @@
 .secondaryProject .projectImage {
   aspect-ratio: 1.96;
 }
+/* Same sand as "Beyond the browser" (.coastFloor and the coast-scene floor). */
 .projectSand {
   position: absolute;
   inset: 0;
-  background: #e2cda5 url("/textures/project-sand.svg") center / cover;
-  box-shadow: inset 0 0 65px rgba(124, 87, 45, 0.08);
+  background: #eee4d2 url("/textures/project-sand.svg") center / cover;
+  box-shadow: inset 0 0 65px rgba(120, 100, 70, 0.06);
 }
 :global(.dark) .projectSand {
-  filter: brightness(0.53) saturate(0.65);
+  background-color: #514737;
+  background-blend-mode: multiply;
+}
+.sandShells {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.sandShell {
+  position: absolute;
+  height: auto;
+  filter: drop-shadow(0 2px 2px rgba(110, 82, 52, 0.22));
+}
+:global(.dark) .sandShell {
+  filter: brightness(0.62) saturate(0.75) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
 }
 .browserWindow {
   position: relative;
