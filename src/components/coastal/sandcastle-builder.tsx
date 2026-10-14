@@ -13,24 +13,60 @@ const Scene = dynamic(loadScene, { ssr: false, loading: () => null });
 /** The bucket always fills to the brim, even when the scene is already cached. */
 const FILL_MS = 2200;
 
-/** Outlined bucket and shovel; the bucket fills from the bottom while the 3D scene downloads. */
+// Bucket and shovel drawn once, used twice: as the colored fill and as the outline.
+const BUCKET_BODY = "M26 42 L34 99 Q35 105 41 105 L79 105 Q85 105 86 99 L94 42 Z";
+const BUCKET_HANDLE = "M89 50 C109 49 113 70 100 79 C95 82 89 81 86 78";
+const SAND = "M27 31 Q31 20 44 21 Q51 12 62 17 Q73 12 82 19 Q93 21 93 31";
+// The shovel is drawn upright around x = 0, then leaned against the bucket.
+const SHOVEL_LEAN = "translate(47 49) rotate(28) scale(.82)";
+const SHOVEL_GRIP = "M-8 3Q-8 0-5 0H5Q8 0 8 3V11Q8 14 5 14H-5Q-8 14-8 11ZM-4 4H4V10H-4Z";
+const SHOVEL_SHAFT = "M-3 14H3V51H-3Z";
+const SHOVEL_BLADE = "M-4 50H4Q13 54 13 66Q13 80 0 84Q-13 80-13 66Q-13 54-4 50Z";
+
+/** Outlined bucket and shovel that fill with color from the bottom while the 3D scene downloads. */
 function BucketLoader({ running }: { running: boolean }) {
   return (
     <div className={styles.loader} role="status" aria-live="polite">
       <svg className={styles.loaderArt} viewBox="0 0 120 120" aria-hidden="true">
         <defs>
-          <clipPath id="bucket-fill-clip"><polygon points="31,42 89,42 82,104 38,104" /></clipPath>
+          {/* The shovel stands in front: hide the bucket's outline behind it. */}
+          <mask id="bucket-behind-shovel" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+            <rect width="120" height="120" fill="white" />
+            <g transform={SHOVEL_LEAN} fill="black" stroke="black" strokeWidth="3.2">
+              <path d={SHOVEL_GRIP} />
+              <path d={SHOVEL_SHAFT} />
+              <path d={SHOVEL_BLADE} />
+            </g>
+          </mask>
+          <clipPath id="bucket-fill-clip">
+            <rect className={`${styles.loaderFill} ${running ? styles.loaderFilling : ""}`} x="0" y="0" width="120" height="120" />
+          </clipPath>
         </defs>
-        <g clipPath="url(#bucket-fill-clip)">
-          <rect className={`${styles.loaderFill} ${running ? styles.loaderFilling : ""}`} x="28" y="40" width="64" height="66" />
+        <g clipPath="url(#bucket-fill-clip)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <path className={styles.loaderSand} d={`${SAND}Z`} stroke="currentColor" />
+          <path className={styles.loaderHandle} d={BUCKET_HANDLE} fill="none" strokeWidth="5" />
+          <path className={styles.loaderBucket} d={BUCKET_BODY} />
+          <rect className={styles.loaderRim} x="21" y="30" width="78" height="13" rx="5" />
+          <path className={styles.loaderShine} d="M33 50 L38 92" fill="none" strokeWidth="4" />
+          <g className={styles.loaderShovel} transform={SHOVEL_LEAN} fillRule="evenodd">
+            <path d={SHOVEL_GRIP} />
+            <path d={SHOVEL_SHAFT} />
+            <path d={SHOVEL_BLADE} />
+          </g>
         </g>
         <g fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="31,42 89,42 82,104 38,104" />
-          <rect x="27" y="35" width="66" height="8" rx="3" />
-          <path d="M33 35 Q60 4 87 35" />
-          <path d="M108 16 L98 88" />
-          <path d="M102 12 l12 4" />
-          <path d="M90 90 l16 2 l-1 10 q-6 8 -14 2 z" />
+          <g mask="url(#bucket-behind-shovel)">
+            <path d={BUCKET_BODY} />
+            <rect x="21" y="30" width="78" height="13" rx="5" />
+            <path d={BUCKET_HANDLE} />
+            <circle cx="88" cy="50" r="3" />
+          </g>
+          {/* 3.2 at the shovel's .82 scale draws the same 2.6 line as the bucket. */}
+          <g transform={SHOVEL_LEAN} strokeWidth="3.2">
+            <path d={SHOVEL_GRIP} />
+            <path d="M-3 14V50M3 14V50" />
+            <path d={SHOVEL_BLADE} />
+          </g>
         </g>
       </svg>
       <p>Getting the beach ready…</p>
