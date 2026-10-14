@@ -72,10 +72,13 @@ export function CoastFloor({
     if (!element) return;
     const preload = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setLoaded(true);
-          preload.disconnect();
-        }
+        if (!entry.isIntersecting) return;
+        preload.disconnect();
+        // Phones (and Data Saver) keep the plain sand gradient: the 3D floor
+        // would pull in three.js just for decoration. Same cutoff as the hero.
+        const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+        if (matchMedia("(max-width: 631px)").matches || connection?.saveData) return;
+        setLoaded(true);
       },
       { rootMargin: "300px" },
     );
