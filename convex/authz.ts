@@ -6,28 +6,26 @@
 // registered Clerk user. Gate on the Clerk user id (the JWT `sub` claim, which
 // Convex exposes as identity.subject and which a user cannot forge).
 //
-// Defaults to the owner's Clerk user id so the gate is closed even before the
-// env var is set (no lockout, no accidental open door). Extend/override with the
-// ADMIN_USER_IDS Convex env var (comma-separated Clerk user ids):
-//   npx convex env set ADMIN_USER_IDS "user_xxx,user_yyy"   (and --prod)
+// The allowlist comes from the ADMIN_USER_IDS Convex env var (comma-separated
+// Clerk user ids), parsed by the shared policy in ./ownerPolicy:
+//   pnpm exec convex env set ADMIN_USER_IDS "user_xxx,user_yyy"   (and --prod)
+//
+// Fail closed: Convex gives functions no reliable dev/prod signal, so every
+// deployment is treated as production. If ADMIN_USER_IDS is unset or empty,
+// nobody is an admin. Set it on each deployment (dev and prod) before use.
 
 import type { Auth } from "convex/server";
-
-const DEFAULT_ADMIN_USER_IDS = ["user_36c1KtgcpJ5waZjYB39KKwB5pU3"];
+import { isOwnerId, parseOwnerAllowlist } from "./ownerPolicy";
 
 function adminUserIds(): string[] {
-  const fromEnv = (process.env.ADMIN_USER_IDS ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  return fromEnv.length ? fromEnv : DEFAULT_ADMIN_USER_IDS;
+  return parseOwnerAllowlist(process.env.ADMIN_USER_IDS, { production: true });
 }
 
 // True only when the caller is authenticated AND on the admin allowlist.
 // Use in admin QUERIES: `if (!(await isAdmin(ctx))) return <empty>;`
 export async function isAdmin(ctx: { auth: Auth }): Promise<boolean> {
   const identity = await ctx.auth.getUserIdentity();
-  return !!identity && adminUserIds().includes(identity.subject);
+  return !!identity && isOwnerId(identity.subject, adminUserIds());
 }
 
 // Throws unless the caller is an admin. Use in admin MUTATIONS.

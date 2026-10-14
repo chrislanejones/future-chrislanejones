@@ -20,6 +20,7 @@ import type * as homeGallery from "../homeGallery.js";
 import type * as http from "../http.js";
 import type * as media from "../media.js";
 import type * as navigation from "../navigation.js";
+import type * as ownerPolicy from "../ownerPolicy.js";
 import type * as pageHeaders from "../pageHeaders.js";
 import type * as projects from "../projects.js";
 import type * as redirects from "../redirects.js";
@@ -47,6 +48,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   media: typeof media;
   navigation: typeof navigation;
+  ownerPolicy: typeof ownerPolicy;
   pageHeaders: typeof pageHeaders;
   projects: typeof projects;
   redirects: typeof redirects;
