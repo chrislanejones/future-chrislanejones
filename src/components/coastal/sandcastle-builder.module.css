@@ -25,7 +25,15 @@
 .loader { position: absolute; inset: 0; z-index: 2; background: inherit; display: grid; place-content: center; justify-items: center; gap: 10px; color: var(--coast-deep); font-size: var(--type-caption); text-align: center; }
 :global(.dark) .loader { color: #fff6e8; }
 .loaderArt { width: 112px; height: 112px; overflow: visible; }
-.loaderFill { fill: var(--coast-accent); transform-box: fill-box; transform-origin: bottom; transform: translateY(100%); }
+.loaderFill { transform-box: fill-box; transform-origin: bottom; transform: translateY(100%); }
+/* Beach-toy colors: teal bucket, coral shovel, sand on top. */
+.loaderBucket { fill: #4fa3a5; }
+.loaderRim { fill: #3d8e91; }
+.loaderShine { stroke: #ffffff59; }
+.loaderSand { fill: #ead39f; }
+.loaderHandle { stroke: #f4f6f2; }
+.loaderShovel { fill: #e0573f; }
+:global(.dark) .loaderArt g[clip-path] { filter: brightness(.85) saturate(.9); }
 .loaderFilling { animation: bucketFill 2.2s cubic-bezier(.45, 0, .3, 1) forwards; }
 @keyframes bucketFill {
   from { transform: translateY(100%); }
