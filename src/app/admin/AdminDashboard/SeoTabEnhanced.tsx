@@ -35,8 +35,11 @@ interface PageEntry {
 }
 
 export const SeoTabEnhanced = () => {
-  const seoEntries = useQuery(api.seo.getAllSEO) ?? [];
-  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders) ?? [];
+  // Raw results (undefined while loading). Defaulting with `?? []` here would
+  // hand useMemo a new array every render, so the re-sync below would re-run
+  // on every pass while one query is still loading.
+  const seoEntries = useQuery(api.seo.getAllSEO);
+  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders);
   const stalePaths = useQuery(api.seo.getStaleSEOPaths) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
   const updatePageHeader = useMutation(api.pageHeaders.updatePageHeader);
@@ -76,7 +79,7 @@ export const SeoTabEnhanced = () => {
     const pageMap = new Map<string, PageEntry>();
 
     // Add all SEO entries
-    for (const seo of seoEntries) {
+    for (const seo of seoEntries ?? []) {
       pageMap.set(seo.path, {
         path: seo.path,
         title: seo.title,
@@ -85,7 +88,7 @@ export const SeoTabEnhanced = () => {
     }
 
     // Add/merge page headers
-    for (const header of pageHeaders) {
+    for (const header of pageHeaders ?? []) {
       const existing = pageMap.get(header.path);
       if (existing) {
         existing.headerEntry = header as PageHeaderEntry;
@@ -119,12 +122,17 @@ export const SeoTabEnhanced = () => {
     }
   }
 
-  // Reload the editors only when a DIFFERENT page is picked. The old effect
-  // depended on the selectedPage object, so every Convex refresh re-ran it and
-  // could overwrite whatever the admin was mid-way through typing.
-  const [loadedPath, setLoadedPath] = useState<string | null>(null);
-  if (selectedPage && selectedPage.path !== loadedPath) {
-    setLoadedPath(selectedPage.path);
+  // Reload the editors when a DIFFERENT page is picked, or when fresh Convex
+  // data arrives for the same page while the admin is NOT editing. A refresh
+  // mid-edit (another tab, a background update) is held back so it can't wipe
+  // unsaved text; it loads once editing ends (save or cancel).
+  const [loadedPage, setLoadedPage] = useState<PageEntry | null>(null);
+  if (
+    selectedPage &&
+    selectedPage !== loadedPage &&
+    (selectedPage.path !== loadedPage?.path || !isEditing)
+  ) {
+    setLoadedPage(selectedPage);
     // Load SEO data
     if (selectedPage.seoEntry) {
       setFormData({

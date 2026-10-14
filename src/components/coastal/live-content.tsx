@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Code2,
   RefreshCw,
 } from "lucide-react";
 import { useQuery } from "convex/react";
@@ -15,11 +14,10 @@ import { api } from "../../../convex/_generated/api";
 import { clients as staticClients } from "@/data/clients";
 import { GalleryPanel, type GalleryPhoto } from "./gallery-panel";
 import { QUOTES } from "@/components/main/quote-content";
-import { Reveal } from "./reveal";
-import { ProjectPreview } from "./project-preview";
+import { ProjectCard, type ProjectCardData } from "./project-card";
 import styles from "./coastal.module.css";
 import { featuredProjects } from "@/data/projects-data";
-import { imageHorseMarketingProject, projectPresentation } from "@/data/project-presentation";
+import { imageHorseMarketingProject } from "@/data/project-presentation";
 
 // Public content remains reactive and admin-managed. Each section can recover
 // independently if its query fails, without blanking the rest of the homepage.
@@ -38,98 +36,22 @@ export class ContentBoundary extends Component<
 
 const plain = (text: string) => text.replace(/[\u2013\u2014]/g, "-");
 
-type Project = {
-  title: string;
-  description: string;
-  image?: string;
-  githubUrl?: string;
-  codebergUrl?: string;
-  vercelUrl?: string;
-  customUrl?: string;
-  features?: string[];
-};
-const fallbackProjects: Project[] = featuredProjects;
+const fallbackProjects: ProjectCardData[] = featuredProjects;
 
-function ProjectView({ projects }: { projects: Project[] }) {
+function ProjectView({ projects }: { projects: ProjectCardData[] }) {
   return (
     <div className={styles.projectGrid}>
-      {projects.slice(0, 3).map((project, index) => {
-        const presentation = projectPresentation(project);
-        const url = presentation.href || "/projects";
-        const external = /^https?:\/\//.test(url);
-        return (
-          <Reveal
-            key={project.title}
-            className={
-              index === 0 ? styles.primaryProject : styles.secondaryProject
-            }
-            delay={index * 0.06}
-          >
-            <article className={styles.project}>
-              <ProjectPreview
-                title={plain(presentation.title)}
-                image={presentation.image}
-                imageFit={presentation.imageFit}
-                imageAspectRatio={presentation.imageAspectRatio}
-                href={url}
-                githubUrl={project.githubUrl}
-                codebergUrl={project.codebergUrl}
-                sizes={
-                  index === 0
-                    ? "(max-width: 767px) 90vw, 60vw"
-                    : "(max-width: 767px) 90vw, 32vw"
-                }
-              />
-              <div className={styles.projectInfo}>
-                <h3>
-                  <a
-                    href={url}
-                    target={external ? "_blank" : undefined}
-                    rel={external ? "noopener noreferrer" : undefined}
-                  >
-                    {plain(presentation.title)}
-                  </a>
-                </h3>
-                <p>{plain(presentation.description)}</p>
-                {project.title === imageHorseMarketingProject.title && project.features?.length ? (
-                  <ul className={styles.projectFeatures}>
-                    {project.features.map((feature) => (
-                      <li key={feature}>
-                        <ArrowRight size={15} aria-hidden="true" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {index === 0 && (
-                  <div className={styles.projectLinks}>
-                    <a
-                      href={url}
-                      target={external ? "_blank" : undefined}
-                      rel={external ? "noopener noreferrer" : undefined}
-                      className={styles.textLink}
-                    >
-                      Explore project{" "}
-                      <ArrowUpRight size={17} aria-hidden="true" />
-                    </a>
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.sourceLink}
-                      >
-                        <Code2 size={17} aria-hidden="true" />
-                        Source code
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-            </article>
-          </Reveal>
-        );
-      })}
+      {projects.slice(0, 3).map((project, index) => (
+        <ProjectCard
+          key={project.title}
+          project={project}
+          variant={index === 0 ? "primary" : "secondary"}
+          heading="h3"
+          sizes={index === 0 ? "(max-width: 767px) 90vw, 60vw" : "(max-width: 767px) 90vw, 32vw"}
+          showFeatures={project.title === imageHorseMarketingProject.title}
+          delay={index * 0.06}
+        />
+      ))}
     </div>
   );
 }

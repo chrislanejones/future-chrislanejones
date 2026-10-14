@@ -15,11 +15,11 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `SeoTabEnhanced.tsx` re-sync effect (~line 126) reads `selectedPage` but deps on
   `[mergedPages]`; a concurrent Convex query re-run while typing calls setSelectedPage →
   overwrites formData + exits edit mode. Doesn't fire in a normal solo edit. Guard: skip
-  overwrite while `isEditing`, include `selectedPage.path` in deps.
+  overwrite while `isEditing`, include `selectedPage.path` in deps. **RESOLVED 10-14-2026** (PR #3) — a refresh mid-edit now waits until save or cancel; fresh data still loads when not editing.
 - **2026-07-08 — Dead loading spinners (cosmetic).** `CareerTimelineTabEnhanced.tsx:~227`
   and `MessagesTabEnhanced.tsx:~156` gate a `<LoadingSpinner>` on `x === undefined`, but the
   query is `useQuery(...) ?? []`, so it's never undefined — the list flashes an empty state
-  during load instead of a spinner. Keep the raw query result un-defaulted for the check.
+  during load instead of a spinner. Keep the raw query result un-defaulted for the check. **RESOLVED 10-14-2026** (PR #3) — also fixed the same pattern in `EngagementTabEnhanced.tsx`.
 - **2026-07-08 — schema decisions (from Felix SSOT audit).** (1) `projects.category` is
   `v.string()` but the client narrows to `"app"|"website"` with casts — make it a union and
   drop the casts. (2) `browserLinks.screenshotUrl`/`screenshotUpdatedAt` are read/rendered
