@@ -26,7 +26,9 @@ import { Button } from "@/components/ui/button";
 type ContactMessage = Doc<"contactMessages">;
 
 const MessagesTabEnhanced = () => {
-  const messages = useQuery(api.contactMessages.getAll) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const messagesQuery = useQuery(api.contactMessages.getAll);
+  const messages = messagesQuery ?? [];
   const markAsRead = useMutation(api.contactMessages.markAsRead);
   const markAsUnread = useMutation(api.contactMessages.markAsUnread);
   const deleteMessage = useMutation(api.contactMessages.deleteMessage);
@@ -154,7 +156,7 @@ const MessagesTabEnhanced = () => {
     });
   };
 
-  if (messages === undefined) {
+  if (messagesQuery === undefined) {
     return <LoadingSpinner message="Loading messages..." />;
   }
 
