@@ -208,9 +208,17 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - **10-14-2026 — Codex's hero WIP is behind main.** `~/repo/future-chrislanejones-beach` holds
   uncommitted 3D coast hero work (`hero-coast-scene.tsx`, `hero-coast-model.ts`, `hero-photo.tsx`,
   `page.tsx`, `coastal.module.css`) on a base 50+ commits behind `main`. Commit it to a branch and
-  rebase on `main` before shipping; its CSS and `page.tsx` edits overlap today's merges.
+  rebase on `main` before shipping; its CSS and `page.tsx` edits overlap today's merges. **RESOLVED 10-14-2026** — hero shipped on `feat/3d-coast-hero`, patched onto `main`.
 - **10-14-2026 — ADRs 003, 004 and 005 are drafts.** DOMPurify blog sanitizing (003), public-write
   rate limits + shared owner policy (004), enforced CSP without nonces (005). Chris to accept or edit.
 - **10-14-2026 — Media Manager: no UI for home-gallery slot alt text/description.**
   `handleEditGalleryMetadata`/`handleSaveGalleryMetadata` exist in `MediaTabEnhanced.tsx` but no
   control opens them; the library view (PR #17) covers per-image alt text and filename. **RESOLVED 10-14-2026** (PR #23) — Edit details under each filled slot.
+- **10-14-2026 — Hero ocean layer duplicates the sea shader.** `hero-ocean-lite.tsx` copies the
+  sea part of the terrain shader and the camera from `hero-coast-scene.tsx`. Move the shared GLSL
+  and camera numbers into one module so the two can't drift.
+- **10-14-2026 — Hero stills go stale with the scene.** `public/hero/coast-{light,dark}.webp` are
+  screenshots of the live 3D. Recapture them whenever the scene's look or camera changes; a small
+  capture script would make that one command.
+- **10-14-2026 — Blog soft 404.** `/blog/[slug]` returns 200 for missing slugs because
+  `src/app/blog/loading.tsx` streams the response.
