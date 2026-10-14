@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -63,6 +66,10 @@ const sections: Showcase[] = [
 ];
 
 const icons = [Layout, Search, Navigation, Settings, Images, Files];
+// Screenshots are optional: a section shows its image once the file exists in
+// public/admin-showcase/ (checked on the server at build/ISR time).
+const hasScreenshot = (src: string) => existsSync(path.join(process.cwd(), "public", src));
+
 export default function AdminShowcasePage() {
   return (
     <>
@@ -87,6 +94,12 @@ export default function AdminShowcasePage() {
           const Icon = icons[i];
           return (
             <section key={section.title} className={styles.serviceItem}>
+              {hasScreenshot(section.image) ? (
+                <div className="relative aspect-video mb-4 overflow-hidden rounded-(--radius-media) border border-(--color-border)">
+                  <Image src={section.image} alt={`${section.title} in the admin`} fill
+                    sizes="(max-width: 767px) 92vw, 45vw" className="object-cover object-top" />
+                </div>
+              ) : null}
               <Icon size={28} aria-hidden="true" />
               <h2>{section.title}</h2>
               <p>{section.description}</p>
