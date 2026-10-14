@@ -47,7 +47,7 @@
 .bstep-pbadge {
   font-size: var(--type-caption);
   padding: 3px 8px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--color-muted-accent);
   color: var(--color-muted);
   white-space: nowrap;
@@ -57,7 +57,7 @@
   font-size: var(--type-caption);
   background: var(--color-inner-card);
   color: var(--color-ink);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   padding: 8px 10px;
   margin-bottom: 12px;
   min-height: 18px;
@@ -84,7 +84,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   font-family: var(--font-code);
   font-size: var(--type-caption);
   border: 1px solid var(--color-border);
@@ -92,7 +92,6 @@
 }
 .bstep-chip .bstep-meta {
   font-size: var(--type-caption);
-  opacity: 0.85;
 }
 .bstep-divider {
   height: 1px;
@@ -109,15 +108,17 @@
 }
 
 /* Semantic chip styles (shared by both widgets) */
+/* Tints carry the state; text stays the main ink color so it keeps
+   9:1-level contrast on any tint. Blue and slate only (design guide). */
 .bstep-accent {
   background: color-mix(in srgb, var(--color-accent) 18%, transparent);
-  color: var(--color-accent);
-  border-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
 }
 .bstep-alt {
-  background: color-mix(in srgb, var(--color-accent-alt) 18%, transparent);
-  color: var(--color-accent-alt);
-  border-color: color-mix(in srgb, var(--color-accent-alt) 35%, transparent);
+  background: color-mix(in srgb, var(--color-muted) 16%, transparent);
+  color: var(--color-ink);
+  border-color: color-mix(in srgb, var(--color-muted) 45%, transparent);
 }
 .bstep-dead {
   background: var(--color-muted-accent);
@@ -149,7 +150,7 @@
   background: transparent;
   color: var(--color-ink);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   padding: 7px 11px;
   transition: background 0.15s, transform 0.1s, border-color 0.15s;
 }

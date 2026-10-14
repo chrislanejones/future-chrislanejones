@@ -160,7 +160,7 @@
 :global(.dark) .belly { fill: #dbe8e5; }
 :global(.dark) .foam { stroke: #e8ece6; opacity: .75; }
 @media (max-width: 767px) {
-  .banner { margin-top: 28px; border-radius: 14px; }
+  .banner { margin-top: 28px; border-radius: var(--radius-media); }
   .content { max-width: none; }
   .gulls, .glow, .sun { right: 8%; }
   .gulls { display: none; }
