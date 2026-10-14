@@ -140,15 +140,37 @@
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  animation: shore-arrive 1.8s ease-out both;
 }
 .heroImage {
   object-fit: cover;
   object-position: 70% 56%;
 }
-.heroSea {
+/* Stills of the 3D scene; centered like the scene's camera. */
+.heroPoster {
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+.heroPosterDark,
+:global(.dark) .heroPosterLight {
+  display: none;
+}
+:global(.dark) .heroPosterDark {
+  display: block;
+}
+.heroOcean {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.heroScene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1200ms ease-in-out;
+}
+.heroScene[data-ready="true"] {
+  opacity: 1;
 }
 .heroShade {
   position: absolute;
@@ -494,7 +516,10 @@
   isolation: isolate;
   margin-top: 70px;
   padding-block: 75px 85px;
-  background: transparent;
+  padding-inline: clamp(16px, 3vw, 40px);
+  border-radius: var(--radius-media);
+  overflow: clip;
+  background: var(--coast-panel);
 }
 .coastFloor {
   position: absolute;
@@ -503,13 +528,6 @@
   overflow: hidden;
   pointer-events: none;
   background: linear-gradient(115deg, #eee4d2 70%, #b2c8ba 90%, #8cbdba);
-  mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
 }
 :global(.dark) .coastFloor {
   background: linear-gradient(115deg, #514737 70%, #343b34 90%, #346c75);
@@ -1510,14 +1528,6 @@
   align-items: center;
   gap: 8px;
 }
-@keyframes shore-arrive {
-  from {
-    transform: scale(1.045);
-  }
-  to {
-    transform: scale(1);
-  }
-}
 @keyframes loading-pulse {
   50% {
     opacity: 0.55;
@@ -1696,7 +1706,7 @@
     border-radius: var(--radius-media);
   }
   .heroImage {
-    object-position: 63% 50%;
+    object-position: 85% 50%;
   }
   .heroShade {
     background: linear-gradient(
