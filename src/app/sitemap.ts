@@ -15,6 +15,7 @@ const staticPages = [
   '/blog',
   '/browser-tabs',
   '/career-and-resume',
+  '/color-guide',
   '/conferences',
   '/contact',
   '/link-page',
