@@ -10,6 +10,7 @@ import { jsonLd } from "@/lib/structured-data";
 import coastal from "@/components/coastal/coastal.module.css";
 import styles from "@/components/coastal/conferences.module.css";
 import { Button } from "@/components/ui/button";
+import { SITE_URL } from "@/lib/structured-data";
 
 function descriptionLinks(text: string) {
   return text.split(/(\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g).map((part, index) => {
@@ -33,7 +34,7 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
     "@context": "https://schema.org", "@type": "Event",
     name: `${conf.name} ${conf.year}`, description: conf.description,
     startDate: conf.dateStart, endDate: conf.dateEnd,
-    image: conf.logo ? (conf.logo.startsWith("/") ? `https://www.chrislanejones.com${conf.logo}` : conf.logo) : undefined,
+    image: conf.logo ? (conf.logo.startsWith("/") ? `${SITE_URL}${conf.logo}` : conf.logo) : undefined,
     location: conf.city ? { "@type": "Place", name: conf.venue ?? conf.city, address: conf.city } : undefined,
     url: conf.url,
   };
