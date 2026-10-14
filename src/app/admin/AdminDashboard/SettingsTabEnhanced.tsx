@@ -510,7 +510,7 @@ const SettingsTabEnhanced = () => {
               <Button
                 onClick={handleReseed}
                 disabled={isReseeding || selectedSources.size === 0}
-                variant="outline"
+                variant="secondary"
                 className="w-full gap-2 mt-4"
               >
                 <RefreshCw
@@ -578,7 +578,7 @@ const SettingsTabEnhanced = () => {
                   <p className="text-sm text-muted">Dynamic URL redirects handled at runtime via Convex</p>
                 </div>
               </div>
-              <Button onClick={handleOpenAddRedirect} variant="accent" size="sm" className="gap-2">
+              <Button onClick={handleOpenAddRedirect} variant="primary" size="sm" className="gap-2">
                 <Plus className="w-4 h-4" />
                 Add Redirect
               </Button>
@@ -640,8 +640,10 @@ const SettingsTabEnhanced = () => {
                 <div className="flex items-center justify-between pt-2">
                   <label className="flex items-center gap-2 cursor-pointer text-sm text-ink">
                     <button
+                      type="button"
                       onClick={() => setRedirectForm((p) => ({ ...p, isActive: !p.isActive }))}
                       className="text-accent"
+                      aria-pressed={redirectForm.isActive}
                     >
                       {redirectForm.isActive
                         ? <ToggleRight className="w-6 h-6" />
@@ -651,10 +653,10 @@ const SettingsTabEnhanced = () => {
                     Active
                   </label>
                   <div className="flex gap-2">
-                    <Button onClick={handleCancelRedirect} variant="outline" size="sm">Cancel</Button>
+                    <Button onClick={handleCancelRedirect} variant="secondary" size="sm">Cancel</Button>
                     <Button
                       onClick={handleSaveRedirect}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSavingRedirect || !redirectForm.from.trim() || !redirectForm.to.trim()}
@@ -699,6 +701,7 @@ const SettingsTabEnhanced = () => {
                           })
                         }
                         title={r.isActive ? "Disable redirect" : "Enable redirect"}
+                        aria-label={r.isActive ? "Disable redirect" : "Enable redirect"}
                         className="text-accent hover:opacity-70 transition"
                       >
                         {r.isActive
@@ -706,18 +709,24 @@ const SettingsTabEnhanced = () => {
                           : <ToggleLeft className="w-5 h-5 text-muted" />
                         }
                       </button>
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleEditRedirect(r)}
-                        className="p-1.5 rounded-lg text-muted hover:text-ink hover:bg-(--color-panel) transition"
+                        className="text-muted hover:text-ink"
+                        aria-label="Edit redirect"
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
+                        <Edit2 className="w-3.5 h-3.5" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => setDeleteRedirectConfirm(r._id)}
-                        className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-500/10 transition"
+                        className="text-muted hover:text-(--color-danger) hover:bg-(--color-danger)/10"
+                        aria-label="Delete redirect"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -744,12 +753,12 @@ const SettingsTabEnhanced = () => {
                       showError("Failed to delete redirect");
                     }
                   }}
-                  variant="outline"
+                  variant="secondary"
                   className="flex-1 text-red-500"
                 >
                   Delete
                 </Button>
-                <Button onClick={() => setDeleteRedirectConfirm(null)} variant="outline" className="flex-1">
+                <Button onClick={() => setDeleteRedirectConfirm(null)} variant="secondary" className="flex-1">
                   Cancel
                 </Button>
               </div>

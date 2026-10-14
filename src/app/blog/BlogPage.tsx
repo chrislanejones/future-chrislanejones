@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight, Search } from "lucide-react";
 import Image from "next/image";
 import styles from "@/components/coastal/interior.module.css";
+import { Button } from "@/components/ui/button";
 
 // Initial posts and article links stay server-rendered; search enhances the list.
 export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
@@ -94,9 +95,9 @@ export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
               : "New writing will appear here."}
           </p>
           {search && (
-            <button className={styles.action} onClick={() => setSearch("")}>
+            <Button variant="pill" onClick={() => setSearch("")}>
               Clear search
-            </button>
+            </Button>
           )}
         </div>
       )}

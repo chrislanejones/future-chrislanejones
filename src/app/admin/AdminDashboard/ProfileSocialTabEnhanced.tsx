@@ -131,7 +131,7 @@ const SurfacePreview = ({
           {needsRenumber && (
             <Button
               onClick={onRenumber}
-              variant="outline"
+              variant="secondary"
               size="sm"
               className="gap-1 text-xs"
               title="Close gaps and duplicate slot numbers"
@@ -423,7 +423,7 @@ const LinksGroup = ({
             </h3>
             <Button
               onClick={handleCreateNew}
-              variant="accent"
+              variant="primary"
               size="sm"
               className="gap-2"
             >
@@ -530,12 +530,12 @@ const LinksGroup = ({
                 <div className="flex items-center gap-2 shrink-0">
                   {isEditing ? (
                     <>
-                      <Button onClick={handleCancel} variant="outline" size="sm">
+                      <Button onClick={handleCancel} variant="secondary" size="sm">
                         Cancel
                       </Button>
                       <Button
                         onClick={handleSave}
-                        variant="accent"
+                        variant="primary"
                         size="sm"
                         className="gap-2"
                         disabled={isSaving}
@@ -548,7 +548,7 @@ const LinksGroup = ({
                     <>
                       <Button
                         onClick={() => setIsEditing(true)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         className="gap-2"
                       >
@@ -558,7 +558,7 @@ const LinksGroup = ({
                       {selected && (
                         <Button
                           onClick={() => setDeleteConfirm(selected._id)}
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
                         >
@@ -717,14 +717,14 @@ const LinksGroup = ({
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDelete(deleteConfirm)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-600"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel
@@ -881,13 +881,17 @@ const ProfileSocialTabEnhanced = () => {
                       </div>
                     )}
                   </div>
-                  <button
+                  <Button
+                    variant="primary"
+                    size="icon-sm"
+                    round
                     onClick={() => setIsAvatarDrawerOpen(true)}
-                    className="absolute -bottom-1 -right-1 p-2 bg-accent text-on-accent rounded-full cursor-pointer hover:bg-accent/90 transition shadow-md"
+                    className="absolute -bottom-1 -right-1 shadow-md"
+                    aria-label="Change photo"
                     title="Change photo"
                   >
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
+                    <RefreshCw className="w-4 h-4" aria-hidden="true" />
+                  </Button>
                 </div>
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium text-ink">Profile Photo</p>
@@ -1007,7 +1011,7 @@ const ProfileSocialTabEnhanced = () => {
               <div className="pt-2">
                 <Button
                   onClick={handleSaveProfile}
-                  variant="accent"
+                  variant="primary"
                   disabled={isSavingProfile}
                   className="gap-2"
                 >

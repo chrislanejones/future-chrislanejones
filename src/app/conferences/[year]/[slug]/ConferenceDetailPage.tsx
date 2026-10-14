@@ -9,6 +9,7 @@ import { ConferenceCard } from "@/components/coastal/conference-card";
 import { jsonLd } from "@/lib/structured-data";
 import coastal from "@/components/coastal/coastal.module.css";
 import styles from "@/components/coastal/conferences.module.css";
+import { Button } from "@/components/ui/button";
 
 function descriptionLinks(text: string) {
   return text.split(/(\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g).map((part, index) => {
@@ -64,7 +65,7 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
             {conf.venue && <div><dt>Venue</dt><dd>{conf.venue}</dd></div>}
           </dl>
           {conf.tags?.length ? <ul className={styles.topics} aria-label="Conference topics">{conf.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul> : null}
-          {conf.url && <a href={conf.url} target="_blank" rel="noopener noreferrer" className={coastal.primaryButton}>Conference website <ArrowUpRight size={18} aria-hidden="true" /></a>}
+          {conf.url && <Button asChild variant="pill" size="lg"><a href={conf.url} target="_blank" rel="noopener noreferrer">Conference website <ArrowUpRight size={18} aria-hidden="true" /></a></Button>}
         </div>
       </article>
       {photos.length > 0 && (

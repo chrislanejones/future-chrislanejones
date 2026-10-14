@@ -159,7 +159,7 @@ export default function BlogPostPage({
             <p className="text-muted mb-8">
               The blog post you&apos;re looking for doesn&apos;t exist.
             </p>
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="secondary" size="sm">
               <Link href="/blog">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Blog
@@ -233,7 +233,7 @@ export default function BlogPostPage({
       <div className={`${styles.content} ${styles.article}`}>
         {/* Back to Blog */}
         <div className="mb-8">
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="secondary" size="sm">
             <Link href="/blog">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -304,7 +304,7 @@ export default function BlogPostPage({
             <div className="mb-8">
               <Button
                 onClick={handleLike}
-                variant={userLikeStatus?.liked ? "base" : "outline"}
+                variant={userLikeStatus?.liked ? "neutral" : "secondary"}
                 size="lg"
                 className="gap-2"
               >
@@ -326,7 +326,7 @@ export default function BlogPostPage({
                 <h2 className="text-2xl">Comments ({comments?.length || 0})</h2>
                 <Button
                   onClick={() => setShowCommentForm(!showCommentForm)}
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                 >
                   Add Comment
@@ -408,7 +408,7 @@ export default function BlogPostPage({
                       </Button>
                       <Button
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => setShowCommentForm(false)}
                       >

@@ -132,7 +132,9 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <p className={`text-sm mt-1 ${config.textColor}`}>{error.message}</p>
       </div>
       <button
+        type="button"
         onClick={onDismiss}
+        aria-label="Dismiss"
         className={`text-lg shrink-0 ${config.textColor} hover:opacity-70`}
       >
         ×

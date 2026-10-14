@@ -251,7 +251,7 @@ const CareerTimelineTabEnhanced = () => {
 
         {/* Add Event Button */}
         <div className="flex items-center justify-between mb-3">
-          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2 w-full">
+          <Button onClick={handleCreateNew} variant="primary" size="sm" className="gap-2 w-full">
             <Plus className="w-4 h-4" />
             Add Event
           </Button>
@@ -339,12 +339,12 @@ const CareerTimelineTabEnhanced = () => {
               <div className="flex items-center gap-2">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -357,7 +357,7 @@ const CareerTimelineTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -367,7 +367,7 @@ const CareerTimelineTabEnhanced = () => {
                     {selectedEvent && (
                       <Button
                         onClick={() => setDeleteConfirm(selectedEvent._id)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
                       >
@@ -469,6 +469,8 @@ const CareerTimelineTabEnhanced = () => {
                           : "bg-(--color-muted-accent) text-muted hover:text-ink disabled:opacity-40"
                       }`}
                       title={iconName}
+                      aria-label={iconName}
+                      aria-pressed={formData.iconName === iconName}
                     >
                       {renderIcon(iconName, "w-5 h-5")}
                     </button>
@@ -498,14 +500,14 @@ const CareerTimelineTabEnhanced = () => {
                 onClick={() =>
                   handleDelete(deleteConfirm as Id<"careerTimeline">)
                 }
-                variant="disabled"
+                variant="destructive"
                 className="flex-1"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel

@@ -21,6 +21,7 @@ import { ProjectPreview } from "./project-preview";
 import styles from "./coastal.module.css";
 import { featuredProjects } from "@/data/projects-data";
 import { imageHorseMarketingProject, projectPresentation } from "@/data/project-presentation";
+import { Button } from "@/components/ui/button";
 
 // Public content remains reactive and admin-managed. Each section can recover
 // independently if its query fails, without blanking the rest of the homepage.
@@ -158,22 +159,24 @@ function ClientView({ clients }: { clients: Client[] }) {
       <div className={styles.clientHeading}>
         <h2>Past and present clients</h2>
         <div className={styles.carouselButtons}>
-          <button
-            type="button"
+          <Button
+            variant="circle"
+            size="sm"
             onClick={() => setPage((safePage - 1 + pages) % pages)}
             aria-label="Previous clients"
             disabled={pages < 2}
           >
             <ArrowLeft size={18} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="circle"
+            size="sm"
             onClick={() => setPage((safePage + 1) % pages)}
             aria-label="Next clients"
             disabled={pages < 2}
           >
             <ArrowRight size={18} aria-hidden="true" />
-          </button>
+          </Button>
         </div>
       </div>
       <div className={styles.clientLogos}>
@@ -368,14 +371,14 @@ function RamblingsView({
             <h3 id="ramblings-title">My ramblings</h3>
           </span>
         </Link>
-        <button
-          type="button"
-          className={styles.circleButton}
+        <Button
+          variant="circle"
+          size="sm"
           aria-label="New quote"
           onClick={() => setIndex((index + 1) % QUOTES.length)}
         >
           <RefreshCw size={17} aria-hidden="true" />
-        </button>
+        </Button>
       </div>
     </section>
   );

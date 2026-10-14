@@ -43,7 +43,7 @@ function LinkButton({ link }: { link: SocialLinkRow }) {
   if (link.isExternal ?? link.href.startsWith("http")) {
     return (
       <Button
-        variant="solid"
+        variant="primary"
         showExternalIcon={true}
         className="justify-center"
         asChild
@@ -56,7 +56,7 @@ function LinkButton({ link }: { link: SocialLinkRow }) {
   }
 
   return (
-    <Button variant="solid" className="justify-center" asChild>
+    <Button variant="primary" className="justify-center" asChild>
       <Link href={link.href}>{content}</Link>
     </Button>
   );
@@ -169,7 +169,7 @@ export default function LinkGrid() {
                 {featuredLinks.map((link) => (
                   <Button
                     key={link._id}
-                    variant="solid"
+                    variant="primary"
                     showExternalIcon={true}
                     className="justify-center"
                     asChild
@@ -207,7 +207,7 @@ export default function LinkGrid() {
 
             {/* Link to full browser tabs page */}
             <div className="mt-6 pt-4 border-t border-border">
-              <Button variant="solid" className="w-full justify-center" asChild>
+              <Button variant="primary" className="w-full justify-center" asChild>
                 <Link href="/browser-tabs">
                   <FaChrome className="w-4 h-4 mr-2" />
                   View All Browser Tabs

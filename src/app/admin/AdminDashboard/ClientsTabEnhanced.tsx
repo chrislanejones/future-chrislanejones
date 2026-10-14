@@ -201,7 +201,7 @@ const ClientsTabEnhanced = () => {
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-(--color-ink)">Clients</h3>
-          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2">
+          <Button onClick={handleCreateNew} variant="primary" size="sm" className="gap-2">
             <Plus className="w-4 h-4" />
             New
           </Button>
@@ -301,12 +301,12 @@ const ClientsTabEnhanced = () => {
               <div className="flex items-center gap-2 shrink-0">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -319,7 +319,7 @@ const ClientsTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -329,7 +329,7 @@ const ClientsTabEnhanced = () => {
                     {selectedClient && (
                       <Button
                         onClick={() => setDeleteConfirm(selectedClient._id)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
                       >
@@ -449,14 +449,14 @@ const ClientsTabEnhanced = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDelete(deleteConfirm as Id<"clients">)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1 text-red-500"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel

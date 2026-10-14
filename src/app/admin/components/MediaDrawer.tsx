@@ -136,7 +136,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                 </div>
                 <Button
                   onClick={() => fileInputRef.current?.click()}
-                  variant="accent"
+                  variant="primary"
                   className="w-full gap-2"
                   disabled={isUploading}
                 >

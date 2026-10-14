@@ -304,7 +304,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
           </div>
           <Button
             type="submit"
-            variant="base"
+            variant="neutral"
             size="lg"
             className="w-full"
             disabled={isSubmitting}

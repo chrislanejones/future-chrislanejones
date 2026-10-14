@@ -272,12 +272,15 @@ const LinksManagerTabEnhanced = () => {
               <h3 className="text-lg font-bold text-ink">
                 {isEditing ? "Edit Link" : "Add Link"}
               </h3>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowModal(false)}
-                className="p-2 text-muted hover:text-ink transition"
+                className="text-muted hover:text-ink"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
-              </button>
+                <X className="w-5 h-5" aria-hidden="true" />
+              </Button>
             </div>
 
             <div className="space-y-4">
@@ -353,6 +356,8 @@ const LinksManagerTabEnhanced = () => {
                   {CHROME_COLORS.map((color) => (
                     <button
                       key={color.id}
+                      type="button"
+                      aria-label={color.name}
                       onClick={() =>
                         setFormData({ ...formData, color: color.id })
                       }
@@ -370,7 +375,7 @@ const LinksManagerTabEnhanced = () => {
               <div className="flex gap-2 pt-4">
                 <Button
                   onClick={handleSaveLink}
-                  variant="accent"
+                  variant="primary"
                   className="flex-1 gap-2"
                 >
                   <Save className="w-4 h-4" />
@@ -378,7 +383,7 @@ const LinksManagerTabEnhanced = () => {
                 </Button>
                 <Button
                   onClick={() => setShowModal(false)}
-                  variant="outline"
+                  variant="secondary"
                   className="flex-1"
                 >
                   Cancel
@@ -398,14 +403,14 @@ const LinksManagerTabEnhanced = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDeleteLink(deleteConfirm)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-600"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel
@@ -421,12 +426,15 @@ const LinksManagerTabEnhanced = () => {
           <div className="bg-panel rounded-2xl p-6 max-w-md w-full border border-border">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-ink">Add Category</h3>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowCategoryModal(false)}
-                className="p-2 text-muted hover:text-ink transition"
+                className="text-muted hover:text-ink"
+                aria-label="Close"
               >
-                <X className="w-5 h-5" />
-              </button>
+                <X className="w-5 h-5" aria-hidden="true" />
+              </Button>
             </div>
 
             <div className="space-y-4">
@@ -453,6 +461,8 @@ const LinksManagerTabEnhanced = () => {
                   {CHROME_COLORS.map((color) => (
                     <button
                       key={color.id}
+                      type="button"
+                      aria-label={color.name}
                       onClick={() =>
                         setCategoryFormData({ ...categoryFormData, color: color.id })
                       }
@@ -470,7 +480,7 @@ const LinksManagerTabEnhanced = () => {
               <div className="flex gap-2 pt-4">
                 <Button
                   onClick={handleSaveCategory}
-                  variant="accent"
+                  variant="primary"
                   className="flex-1 gap-2"
                 >
                   <Save className="w-4 h-4" />
@@ -478,7 +488,7 @@ const LinksManagerTabEnhanced = () => {
                 </Button>
                 <Button
                   onClick={() => setShowCategoryModal(false)}
-                  variant="outline"
+                  variant="secondary"
                   className="flex-1"
                 >
                   Cancel
@@ -497,7 +507,7 @@ const LinksManagerTabEnhanced = () => {
             <h3 className="font-semibold text-(--color-ink)">Categories</h3>
             <Button
               onClick={handleOpenCategoryModal}
-              variant="outline"
+              variant="secondary"
               size="sm"
               className="gap-1 text-xs"
             >
@@ -546,16 +556,18 @@ const LinksManagerTabEnhanced = () => {
               {selectedCategory && (
                 <Button
                   onClick={() => handleDeleteCategory(selectedCategory)}
-                  className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition"
+                  variant="ghost"
+                  size="icon"
+                  className="text-(--color-danger) hover:bg-(--color-danger)/10"
+                  aria-label="Delete category"
                   title="Delete category"
-                  variant="outline"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </Button>
               )}
               <Button
                 onClick={() => handleOpenModal()}
-                variant="outline"
+                variant="secondary"
                 className="gap-2"
                 disabled={!selectedCategory}
               >
@@ -626,16 +638,18 @@ const LinksManagerTabEnhanced = () => {
                         variant="ghost"
                         size="sm"
                         className="p-2"
+                        aria-label={`Edit ${link.label}`}
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-4 h-4" aria-hidden="true" />
                       </Button>
                       <Button
                         onClick={() => setDeleteConfirm(link._id)}
                         variant="ghost"
                         size="sm"
                         className="p-2 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        aria-label={`Delete ${link.label}`}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>

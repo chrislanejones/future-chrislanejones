@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/drawer";
 import type { GalleryPhoto } from "@/components/page/gallery-drawer";
 import styles from "./coastal.module.css";
+import { Button } from "@/components/ui/button";
 
 export function ConferencePanel({ photos, title = "Conference fan shots", description = "People I’ve met along the way." }: { photos: GalleryPhoto[]; title?: string; description?: string }) {
   const [index, setIndex] = useState(0);
@@ -25,13 +26,13 @@ export function ConferencePanel({ photos, title = "Conference fan shots", descri
   return (
     <Drawer shouldScaleBackground={false}>
       <DrawerTrigger asChild>
-        <button
-          type="button"
-          className={styles.circleButton}
+        <Button
+          variant="circle"
+          size="sm"
           aria-label="Open conference photo gallery"
         >
           <Images size={20} aria-hidden="true" />
-        </button>
+        </Button>
       </DrawerTrigger>
       <DrawerContent
         className={styles.conferencePanel}

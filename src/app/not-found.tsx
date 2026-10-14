@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { CoastalPageShell } from "@/components/coastal/page-shell";
 import coastal from "@/components/coastal/coastal.module.css";
 import styles from "@/components/coastal/interior.module.css";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -27,9 +28,11 @@ export default function NotFound() {
             />
           </div>
           <div className={styles.actions}>
-            <Link className={styles.action} href="/">
-              Back home <ArrowUpRight aria-hidden="true" />
-            </Link>
+            <Button asChild variant="pill">
+              <Link href="/">
+                Back home <ArrowUpRight aria-hidden="true" />
+              </Link>
+            </Button>
             <Link className={styles.textLink} href="/site-map">
               Explore the site <ArrowUpRight size={18} aria-hidden="true" />
             </Link>

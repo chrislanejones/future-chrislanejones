@@ -329,7 +329,7 @@ const EngagementTabEnhanced = () => {
                     {!selectedComment.approved && (
                       <Button
                         onClick={() => handleApprove(selectedComment._id)}
-                        variant="accent"
+                        variant="primary"
                         size="sm"
                         className="gap-2"
                       >
@@ -473,14 +473,14 @@ const EngagementTabEnhanced = () => {
                 onClick={() =>
                   handleDelete(deleteConfirm as Id<"blogComments">)
                 }
-                variant="disabled"
+                variant="destructive"
                 className="flex-1"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel

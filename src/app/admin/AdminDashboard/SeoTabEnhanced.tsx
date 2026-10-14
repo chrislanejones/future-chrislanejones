@@ -341,7 +341,7 @@ export const SeoTabEnhanced = () => {
           <Button
             onClick={handleCleanup}
             disabled={isCleaningUp}
-            variant="outline"
+            variant="secondary"
             size="sm"
             className="shrink-0 border-yellow-500/40 text-yellow-500 hover:bg-yellow-500/10"
           >
@@ -482,7 +482,7 @@ export const SeoTabEnhanced = () => {
                       <Button
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         className="gap-1 text-red-500 border-red-500/40 hover:bg-red-500/10"
                       >
@@ -491,7 +491,7 @@ export const SeoTabEnhanced = () => {
                       </Button>
                       <Button
                         onClick={() => setConfirmDelete(false)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                       >
                         Cancel
@@ -500,7 +500,7 @@ export const SeoTabEnhanced = () => {
                   ) : (
                     <Button
                       onClick={() => setConfirmDelete(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2 text-red-500 border-red-500/40 hover:bg-red-500/10"
                     >
@@ -513,7 +513,7 @@ export const SeoTabEnhanced = () => {
                 <Button
                   onClick={handleSave}
                   disabled={!isEditing || isSaving}
-                  variant="outline"
+                  variant="secondary"
                   className="gap-2"
                 >
                   <Save className="w-4 h-4" />
@@ -625,12 +625,15 @@ export const SeoTabEnhanced = () => {
                       height={315}
                       className="w-full h-auto object-cover"
                     />
-                    <button
+                    <Button
+                      variant="destructive"
+                      size="icon-sm"
                       onClick={handleRemoveOgImage}
-                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      className="absolute top-2 right-2"
+                      aria-label="Remove image"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <Trash2 className="w-4 h-4" aria-hidden="true" />
+                    </Button>
                   </div>
                 ) : (
                   <button

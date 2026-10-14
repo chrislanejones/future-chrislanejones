@@ -310,7 +310,7 @@ const BlogPostsTabEnhanced = () => {
         {/* New Post Button - Homepage style */}
         <Button
           onClick={handleCreateNew}
-          variant="accent"
+          variant="primary"
           className="w-full gap-2 mb-4"
         >
           <Plus className="w-4 h-4" />
@@ -405,12 +405,12 @@ const BlogPostsTabEnhanced = () => {
               <div className="flex items-center gap-2">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -423,7 +423,7 @@ const BlogPostsTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -487,7 +487,7 @@ const BlogPostsTabEnhanced = () => {
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       disabled={!isEditing}
                       className="w-full justify-start text-left font-normal px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink disabled:opacity-60"
                     >
@@ -554,23 +554,27 @@ const BlogPostsTabEnhanced = () => {
                     />
                     {isEditing && (
                       <div className="absolute top-2 right-2 flex gap-2">
-                        <button
+                        <Button
+                          variant="primary"
+                          size="icon-sm"
                           onClick={() => setIsMediaDrawerOpen(true)}
-                          className="p-2 bg-accent text-white rounded-lg hover:bg-accent/80 transition"
+                          aria-label="Change image"
                           title="Change image"
                         >
-                          <ImageIcon className="w-4 h-4" />
-                        </button>
-                        <button
+                          <ImageIcon className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="icon-sm"
                           onClick={() => {
                             setFormData({ ...formData, coverImage: "" });
                             setIsEditing(true);
                           }}
-                          className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                          aria-label="Remove image"
                           title="Remove image"
                         >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                          <Trash2 className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -599,7 +603,9 @@ const BlogPostsTabEnhanced = () => {
                       {tag}
                       {isEditing && (
                         <button
+                          type="button"
                           onClick={() => handleRemoveTag(tag)}
+                          aria-label={`Remove tag ${tag}`}
                           className="ml-1 hover:text-red-500 transition"
                         >
                           <X className="w-3 h-3" />
@@ -618,7 +624,7 @@ const BlogPostsTabEnhanced = () => {
                       className="flex-1 px-3 py-2 bg-(--color-muted-accent) rounded-lg text-ink text-sm focus:ring-2 focus:ring-accent focus:outline-none"
                       placeholder="Add a tag..."
                     />
-                    <Button onClick={handleAddTag} variant="outline" size="sm">
+                    <Button onClick={handleAddTag} variant="secondary" size="sm">
                       Add
                     </Button>
                   </div>
@@ -645,21 +651,18 @@ const BlogPostsTabEnhanced = () => {
                   </div>
                 </div>
                 {isEditing && (
-                  <button
+                  <Button
+                    variant={formData.published ? "primary" : "neutral"}
                     onClick={() => {
                       setFormData({
                         ...formData,
                         published: !formData.published,
                       });
                     }}
-                    className={`px-4 py-2 rounded-lg font-medium transition ${
-                      formData.published
-                        ? "bg-green-500 text-white hover:bg-green-600"
-                        : "bg-muted-accent text-ink hover:bg-surface-hover"
-                    }`}
+                    className="font-medium"
                   >
                     {formData.published ? "Unpublish" : "Publish"}
-                  </button>
+                  </Button>
                 )}
               </div>
 
@@ -714,14 +717,14 @@ const BlogPostsTabEnhanced = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDelete(deleteConfirm as Id<"blogPosts">)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel

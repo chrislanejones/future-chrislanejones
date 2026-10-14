@@ -359,14 +359,14 @@ const MessagesTabEnhanced = () => {
 
               {/* Quick Actions */}
               <div className="flex gap-3 flex-wrap">
-                <Button variant="accent" className="gap-2" asChild>
+                <Button variant="primary" className="gap-2" asChild>
                   <a href={`mailto:${selectedMessage.email}`}>
                     <Mail className="w-4 h-4" />
                     Reply
                   </a>
                 </Button>
                 {selectedMessage.phone && (
-                  <Button variant="outline" className="gap-2" asChild>
+                  <Button variant="secondary" className="gap-2" asChild>
                     <a href={`tel:${selectedMessage.phone}`}>
                       <Phone className="w-4 h-4" />
                       Call
@@ -374,7 +374,7 @@ const MessagesTabEnhanced = () => {
                   </Button>
                 )}
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="gap-2"
                   onClick={() => handleMarkAsUnread(selectedMessage._id)}
                 >
@@ -405,14 +405,14 @@ const MessagesTabEnhanced = () => {
                 onClick={() =>
                   handleDelete(deleteConfirm as Id<"contactMessages">)
                 }
-                variant="disabled"
+                variant="destructive"
                 className="flex-1"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel

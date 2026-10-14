@@ -280,7 +280,10 @@ const MediaTabEnhanced = () => {
           {/* View Mode Toggle */}
           <div className="flex items-center gap-1 bg-(--color-muted-accent) rounded-lg p-1">
             <button
+              type="button"
               onClick={() => setViewMode("grid")}
+              aria-label="Grid view"
+              aria-pressed={viewMode === "grid"}
               className={`p-2 rounded transition ${
                 viewMode === "grid"
                   ? "bg-(--color-foreground) text-(--color-base)"
@@ -290,7 +293,10 @@ const MediaTabEnhanced = () => {
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={() => setViewMode("list")}
+              aria-label="List view"
+              aria-pressed={viewMode === "list"}
               className={`p-2 rounded transition ${
                 viewMode === "list"
                   ? "bg-(--color-foreground) text-(--color-base)"
@@ -316,7 +322,7 @@ const MediaTabEnhanced = () => {
         {/* Upload Button */}
         <div className="col-span-2 flex justify-end">
           <Button
-            variant="accent"
+            variant="primary"
             className="gap-2 w-full md:w-auto"
             onClick={() => {
               setSelectedGallerySlot(null);
@@ -534,15 +540,18 @@ const MediaTabEnhanced = () => {
                           <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
                             Replace
                           </span>
-                          <button
+                          <Button
+                            variant="destructive"
+                            size="icon-sm"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemoveGalleryImage(position);
                             }}
-                            className="p-1.5 bg-red-500 rounded hover:bg-red-600 transition"
+                            className="size-6"
+                            aria-label="Remove image from slot"
                           >
-                            <Trash2 className="w-3 h-3 text-white" />
-                          </button>
+                            <Trash2 className="w-3 h-3" aria-hidden="true" />
+                          </Button>
                         </div>
                       </>
                     ) : (
@@ -568,14 +577,14 @@ const MediaTabEnhanced = () => {
             <div className="flex gap-2">
               <Button
                 onClick={() => handleDeleteImage(deleteConfirm as Id<"media">)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-400 border-red-500/30"
               >
                 Delete
               </Button>
               <Button
                 onClick={() => setDeleteConfirm(null)}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel
@@ -624,7 +633,7 @@ const MediaTabEnhanced = () => {
             <div className="flex gap-2 mt-6">
               <Button
                 onClick={handleSaveImageMetadata}
-                variant="accent"
+                variant="primary"
                 className="flex-1"
               >
                 Save
@@ -634,7 +643,7 @@ const MediaTabEnhanced = () => {
                   setIsEditDrawerOpen(false);
                   setEditingImageId(null);
                 }}
-                variant="outline"
+                variant="secondary"
                 className="flex-1"
               >
                 Cancel

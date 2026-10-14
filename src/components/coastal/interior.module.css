@@ -67,29 +67,6 @@
 .panel p {
   color: var(--coast-muted);
 }
-.action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 48px;
-  padding: 12px 22px;
-  border-radius: var(--radius-pill);
-  background: var(--coast-accent);
-  color: var(--coast-on-accent);
-  font-size: var(--type-body);
-  font-weight: var(--weight-semibold);
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-.action:hover {
-  opacity: 0.85;
-}
-.action svg {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
-}
 .actions {
   display: flex;
   flex-wrap: wrap;
