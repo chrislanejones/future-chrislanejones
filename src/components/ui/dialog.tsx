@@ -92,7 +92,9 @@ interface ConfirmDialogProps {
 }
 
 // The one confirm step for destructive actions. Radix focuses Cancel first,
-// so nothing is deleted by a stray Enter.
+// so nothing is deleted by a stray Enter. The dialog does not close itself
+// on confirm: onConfirm closes it (via onOpenChange's state) only when the
+// action succeeds, so a failed delete leaves it open to retry.
 export function ConfirmDialog({
   open,
   onOpenChange,
@@ -103,6 +105,7 @@ export function ConfirmDialog({
   onConfirm,
 }: ConfirmDialogProps) {
   const returnFocus = useReturnFocus();
+  const [pending, setPending] = React.useState(false);
   return (
     <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
       <AlertDialog.Portal>
@@ -122,13 +125,22 @@ export function ConfirmDialog({
               <Button
                 variant="destructive"
                 className="flex-1"
-                onClick={() => void onConfirm()}
+                disabled={pending}
+                onClick={async (event) => {
+                  event.preventDefault();
+                  setPending(true);
+                  try {
+                    await onConfirm();
+                  } finally {
+                    setPending(false);
+                  }
+                }}
               >
                 {confirmLabel}
               </Button>
             </AlertDialog.Action>
             <AlertDialog.Cancel asChild>
-              <Button variant="secondary" className="flex-1">
+              <Button variant="secondary" className="flex-1" disabled={pending}>
                 {cancelLabel}
               </Button>
             </AlertDialog.Cancel>

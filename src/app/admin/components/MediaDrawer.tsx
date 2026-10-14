@@ -248,6 +248,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                   onConfirm={async () => {
                     try {
                       await deleteMedia({ id: selectedItem._id });
+                      setConfirmDelete(false);
                       setSelectedItem(null);
                     } catch (err) {
                       console.error("Failed to delete media:", err);

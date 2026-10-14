@@ -178,6 +178,7 @@ const LinksManagerTabEnhanced = () => {
   const handleDeleteCategory = async (category: string) => {
     try {
       await deleteCategory({ category });
+      setDeleteCategoryConfirm(null);
       setSelectedCategory(
         categories.find((c) => c.category !== category)?.category || ""
       );
