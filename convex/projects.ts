@@ -1,7 +1,7 @@
 // convex/projects.ts
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import schema from "./schema";
+import schema, { projectCategory } from "./schema";
 
 import { requireAdmin as requireAuth } from "./authz";
 
@@ -26,7 +26,7 @@ export const getFeatured = query({
 });
 
 export const getByCategory = query({
-  args: { category: v.string() },
+  args: { category: projectCategory },
   handler: async (ctx, args) => {
     const items = await ctx.db
       .query("projects")
@@ -40,7 +40,7 @@ export const create = mutation({
   args: {
     title: v.string(),
     description: v.string(),
-    category: v.string(),
+    category: projectCategory,
     features: v.optional(v.array(v.string())),
     image: v.optional(v.string()),
     githubUrl: v.optional(v.string()),
@@ -65,7 +65,7 @@ export const update = mutation({
     id: v.id("projects"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
-    category: v.optional(v.string()),
+    category: v.optional(projectCategory),
     features: v.optional(v.array(v.string())),
     image: v.optional(v.string()),
     githubUrl: v.optional(v.string()),
@@ -142,7 +142,7 @@ export const seedProjects = mutation({
         title: "Image Horse",
         description:
           "Next.js + TanStack app for cropping, painting, blur tools, and batch processing. Optimized for performance with Tailwind and Plotly for data visualization.",
-        category: "app",
+        category: "app" as const,
         features: [
           "Offline-friendly and keyboard-navigable",
           "Undo/redo, rotation/flip, pagination",
@@ -163,7 +163,7 @@ export const seedProjects = mutation({
         title: "Go Web Crawler",
         description:
           "This Go-based web crawler automatically scans multiple websites—recursively and intelligently—for specified links or text across HTML, PDF, and DOCX content, while detecting connectivity issues, network errors, and anti-bot protections.",
-        category: "app",
+        category: "app" as const,
         features: [
           "Built in Go (Golang) for high concurrency and efficient network operations",
           "Integrates PDF and DOCX parsing through external libraries (pdfcpu and gooxml)",
@@ -182,7 +182,7 @@ export const seedProjects = mutation({
         title: "Vim/Neovim Shortcut Finder",
         description:
           "Interactive app to discover and master Vim/Neovim shortcuts via intuitive search and contextual learning.",
-        category: "app",
+        category: "app" as const,
         features: [
           "Interactive shortcut search and filtering",
           "Context-aware command suggestions",
@@ -203,7 +203,7 @@ export const seedProjects = mutation({
         title: "Alembic - AI Marketing Analytics Platform",
         description:
           "Enterprise-grade marketing intelligence platform that uses advanced causality models and AI to provide predictive insights and measure marketing ROI across all channels.",
-        category: "website",
+        category: "website" as const,
         features: [
           "Next.js 14 with App Router and server-side rendering",
           "Sanity CMS integration for dynamic content management",
@@ -222,7 +222,7 @@ export const seedProjects = mutation({
         title: "Job Listing Plugin for WordPress with Elementor Theme",
         description:
           "A comprehensive WordPress plugin that integrates with the Ashby job board API to display current job listings on your website using Elementor.",
-        category: "website",
+        category: "website" as const,
         features: [
           "Scheduled API data fetching at customizable times",
           "Database storage for improved performance",
@@ -241,7 +241,7 @@ export const seedProjects = mutation({
         title: "Image Horse - Marketing Website",
         description:
           "Marketing site for Image Horse, a photo editor that runs in your browser. Five prerendered pages cover features, pricing, architecture and a dated release log.",
-        category: "website",
+        category: "website" as const,
         features: [
           "React 19, Vite and React Router, prerendered to static HTML per route",
           "One route table drives the nav, sitemap, canonical tags and JSON-LD",
@@ -260,7 +260,7 @@ export const seedProjects = mutation({
         title: "Wheelock Communities - Real Estate Development",
         description:
           "Corporate website for Wheelock Communities, showcasing master-planned communities, luxury condominiums, and resort development projects across the United States.",
-        category: "website",
+        category: "website" as const,
         features: [
           "WordPress with custom theme development",
           "Advanced Custom Fields for flexible content management",

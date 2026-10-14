@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/dialog";
@@ -66,7 +66,7 @@ const ProjectsTabEnhanced = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "app" as "app" | "website",
+    category: "app" as Doc<"projects">["category"],
     features: "",  // newline-separated
     image: "",
     githubUrl: "",
@@ -82,7 +82,7 @@ const ProjectsTabEnhanced = () => {
   // the extra render (and the flash of nothing selected) an effect would cost.
   if (projectList.length > 0 && !selectedProject && !isCreating) {
     const p = projectList[0];
-    setSelectedProject({ ...p, category: (p.category as "app" | "website") || "app" });
+    setSelectedProject({ ...p, category: p.category });
   }
 
   // Only reload the form when a DIFFERENT project is selected. Without the id
@@ -217,7 +217,7 @@ const ProjectsTabEnhanced = () => {
       setIsCreating(false);
       if (projectList.length > 0) {
         const p = projectList[0];
-        setSelectedProject({ ...p, category: (p.category as "app" | "website") || "app" });
+        setSelectedProject({ ...p, category: p.category });
       }
     } else if (selectedProject) {
       setFormData({
@@ -299,7 +299,7 @@ const ProjectsTabEnhanced = () => {
             <button
               key={project._id}
               onClick={() => {
-                setSelectedProject({ ...project, category: (project.category as "app" | "website") || "app" });
+                setSelectedProject({ ...project, category: project.category });
                 setActivePanel("edit");
               }}
               className={`w-full text-left p-3 rounded-lg transition ${
@@ -478,7 +478,7 @@ const ProjectsTabEnhanced = () => {
               <label className="block mb-2 text-ink font-medium">Category</label>
               <select
                 value={formData.category}
-                onChange={(e) => { setFormData({ ...formData, category: e.target.value as "app" | "website" }); setIsEditing(true); }}
+                onChange={(e) => { setFormData({ ...formData, category: e.target.value as Doc<"projects">["category"] }); setIsEditing(true); }}
                 disabled={!isEditing}
                 className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
               >
