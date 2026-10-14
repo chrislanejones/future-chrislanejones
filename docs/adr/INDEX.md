@@ -13,3 +13,4 @@ in place — a later ADR points back at the one it replaces.
 | [005](005-enforced-csp-without-nonces.md) | Enforce a host-allowlist CSP; keep inline scripts until nonces are decided | proposed | 10-14-2026 |
 | [006](006-admin-resume-upload.md) | The owner can replace the resume from the admin panel (extends ADR-002) | proposed | 10-14-2026 |
 | [007](007-strict-project-category-and-drop-sociallinks-field.md) | `projects.category` is a strict union, and the deprecated `siteSettings.socialLinks` field is gone | proposed | 10-14-2026 |
+| [008](008-pin-isomorphic-dompurify-jsdom-27.md) | Pin isomorphic-dompurify's jsdom to 27.3.0 so blog posts render on Vercel (amends ADR-003) | proposed | 10-14-2026 |

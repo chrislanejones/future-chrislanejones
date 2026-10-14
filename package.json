@@ -73,7 +73,8 @@
       "postcss@<8.5.23": ">=8.5.23",
       "sharp": ">=0.35.5",
       "source-map-js@<1.2.2": ">=1.2.2",
-      "postcss-selector-parser@<7.1.6": ">=7.1.6"
+      "postcss-selector-parser@<7.1.6": ">=7.1.6",
+      "isomorphic-dompurify>jsdom": "27.3.0"
     }
   }
 }
