@@ -497,35 +497,6 @@
     opacity 180ms,
     transform 180ms;
 }
-.projectImageWrap {
-  position: relative;
-}
-.repoActions {
-  position: absolute;
-  right: 66px;
-  bottom: 16px;
-  display: flex;
-  gap: 8px;
-  z-index: 2;
-}
-.repoActionsAlone {
-  right: 16px;
-}
-.repoActions a {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  background: var(--coast-cream);
-  color: var(--coast-deep);
-  border-radius: var(--radius-pill);
-  transition: background-color 160ms, color 160ms;
-}
-.repoActions a:hover,
-.repoActions a:focus-visible {
-  background: var(--coast-accent);
-  color: var(--coast-on-accent);
-}
 .projectImage:hover .imageAction,
 .projectImage:focus-visible .imageAction {
   opacity: 1;
@@ -563,13 +534,6 @@
   align-items: center;
   gap: 24px;
   margin-top: 24px;
-}
-.sourceLink {
-  font-size: var(--type-caption);
-  color: var(--coast-muted);
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
 }
 .offlineSection {
   position: relative;
@@ -1455,6 +1419,38 @@
   color: var(--coast-accent);
   margin-top: 2px;
 }
+.projectDetail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+}
+.projectDetailCopy {
+  padding-block: 12px;
+}
+.projectDetailCopy h2,
+.moreProjects > h2 {
+  font-size: var(--type-display);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+  word-spacing: 0.04em;
+  font-weight: var(--weight-regular);
+}
+.projectDetailCopy > p {
+  margin-top: 22px;
+  font-size: var(--type-body);
+  line-height: 1.8;
+  color: var(--coast-muted);
+}
+.projectDetailCopy .projectLinks {
+  margin-top: 32px;
+}
+.moreProjects {
+  margin-top: 90px;
+}
+.moreProjects > h2 {
+  margin-bottom: 30px;
+}
 .projectTabList {
   background: var(--coast-soft);
   padding: 5px;
@@ -1669,6 +1665,16 @@
   }
 }
 @media (max-width: 767px) {
+  .projectDetail {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+  }
+  .projectDetailCopy {
+    padding: 0;
+  }
+  .moreProjects {
+    margin-top: 55px;
+  }
   .conferencePanelInner {
     padding-inline: 16px;
   }

@@ -1,35 +1,31 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { SocialIcon } from "@/lib/social-icons";
 import styles from "./coastal.module.css";
 
+// The browser-window screenshot on sand. With `href` it's the card's link to
+// the project's own page; without it (the detail page hero) it's just media.
 export function ProjectPreview({
   title,
   image,
   imageFit = "contain",
   imageAspectRatio,
   href,
+  address,
   sizes,
   priority = false,
-  githubUrl,
-  codebergUrl,
 }: {
   title: string;
   image?: string;
   imageFit?: "contain" | "fill" | "cover";
   imageAspectRatio?: number;
   href?: string;
+  /** Host shown in the fake address bar, e.g. "getalembic.com". */
+  address?: string;
   sizes: string;
   /** Only for the first card in view: fetch it early instead of lazily. */
   priority?: boolean;
-  githubUrl?: string;
-  codebergUrl?: string;
 }) {
-  const repos = [
-    { key: "github", label: "GitHub", url: githubUrl },
-    { key: "codeberg", label: "Codeberg", url: codebergUrl },
-  ].filter((repo) => repo.url && /^https?:\/\//.test(repo.url) && repo.url !== href);
-  const external = /^https?:\/\//.test(href ?? "");
   const content = (
     <>
       <span className={styles.projectSand} aria-hidden="true" />
@@ -40,11 +36,7 @@ export function ProjectPreview({
             <span />
             <span />
           </span>
-          <span className={styles.browserAddress}>
-            {external
-              ? href!.replace(/^https?:\/\//, "").replace(/\/$/, "")
-              : "Project preview"}
-          </span>
+          <span className={styles.browserAddress}>{address ?? "Project preview"}</span>
         </span>
         <span className={styles.browserScreen} style={{ aspectRatio: imageAspectRatio }}>
           {image ? (
@@ -73,31 +65,11 @@ export function ProjectPreview({
       )}
     </>
   );
-  const card = href ? (
-    <a
-      href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
-      className={styles.projectImage}
-      aria-label={external ? `Explore ${title} at ${href!.replace(/^https?:\/\//, "").replace(/\/$/, "")}` : `Explore ${title}`}
-    >
+  return href ? (
+    <Link href={href} className={styles.projectImage} aria-label={`Explore ${title}`}>
       {content}
-    </a>
+    </Link>
   ) : (
     <div className={styles.projectImage}>{content}</div>
-  );
-  if (!repos.length) return card;
-  // Repo buttons sit beside the card's arrow but outside its link, so they're real links of their own.
-  return (
-    <div className={styles.projectImageWrap}>
-      {card}
-      <div className={`${styles.repoActions} ${href ? "" : styles.repoActionsAlone}`}>
-        {repos.map((repo) => (
-          <a key={repo.key} href={repo.url} target="_blank" rel="noopener noreferrer" aria-label={`${title} on ${repo.label}`} title={repo.label}>
-            <SocialIcon iconKey={repo.key} size={19} />
-          </a>
-        ))}
-      </div>
-    </div>
   );
 }
