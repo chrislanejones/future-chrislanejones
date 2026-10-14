@@ -57,7 +57,9 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 const VALID_ICONS = Object.keys(ICON_MAP);
 
 const CareerTimelineTabEnhanced = () => {
-  const events = useQuery(api.careerTimeline.getAllEvents) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const eventsQuery = useQuery(api.careerTimeline.getAllEvents);
+  const events = eventsQuery ?? [];
   const addEvent = useMutation(api.careerTimeline.addEvent);
   const updateEvent = useMutation(api.careerTimeline.updateEvent);
   const deleteEvent = useMutation(api.careerTimeline.deleteEvent);
@@ -223,7 +225,7 @@ const CareerTimelineTabEnhanced = () => {
     return <IconComponent className={className} />;
   };
 
-  if (events === undefined) {
+  if (eventsQuery === undefined) {
     return <Spinner label="Loading timeline..." />;
   }
 
@@ -370,7 +372,7 @@ const CareerTimelineTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selectedEvent._id)}
                         variant="secondary"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

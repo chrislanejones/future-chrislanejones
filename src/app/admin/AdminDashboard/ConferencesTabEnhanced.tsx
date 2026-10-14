@@ -275,7 +275,7 @@ const ConferencesTabEnhanced = () => {
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{conf.name}</p>
-                <p className="text-xs opacity-60 truncate">{formatDateRange(conf)}</p>
+                <p className={`text-xs truncate ${selected?._id === conf._id && !isCreating ? "" : "text-muted"}`}>{formatDateRange(conf)}</p>
               </div>
             </div>
           ))}
@@ -388,7 +388,7 @@ const ConferencesTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selected._id)}
                         variant="secondary"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -413,7 +413,7 @@ const ConferencesTabEnhanced = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-ink">
-                    Conference Name <span className="text-red-500">*</span>
+                    Conference Name <span className="text-(--color-danger)">*</span>
                   </label>
                   <Input
                     value={formData.name}

@@ -23,7 +23,9 @@ export default async function AdminLayout({
 
   return (
     <ConvexAdminProvider>
-      <div className="fixed inset-0 overflow-hidden bg-base text-ink">
+      {/* Coastal scope: the admin shares the public palette (docs/SIMPLE-DESIGN-GUIDE.md),
+          and data-coastal-page carries it into portaled menus and dialogs. */}
+      <div className="fixed inset-0 overflow-hidden bg-base text-ink" data-coastal-theme data-coastal-page>
         {owner ? children : <AccessDenied />}
       </div>
     </ConvexAdminProvider>

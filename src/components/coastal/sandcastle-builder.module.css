@@ -1,7 +1,7 @@
-.builder { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.65fr); gap: 36px; margin-top: 100px; padding: 38px; border-radius: 24px; background: var(--coast-panel); }
+.builder { display: grid; grid-template-columns: minmax(260px, .8fr) minmax(0, 1.65fr); gap: 36px; margin-top: 100px; padding: 38px; border-radius: var(--radius-media); background: var(--coast-panel); }
 .copy { min-width: 0; padding: 10px 0; }
 .copy > svg { color: var(--coast-accent); }
-.copy h2 { font-size: var(--type-display); letter-spacing: -.045em; line-height: 1.08; margin: 18px 0; font-weight: var(--weight-semibold); }
+.copy h2 { font-size: var(--type-display); letter-spacing: -.045em; word-spacing: 0.05em; line-height: 1.08; margin: 18px 0; font-weight: var(--weight-semibold); }
 .copy > p { color: var(--coast-muted); font-size: var(--type-body); line-height: 1.7; }
 .about { display: inline-flex; align-items: center; gap: 10px; font-size: var(--type-caption); margin-top: 16px; text-decoration: underline; text-underline-offset: 4px; }
 .toolHeading { margin-top: 32px; }
@@ -9,7 +9,7 @@
 .toolHeading p { margin-top: 6px; color: var(--coast-muted); font-size: var(--type-caption); }
 .tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 17px; }
 .tools button:last-child { grid-column: span 2; }
-.tools button { min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; font-size: var(--type-body); border: 1px solid var(--coast-line); border-radius: 10px; background: var(--coast-base); }
+.tools button { min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; font-size: var(--type-body); border: 1px solid var(--coast-line); border-radius: var(--radius-control); background: var(--coast-base); }
 .tools button[aria-pressed="true"] { background: var(--coast-accent); border-color: var(--coast-accent); color: var(--coast-on-accent); }
 .options { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 10px; }
 .options button, .beachFooter button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; font-size: var(--type-caption); }
@@ -18,7 +18,7 @@
 .builder button:focus-visible, .stage:focus-visible { outline: 2px solid var(--coast-accent); outline-offset: 4px; }
 .copy .status { font-size: var(--type-caption); min-height: 3.4em; margin-top: 12px; }
 .playground { align-self: center; min-width: 0; }
-.stage { height: 490px; position: relative; overflow: hidden; border-radius: 18px; background: #ddc397; touch-action: pan-y; cursor: crosshair; }
+.stage { height: 490px; position: relative; overflow: hidden; border-radius: var(--radius-media); background: #ddc397; touch-action: pan-y; cursor: crosshair; }
 :global(.dark) .stage { background: #756448; }
 .loading { position: absolute; inset: 0; display: grid; place-content: center; padding: 30px; color: var(--coast-deep); text-align: center; }
 :global(.dark) .loading { color: #fff6e8; }
@@ -47,7 +47,7 @@
   .tools { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
   .tools button { flex-direction: column; gap: 6px; font-size: var(--type-caption); padding: 10px 4px; }
   .copy .status { min-height: 1.7em; margin-top: 3px; }
-  .stage { height: 370px; border-radius: 12px; }
+  .stage { height: 370px; border-radius: var(--radius-media); }
   .beachFooter { gap: 8px; }
   .beachFooter > div { gap: 14px; }
 }

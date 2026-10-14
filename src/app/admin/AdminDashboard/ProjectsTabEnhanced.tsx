@@ -447,7 +447,7 @@ const ProjectsTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selectedProject._id)}
                         variant="secondary"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

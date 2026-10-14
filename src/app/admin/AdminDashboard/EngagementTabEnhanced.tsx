@@ -48,7 +48,9 @@ interface LikesStats {
 }
 
 const EngagementTabEnhanced = () => {
-  const comments = useQuery(api.blogPosts.getAllCommentsAdmin) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const commentsQuery = useQuery(api.blogPosts.getAllCommentsAdmin);
+  const comments = commentsQuery ?? [];
   const likesData = useQuery(api.blogPosts.getAllLikesAdmin) as
     | LikesStats
     | undefined;
@@ -154,7 +156,7 @@ const EngagementTabEnhanced = () => {
     });
   };
 
-  if (comments === undefined || likesData === undefined) {
+  if (commentsQuery === undefined || likesData === undefined) {
     return <Spinner label="Loading engagement data..." />;
   }
 
@@ -342,7 +344,7 @@ const EngagementTabEnhanced = () => {
                       onClick={() => setDeleteConfirm(selectedComment._id)}
                       variant="ghost"
                       size="sm"
-                      className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                      className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

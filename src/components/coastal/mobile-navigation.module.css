@@ -15,10 +15,10 @@
   font-size: var(--type-body);
 }
 .header { flex: none; padding: max(16px, env(safe-area-inset-top)) 24px 16px; }
-.brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: var(--type-brand); font-weight: var(--weight-semibold); letter-spacing: -.03em; line-height: 1.15; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: var(--type-brand); font-weight: var(--weight-semibold); letter-spacing: -.03em; word-spacing: 0.04em; line-height: 1.15; text-decoration: none; }
 .brand small { display: block; margin-top: 2px; color: var(--coast-muted); font-size: var(--type-caption); font-weight: var(--weight-regular); letter-spacing: 0; }
 .brand svg { color: var(--coast-accent); flex: none; }
-.menu .title { color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.2; letter-spacing: -.035em; margin-top: 32px; }
+.menu .title { color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.2; letter-spacing: -.035em; word-spacing: 0.04em; margin-top: 32px; }
 .menu .description { color: var(--coast-muted); font-size: var(--type-body); line-height: 1.5; margin-top: 10px; }
 .menu .close { width: 56px; height: 56px; display: grid; place-items: center; top: max(16px, env(safe-area-inset-top)); right: 16px; margin: 0; opacity: 1; color: var(--coast-ink); background: var(--coast-soft); border: 2px solid currentColor; border-radius: var(--radius-pill); }
 .menu .close svg { width: 28px; height: 28px; }
@@ -37,6 +37,30 @@
 .menu :is(a, button, summary):focus-visible { outline: 2px solid var(--coast-accent); outline-offset: 3px; }
 @media (max-width: 1023px) {
   .trigger { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 44px; min-height: 44px; }
+}
+/* Tablets: the same full-screen menu in two columns. Top-level links pair up
+   on the first row, then each group (About, Work) takes a column. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .header { padding-inline: 40px; }
+  .menu .close { right: 32px; }
+  .navigation {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+    align-content: start;
+    align-items: start;
+    padding: 8px 40px 32px;
+  }
+  .footer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 32px;
+    padding-inline: 40px;
+  }
+  .footer p { margin: 0; }
+  .footer .contact { grid-column: 2; grid-row: 1 / span 2; width: auto; min-width: 280px; }
+  .guide { grid-column: 1; margin-top: 4px; justify-content: flex-start; }
 }
 @media (max-height: 600px) {
   .header { padding-block: 16px; }

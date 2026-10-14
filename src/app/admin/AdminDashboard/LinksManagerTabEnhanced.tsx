@@ -584,7 +584,7 @@ const LinksManagerTabEnhanced = () => {
                         <label
                           htmlFor={`featured-${link._id}`}
                           className={`text-xs font-medium cursor-pointer select-none whitespace-nowrap ${
-                            link.featured ? "text-emerald-500" : "text-muted"
+                            link.featured ? "text-ink" : "text-muted"
                           }`}
                         >
                           Featured On Other Pages
@@ -612,7 +612,7 @@ const LinksManagerTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(link._id)}
                         variant="ghost"
                         size="sm"
-                        className="p-2 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="p-2 text-(--color-danger) hover:bg-(--color-danger)/10"
                         aria-label={`Delete ${link.label}`}
                       >
                         <Trash2 className="w-4 h-4" aria-hidden="true" />

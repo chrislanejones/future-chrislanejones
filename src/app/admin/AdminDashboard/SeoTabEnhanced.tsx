@@ -35,8 +35,11 @@ interface PageEntry {
 }
 
 export const SeoTabEnhanced = () => {
-  const seoEntries = useQuery(api.seo.getAllSEO) ?? [];
-  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders) ?? [];
+  // Raw results (undefined while loading). Defaulting with `?? []` here would
+  // hand useMemo a new array every render, so the re-sync below would re-run
+  // on every pass while one query is still loading.
+  const seoEntries = useQuery(api.seo.getAllSEO);
+  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders);
   const stalePaths = useQuery(api.seo.getStaleSEOPaths) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
   const updatePageHeader = useMutation(api.pageHeaders.updatePageHeader);
@@ -76,7 +79,7 @@ export const SeoTabEnhanced = () => {
     const pageMap = new Map<string, PageEntry>();
 
     // Add all SEO entries
-    for (const seo of seoEntries) {
+    for (const seo of seoEntries ?? []) {
       pageMap.set(seo.path, {
         path: seo.path,
         title: seo.title,
@@ -85,7 +88,7 @@ export const SeoTabEnhanced = () => {
     }
 
     // Add/merge page headers
-    for (const header of pageHeaders) {
+    for (const header of pageHeaders ?? []) {
       const existing = pageMap.get(header.path);
       if (existing) {
         existing.headerEntry = header as PageHeaderEntry;
@@ -119,12 +122,17 @@ export const SeoTabEnhanced = () => {
     }
   }
 
-  // Reload the editors only when a DIFFERENT page is picked. The old effect
-  // depended on the selectedPage object, so every Convex refresh re-ran it and
-  // could overwrite whatever the admin was mid-way through typing.
-  const [loadedPath, setLoadedPath] = useState<string | null>(null);
-  if (selectedPage && selectedPage.path !== loadedPath) {
-    setLoadedPath(selectedPage.path);
+  // Reload the editors when a DIFFERENT page is picked, or when fresh Convex
+  // data arrives for the same page while the admin is NOT editing. A refresh
+  // mid-edit (another tab, a background update) is held back so it can't wipe
+  // unsaved text; it loads once editing ends (save or cancel).
+  const [loadedPage, setLoadedPage] = useState<PageEntry | null>(null);
+  if (
+    selectedPage &&
+    selectedPage !== loadedPage &&
+    (selectedPage.path !== loadedPage?.path || !isEditing)
+  ) {
+    setLoadedPage(selectedPage);
     // Load SEO data
     if (selectedPage.seoEntry) {
       setFormData({
@@ -301,16 +309,13 @@ export const SeoTabEnhanced = () => {
 
   const seoScore = calculateSEOScore();
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-500";
-    if (score >= 50) return "text-yellow-500";
-    return "text-red-500";
-  };
-
-  const getScoreBgColor = (score: number) => {
-    if (score >= 80) return "bg-green-500";
-    if (score >= 50) return "bg-yellow-500";
-    return "bg-red-500";
+  // Status tint and ring around an ink number: the number carries the
+  // score, so the badge stays readable (design guide: status colors only for
+  // status, with text).
+  const getScoreBadge = (score: number) => {
+    if (score >= 80) return "bg-(--color-success)/15 border-2 border-(--color-success)";
+    if (score >= 50) return "bg-(--color-warn)/15 border-2 border-(--color-warn)";
+    return "bg-(--color-danger)/15 border-2 border-(--color-danger)";
   };
 
   // /fallback is the default banner for unknown paths (src/lib/page-headers.ts).
@@ -459,14 +464,14 @@ export const SeoTabEnhanced = () => {
                 {/* SEO Score */}
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBgColor(seoScore)}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBadge(seoScore)}`}
                   >
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-ink">
                       {seoScore}
                     </span>
                   </div>
                   <span
-                    className={`text-sm font-medium ${getScoreColor(seoScore)}`}
+                    className="text-sm font-medium text-muted"
                   >
                     SEO Score
                   </span>
@@ -476,7 +481,7 @@ export const SeoTabEnhanced = () => {
                 {canDelete &&
                   (confirmDelete ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-red-500">
+                      <span className="text-xs text-(--color-danger)">
                         Delete this entry?
                       </span>
                       <Button
@@ -484,7 +489,7 @@ export const SeoTabEnhanced = () => {
                         disabled={isDeleting}
                         variant="secondary"
                         size="sm"
-                        className="gap-1 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                        className="gap-1 text-(--color-danger) border-red-500/40 hover:bg-red-500/10"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         {isDeleting ? "Deleting..." : "Confirm"}
@@ -502,7 +507,7 @@ export const SeoTabEnhanced = () => {
                       onClick={() => setConfirmDelete(true)}
                       variant="secondary"
                       size="sm"
-                      className="gap-2 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                      className="gap-2 text-(--color-danger) border-red-500/40 hover:bg-red-500/10"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete

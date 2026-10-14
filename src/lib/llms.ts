@@ -5,6 +5,7 @@
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../convex/_generated/api";
 import { PERSON, SITE_URL } from "./structured-data";
+import { projectHref } from "./projects";
 
 const PAGES: [path: string, title: string, note: string][] = [
   ["/about", "About", "Background, from video production to web engineering, plus hiking and community work"],
@@ -59,8 +60,7 @@ export async function buildLlmsTxt(full: boolean): Promise<string> {
 
   out.push("", "## Projects", "");
   for (const p of projects) {
-    const link = p.customUrl || p.vercelUrl || p.githubUrl || p.codebergUrl || `${SITE_URL}/projects`;
-    out.push(`- [${p.title}](${link}): ${p.description}`);
+    out.push(`- [${p.title}](${SITE_URL}${projectHref(p)}): ${p.description}`);
   }
 
   out.push("", "## Optional", "");

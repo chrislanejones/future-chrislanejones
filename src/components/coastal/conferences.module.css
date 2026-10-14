@@ -21,7 +21,7 @@
 .openArrow { position: absolute; bottom: 16px; right: 16px; height: 40px; width: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--coast-base); color: var(--coast-ink); }
 .cardCopy { padding: 22px 4px 0; }
 .date { font-size: var(--type-caption); color: var(--coast-muted); margin-bottom: 8px; }
-.cardCopy h2 { font-size: var(--type-heading); letter-spacing: -.03em; line-height: 1.2; font-weight: var(--weight-semibold); }
+.cardCopy h2 { font-size: var(--type-heading); letter-spacing: -.03em; word-spacing: 0.04em; line-height: 1.2; font-weight: var(--weight-semibold); }
 .location { display: flex; align-items: center; gap: 7px; font-size: var(--type-body); color: var(--coast-muted); margin-top: 12px; }
 .location svg { flex-shrink: 0; }
 .summary { font-size: var(--type-body); line-height: 1.65; color: var(--coast-muted); margin-top: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -33,7 +33,7 @@
 .detailLogo { position: relative; display: grid; place-items: center; aspect-ratio: 1.12; border-radius: var(--radius-media); background: var(--coast-panel); }
 .detailLogo .logo { padding: 40px; }
 .detailCopy { padding-block: 12px; }
-.detailCopy h2, .photoHeading h2, .related > h2 { font-size: var(--type-display); line-height: 1.15; letter-spacing: -.035em; font-weight: var(--weight-regular); }
+.detailCopy h2, .photoHeading h2, .related > h2 { font-size: var(--type-display); line-height: 1.15; letter-spacing: -.035em; word-spacing: 0.04em; font-weight: var(--weight-regular); }
 .description { margin-top: 22px; }
 .description p { margin-top: 14px; font-size: var(--type-body); line-height: 1.8; color: var(--coast-muted); }
 .description a { color: var(--coast-ink); text-decoration: underline; text-underline-offset: 3px; }

@@ -11,11 +11,32 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import type { GalleryPhoto } from "@/components/page/gallery-drawer";
+import { ShoreStrip } from "./beach-banner";
 import styles from "./coastal.module.css";
 import { Button } from "@/components/ui/button";
 
-export function ConferencePanel({ photos, title = "Conference fan shots", description = "People I’ve met along the way." }: { photos: GalleryPhoto[]; title?: string; description?: string }) {
+export type GalleryPhoto = {
+  src: string;
+  alt: string;
+  description: string;
+  width?: number;
+  height?: number;
+};
+
+// The site's one photo gallery: a bottom drawer with the banner's shoreline
+// along its top, a large photo, captions, arrows and thumbnails.
+export function GalleryPanel({
+  photos,
+  title,
+  description,
+  label = "Open photo gallery",
+}: {
+  photos: GalleryPhoto[];
+  title: string;
+  description?: string;
+  /** Accessible name for the round trigger button. */
+  label?: string;
+}) {
   const [index, setIndex] = useState(0);
   const current = photos[index % photos.length];
   if (!current) return null;
@@ -26,16 +47,12 @@ export function ConferencePanel({ photos, title = "Conference fan shots", descri
   return (
     <Drawer shouldScaleBackground={false}>
       <DrawerTrigger asChild>
-        <Button
-          variant="circle"
-          size="sm"
-          aria-label="Open conference photo gallery"
-        >
+        <Button variant="circle" size="sm" aria-label={label}>
           <Images size={20} aria-hidden="true" />
         </Button>
       </DrawerTrigger>
       <DrawerContent
-        className={styles.conferencePanel}
+        className={styles.photoPanel}
         onKeyDown={(event) => {
           if (event.key === "ArrowRight") {
             event.preventDefault();
@@ -47,29 +64,28 @@ export function ConferencePanel({ photos, title = "Conference fan shots", descri
           }
         }}
       >
-        <DrawerClose asChild>
-          <button
-            type="button"
-            className={styles.conferenceClose}
-            aria-label="Close photo gallery"
-          >
-            <X size={20} aria-hidden="true" />
-          </button>
-        </DrawerClose>
-        <div className={styles.conferencePanelHeader}>
-          <div>
-            <DrawerTitle className={styles.conferencePanelTitle}>
-              {title}
-            </DrawerTitle>
-            <DrawerDescription className={styles.conferencePanelDescription}>
+        <ShoreStrip className={styles.photoPanelShore} />
+        <div className={styles.photoPanelHeader}>
+          <DrawerTitle className={styles.photoPanelTitle}>{title}</DrawerTitle>
+          {description && (
+            <DrawerDescription className={styles.photoPanelDescription}>
               {description}
             </DrawerDescription>
-          </div>
+          )}
+          <DrawerClose asChild>
+            <button
+              type="button"
+              className={styles.photoPanelClose}
+              aria-label="Close photo gallery"
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+          </DrawerClose>
         </div>
-        <div className={styles.conferencePanelInner}>
-          <div className={styles.conferencePanelBody}>
+        <div className={styles.photoPanelInner}>
+          <div className={styles.photoPanelBody}>
             <div>
-              <figure className={styles.conferencePhoto}>
+              <figure className={styles.photoPanelImage}>
                 <Image
                   key={current.src}
                   src={current.src}
@@ -78,14 +94,14 @@ export function ConferencePanel({ photos, title = "Conference fan shots", descri
                   sizes="(max-width: 767px) 92vw, 780px"
                 />
               </figure>
-              <div className={styles.conferencePhotoFooter}>
+              <div className={styles.photoPanelFooter}>
                 <div aria-live="polite">
                   <p>{current.description}</p>
                   <span>
                     {(index % photos.length) + 1} / {photos.length}
                   </span>
                 </div>
-                <div className={styles.conferencePhotoControls}>
+                <div className={styles.photoPanelControls}>
                   <button
                     type="button"
                     onClick={previous}
@@ -100,8 +116,8 @@ export function ConferencePanel({ photos, title = "Conference fan shots", descri
               </div>
             </div>
             <div
-              className={styles.conferenceThumbnails}
-              aria-label="Choose a conference photo"
+              className={styles.photoPanelThumbs}
+              aria-label="Choose a photo"
               data-vaul-no-drag
             >
               {photos.map((photo, photoIndex) => (

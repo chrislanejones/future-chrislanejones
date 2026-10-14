@@ -436,7 +436,7 @@ const BlogPostsTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selectedPost._id)}
                         variant="ghost"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -607,7 +607,7 @@ const BlogPostsTabEnhanced = () => {
                           type="button"
                           onClick={() => handleRemoveTag(tag)}
                           aria-label={`Remove tag ${tag}`}
-                          className="ml-1 hover:text-red-500 transition"
+                          className="ml-1 hover:text-(--color-danger) transition"
                         >
                           <X className="w-3 h-3" />
                         </button>

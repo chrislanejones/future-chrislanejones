@@ -191,12 +191,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={errors.name ? "border-red-500" : ""}
+              className={errors.name ? "border-(color:--color-danger)" : ""}
               placeholder="John Doe"
               aria-describedby={errors.name ? "name-error" : undefined}
               aria-invalid={!!errors.name}
             />
-            {errors.name && <p id="name-error" className="mt-1 text-red-500" role="alert">{errors.name}</p>}
+            {errors.name && <p id="name-error" className="mt-1 text-(--color-danger)" role="alert">{errors.name}</p>}
           </div>
           <div>
             <label htmlFor="email" className="block mb-2">
@@ -208,13 +208,13 @@ const ContactForm: React.FC<ContactFormProps> = ({
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={errors.email ? "border-red-500" : ""}
+              className={errors.email ? "border-(color:--color-danger)" : ""}
               placeholder="john@example.com"
               aria-describedby={errors.email ? "email-error" : undefined}
               aria-invalid={!!errors.email}
             />
             {errors.email && (
-              <p id="email-error" className="mt-1 text-red-500" role="alert">{errors.email}</p>
+              <p id="email-error" className="mt-1 text-(--color-danger)" role="alert">{errors.email}</p>
             )}
           </div>
           {/* Phone field only for 'full' contact form variant */}
@@ -229,13 +229,13 @@ const ContactForm: React.FC<ContactFormProps> = ({
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className={errors.phone ? "border-red-500" : ""}
+                className={errors.phone ? "border-(color:--color-danger)" : ""}
                 placeholder="(123) 456-7890"
                 aria-describedby={errors.phone ? "phone-error" : undefined}
                 aria-invalid={!!errors.phone}
               />
               {errors.phone && (
-                <p id="phone-error" className="mt-1 text-red-500" role="alert">{errors.phone}</p>
+                <p id="phone-error" className="mt-1 text-(--color-danger)" role="alert">{errors.phone}</p>
               )}
             </div>
           )}
@@ -283,7 +283,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               value={formData.message}
               onChange={handleChange}
               rows={variant === "full" ? 6 : 3} // Dynamic rows based on variant
-              className={errors.message ? "border-red-500" : ""}
+              className={errors.message ? "border-(color:--color-danger)" : ""}
               placeholder={
                 variant === "full"
                   ? "Tell me about your project or inquiry..."
@@ -293,7 +293,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
               aria-invalid={!!errors.message}
             />
             {errors.message && (
-              <p id="message-error" className="mt-1 text-red-500" role="alert">{errors.message}</p>
+              <p id="message-error" className="mt-1 text-(--color-danger)" role="alert">{errors.message}</p>
             )}
             {/* Character count only for 'full' contact form variant */}
             {variant === "full" && (
@@ -331,7 +331,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 text-red-500"
+              className="flex items-center gap-2 text-(--color-danger)"
             >
               <AlertCircle className="w-5 h-5" />
               <span className="">
