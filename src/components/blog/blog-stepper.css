@@ -13,9 +13,9 @@
 .bstep-banner {
   background: var(--color-muted-accent);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-control);
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: var(--type-body);
   line-height: 1.6;
   margin: 0 0 18px;
   min-height: 52px;
@@ -28,7 +28,7 @@
 .bstep-panel {
   background: var(--color-panel);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-control);
   padding: 14px 16px;
 }
 .bstep-phead {
@@ -40,12 +40,12 @@
   flex-wrap: wrap;
 }
 .bstep-ptitle {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--type-body);
+  font-weight: var(--weight-semibold);
   color: var(--color-ink);
 }
 .bstep-pbadge {
-  font-size: 11px;
+  font-size: var(--type-caption);
   padding: 3px 8px;
   border-radius: 8px;
   background: var(--color-muted-accent);
@@ -53,8 +53,8 @@
   white-space: nowrap;
 }
 .bstep-code {
-  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  font-size: 13px;
+  font-family: var(--font-code);
+  font-size: var(--type-caption);
   background: var(--color-inner-card);
   color: var(--color-ink);
   border-radius: 8px;
@@ -65,7 +65,7 @@
   overflow-x: auto;
 }
 .bstep-zone-label {
-  font-size: 11px;
+  font-size: var(--type-caption);
   color: var(--color-muted);
   margin: 0 0 6px;
   text-transform: uppercase;
@@ -85,13 +85,13 @@
   gap: 8px;
   padding: 6px 10px;
   border-radius: 8px;
-  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  font-size: 13px;
+  font-family: var(--font-code);
+  font-size: var(--type-caption);
   border: 1px solid var(--color-border);
   transition: background 0.35s, color 0.35s;
 }
 .bstep-chip .bstep-meta {
-  font-size: 11px;
+  font-size: var(--type-caption);
   opacity: 0.85;
 }
 .bstep-divider {
@@ -101,7 +101,7 @@
   opacity: 0.7;
 }
 .bstep-note {
-  font-size: 12px;
+  font-size: var(--type-caption);
   line-height: 1.5;
   color: var(--color-muted);
   min-height: 48px;
@@ -126,12 +126,9 @@
   text-decoration-color: color-mix(in srgb, var(--color-muted) 70%, transparent);
 }
 .bstep-warn {
-  background: rgba(245, 158, 11, 0.18);
-  color: #b45309;
-  border-color: rgba(245, 158, 11, 0.45);
-}
-html.dark .bstep-warn {
-  color: #fbbf24;
+  background: color-mix(in srgb, var(--color-warn-fill) 18%, transparent);
+  color: var(--color-warn);
+  border-color: color-mix(in srgb, var(--color-warn-fill) 45%, transparent);
 }
 
 /* Controls */
@@ -144,7 +141,7 @@ html.dark .bstep-warn {
 }
 .bstep-btn {
   font: inherit;
-  font-size: 13px;
+  font-size: var(--type-caption);
   display: inline-flex;
   align-items: center;
   gap: 6px;

@@ -4,7 +4,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  color: var(--coast-ink, var(--color-ink));
+  color: var(--color-ink);
   background: transparent;
 }
 

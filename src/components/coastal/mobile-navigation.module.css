@@ -15,8 +15,8 @@
   font-size: var(--type-body);
 }
 .header { flex: none; padding: max(16px, env(safe-area-inset-top)) 24px 16px; }
-.brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: 20px; font-weight: var(--weight-semibold); letter-spacing: -.03em; line-height: 1.15; text-decoration: none; }
-.brand small { display: block; margin-top: 2px; color: var(--coast-muted); font-size: 12px; font-weight: 400; letter-spacing: 0; }
+.brand { display: flex; align-items: center; gap: 12px; padding-right: 64px; min-height: 56px; color: var(--coast-ink); font-size: var(--type-brand); font-weight: var(--weight-semibold); letter-spacing: -.03em; line-height: 1.15; text-decoration: none; }
+.brand small { display: block; margin-top: 2px; color: var(--coast-muted); font-size: var(--type-caption); font-weight: var(--weight-regular); letter-spacing: 0; }
 .brand svg { color: var(--coast-accent); flex: none; }
 .menu .title { color: var(--coast-ink); font-size: var(--type-heading); font-weight: var(--weight-semibold); line-height: 1.2; letter-spacing: -.035em; margin-top: 32px; }
 .menu .description { color: var(--coast-muted); font-size: var(--type-body); line-height: 1.5; margin-top: 10px; }
@@ -29,7 +29,7 @@
 .link:hover { background: var(--coast-soft); }
 .link[aria-current="page"] { background: var(--coast-soft); color: var(--coast-accent); text-decoration: underline; text-underline-offset: 5px; }
 .group { margin-top: 18px; }
-.groupLabel { padding: 0 12px 4px; color: var(--coast-muted); font-size: 12px; font-weight: var(--weight-semibold); letter-spacing: .12em; text-transform: uppercase; }
+.groupLabel { padding: 0 12px 4px; color: var(--coast-muted); font-size: var(--type-caption); font-weight: var(--weight-semibold); letter-spacing: .12em; text-transform: uppercase; }
 .footer { flex: none; border-top: 1px solid var(--coast-line); padding: 18px 24px max(18px, env(safe-area-inset-bottom)); }
 .footer p { color: var(--coast-muted); font-size: var(--type-body); margin-bottom: 12px; }
 .footer .contact { width: 100%; height: auto; min-height: 48px; justify-content: space-between; padding: 12px 20px; border-radius: var(--radius-pill); background: var(--coast-accent); color: var(--coast-on-accent); box-shadow: none; font-size: var(--type-body); }

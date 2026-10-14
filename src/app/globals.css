@@ -2,22 +2,23 @@
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --font-sans: var(--font-interphases), ui-sans-serif, system-ui, sans-serif;
-  --text-body: var(--type-body);
-  --text-heading: var(--type-heading);
-  --text-display: var(--type-display);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. CANONICAL TOKENS
+   One definition per shared decision. Components consume these names; CSS
+   modules keep only layout, composition and illustration-specific values.
+   ═══════════════════════════════════════════════════════════════════════════ */
 :root {
+  /* ── Coastal palette primitives (theme-independent) ──
+     Use these directly only where a surface must stay light/dark regardless
+     of theme (e.g. chips floating over photos); otherwise use the semantic
+     names below. */
+  --coast-cream: #f6f5f0;
+  --coast-stone: #53676a;
+  --coast-deep: #173f4a;
+  --coast-teal: #235967;
+  --coast-foam: #f8fbfa;
+
+  /* ── Semantic colors (site default; coastal routes override below) ── */
   --color-base: #f9fafb; /* soft off-white, cleaner base */
   --color-panel: #ffffff; /* pure white cards */
 
@@ -29,26 +30,18 @@
 
   --color-surface-hover: #f3f4f6; /* gray-100, super pale for hover */
 
-  --color-accent: #235967; /* coastal teal, same as the Contact button */
+  --color-accent: var(--coast-teal); /* same as the Contact button */
   --color-accent-alt: #3b82f6; /* blue-500 */
-  --color-on-accent: #f8fbfa;
+  --color-on-accent: var(--coast-foam);
 
   --color-border: #e5e7eb; /* gray-200, subtle */
-  --radius: 12px;
   --color-focus-ring: #111827; /* near-black — high contrast on light backgrounds */
   --focus-ring: 2px solid var(--color-focus-ring);
 
-  /* fluid typography */
-  --step--1: clamp(0.82rem, 0.8rem + 0.18vw, 0.95rem); /* small text */
-  --step-0: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem); /* base paragraph */
-  --step-1: clamp(1.1rem, 1rem + 0.35vw, 1.25rem); /* smaller h4 */
-  --step-2: clamp(1.25rem, 1.1rem + 0.55vw, 1.45rem); /* smaller h3 */
-  --step-3: clamp(1.45rem, 1.2rem + 1vw, 1.75rem); /* smaller h2 */
-  --step-4: clamp(2rem, 1.45rem + 2.3vw, 2.5rem); /* h1 stays same */
-  --weight-regular: 400;
-  --weight-semibold: 600;
-  --weight-bold: 700;
-  --weight-black: 900;
+  /* Status colors */
+  --color-danger: #ac3030;
+  --color-warn: #b45309;
+  --color-warn-fill: #f59e0b;
 
   /* Category badge outlines; text/background use the shared semantic palette. */
   --color-tag-red: #ef4444;
@@ -59,7 +52,8 @@
   --color-tag-orange: #f97316;
   --color-tag-dark: #0f172a;
 
-  /* Sidebar variables */
+  /* Sidebar (admin). One format only: complete colors, mapped for Tailwind
+     in the @theme block below (bg-sidebar, text-sidebar-foreground, …). */
   --sidebar: #ffffff;
   --sidebar-foreground: #111827;
   --sidebar-primary: #374151;
@@ -68,8 +62,61 @@
   --sidebar-accent-foreground: #374151;
   --sidebar-border: #e5e7eb;
   --sidebar-ring: #9ca3af;
+
+  /* ── Typography ──
+     Three primary roles — body, heading, display — sized fluidly here and
+     nowhere else. Supporting roles, each documented:
+       caption  metadata, eyebrows, chips and fine print (12–13px)
+       intro    the title at the top of an interior page (40–72px)
+       hero     the homepage hero headline only (40–98px)
+     Values in comments are approximate at 390px → 1280px → max. */
+  --type-caption: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem); /* 12 → 13 */
+  --type-body: clamp(1rem, 0.96rem + 0.1vw, 1.0625rem); /* 16 → 16.6 → 17 */
+  --type-heading: clamp(1.25rem, 1.05rem + 0.75vw, 1.75rem); /* 20 → 26 → 28 */
+  --type-display: clamp(2rem, 1.5rem + 1.9vw, 3rem); /* 32 → 48 */
+  --type-intro: clamp(2.5rem, 1.8rem + 3.4vw, 4.5rem); /* 42 → 72 */
+  --type-hero: clamp(2.5rem, 1.375rem + 4.85vw, 6.125rem); /* 41 → 84 → 98 */
+  /* The name/logo lockup in the header and menu (17 → 20). */
+  --type-brand: clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem);
+
+  --leading-body: 1.6;
+  --leading-heading: 1.2;
+  --leading-display: 1.05;
+  --measure-prose: 70ch;
+
+  /* Supplied faces are 400/600/700 only (src/app/layout.tsx). */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --font-code: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    "Fira Code", Menlo, Consolas, monospace;
+
+  /* Legacy fluid steps. Still used by blog prose, the admin and a few inline
+     styles; public coastal surfaces use the --type-* roles above. Remove each
+     step once its last consumer migrates. */
+  --step--1: clamp(0.82rem, 0.8rem + 0.18vw, 0.95rem); /* small text */
+  --step-0: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem); /* base paragraph */
+  --step-1: clamp(1.1rem, 1rem + 0.35vw, 1.25rem); /* smaller h4 */
+  --step-2: clamp(1.25rem, 1.1rem + 0.55vw, 1.45rem); /* smaller h3 */
+  --step-3: clamp(1.45rem, 1.2rem + 1vw, 1.75rem); /* smaller h2 */
+  --step-4: clamp(2rem, 1.45rem + 2.3vw, 2.5rem); /* h1 stays same */
+
+  /* ── Geometry ── */
+  --radius: 12px;
+  --radius-media: 20px;
+  --radius-control: 12px;
+  --radius-pill: 999px;
+
+  /* ── Motion ── */
+  --motion-fast: 160ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. THEME OVERRIDES
+   ═══════════════════════════════════════════════════════════════════════════ */
 .dark {
   --color-base: #0b0d10;
   --color-panel: #111418;
@@ -88,6 +135,9 @@
   --color-border: #1f242b;
   --color-focus-ring: #ffffff; /* near-white — high contrast on dark backgrounds */
 
+  --color-danger: #ffabab;
+  --color-warn: #fbbf24;
+
   /* Sidebar variables - dark mode */
   --sidebar: #111418;
   --sidebar-foreground: #f3f4f6;
@@ -99,17 +149,18 @@
   --sidebar-ring: #6b7280;
 }
 
-/* Coastal theme SSOT. Apply the scope to page roots AND portaled surfaces. */
+/* Coastal theme. Apply the scope to page roots AND portaled surfaces. */
 [data-coastal-theme],
 body:has([data-coastal-page]) {
-  --coast-base: #f6f5f0;
+  --coast-base: var(--coast-cream);
   --coast-panel: #eeeee6;
   --coast-soft: #e8eff0;
-  --coast-ink: #173f4a;
-  --coast-muted: #53676a;
-  --coast-accent: #235967;
-  --coast-on-accent: #f8fbfa;
+  --coast-ink: var(--coast-deep);
+  --coast-muted: var(--coast-stone);
+  --coast-accent: var(--coast-teal);
+  --coast-on-accent: var(--coast-foam);
   --coast-line: #d4ddda;
+  --coast-control-line: #708b90;
   --color-base: var(--coast-base);
   --color-panel: var(--coast-panel);
   --color-inner-card: var(--coast-soft);
@@ -121,15 +172,6 @@ body:has([data-coastal-page]) {
   --color-border: var(--coast-line);
   --color-surface-hover: var(--coast-soft);
   --color-focus-ring: var(--coast-accent);
-  --coast-control-line: #708b90;
-  --type-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-  --type-heading: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
-  --type-display: clamp(2.5rem, 1.5rem + 5vw, 6rem);
-  --radius-media: 20px;
-  --radius-control: 12px;
-  --radius-pill: 999px;
-  --motion-fast: 160ms;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dark [data-coastal-theme],
 .dark body:has([data-coastal-page]) {
@@ -144,69 +186,135 @@ body:has([data-coastal-page]) {
   --coast-control-line: #779298;
 }
 
-html,
-body {
-  height: 100%;
-  font-family: var(--font-interphases), ui-sans-serif, system-ui;
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. TAILWIND THEME MAPPINGS
+   ═══════════════════════════════════════════════════════════════════════════ */
+@theme inline {
+  --font-sans: var(--font-interphases), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-code);
+
+  --text-caption: var(--type-caption);
+  --text-caption--line-height: 1.5;
+  --text-body: var(--type-body);
+  --text-body--line-height: var(--leading-body);
+  --text-heading: var(--type-heading);
+  --text-heading--line-height: var(--leading-heading);
+  --text-display: var(--type-display);
+  --text-display--line-height: var(--leading-display);
+
+  /* The site's "small" size has always been the fluid --step--1 (a hand-made
+     .text-sm used to override Tailwind's). Configure the stock utility instead
+     of redefining it. */
+  --text-sm: var(--step--1);
+  --text-sm--line-height: 1.5;
+
+  /* Same for rounded-lg: the site's large radius is --radius (12px). */
+  --radius-lg: var(--radius);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Typography scale utilities */
-.site-title {
-  font-size: var(--step-2);
-  line-height: 1.2;
-  font-weight: var(--weight-semibold);
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. DOCUMENT DEFAULTS
+   Layered so Tailwind utilities and component classes can override them.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+  html,
+  body {
+    height: 100%;
+    font-family: var(--font-interphases), ui-sans-serif, system-ui;
+  }
+
+  body {
+    background-color: var(--color-base);
+    color: var(--color-ink);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    font-weight: var(--weight-semibold);
+  }
+
+  h2 {
+    font-size: var(--step-3);
+    line-height: 1.15;
+    font-weight: var(--weight-semibold);
+  }
+
+  h3 {
+    font-size: var(--step-2);
+    line-height: 1.2;
+    font-weight: var(--weight-semibold);
+  }
+
+  h4 {
+    font-size: var(--step-1);
+    line-height: 1.3;
+    font-weight: var(--weight-regular);
+  }
+
+  p {
+    font-size: var(--step-0);
+    line-height: 1.6;
+    font-weight: var(--weight-regular);
+  }
+
+  /* Tailwind v4's Preflight sets `button { cursor: default }`. That not only
+     shows the wrong cursor on every button/tab, it makes taps unreliable on
+     iOS Safari (which needs cursor:pointer to fire click on non-anchor
+     elements) — that's why the /projects App/Website toggle "did nothing" in
+     Safari. Restore pointer on interactive elements. */
+  button:not(:disabled),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  label[for],
+  summary {
+    cursor: pointer;
+  }
 }
 
-h1 {
-  font-size: var(--step-4);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  font-weight: var(--weight-semibold);
+/* ═══════════════════════════════════════════════════════════════════════════
+   5. PROJECT UTILITIES
+   Registered with @utility so they sit in Tailwind's utilities layer and
+   support variants (hover:text-ink, md:bg-panel, …).
+   ═══════════════════════════════════════════════════════════════════════════ */
+@utility bg-base {
+  background-color: var(--color-base);
+}
+@utility bg-panel {
+  background-color: var(--color-panel);
+}
+@utility text-ink {
+  color: var(--color-ink);
+}
+@utility text-muted {
+  color: var(--color-muted);
+}
+@utility text-foreground {
+  color: var(--color-foreground);
 }
 
-h2 {
-  font-size: var(--step-3);
-  line-height: 1.15;
-  font-weight: var(--weight-semibold);
-}
-
-h3 {
-  font-size: var(--step-2);
-  line-height: 1.2;
-  font-weight: var(--weight-semibold);
-}
-
-h4 {
-  font-size: var(--step-1);
-  line-height: 1.3;
-  font-weight: var(--weight-regular);
-}
-
-p {
-  font-size: var(--step-0);
-  line-height: 1.6;
-  font-weight: var(--weight-regular);
-}
-
-.text-sm {
-  font-size: var(--step--1);
-  line-height: 1.5;
-  font-weight: var(--weight-regular);
-}
-
-.shadow-soft {
+@utility shadow-soft {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
 }
 
-.shadow-glow {
+@utility shadow-glow {
   box-shadow:
     0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent),
     0 12px 40px color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 /* Subtle, accent-tinted passive shadow (no green background) */
-.shadow-passive {
-  /* mirrors your exact numbers, but uses --color-accent via color-mix */
+@utility shadow-passive {
   box-shadow:
     0 0 0 0 rgba(0, 0, 0, 0),
     0 0 0 0 rgba(0, 0, 0, 0),
@@ -215,7 +323,8 @@ p {
       color-mix(in srgb, var(--color-accent) 2.4%, transparent);
 }
 
-/* Your hover glow, driven by --color-accent (green glow only on hover) */
+/* Hover glow, driven by --color-accent. Kept as a hand-written hover rule
+   because it is stronger than the resting shadow-glow. */
 .hover\:shadow-glow:hover {
   box-shadow:
     0 0 0 2px color-mix(in srgb, var(--color-accent) 100%, transparent),
@@ -229,31 +338,23 @@ p {
   box-shadow: none;
 }
 
-/* Your transition utility */
-.transition {
-  transition-property:
-    color, background-color, border-color, text-decoration-color, fill, stroke,
-    opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. SHARED COMPONENT RULES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.site-title {
+  font-size: var(--step-2);
+  line-height: 1.2;
+  font-weight: var(--weight-semibold);
 }
 
-/* Helpers you're already using */
-.bg-panel {
-  background-color: var(--color-panel);
-}
-.rounded-lg {
-  border-radius: var(--radius, 12px);
-}
-
-/* Nav links: muted → ink on hover, dotted green underline, subtle glow */
+/* Nav links: muted → ink on hover, dotted accent underline, subtle glow */
 .nav-link {
   color: var(--color-ink);
   text-decoration: none;
   border-radius: 6px;
   transition:
-    color 150ms cubic-bezier(0.4, 0, 0.2, 1),
-    text-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    color 150ms var(--ease-standard),
+    text-shadow 150ms var(--ease-standard);
 }
 .nav-link:hover {
   color: var(--color-ink);
@@ -270,24 +371,11 @@ p {
   color: var(--color-ink);
 }
 
-.bg-base {
-  background-color: var(--color-base);
-}
-.text-ink {
-  color: var(--color-ink);
-}
-.text-muted {
-  color: var(--color-muted);
-}
-.text-foreground {
-  color: var(--color-foreground);
-}
-
 @layer components {
   /* Card border/background as specified */
   .card {
     border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius, 12px);
+    border-radius: var(--radius);
     background: var(--color-panel);
   }
 }
@@ -337,30 +425,8 @@ p {
 .image-overlay-text {
   color: #ffffff; /* pure white readable on light images */
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); /* soft dark halo for contrast */
-  font-weight: 500;
+  font-weight: var(--weight-regular);
   border: none !important; /* remove borders/rings universally */
-}
-
-@layer base {
-  /* Tailwind v4's Preflight sets `button { cursor: default }`. That not only
-     shows the wrong cursor on every button/tab, it makes taps unreliable on
-     iOS Safari (which needs cursor:pointer to fire click on non-anchor
-     elements) — that's why the /projects App/Website toggle "did nothing" in
-     Safari. Restore pointer on interactive elements. */
-  button:not(:disabled),
-  [role="tab"]:not([aria-disabled="true"]),
-  [role="button"]:not([aria-disabled="true"]),
-  label[for],
-  summary {
-    cursor: pointer;
-  }
-
-
-}
-
-body {
-  background-color: var(--color-base);
-  color: var(--color-ink);
 }
 
 /* Client logo filters - dark in light mode, white in dark mode */
@@ -368,7 +434,6 @@ body {
   filter: grayscale(1) brightness(0.3) contrast(1.25);
 }
 
-html.dark .client-logo,
 .dark .client-logo {
   filter: brightness(0) invert(1);
 }
@@ -519,7 +584,7 @@ html.dark .client-logo,
 
 /* inline code */
 .blog-content code {
-  font-family: ui-monospace, "Cascadia Code", "Fira Code", monospace;
+  font-family: var(--font-code);
   font-size: 0.875em;
   background: var(--color-muted-accent);
   border: 1px solid var(--color-border);
@@ -675,4 +740,28 @@ html.dark .client-logo,
 .image-overlay-text:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — global coverage
+   Module-level rules cover their own components; these cover what they
+   cannot reach: portaled coastal surfaces (menus, drawers, dialogs mounted
+   outside .coastalPage) and the global marquee. Durations are shortened
+   rather than removed so Radix/Vaul still receive their end events.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  [data-coastal-theme] *,
+  [data-coastal-theme] *::before,
+  [data-coastal-theme] *::after,
+  body:has([data-coastal-page]) [data-vaul-drawer],
+  body:has([data-coastal-page]) [data-vaul-drawer] *,
+  body:has([data-coastal-page]) [data-radix-popper-content-wrapper] * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-inner {
+    animation: none;
+  }
 }
