@@ -24,8 +24,8 @@ export const ValidationFeedback: React.FC<ValidationFeedbackProps> = ({
           key={`error-${i}`}
           className="p-3 rounded-lg border bg-red-500/10 border-red-500/30 flex items-start gap-2"
         >
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-700 dark:text-red-400" />
-          <p className="text-sm text-red-700 dark:text-red-400">{error}</p>
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-(--color-danger)" />
+          <p className="text-sm text-(--color-danger)">{error}</p>
         </div>
       ))}
 

@@ -387,7 +387,7 @@ const ConferencesTabEnhanced = () => {
                         onClick={() => setDeleteConfirm(selected._id)}
                         variant="outline"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -412,7 +412,7 @@ const ConferencesTabEnhanced = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-ink">
-                    Conference Name <span className="text-red-500">*</span>
+                    Conference Name <span className="text-(--color-danger)">*</span>
                   </label>
                   <Input
                     value={formData.name}
@@ -612,7 +612,7 @@ const ConferencesTabEnhanced = () => {
               <Button
                 onClick={() => handleDelete(deleteConfirm as Id<"conferences">)}
                 variant="outline"
-                className="flex-1 text-red-500"
+                className="flex-1 text-(--color-danger)"
               >
                 Delete
               </Button>

@@ -569,7 +569,7 @@ const MediaTabEnhanced = () => {
               <Button
                 onClick={() => handleDeleteImage(deleteConfirm as Id<"media">)}
                 variant="outline"
-                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-400 border-red-500/30"
+                className="flex-1 text-(--color-danger) hover:bg-red-500/10 hover:text-(--color-danger) border-red-500/30"
               >
                 Delete
               </Button>

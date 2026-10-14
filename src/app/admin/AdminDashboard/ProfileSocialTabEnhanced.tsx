@@ -560,7 +560,7 @@ const LinksGroup = ({
                           onClick={() => setDeleteConfirm(selected._id)}
                           variant="outline"
                           size="sm"
-                          className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                          className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -584,7 +584,7 @@ const LinksGroup = ({
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-ink">
-                      Label <span className="text-red-500">*</span>
+                      Label <span className="text-(--color-danger)">*</span>
                     </label>
                     <Input
                       value={formData.label}
@@ -595,7 +595,7 @@ const LinksGroup = ({
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-ink">
-                      URL <span className="text-red-500">*</span>
+                      URL <span className="text-(--color-danger)">*</span>
                     </label>
                     <Input
                       value={formData.href}
@@ -718,7 +718,7 @@ const LinksGroup = ({
               <Button
                 onClick={() => handleDelete(deleteConfirm)}
                 variant="outline"
-                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                className="flex-1 text-(--color-danger) hover:bg-red-500/10 hover:text-(--color-danger)"
               >
                 Delete
               </Button>
@@ -907,7 +907,7 @@ const ProfileSocialTabEnhanced = () => {
                           showError("Failed to remove photo");
                         }
                       }}
-                      className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1 mt-2"
+                      className="text-xs text-(--color-danger) hover:text-(--color-danger) flex items-center gap-1 mt-2"
                     >
                       <Trash className="w-3 h-3" />
                       Remove photo

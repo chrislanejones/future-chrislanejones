@@ -543,7 +543,7 @@ const SettingsTabEnhanced = () => {
                           log.type === "success"
                             ? "text-emerald-500"
                             : log.type === "error"
-                              ? "text-red-500"
+                              ? "text-(--color-danger)"
                               : "text-muted"
                         }`}
                       >
@@ -714,7 +714,7 @@ const SettingsTabEnhanced = () => {
                       </button>
                       <button
                         onClick={() => setDeleteRedirectConfirm(r._id)}
-                        className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-500/10 transition"
+                        className="p-1.5 rounded-lg text-muted hover:text-(--color-danger) hover:bg-red-500/10 transition"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -745,7 +745,7 @@ const SettingsTabEnhanced = () => {
                     }
                   }}
                   variant="outline"
-                  className="flex-1 text-red-500"
+                  className="flex-1 text-(--color-danger)"
                 >
                   Delete
                 </Button>

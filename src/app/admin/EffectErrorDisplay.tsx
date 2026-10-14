@@ -41,7 +41,7 @@ export const EffectErrorDisplay: React.FC<EffectErrorDisplayProps> = ({
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Settings Error",
       },
       BackupError: {
@@ -62,7 +62,7 @@ export const EffectErrorDisplay: React.FC<EffectErrorDisplayProps> = ({
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Error",
       },
     };
