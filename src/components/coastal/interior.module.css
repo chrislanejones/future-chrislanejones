@@ -101,7 +101,7 @@
   align-items: center;
   gap: 10px;
   color: var(--coast-accent);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
   text-underline-offset: 5px;
 }
 .textLink:hover {
