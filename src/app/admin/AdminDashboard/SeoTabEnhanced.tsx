@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { getPageName } from "../components/page-name";
+import { SITE_URL } from "@/lib/structured-data";
 
 // Derived from the Convex schema (SSOT) instead of hand-rolled shapes.
 type SEOEntry = Doc<"seoMetadata">;
@@ -289,7 +290,7 @@ export const SeoTabEnhanced = () => {
   const previewUrl = (() => {
     const c = formData.canonicalUrl;
     if (c.startsWith("http")) return c;
-    return `https://www.chrislanejones.com${c || formData.path}`;
+    return `${SITE_URL}${c || formData.path}`;
   })();
 
   const calculateSEOScore = () => {

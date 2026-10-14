@@ -2,8 +2,9 @@ import { MetadataRoute } from 'next'
 import { ConvexHttpClient } from 'convex/browser'
 import { api } from '../../convex/_generated/api'
 import { projectHref } from '@/lib/projects'
+import { SITE_URL } from '@/lib/structured-data'
 
-const BASE_URL = 'https://www.chrislanejones.com'
+const BASE_URL = SITE_URL
 const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_SITE_URL
 
 export const revalidate = 60

@@ -7,9 +7,9 @@ import BlogPostPage from "./BlogPostPage";
 import { jsonLd as toJsonLd } from "@/lib/structured-data";
 import { DEFAULT_OG_IMAGE } from "@/lib/seo";
 import { renderPostHtml } from "@/lib/blog-content";
+import { SITE_URL } from "@/lib/structured-data";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
-const SITE_URL = "https://www.chrislanejones.com";
 
 export const revalidate = 60;
 

@@ -22,12 +22,12 @@ export const metadata: Metadata = {
   },
   description:
     PERSON.description,
-  authors: [{ name: "Chris Lane Jones", url: "https://www.chrislanejones.com" }],
+  authors: [{ name: "Chris Lane Jones", url: SITE_URL }],
   creator: "Chris Lane Jones",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.chrislanejones.com",
+    url: SITE_URL,
     siteName: "Chris Lane Jones",
     title: HOME_TITLE,
     description:

@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
+import { SITE_URL } from "@/lib/structured-data";
 
 interface DataSource {
   id: string;
@@ -800,7 +801,7 @@ const SettingsTabEnhanced = () => {
 {`User-agent: *
 Allow: /
 
-Sitemap: https://www.chrislanejones.com/sitemap.xml`}
+Sitemap: ${SITE_URL}/sitemap.xml`}
                 </pre>
                 <a
                   href="/robots.txt"
