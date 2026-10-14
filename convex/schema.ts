@@ -8,18 +8,6 @@ export default defineSchema({
     avatar: v.optional(v.string()),
     email: v.optional(v.string()),
     location: v.optional(v.string()),
-    // Deprecated: superseded by the `socialLinks` TABLE below, which supports
-    // any number of platforms plus per-surface ordering. Kept optional so the
-    // existing production document still validates; nothing writes it now.
-    socialLinks: v.optional(
-      v.object({
-        github: v.optional(v.string()),
-        linkedin: v.optional(v.string()),
-        twitter: v.optional(v.string()),
-        codepen: v.optional(v.string()),
-        youtube: v.optional(v.string()),
-      }),
-    ),
     updatedAt: v.number(),
   }),
 
