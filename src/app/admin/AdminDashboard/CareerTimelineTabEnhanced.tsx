@@ -31,6 +31,7 @@ import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/dialog";
+import { ResumeFilesPanel } from "../components/ResumeFilesPanel";
 
 // Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
 type CareerEvent = Doc<"careerTimeline">;
@@ -228,7 +229,9 @@ const CareerTimelineTabEnhanced = () => {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-6 h-full">
+    <div className="flex flex-col gap-6 h-full">
+    <ResumeFilesPanel />
+    <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
       {/* Status Messages */}
       {error && (
         <div className="col-span-3">
@@ -499,6 +502,7 @@ const CareerTimelineTabEnhanced = () => {
           onConfirm={() => handleDelete(deleteConfirm as Id<"careerTimeline">)}
         />
       )}
+    </div>
     </div>
   );
 };
