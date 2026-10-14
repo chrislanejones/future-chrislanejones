@@ -15,6 +15,7 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
@@ -201,7 +202,7 @@ const ClientsTabEnhanced = () => {
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-(--color-ink)">Clients</h3>
-          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2">
+          <Button onClick={handleCreateNew} variant="primary" size="sm" className="gap-2">
             <Plus className="w-4 h-4" />
             New
           </Button>
@@ -301,12 +302,12 @@ const ClientsTabEnhanced = () => {
               <div className="flex items-center gap-2 shrink-0">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -319,7 +320,7 @@ const ClientsTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -329,7 +330,7 @@ const ClientsTabEnhanced = () => {
                     {selectedClient && (
                       <Button
                         onClick={() => setDeleteConfirm(selectedClient._id)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
@@ -442,28 +443,13 @@ const ClientsTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Client?</h3>
-            <p className="text-muted mb-6">This cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDelete(deleteConfirm as Id<"clients">)}
-                variant="outline"
-                className="flex-1 text-(--color-danger)"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Client?"
+          description="This cannot be undone."
+          onConfirm={() => handleDelete(deleteConfirm as Id<"clients">)}
+        />
       )}
 
       <MediaDrawer

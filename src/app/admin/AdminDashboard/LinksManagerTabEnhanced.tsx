@@ -7,7 +7,6 @@ import {
   Edit2,
   Trash2,
   Save,
-  X,
   Star,
   GripVertical,
   ExternalLink,
@@ -19,6 +18,7 @@ import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog, Modal } from "@/components/ui/dialog";
 
 // Derived from the Convex schema (SSOT). The hand-rolled copy was missing the
 // schema's screenshotUrl / screenshotUpdatedAt fields.
@@ -48,6 +48,9 @@ const LinksManagerTabEnhanced = () => {
   const [error, setError] = useState<Error | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [deleteCategoryConfirm, setDeleteCategoryConfirm] = useState<
+    string | null
+  >(null);
 
   const [formData, setFormData] = useState({
     href: "",
@@ -174,19 +177,13 @@ const LinksManagerTabEnhanced = () => {
 
   const handleDeleteCategory = async (category: string) => {
     try {
-      const count = getLinksInCategory(category).length;
-      if (
-        confirm(
-          `Delete "${category}" and all ${count} link(s)? This cannot be undone.`
-        )
-      ) {
-        await deleteCategory({ category });
-        setSelectedCategory(
-          categories.find((c) => c.category !== category)?.category || ""
-        );
-        setSuccess(`Category "${category}" deleted!`);
-        setTimeout(() => setSuccess(null), 3000);
-      }
+      await deleteCategory({ category });
+      setDeleteCategoryConfirm(null);
+      setSelectedCategory(
+        categories.find((c) => c.category !== category)?.category || ""
+      );
+      setSuccess(`Category "${category}" deleted!`);
+      setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("Failed to delete category")
@@ -265,229 +262,209 @@ const LinksManagerTabEnhanced = () => {
       )}
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto border border-border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-ink">
-                {isEditing ? "Edit Link" : "Add Link"}
-              </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="p-2 text-muted hover:text-ink transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <Modal
+        open={showModal}
+        onOpenChange={setShowModal}
+        title={isEditing ? "Edit Link" : "Add Link"}
+        className="max-w-md"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              URL *
+            </label>
+            <input
+              type="url"
+              value={formData.href}
+              onChange={(e) =>
+                setFormData({ ...formData, href: e.target.value })
+              }
+              placeholder="https://example.com"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  URL *
-                </label>
-                <input
-                  type="url"
-                  value={formData.href}
-                  onChange={(e) =>
-                    setFormData({ ...formData, href: e.target.value })
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Label *
+            </label>
+            <input
+              type="text"
+              value={formData.label}
+              onChange={(e) =>
+                setFormData({ ...formData, label: e.target.value })
+              }
+              placeholder="My Link"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Favicon URL
+            </label>
+            <input
+              type="url"
+              value={formData.favicon}
+              onChange={(e) =>
+                setFormData({ ...formData, favicon: e.target.value })
+              }
+              placeholder="https://example.com/favicon.ico"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Category
+            </label>
+            <select
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              {categories.map((cat) => (
+                <option key={cat.category} value={cat.category}>
+                  {cat.category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Color
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {CHROME_COLORS.map((color) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  aria-label={color.name}
+                  onClick={() =>
+                    setFormData({ ...formData, color: color.id })
                   }
-                  placeholder="https://example.com"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                  className={`${color.class} px-3 py-2 rounded-lg transition ${
+                    formData.color === color.id
+                      ? "ring-2 ring-accent"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                  title={color.name}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Label *
-                </label>
-                <input
-                  type="text"
-                  value={formData.label}
-                  onChange={(e) =>
-                    setFormData({ ...formData, label: e.target.value })
-                  }
-                  placeholder="My Link"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Favicon URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.favicon}
-                  onChange={(e) =>
-                    setFormData({ ...formData, favicon: e.target.value })
-                  }
-                  placeholder="https://example.com/favicon.ico"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) =>
-                    setFormData({ ...formData, category: e.target.value })
-                  }
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink focus:outline-none focus:ring-2 focus:ring-accent"
-                >
-                  {categories.map((cat) => (
-                    <option key={cat.category} value={cat.category}>
-                      {cat.category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Color
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {CHROME_COLORS.map((color) => (
-                    <button
-                      key={color.id}
-                      onClick={() =>
-                        setFormData({ ...formData, color: color.id })
-                      }
-                      className={`${color.class} px-3 py-2 rounded-lg transition ${
-                        formData.color === color.id
-                          ? "ring-2 ring-accent"
-                          : "opacity-70 hover:opacity-100"
-                      }`}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button
-                  onClick={handleSaveLink}
-                  variant="accent"
-                  className="flex-1 gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Save
-                </Button>
-                <Button
-                  onClick={() => setShowModal(false)}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button
+              onClick={handleSaveLink}
+              variant="primary"
+              className="flex-1 gap-2"
+            >
+              <Save className="w-4 h-4" />
+              Save
+            </Button>
+            <Button
+              onClick={() => setShowModal(false)}
+              variant="secondary"
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-      )}
+      </Modal>
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Link?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDeleteLink(deleteConfirm)}
-                variant="outline"
-                className="flex-1 text-(--color-danger) hover:bg-red-500/10 hover:text-(--color-danger)"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Link?"
+          onConfirm={() => handleDeleteLink(deleteConfirm)}
+        />
+      )}
+
+      {deleteCategoryConfirm && (
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteCategoryConfirm(null)}
+          title="Delete Category?"
+          description={`Delete "${deleteCategoryConfirm}" and all ${
+            getLinksInCategory(deleteCategoryConfirm).length
+          } link(s)? This cannot be undone.`}
+          onConfirm={() => handleDeleteCategory(deleteCategoryConfirm)}
+        />
       )}
 
       {/* Add Category Modal */}
-      {showCategoryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-panel rounded-2xl p-6 max-w-md w-full border border-border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-ink">Add Category</h3>
-              <button
-                onClick={() => setShowCategoryModal(false)}
-                className="p-2 text-muted hover:text-ink transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <Modal
+        open={showCategoryModal}
+        onOpenChange={setShowCategoryModal}
+        title="Add Category"
+        className="max-w-md"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Category Name *
+            </label>
+            <input
+              type="text"
+              value={categoryFormData.name}
+              onChange={(e) =>
+                setCategoryFormData({ ...categoryFormData, name: e.target.value })
+              }
+              placeholder="My Category"
+              className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Category Name *
-                </label>
-                <input
-                  type="text"
-                  value={categoryFormData.name}
-                  onChange={(e) =>
-                    setCategoryFormData({ ...categoryFormData, name: e.target.value })
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Color
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {CHROME_COLORS.map((color) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  aria-label={color.name}
+                  onClick={() =>
+                    setCategoryFormData({ ...categoryFormData, color: color.id })
                   }
-                  placeholder="My Category"
-                  className="w-full px-3 py-2 rounded-lg bg-base border border-border text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                  className={`${color.class} px-3 py-2 rounded-lg transition ${
+                    categoryFormData.color === color.id
+                      ? "ring-2 ring-accent"
+                      : "opacity-70 hover:opacity-100"
+                  }`}
+                  title={color.name}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Color
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {CHROME_COLORS.map((color) => (
-                    <button
-                      key={color.id}
-                      onClick={() =>
-                        setCategoryFormData({ ...categoryFormData, color: color.id })
-                      }
-                      className={`${color.class} px-3 py-2 rounded-lg transition ${
-                        categoryFormData.color === color.id
-                          ? "ring-2 ring-accent"
-                          : "opacity-70 hover:opacity-100"
-                      }`}
-                      title={color.name}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <Button
-                  onClick={handleSaveCategory}
-                  variant="accent"
-                  className="flex-1 gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Create Category
-                </Button>
-                <Button
-                  onClick={() => setShowCategoryModal(false)}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button
+              onClick={handleSaveCategory}
+              variant="primary"
+              className="flex-1 gap-2"
+            >
+              <Save className="w-4 h-4" />
+              Create Category
+            </Button>
+            <Button
+              onClick={() => setShowCategoryModal(false)}
+              variant="secondary"
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
-      )}
+      </Modal>
 
       {/* Main Grid */}
       <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
@@ -497,7 +474,7 @@ const LinksManagerTabEnhanced = () => {
             <h3 className="font-semibold text-(--color-ink)">Categories</h3>
             <Button
               onClick={handleOpenCategoryModal}
-              variant="outline"
+              variant="secondary"
               size="sm"
               className="gap-1 text-xs"
             >
@@ -545,17 +522,19 @@ const LinksManagerTabEnhanced = () => {
             <div className="flex items-center gap-2">
               {selectedCategory && (
                 <Button
-                  onClick={() => handleDeleteCategory(selectedCategory)}
-                  className="p-2 text-(--color-danger) hover:bg-red-500/10 rounded-lg transition"
+                  onClick={() => setDeleteCategoryConfirm(selectedCategory)}
+                  variant="ghost"
+                  size="icon"
+                  className="text-(--color-danger) hover:bg-(--color-danger)/10"
+                  aria-label="Delete category"
                   title="Delete category"
-                  variant="outline"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" aria-hidden="true" />
                 </Button>
               )}
               <Button
                 onClick={() => handleOpenModal()}
-                variant="outline"
+                variant="secondary"
                 className="gap-2"
                 disabled={!selectedCategory}
               >
@@ -625,16 +604,18 @@ const LinksManagerTabEnhanced = () => {
                         variant="ghost"
                         size="sm"
                         className="p-2"
+                        aria-label={`Edit ${link.label}`}
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-4 h-4" aria-hidden="true" />
                       </Button>
                       <Button
                         onClick={() => setDeleteConfirm(link._id)}
                         variant="ghost"
                         size="sm"
-                        className="p-2 text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
+                        className="p-2 text-(--color-danger) hover:bg-(--color-danger)/10"
+                        aria-label={`Delete ${link.label}`}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>

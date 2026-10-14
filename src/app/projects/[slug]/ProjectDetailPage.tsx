@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
 import { BeachBanner } from "@/components/coastal/beach-banner";
+import { Button } from "@/components/ui/button";
 import { ProjectCard, type ProjectCardData } from "@/components/coastal/project-card";
 import { ProjectPreview } from "@/components/coastal/project-preview";
 import { projectPresentation } from "@/data/project-presentation";
@@ -79,20 +80,29 @@ export default function ProjectDetailPage({ project, projects }: { project: Proj
           )}
           {links.length > 0 && (
             <div className={styles.projectLinks}>
-              {links.map((link) => (
-                <a
-                  key={link.key}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={link.key === "site" ? styles.primaryButton : styles.textLink}
-                  aria-label={link.key === "site" ? `Visit ${title} (opens in a new tab)` : `${title} on ${link.label} (opens in a new tab)`}
-                >
-                  {link.key !== "site" && <SocialIcon iconKey={link.key} size={18} />}
-                  {link.label}
-                  <ArrowUpRight size={18} aria-hidden="true" />
-                </a>
-              ))}
+              {links.map((link) => {
+                const anchor = (
+                  <a
+                    key={link.key}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={link.key === "site" ? undefined : styles.textLink}
+                    aria-label={link.key === "site" ? `Visit ${title} (opens in a new tab)` : `${title} on ${link.label} (opens in a new tab)`}
+                  >
+                    {link.key !== "site" && <SocialIcon iconKey={link.key} size={18} />}
+                    {link.label}
+                    <ArrowUpRight size={18} aria-hidden="true" />
+                  </a>
+                );
+                return link.key === "site" ? (
+                  <Button key={link.key} asChild variant="pill" size="lg">
+                    {anchor}
+                  </Button>
+                ) : (
+                  anchor
+                );
+              })}
             </div>
           )}
         </div>

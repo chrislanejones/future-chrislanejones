@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUploadThing } from "@/utils/uploadthing";
@@ -47,6 +48,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allMedia = useQuery(api.media.getAll) ?? [];
@@ -136,7 +138,7 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                 </div>
                 <Button
                   onClick={() => fileInputRef.current?.click()}
-                  variant="accent"
+                  variant="primary"
                   className="w-full gap-2"
                   disabled={isUploading}
                 >
@@ -231,22 +233,28 @@ export const MediaDrawer: React.FC<MediaDrawerProps> = ({
                   Use This Image
                 </Button>
                 <Button
-                  onClick={async () => {
-                    if (confirm("Delete permanently?")) {
-                      try {
-                        await deleteMedia({ id: selectedItem._id });
-                        setSelectedItem(null);
-                      } catch (err) {
-                        console.error("Failed to delete media:", err);
-                      }
-                    }
-                  }}
+                  onClick={() => setConfirmDelete(true)}
                   variant="ghost"
                   className="w-full text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10 gap-2"
                 >
                   <Trash2 className="w-4 h-4" />
                   Delete Permanently
                 </Button>
+                <ConfirmDialog
+                  open={confirmDelete}
+                  onOpenChange={setConfirmDelete}
+                  title="Delete permanently?"
+                  description="This removes the image from the media library. This action cannot be undone."
+                  onConfirm={async () => {
+                    try {
+                      await deleteMedia({ id: selectedItem._id });
+                      setConfirmDelete(false);
+                      setSelectedItem(null);
+                    } catch (err) {
+                      console.error("Failed to delete media:", err);
+                    }
+                  }}
+                />
               </div>
             )}
           </aside>

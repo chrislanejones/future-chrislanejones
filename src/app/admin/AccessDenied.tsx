@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignOutButton } from "@clerk/nextjs";
 import { ShieldAlert } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 // Shown by the admin layout when a signed-in Clerk user is not on the owner
 // allowlist. The Convex functions reject them anyway; this keeps the dashboard
 // shell from rendering at all.
@@ -19,12 +20,9 @@ export default function AccessDenied() {
         </p>
         <div className="flex gap-3">
           <SignOutButton redirectUrl="/">
-            <button
-              type="button"
-              className="px-4 py-2 rounded-md bg-accent text-white font-medium hover:bg-accent/80 transition"
-            >
+            <Button variant="primary" className="font-medium">
               Sign out
-            </button>
+            </Button>
           </SignOutButton>
           <Link
             href="/"

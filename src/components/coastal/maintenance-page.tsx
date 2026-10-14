@@ -12,6 +12,7 @@ import {
 import ContactForm from "@/components/page/contact-form";
 import ClientSliderContent from "@/components/main/client-slider-content";
 import styles from "./interior.module.css";
+import { Button } from "@/components/ui/button";
 
 type Service = { title: string; description: string; details: string };
 const icons = [Code2, ShieldCheck, Wrench, Gauge, ChartNoAxesCombined, MapPin];
@@ -53,9 +54,11 @@ export function MaintenancePage({
             {kind === "React" ? "application" : "website"}.
           </p>
           <div className={styles.actions}>
-            <a className={styles.action} href="#plans">
-              Explore the plans <ArrowUpRight aria-hidden="true" />
-            </a>
+            <Button asChild variant="pill">
+              <a href="#plans">
+                Explore the plans <ArrowUpRight aria-hidden="true" />
+              </a>
+            </Button>
           </div>
         </div>
       </section>
@@ -100,9 +103,11 @@ export function MaintenancePage({
                   </li>
                 ))}
               </ul>
-              <a className={styles.action} href="#contact">
-                Discuss a plan <ArrowUpRight aria-hidden="true" />
-              </a>
+              <Button asChild variant="pill">
+                <a href="#contact">
+                  Discuss a plan <ArrowUpRight aria-hidden="true" />
+                </a>
+              </Button>
             </div>
           ))}
         </div>

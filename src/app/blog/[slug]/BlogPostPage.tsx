@@ -16,6 +16,7 @@ import { CoastalPageShell } from "@/components/coastal/page-shell";
 import styles from "@/components/coastal/interior.module.css";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
@@ -144,7 +145,7 @@ export default function BlogPostPage({
             <p className="text-muted mb-8">
               The blog post you&apos;re looking for doesn&apos;t exist.
             </p>
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="secondary" size="sm">
               <Link href="/blog">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Blog
@@ -160,9 +161,7 @@ export default function BlogPostPage({
     return (
       <CoastalPageShell>
         <div className={styles.article}>
-          <div className="flex justify-center items-center py-12">
-            <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <Spinner label="Loading article…" />
         </div>
       </CoastalPageShell>
     );
@@ -218,7 +217,7 @@ export default function BlogPostPage({
       <div className={`${styles.content} ${styles.article}`}>
         {/* Back to Blog */}
         <div className="mb-8">
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="secondary" size="sm">
             <Link href="/blog">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -289,7 +288,7 @@ export default function BlogPostPage({
             <div className="mb-8">
               <Button
                 onClick={handleLike}
-                variant={userLikeStatus?.liked ? "base" : "outline"}
+                variant={userLikeStatus?.liked ? "neutral" : "secondary"}
                 size="lg"
                 className="gap-2"
               >
@@ -311,7 +310,7 @@ export default function BlogPostPage({
                 <h2 className="text-2xl">Comments ({comments?.length || 0})</h2>
                 <Button
                   onClick={() => setShowCommentForm(!showCommentForm)}
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                 >
                   Add Comment
@@ -393,7 +392,7 @@ export default function BlogPostPage({
                       </Button>
                       <Button
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => setShowCommentForm(false)}
                       >

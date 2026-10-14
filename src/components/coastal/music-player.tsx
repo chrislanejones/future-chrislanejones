@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import localFont from "next/font/local";
 import { Pause, Play, SkipForward, Volume2 } from "lucide-react";
 import styles from "./coastal.module.css";
+import { Button } from "@/components/ui/button";
 
 const radioScript = localFont({
   src: "../../../public/fonts/Yellowtail-Regular.woff2",
@@ -149,14 +150,14 @@ export function CoastalMusic() {
               <Play size={19} aria-hidden="true" />
             )}
           </button>
-          <button
-            type="button"
-            className={styles.circleButton}
+          <Button
+            variant="circle"
+            size="lg"
             onClick={next}
             aria-label="Next track"
           >
             <SkipForward size={19} aria-hidden="true" />
-          </button>
+          </Button>
         </div>
         {error && (
           <p role="alert" className={styles.audioError}>

@@ -17,8 +17,9 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog, Modal } from "@/components/ui/dialog";
 import Image from "next/image";
 import { MediaDrawer } from "../components/MediaDrawer";
 
@@ -220,7 +221,7 @@ const MediaTabEnhanced = () => {
   };
 
   if (!organizedMedia) {
-    return <LoadingSpinner message="Loading media..." />;
+    return <Spinner label="Loading media..." />;
   }
 
   const getCurrentImages = (): MediaFile[] => {
@@ -280,7 +281,10 @@ const MediaTabEnhanced = () => {
           {/* View Mode Toggle */}
           <div className="flex items-center gap-1 bg-(--color-muted-accent) rounded-lg p-1">
             <button
+              type="button"
               onClick={() => setViewMode("grid")}
+              aria-label="Grid view"
+              aria-pressed={viewMode === "grid"}
               className={`p-2 rounded transition ${
                 viewMode === "grid"
                   ? "bg-(--color-foreground) text-(--color-base)"
@@ -290,7 +294,10 @@ const MediaTabEnhanced = () => {
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={() => setViewMode("list")}
+              aria-label="List view"
+              aria-pressed={viewMode === "list"}
               className={`p-2 rounded transition ${
                 viewMode === "list"
                   ? "bg-(--color-foreground) text-(--color-base)"
@@ -316,7 +323,7 @@ const MediaTabEnhanced = () => {
         {/* Upload Button */}
         <div className="col-span-2 flex justify-end">
           <Button
-            variant="accent"
+            variant="primary"
             className="gap-2 w-full md:w-auto"
             onClick={() => {
               setSelectedGallerySlot(null);
@@ -530,15 +537,18 @@ const MediaTabEnhanced = () => {
                           <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
                             Replace
                           </span>
-                          <button
+                          <Button
+                            variant="destructive"
+                            size="icon-sm"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemoveGalleryImage(position);
                             }}
-                            className="p-1.5 bg-red-500 rounded hover:bg-red-600 transition"
+                            className="size-6"
+                            aria-label="Remove image from slot"
                           >
-                            <Trash2 className="w-3 h-3 text-white" />
-                          </button>
+                            <Trash2 className="w-3 h-3" aria-hidden="true" />
+                          </Button>
                         </div>
                       </>
                     ) : (
@@ -557,88 +567,74 @@ const MediaTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Image?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDeleteImage(deleteConfirm as Id<"media">)}
-                variant="outline"
-                className="flex-1 text-(--color-danger) hover:bg-red-500/10 hover:text-(--color-danger) border-red-500/30"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Image?"
+          onConfirm={() => handleDeleteImage(deleteConfirm as Id<"media">)}
+        />
       )}
 
       {/* Edit Image Metadata Modal */}
-      {isEditDrawerOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">
-              Edit Image Metadata
-            </h3>
+      <Modal
+        open={isEditDrawerOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsEditDrawerOpen(false);
+            setEditingImageId(null);
+          }
+        }}
+        title="Edit Image Metadata"
+        className="max-w-sm"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Alt Text
+            </label>
+            <input
+              type="text"
+              value={editImageAlt}
+              onChange={(e) => setEditImageAlt(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Describe the image..."
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Alt Text
-                </label>
-                <input
-                  type="text"
-                  value={editImageAlt}
-                  onChange={(e) => setEditImageAlt(e.target.value)}
-                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
-                  placeholder="Describe the image..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Filename
-                </label>
-                <input
-                  type="text"
-                  value={editImageFilename}
-                  onChange={(e) => setEditImageFilename(e.target.value)}
-                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
-                  placeholder="Image filename..."
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-2 mt-6">
-              <Button
-                onClick={handleSaveImageMetadata}
-                variant="accent"
-                className="flex-1"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsEditDrawerOpen(false);
-                  setEditingImageId(null);
-                }}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Filename
+            </label>
+            <input
+              type="text"
+              value={editImageFilename}
+              onChange={(e) => setEditImageFilename(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Image filename..."
+            />
           </div>
         </div>
-      )}
+
+        <div className="flex gap-2 mt-6">
+          <Button
+            onClick={handleSaveImageMetadata}
+            variant="primary"
+            className="flex-1"
+          >
+            Save
+          </Button>
+          <Button
+            onClick={() => {
+              setIsEditDrawerOpen(false);
+              setEditingImageId(null);
+            }}
+            variant="secondary"
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+        </div>
+      </Modal>
 
       {/* Media Drawer for Gallery Image Selection */}
       <MediaDrawer

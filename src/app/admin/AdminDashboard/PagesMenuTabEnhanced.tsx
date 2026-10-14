@@ -117,13 +117,16 @@ const DraggableExternalLinkItem = ({
         {link.isExternal && (
           <ExternalLink className="w-3 h-3 text-muted shrink-0" aria-hidden="true" />
         )}
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onClick={onDelete}
-          className="shrink-0 p-0.5 text-(--color-danger) opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          className="size-5 shrink-0 text-(--color-danger) opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:bg-(--color-danger)/10"
+          aria-label={`Delete "${link.label}"`}
           title={`Delete "${link.label}"`}
         >
           <Trash2 className="w-3 h-3" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -161,6 +164,7 @@ const ExternalLinksPanel = ({
         <h4 className="text-sm font-semibold text-(--color-ink)">External Links</h4>
         {!showForm && (
           <button
+            type="button"
             onClick={() => setShowForm(true)}
             className="flex items-center gap-1 text-xs text-accent hover:underline"
           >
@@ -207,24 +211,27 @@ const ExternalLinksPanel = ({
             Open in new tab
           </label>
           <div className="flex gap-2">
-            <button
+            <Button
               type="submit"
-              className="flex-1 px-2 py-1 text-xs bg-accent text-white rounded hover:opacity-90 transition-opacity"
+              variant="primary"
+              size="sm"
+              className="flex-1 h-7 px-2 text-xs"
             >
               Create Link
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => {
                 setShowForm(false);
                 setLabel("");
                 setHref("");
                 setIsExternal(false);
               }}
-              className="flex-1 px-2 py-1 text-xs border border-(--color-border) rounded hover:bg-(--color-muted-accent) transition-colors"
+              className="flex-1 h-7 px-2 text-xs"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </form>
       )}
@@ -277,13 +284,16 @@ const HeaderNavItemComponent = ({
           <GripVertical className="w-4 h-4 text-muted shrink-0 cursor-move" aria-hidden="true" />
           <span className="font-medium text-(--color-ink)">{item.label}</span>
         </div>
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onClick={onDelete}
-          className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          className="size-6 shrink-0 text-(--color-danger) opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:bg-(--color-danger)/10"
+          aria-label={`Delete "${item.label}"`}
           title={`Delete "${item.label}"`}
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
       {item.children && item.children.length > 0 && (
         <div className="ml-2 space-y-2 pt-2 border-t border-(--color-border)">
@@ -297,13 +307,16 @@ const HeaderNavItemComponent = ({
                   <GripVertical className="w-4 h-4 text-muted shrink-0" aria-hidden="true" />
                   <span>{child.label}</span>
                 </div>
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
                   onClick={() => onDeleteChild(child._id)}
-                  className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover/child:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  className="size-5 shrink-0 text-(--color-danger) opacity-0 group-hover/child:opacity-100 focus-visible:opacity-100 hover:bg-(--color-danger)/10"
+                  aria-label={`Delete "${child.label}"`}
                   title={`Delete "${child.label}"`}
                 >
                   <Trash2 className="w-3 h-3" aria-hidden="true" />
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -342,13 +355,16 @@ const FooterSectionComponent = ({
           <GripVertical className="w-4 h-4 text-muted shrink-0 cursor-move" aria-hidden="true" />
           <span className="font-medium text-(--color-ink)">{section.title}</span>
         </div>
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onClick={onDelete}
-          className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover:opacity-100 hover:bg-red-500/10 rounded transition-all"
+          className="size-6 shrink-0 text-(--color-danger) opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:bg-(--color-danger)/10"
+          aria-label={`Delete "${section.title}"`}
           title={`Delete "${section.title}"`}
         >
           <Trash2 className="w-4 h-4" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
 
       {section.links && section.links.length > 0 ? (
@@ -366,13 +382,16 @@ const FooterSectionComponent = ({
                     <span className="text-xs text-muted shrink-0">(ext)</span>
                   )}
                 </div>
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
                   onClick={() => onDeleteLink(link._id)}
-                  className="shrink-0 p-1 text-(--color-danger) opacity-0 group-hover/link:opacity-100 hover:bg-red-500/10 rounded transition-all"
+                  className="size-5 shrink-0 text-(--color-danger) opacity-0 group-hover/link:opacity-100 focus-visible:opacity-100 hover:bg-(--color-danger)/10"
+                  aria-label={`Delete "${link.label}"`}
                   title={`Delete "${link.label}"`}
                 >
                   <Trash2 className="w-3 h-3" aria-hidden="true" />
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -590,7 +609,7 @@ const PagesMenuTabEnhanced = () => {
         <h3 className="font-semibold text-(--color-ink) mb-4">Header Navigation</h3>
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-3">
-            <Button variant="outline" className="w-full gap-2" onClick={handleAddHeaderItem}>
+            <Button variant="secondary" className="w-full gap-2" onClick={handleAddHeaderItem}>
               <Plus className="w-4 h-4" />
               Add Header Item
             </Button>
@@ -618,7 +637,7 @@ const PagesMenuTabEnhanced = () => {
         <h3 className="font-semibold text-(--color-ink) mb-4">Footer Sections</h3>
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-3">
-            <Button variant="outline" className="w-full gap-2" onClick={handleAddFooterSection}>
+            <Button variant="secondary" className="w-full gap-2" onClick={handleAddFooterSection}>
               <Plus className="w-4 h-4" />
               Add Section
             </Button>

@@ -91,7 +91,7 @@ const AdminSidebarContent = ({
             <React.Fragment key={tab.id}>
               <SidebarMenuItem>
                 <Button
-                  variant={activeTab === tab.id ? "accent" : "outline"}
+                  variant={activeTab === tab.id ? "primary" : "secondary"}
                   size="sm"
                   aria-label={tab.label}
                   aria-pressed={activeTab === tab.id}
@@ -311,7 +311,7 @@ const AdminDashboard = () => {
                   {user.emailAddresses[0]?.emailAddress}
                 </span>
               )}
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <Button variant="secondary" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4" />
                 Sign Out
               </Button>

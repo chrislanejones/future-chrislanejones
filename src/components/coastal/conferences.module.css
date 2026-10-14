@@ -29,7 +29,6 @@
 .empty { text-align: center; padding: 70px 20px; background: var(--coast-panel); border-radius: var(--radius-media); }
 .empty h2 { font-size: var(--type-heading); line-height: 1.2; }
 .empty p { margin-top: 12px; color: var(--coast-muted); }
-.empty button { margin-top: 22px; padding: 12px 22px; background: var(--coast-accent); color: var(--coast-on-accent); border-radius: var(--radius-pill); }
 .detail { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 5vw, 80px); align-items: start; }
 .detailLogo { position: relative; display: grid; place-items: center; aspect-ratio: 1.12; border-radius: var(--radius-media); background: var(--coast-panel); }
 .detailLogo .logo { padding: 40px; }

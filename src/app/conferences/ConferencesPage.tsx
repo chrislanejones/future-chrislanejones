@@ -6,6 +6,7 @@ import { Search, X } from "lucide-react";
 import { ConferenceCard } from "@/components/coastal/conference-card";
 import { conferenceYears, sortConferences, type Conference } from "@/lib/conferences";
 import styles from "@/components/coastal/conferences.module.css";
+import { Button } from "@/components/ui/button";
 
 export default function ConferencesPage({ conferences, year }: { conferences: Conference[]; year?: number }) {
   const [search, setSearch] = useState("");
@@ -38,7 +39,7 @@ export default function ConferencesPage({ conferences, year }: { conferences: Co
         <div className={styles.empty}>
           <h2>{query ? "No matching conferences" : "No conferences yet"}</h2>
           <p>{query ? "Try another event, city, or topic." : "Conference details will appear here as they are added."}</p>
-          {query && <button type="button" onClick={() => setSearch("")}>Clear search</button>}
+          {query && <Button variant="pill" className="mt-[22px]" onClick={() => setSearch("")}>Clear search</Button>}
         </div>
       )}
     </section>

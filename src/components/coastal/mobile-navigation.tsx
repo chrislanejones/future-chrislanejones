@@ -60,7 +60,7 @@ export function MobileNavigation({ items, pathname }: { items: HeaderNavItem[]; 
         </nav>
         <footer className={styles.footer}>
           <p>Have something in mind?</p>
-          {contact && <Button asChild variant="solid" className={styles.contact}><Link href={contact.href!} onClick={() => setOpen(false)} aria-current={pathname === contact.href ? "page" : undefined}>{contact.label}<ArrowUpRight size={20} aria-hidden="true" /></Link></Button>}
+          {contact && <Button asChild variant="primary" className={styles.contact}><Link href={contact.href!} onClick={() => setOpen(false)} aria-current={pathname === contact.href ? "page" : undefined}>{contact.label}<ArrowUpRight size={20} aria-hidden="true" /></Link></Button>}
           <Link href="/color-guide" onClick={() => setOpen(false)} className={styles.guide}>View the color & type guide <ArrowRight size={16} aria-hidden="true" /></Link>
         </footer>
       </SheetContent>

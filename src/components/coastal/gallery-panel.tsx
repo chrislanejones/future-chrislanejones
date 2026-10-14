@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/drawer";
 import { ShoreStrip } from "./beach-banner";
 import styles from "./coastal.module.css";
+import { Button } from "@/components/ui/button";
 
 export type GalleryPhoto = {
   src: string;
@@ -46,9 +47,9 @@ export function GalleryPanel({
   return (
     <Drawer shouldScaleBackground={false}>
       <DrawerTrigger asChild>
-        <button type="button" className={styles.circleButton} aria-label={label}>
+        <Button variant="circle" size="sm" aria-label={label}>
           <Images size={20} aria-hidden="true" />
-        </button>
+        </Button>
       </DrawerTrigger>
       <DrawerContent
         className={styles.photoPanel}

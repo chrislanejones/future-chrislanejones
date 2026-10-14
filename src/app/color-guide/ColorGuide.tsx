@@ -64,8 +64,8 @@ export function ColorGuide() {
         <h1>A little blue.<br />A lot of clarity.</h1>
         <p className={styles.intro}>A coastal palette that feels like the site, with readable type and color choices you can check.</p>
         <div className={styles.actions}>
-          <Button asChild variant="solid" round><a href="#palette">Explore the palette <ArrowDown size={18} aria-hidden="true" /></a></Button>
-          <Button variant="outline" round onClick={() => setTheme(theme === "dark" ? "light" : "dark")} disabled={!ready}>
+          <Button asChild variant="primary" round><a href="#palette">Explore the palette <ArrowDown size={18} aria-hidden="true" /></a></Button>
+          <Button variant="secondary" round onClick={() => setTheme(theme === "dark" ? "light" : "dark")} disabled={!ready}>
             {theme === "dark" ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
             {theme === "dark" ? "Try light mode" : "Try dark mode"}
           </Button>
@@ -91,7 +91,7 @@ export function ColorGuide() {
             <p>{color.use}</p><code>{color.token}</code>
           </article>)}
         </div>
-        <Button variant="outline" round disabled={!ready} onClick={download}><Download size={18} aria-hidden="true" /> Download this palette</Button>
+        <Button variant="secondary" round disabled={!ready} onClick={download}><Download size={18} aria-hidden="true" /> Download this palette</Button>
         <p className={styles.notice} role="status">{notice}</p>
       </section>
 

@@ -21,6 +21,7 @@ import Image from "next/image";
 import { api } from "../../../../convex/_generated/api";
 import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { SOCIAL_ICONS, SocialIcon } from "@/lib/social-icons";
@@ -131,7 +132,7 @@ const SurfacePreview = ({
           {needsRenumber && (
             <Button
               onClick={onRenumber}
-              variant="outline"
+              variant="secondary"
               size="sm"
               className="gap-1 text-xs"
               title="Close gaps and duplicate slot numbers"
@@ -423,7 +424,7 @@ const LinksGroup = ({
             </h3>
             <Button
               onClick={handleCreateNew}
-              variant="accent"
+              variant="primary"
               size="sm"
               className="gap-2"
             >
@@ -530,12 +531,12 @@ const LinksGroup = ({
                 <div className="flex items-center gap-2 shrink-0">
                   {isEditing ? (
                     <>
-                      <Button onClick={handleCancel} variant="outline" size="sm">
+                      <Button onClick={handleCancel} variant="secondary" size="sm">
                         Cancel
                       </Button>
                       <Button
                         onClick={handleSave}
-                        variant="accent"
+                        variant="primary"
                         size="sm"
                         className="gap-2"
                         disabled={isSaving}
@@ -548,7 +549,7 @@ const LinksGroup = ({
                     <>
                       <Button
                         onClick={() => setIsEditing(true)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         className="gap-2"
                       >
@@ -558,7 +559,7 @@ const LinksGroup = ({
                       {selected && (
                         <Button
                           onClick={() => setDeleteConfirm(selected._id)}
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                         >
@@ -709,28 +710,13 @@ const LinksGroup = ({
       </div>
 
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete link?</h3>
-            <p className="text-muted mb-6">This cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDelete(deleteConfirm)}
-                variant="outline"
-                className="flex-1 text-(--color-danger) hover:bg-red-500/10 hover:text-(--color-danger)"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete link?"
+          description="This cannot be undone."
+          onConfirm={() => handleDelete(deleteConfirm)}
+        />
       )}
     </div>
   );
@@ -880,13 +866,17 @@ const ProfileSocialTabEnhanced = () => {
                       </div>
                     )}
                   </div>
-                  <button
+                  <Button
+                    variant="primary"
+                    size="icon-sm"
+                    round
                     onClick={() => setIsAvatarDrawerOpen(true)}
-                    className="absolute -bottom-1 -right-1 p-2 bg-accent text-on-accent rounded-full cursor-pointer hover:bg-accent/90 transition shadow-md"
+                    className="absolute -bottom-1 -right-1 shadow-md"
+                    aria-label="Change photo"
                     title="Change photo"
                   >
-                    <RefreshCw className="w-4 h-4" />
-                  </button>
+                    <RefreshCw className="w-4 h-4" aria-hidden="true" />
+                  </Button>
                 </div>
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium text-ink">Profile Photo</p>
@@ -1006,7 +996,7 @@ const ProfileSocialTabEnhanced = () => {
               <div className="pt-2">
                 <Button
                   onClick={handleSaveProfile}
-                  variant="accent"
+                  variant="primary"
                   disabled={isSavingProfile}
                   className="gap-2"
                 >

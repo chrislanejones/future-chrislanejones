@@ -29,7 +29,9 @@ export const SuccessDisplay: React.FC<SuccessDisplayProps> = ({
         <p className="text-sm text-green-700 dark:text-green-400">{message}</p>
       </div>
       <button
+        type="button"
         onClick={onDismiss}
+        aria-label="Dismiss"
         className="text-lg shrink-0 text-green-700 dark:text-green-400 hover:opacity-70"
       >
         ×

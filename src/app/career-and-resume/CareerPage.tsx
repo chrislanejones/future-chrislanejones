@@ -6,6 +6,7 @@ import { Briefcase, Download, MapPin } from "lucide-react";
 import { GalleryPanel, type GalleryPhoto } from "@/components/coastal/gallery-panel";
 import { timelineEvents } from "@/data/career-timeline";
 import styles from "@/components/coastal/interior.module.css";
+import { Button } from "@/components/ui/button";
 
 const photos: GalleryPhoto[] = [
   {
@@ -69,21 +70,20 @@ export default function CareerPage() {
             Download my latest experience, technical skills, and projects.
           </p>
           <div className={styles.actions}>
-            <a
-              className={styles.action}
-              href="/career-and-resume/download/pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Download aria-hidden="true" /> Resume (PDF)
-            </a>
-            <a
-              className={styles.action}
-              href="/career-and-resume/download/docx"
-              download
-            >
-              <Download aria-hidden="true" /> Resume (Word)
-            </a>
+            <Button asChild variant="pill">
+              <a
+                href="/career-and-resume/download/pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Download aria-hidden="true" /> Resume (PDF)
+              </a>
+            </Button>
+            <Button asChild variant="pill">
+              <a href="/career-and-resume/download/docx" download>
+                <Download aria-hidden="true" /> Resume (Word)
+              </a>
+            </Button>
           </div>
         </div>
       </section>

@@ -16,6 +16,7 @@ import { SandcastleBuilder } from "@/components/coastal/sandcastle-builder";
 import { HeroPhoto } from "@/components/coastal/hero-photo";
 import styles from "@/components/coastal/coastal.module.css";
 import { getPageSEO } from "@/lib/seo";
+import { Button } from "@/components/ui/button";
 
 export const revalidate = 60;
 export async function generateMetadata() {
@@ -47,9 +48,11 @@ export default function Home() {
               government agencies.
             </p>
             <div className={styles.heroActions}>
-              <Link href="/contact" className={styles.primaryButton}>
-                Contact Me <ArrowUpRight size={19} aria-hidden="true" />
-              </Link>
+              <Button asChild variant="pill" size="lg">
+                <Link href="/contact">
+                  Contact Me <ArrowUpRight size={19} aria-hidden="true" />
+                </Link>
+              </Button>
               <a href="#selected-work" className={styles.heroWorkLink}>
                 Explore my work <ArrowDownRight size={19} aria-hidden="true" />
               </a>

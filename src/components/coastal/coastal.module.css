@@ -195,29 +195,6 @@
   gap: 28px;
   margin-top: 35px;
 }
-.primaryButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  padding: 16px 25px;
-  background: var(--coast-accent);
-  color: var(--coast-on-accent);
-  border-radius: var(--radius-pill);
-  font-size: var(--type-body);
-  font-weight: var(--weight-semibold);
-  white-space: nowrap;
-  transition:
-    transform 200ms,
-    box-shadow 200ms;
-}
-.primaryButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--coast-deep) 14%, transparent);
-}
-.primaryButton:active {
-  transform: scale(0.98);
-}
 .heroWorkLink {
   display: inline-flex;
   align-items: center;
@@ -263,32 +240,6 @@
 .carouselButtons {
   display: flex;
   gap: 10px;
-}
-.carouselButtons button,
-.circleButton {
-  width: 36px;
-  height: 36px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid var(--coast-line);
-  border-radius: var(--radius-pill);
-  transition:
-    background 180ms,
-    transform 180ms;
-  flex-shrink: 0;
-}
-.carouselButtons button:hover,
-.circleButton:hover {
-  background: var(--coast-soft);
-}
-.carouselButtons button:active,
-.circleButton:active {
-  transform: scale(0.94);
-}
-.carouselButtons button:disabled {
-  opacity: 0.4;
-  cursor: default;
 }
 .clientLogos {
   display: grid;
@@ -716,12 +667,12 @@
   line-height: inherit;
   letter-spacing: normal;
 }
-:global(.dark) .quoteFooter .circleButton {
+:global(.dark) .quoteFooter button {
   color: #ffffff;
   background: var(--coast-teal);
   border-color: #497f88;
 }
-:global(.dark) .quoteFooter .circleButton:hover {
+:global(.dark) .quoteFooter button:hover {
   background: #2b6b79;
 }
 .quoteAuthor img {
@@ -929,10 +880,6 @@
 .playerControls > svg {
   color: var(--coast-muted);
   flex-shrink: 0;
-}
-.playerControls .circleButton {
-  width: 44px;
-  height: 44px;
 }
 .playerControls input {
   accent-color: var(--coast-accent);
@@ -1497,12 +1444,6 @@
   margin-top: 21px;
   line-height: 1.6;
 }
-.contactSection .primaryButton {
-  margin-top: 29px;
-}
-.contactSection .primaryButton svg {
-  color: inherit;
-}
 .footer {
   padding-top: 75px;
   padding-bottom: 28px;
@@ -1790,10 +1731,6 @@
     gap: 20px;
     margin-top: 26px;
   }
-  .primaryButton {
-    padding: 14px 20px;
-    gap: 17px;
-  }
   .heroWorkLink {
     gap: 8px;
   }
@@ -1943,7 +1880,6 @@
   .heroImage,
   .browserWindow,
   .previewImage,
-  .primaryButton,
   .imageAction,
   .textLink svg,
   .heroWorkLink svg {
