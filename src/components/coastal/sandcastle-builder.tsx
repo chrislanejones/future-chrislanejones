@@ -3,8 +3,9 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Component, useEffect, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { ArrowUpRight, BrickWall, Castle, Droplets, Eraser, Flag, PaintBucket, RotateCw, Shell, Undo2, Waves } from "lucide-react";
-import { castleReducer, initialCastle, type CastleTool } from "./sandcastle-model";
+import { ArrowUpRight, RotateCw, Undo2, Waves } from "lucide-react";
+import { castleReducer, HALF_X, HALF_Z, initialCastle, type CastleTool } from "./sandcastle-model";
+import { ToolArt } from "./sandcastle-tool-art";
 import coastal from "./coastal.module.css";
 import styles from "./sandcastle-builder.module.css";
 
@@ -74,10 +75,10 @@ function BucketLoader({ running }: { running: boolean }) {
   );
 }
 const tools = [
-  { id: "tower", label: "Tower", icon: Castle }, { id: "bucket", label: "Bucket", icon: PaintBucket },
-  { id: "wall", label: "Wall", icon: BrickWall }, { id: "moat", label: "Moat", icon: Droplets },
-  { id: "flag", label: "Flag", icon: Flag }, { id: "shell", label: "Shell", icon: Shell },
-  { id: "erase", label: "Eraser", icon: Eraser },
+  { id: "tower", label: "Tower" }, { id: "bucket", label: "Bucket" },
+  { id: "wall", label: "Wall" }, { id: "moat", label: "Dig moat" },
+  { id: "pile", label: "Pile sand" }, { id: "flag", label: "Flag" },
+  { id: "shell", label: "Shell" }, { id: "erase", label: "Eraser" },
 ] as const;
 
 function subscribe(callback: () => void) {
@@ -148,7 +149,7 @@ export function SandcastleBuilder() {
       <Link href="/about" className={styles.about}>More about me <ArrowUpRight size={16} aria-hidden="true" /></Link>
       <div className={styles.toolHeading}><h3>Leave a little castle.</h3><p>Pick a piece, then tap the sand.</p></div>
       <div className={styles.tools} role="group" aria-label="Sandcastle tools">
-        {tools.map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={20} aria-hidden="true" />{label}</button>)}
+        {tools.map(({ id, label }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><ToolArt tool={id} />{label}</button>)}
       </div>
       <div className={styles.options}>
         <button type="button" disabled={tool !== "wall"} onClick={() => { setRotated(value => !value); dispatch({ type: "rotate", ...aimedSpot.current }); }} aria-pressed={rotated} aria-label="Rotate wall"><RotateCw size={16} aria-hidden="true" />Rotate wall</button>
@@ -163,7 +164,7 @@ export function SandcastleBuilder() {
           if (offsets[event.key]) {
             event.preventDefault(); const [dx, dz] = offsets[event.key];
             const point = aimedSpot.current;
-            const next = { x: Math.max(-3, Math.min(3, point.x + dx)), z: Math.max(-2, Math.min(2, point.z + dz)) };
+            const next = { x: Math.max(-HALF_X, Math.min(HALF_X, point.x + dx)), z: Math.max(-HALF_Z, Math.min(HALF_Z, point.z + dz)) };
             aimedSpot.current = next;
             setCursor(next);
           } else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); place(); }
@@ -178,7 +179,7 @@ export function SandcastleBuilder() {
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
         <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
       </div>
-      <p id="sandcastle-help" className={styles.help}>Tap to build; the ring shows where a piece will go. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats side by side and they join into lines, corners, and a ring around a castle. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
+      <p id="sandcastle-help" className={styles.help}>Tap to build; the ring shows where a piece will go. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Pile sand to raise a dune (twice for a tall one) and build on top of it. Dig moats side by side and they join into lines, corners, and a ring around a castle; digging a dune lowers it, and piling sand on a moat fills it in. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
     </div>
   </section>;
 }
