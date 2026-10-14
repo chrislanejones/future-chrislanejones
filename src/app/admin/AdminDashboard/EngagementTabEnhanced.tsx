@@ -47,7 +47,9 @@ interface LikesStats {
 }
 
 const EngagementTabEnhanced = () => {
-  const comments = useQuery(api.blogPosts.getAllCommentsAdmin) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const commentsQuery = useQuery(api.blogPosts.getAllCommentsAdmin);
+  const comments = commentsQuery ?? [];
   const likesData = useQuery(api.blogPosts.getAllLikesAdmin) as
     | LikesStats
     | undefined;
@@ -153,7 +155,7 @@ const EngagementTabEnhanced = () => {
     });
   };
 
-  if (comments === undefined || likesData === undefined) {
+  if (commentsQuery === undefined || likesData === undefined) {
     return <LoadingSpinner message="Loading engagement data..." />;
   }
 
