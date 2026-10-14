@@ -18,6 +18,7 @@ import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { api } from "../../../../convex/_generated/api";
 import Link from "next/link";
 import Image from "next/image";
@@ -89,6 +90,7 @@ export default function BlogPostPage({
     content: "",
   });
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
 
   const livePost = useQuery(
     api.blogPosts.getPostBySlug,
@@ -182,7 +184,12 @@ export default function BlogPostPage({
 
   const handleLike = async () => {
     if (!post?._id || !userIdentifier) return;
-    await toggleLike({ postId: post._id, userIdentifier });
+    try {
+      await toggleLike({ postId: post._id, userIdentifier });
+    } catch (err) {
+      // Rate-limited or rejected; the like count simply doesn't change.
+      console.warn("Like failed:", err);
+    }
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -195,12 +202,22 @@ export default function BlogPostPage({
     )
       return;
 
-    await addComment({
-      postId: post._id,
-      authorName: commentForm.authorName,
-      authorEmail: commentForm.authorEmail,
-      content: commentForm.content,
-    });
+    setCommentError(null);
+    try {
+      await addComment({
+        postId: post._id,
+        authorName: commentForm.authorName,
+        authorEmail: commentForm.authorEmail,
+        content: commentForm.content,
+      });
+    } catch (err) {
+      setCommentError(
+        err instanceof ConvexError && typeof err.data === "string"
+          ? err.data
+          : "Couldn't post your comment. Please try again.",
+      );
+      return;
+    }
 
     setCommentForm({ authorName: "", authorEmail: "", content: "" });
     setShowCommentForm(false);
@@ -388,6 +405,11 @@ export default function BlogPostPage({
                         Cancel
                       </Button>
                     </div>
+                    {commentError && (
+                      <p role="alert" className="text-red-500">
+                        {commentError}
+                      </p>
+                    )}
                     <p className="text-muted">
                       Comments are moderated and will appear after approval.
                     </p>

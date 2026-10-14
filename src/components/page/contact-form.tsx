@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "convex/react";
+import { ConvexError } from "convex/values";
 import { api } from "../../../convex/_generated/api";
 
 export type FormData = {
@@ -81,6 +82,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(
     null
   );
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Reset the message when the caller swaps in a new one (e.g. plan selection
@@ -147,6 +149,12 @@ const ContactForm: React.FC<ContactFormProps> = ({
       }, 5000);
     } catch (error) {
       console.error("Failed to send message:", error);
+      // Server validation and rate-limit errors carry a readable message.
+      setSubmitError(
+        error instanceof ConvexError && typeof error.data === "string"
+          ? error.data
+          : null
+      );
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -327,7 +335,7 @@ const ContactForm: React.FC<ContactFormProps> = ({
             >
               <AlertCircle className="w-5 h-5" />
               <span className="">
-                Failed to send message. Please try again.
+                {submitError ?? "Failed to send message. Please try again."}
               </span>
             </motion.div>
           )}
