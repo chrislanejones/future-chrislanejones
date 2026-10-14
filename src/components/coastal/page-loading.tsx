@@ -6,7 +6,9 @@ export function CoastalPageLoading() {
   return (
     <CoastalPageShell>
       <header className={coastal.pageIntro}>
-        <h1>One moment.</h1>
+        {/* Not an h1: Next streams this fallback into the HTML ahead of the
+            real page, so an h1 here gave every page two. */}
+        <p className={coastal.loadingTitle}>One moment.</p>
         <p role="status">Loading page…</p>
       </header>
       <div className={`${styles.split} ${styles.content}`} aria-hidden="true">

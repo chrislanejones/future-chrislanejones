@@ -1228,14 +1228,16 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
-.pageIntro h1 {
+.pageIntro h1,
+.pageIntro .loadingTitle {
   font-size: var(--type-intro);
   font-weight: var(--weight-semibold);
   letter-spacing: -0.055em;
   word-spacing: 0.07em;
   line-height: 1.05;
 }
-.pageIntro h1 + p {
+.pageIntro h1 + p,
+.pageIntro .loadingTitle + p {
   margin-top: 24px;
   max-width: 700px;
   font-size: var(--type-body);
@@ -1632,7 +1634,8 @@
   .breadcrumb {
     margin-bottom: 24px;
   }
-  .pageIntro h1 + p {
+  .pageIntro h1 + p,
+  .pageIntro .loadingTitle + p {
     margin-top: 20px;
   }
   .aboutStories,
