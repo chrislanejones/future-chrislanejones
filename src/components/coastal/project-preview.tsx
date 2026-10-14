@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { SandShells } from "./sand-shells";
 import styles from "./coastal.module.css";
 
 // The browser-window screenshot on sand. With `href` it's the card's link to
@@ -30,7 +29,6 @@ export function ProjectPreview({
   const content = (
     <>
       <span className={styles.projectSand} aria-hidden="true" />
-      <SandShells seed={title} />
       <span className={styles.browserWindow}>
         <span className={styles.browserToolbar} aria-hidden="true">
           <span className={styles.browserControls}>

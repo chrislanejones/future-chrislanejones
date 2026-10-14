@@ -4,7 +4,7 @@ import { CoastalHeader, CoastalFooter } from "@/components/coastal/navigation";
 import {
   CoastalClients,
   CoastalProjects,
-  CoastalJournal,
+  CoastalLatestPosts,
   CoastalGallery,
   CoastalRamblings,
 } from "@/components/coastal/live-content";
@@ -88,13 +88,12 @@ export default function Home() {
             <Reveal className={styles.sectionHeading}>
               <h2 id="offline-title">Beyond the browser.</h2>
               <p className={styles.sectionDescription}>
-                My ramblings, latest blog posts, music, and conference fan
-                shots.
+                Music, my ramblings, and conference photos.
               </p>
             </Reveal>
             <div className={styles.personalGrid}>
-              <Reveal className={styles.journalSlot}>
-                <CoastalJournal />
+              <Reveal className={styles.musicSlot}>
+                <CoastalMusic />
               </Reveal>
               <Reveal className={styles.ramblingsSlot} delay={0.05}>
                 <CoastalRamblings />
@@ -102,11 +101,24 @@ export default function Home() {
               <Reveal className={styles.gallerySlot} delay={0.1}>
                 <CoastalGallery />
               </Reveal>
-              <Reveal className={styles.musicSlot} delay={0.15}>
-                <CoastalMusic />
-              </Reveal>
             </div>
           </div>
+        </section>
+        <section
+          id="latest-writing"
+          className={`${styles.container} ${styles.writingSection}`}
+          aria-labelledby="writing-title"
+        >
+          <Reveal className={styles.sectionHeading}>
+            <h2 id="writing-title">Latest writing.</h2>
+            <p className={styles.sectionDescription}>
+              Things I learn, build, and occasionally break.
+            </p>
+            <Link href="/blog" className={styles.textLink}>
+              Read the blog <ArrowUpRight size={18} aria-hidden="true" />
+            </Link>
+          </Reveal>
+          <CoastalLatestPosts />
         </section>
         <CoastalTech />
         <SandcastleBuilder />
