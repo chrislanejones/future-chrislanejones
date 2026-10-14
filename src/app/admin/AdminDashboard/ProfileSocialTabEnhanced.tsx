@@ -685,7 +685,6 @@ const LinksGroup = ({
                           patch({ isExternal: checked })
                         }
                         disabled={!isEditing}
-                        className="data-[state=checked]:bg-emerald-500 data-[state=unchecked]:bg-zinc-600 [&>span]:bg-white [&>span]:shadow-md"
                       />
                       <label
                         htmlFor={`external-${selected?._id ?? "new"}`}

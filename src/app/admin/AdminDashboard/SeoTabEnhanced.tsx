@@ -309,16 +309,13 @@ export const SeoTabEnhanced = () => {
 
   const seoScore = calculateSEOScore();
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-500";
-    if (score >= 50) return "text-yellow-500";
-    return "text-(--color-danger)";
-  };
-
-  const getScoreBgColor = (score: number) => {
-    if (score >= 80) return "bg-green-500";
-    if (score >= 50) return "bg-yellow-500";
-    return "bg-red-500";
+  // Status tint and ring around an ink number: the number carries the
+  // score, so the badge stays readable (design guide: status colors only for
+  // status, with text).
+  const getScoreBadge = (score: number) => {
+    if (score >= 80) return "bg-(--color-success)/15 border-2 border-(--color-success)";
+    if (score >= 50) return "bg-(--color-warn)/15 border-2 border-(--color-warn)";
+    return "bg-(--color-danger)/15 border-2 border-(--color-danger)";
   };
 
   // /fallback is the default banner for unknown paths (src/lib/page-headers.ts).
@@ -467,14 +464,14 @@ export const SeoTabEnhanced = () => {
                 {/* SEO Score */}
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBgColor(seoScore)}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBadge(seoScore)}`}
                   >
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-ink">
                       {seoScore}
                     </span>
                   </div>
                   <span
-                    className={`text-sm font-medium ${getScoreColor(seoScore)}`}
+                    className="text-sm font-medium text-muted"
                   >
                     SEO Score
                   </span>
