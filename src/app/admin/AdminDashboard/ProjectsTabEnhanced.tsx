@@ -162,17 +162,19 @@ const ProjectsTabEnhanced = () => {
         setSaveStatus("success");
         setIsCreating(false);
       } else if (selectedProject) {
+        // Send emptied fields as "" (not undefined, which never reaches the server),
+        // so clearing a link or image in the form actually removes it.
         await updateProject({
           id: selectedProject._id,
           title: formData.title,
           description: formData.description,
           category: formData.category,
           features: featuresArray.length > 0 ? featuresArray : undefined,
-          image: formData.image || undefined,
-          githubUrl: formData.githubUrl || undefined,
-          codebergUrl: formData.codebergUrl || undefined,
-          vercelUrl: formData.vercelUrl || undefined,
-          customUrl: formData.customUrl || undefined,
+          image: formData.image.trim(),
+          githubUrl: formData.githubUrl.trim(),
+          codebergUrl: formData.codebergUrl.trim(),
+          vercelUrl: formData.vercelUrl.trim(),
+          customUrl: formData.customUrl.trim(),
           featured: formData.featured,
           order: formData.order,
         });

@@ -60,6 +60,8 @@ export const create = mutation({
   },
 });
 
+const CLEARABLE = new Set(["image", "githubUrl", "codebergUrl", "vercelUrl", "customUrl"]);
+
 export const update = mutation({
   args: {
     id: v.id("projects"),
@@ -77,8 +79,13 @@ export const update = mutation({
   },
   handler: async (ctx, { id, ...updateData }) => {
     await requireAuth(ctx);
+    // An empty link or image from the admin form means "remove it". Patching a
+    // field to undefined deletes it; an omitted field would leave the old value.
+    const cleared = Object.fromEntries(
+      Object.entries(updateData).map(([key, value]) => [key, CLEARABLE.has(key) && value === "" ? undefined : value]),
+    );
     await ctx.db.patch(id, {
-      ...updateData,
+      ...cleared,
       updatedAt: Date.now(),
     });
   },
