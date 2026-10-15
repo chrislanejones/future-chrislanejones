@@ -231,3 +231,12 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - **10-15-2026 — `street-view-banner.tsx` lives only as uncommitted WIP** in
   ~/repo/future-chrislanejones-beach, never on main. The scene banners replace it; drop it
   there once that branch is reconciled.
+- **10-15-2026 — Site-history banner shows the edge of the 3D world.** Its aerial
+  camera still catches the flat field and haze where the town ends (top left), which
+  Chris flagged on /projects. Re-shoot it tilted down like projects
+  (docs/handoffs/2026-10-15-page-banner-scenes.md).
+- **10-15-2026 — 3d-world loop mode.** Blending each moving part (waves, tree bend,
+  flags, boat) with itself one period earlier would make recordings repeat exactly,
+  with no pixel crossfade or ghosting at the seam. Started as branch `feat/loop-mode`
+  in ~/ai-repo/3dworld-loop (no commits yet). A "Record loop" button with WebCodecs
+  would replace the scratch recording scripts.

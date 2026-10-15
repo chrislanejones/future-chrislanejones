@@ -14,3 +14,4 @@ in place — a later ADR points back at the one it replaces.
 | [006](006-admin-resume-upload.md) | The owner can replace the resume from the admin panel (extends ADR-002) | proposed | 10-14-2026 |
 | [007](007-strict-project-category-and-drop-sociallinks-field.md) | `projects.category` is a strict union, and the deprecated `siteSettings.socialLinks` field is gone | proposed | 10-14-2026 |
 | [008](008-sanitize-blog-html-with-sanitize-html.md) | Sanitize blog HTML with sanitize-html instead of isomorphic-dompurify (supersedes ADR-003 in part) | proposed | 10-14-2026 |
+| [009](009-page-banners-use-recorded-video-loops.md) | The home hero and page banners show a still, then a recorded video loop, instead of live three.js | draft | 10-15-2026 |

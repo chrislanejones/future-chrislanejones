@@ -156,13 +156,6 @@
     object-position: 74% 50%;
   }
 }
-.heroPosterDark,
-:global(.dark) .heroPosterLight {
-  display: none;
-}
-:global(.dark) .heroPosterDark {
-  display: block;
-}
 .heroShade {
   position: absolute;
   inset: 0;

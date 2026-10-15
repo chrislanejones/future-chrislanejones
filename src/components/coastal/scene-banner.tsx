@@ -1,102 +1,113 @@
-import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { Reveal } from "./reveal";
+import { SceneLoop, type LoopScene } from "./scene-loop";
 import styles from "./scene-banner.module.css";
 
-type Scene = { src: string; alt: string; focus: string; blur: string };
+type BannerScene = LoopScene & { focus: string };
 
 /*
- * Stills captured from the St. Augustine Beach 3D world (~/repo/3d-world).
- * Like the home hero's poster they load eager and first; a 16x9 blur stands in
- * until they arrive. Camera notes: docs/handoffs/2026-10-15-page-banner-scenes.md.
+ * Each page's view of the St. Augustine Beach 3D world (~/repo/3d-world), as a
+ * day and a night still with a seamless loop of each. Camera notes:
+ * docs/handoffs/2026-10-15-page-banner-scenes.md.
  */
-export const BANNER_SCENES: Record<string, Scene> = {
+export const BANNER_SCENES: Record<string, BannerScene> = {
   "/about": {
-    src: "/banners/about.webp",
-    alt: "A 3D model of St. Augustine Beach at sunset: the El Castillo resort hotel among palms, the pier up the coast and a fishing boat offshore",
     focus: "62% 62%",
-    blur: "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADQAQCdASoQAAkAAoBCJZQCdAEOqPP/AAD+8f5OOgjQsuTyyUiUOvjIe196P/YDNFHjJ0EWrdQQon8+F9bjPIBxYJKDzMBt86cNq4ifHKi48RoAAAA=",
+    day: { still: "/banners/about-day.webp", video: "/banners/about-day.mp4", alt: "A 3D model of the El Castillo resort hotel among palms, the pier up the coast and a fishing boat offshore at sunset",
+      blur: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAQCdASoQAAkAAoBCJZQCdAEOqPP/AAD+8f5a6FuXY0HHyH2SrNEefkTqljqIkes03Zc3kmfjU17mmdWiM+mHsGwNB+cSm6JkQZEXs9gwn4AA" },
+    night: { still: "/banners/about-night.webp", video: "/banners/about-night.mp4", alt: "A 3D model of the El Castillo resort hotel among palms, the pier up the coast and a fishing boat offshore at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACwAQCdASoQAAkAAoBCJQBOgCHfPL2oAP75xiiE4v6S84tNH5wWY8WXPNR/iGmrnM4Yp3eiLYwAAA==" },
   },
   "/browser-tabs": {
-    src: "/banners/browser-tabs.webp",
-    alt: "A 3D model of Ethel's Filling Station at sunset, a green-trimmed diner with vintage gas pumps and an Eat Here sign",
     focus: "55% 65%",
-    blur: "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAkAAoBCJYwAD4TtWHa/UoAA/ccRQ8+/Bma6QHuch2SJol3/5JOae9YfPSJzKSTrnvMgbRKe7pLV5B513V1PLcTyg4aQDpiAAA==",
+    day: { still: "/banners/browser-tabs-day.webp", video: "/banners/browser-tabs-day.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps and an Eat Here sign at sunset",
+      blur: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAQCdASoQAAkAAoBCJYwC7AYp5a5FgOAA/ccRQHCIxfJKAPc5Dsk1ZPaXDXBVLTibHZGbyrA/i9ZNzCLtGdVSS1DmM557zZO7CMwSFT9EAAAA" },
+    night: { still: "/banners/browser-tabs-night.webp", video: "/banners/browser-tabs-night.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps and an Eat Here sign at night, windows lit",
+      blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAQCdASoQAAkAAoBCJYwCdADv3FVkAAD++dqzyuewnSpEf3oF21BVN8j5wlcuHr8vICSOStdeVIdRuCc/guOUjSclx3NnlagAAA==" },
   },
   "/contact": {
-    src: "/banners/contact.webp",
-    alt: "A 3D model of a quiet St. Augustine Beach street at sunrise, palms and cottages leading down to the ocean",
     focus: "68% 55%",
-    blur: "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAkAAoBCJQBdgMWWyZ2vPQAA/vinx/eVJiq+/j+zCqsj6XvJoIt8hUk4iUvVVPg39SgF7CAlYThEYqbWPg27yOL5JX2CBgAAAA==",
+    day: { still: "/banners/contact-day.webp", video: "/banners/contact-day.mp4", alt: "A 3D model of a quiet St. Augustine Beach street, palms and cottages leading down to the ocean at sunrise",
+      blur: "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAkAAoBCJQBdgMWWyZ2u+wAA/vinx/eVJiq+/j+zCqsj6XvJoIt8hUk4iUvVVPg39SgF7CAlYThEYqbWPg27yOL5JX9I6FAAAA==" },
+    night: { still: "/banners/contact-night.webp", video: "/banners/contact-night.mp4", alt: "A 3D model of a quiet St. Augustine Beach street, palms and cottages leading down to the ocean at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQAAkAAoBCJYwCdAEQ/drDQEAAAP78sUQJd9TlrQMZNVC/NVQIwZv/RnJKpKwYAAA=" },
   },
   "/blog": {
-    src: "/banners/blog.webp",
-    alt: "A 3D fishing boat off St. Augustine Beach at sunset, a fisherman aboard, the hotels and palms of the shore behind",
     focus: "68% 70%",
-    blur: "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADQAQCdASoQAAkAAoBCJaACdAEO5FwdEAD+8fbvshjg0c9Km25/wRot0C8epb5/lrziCJ87Nbii2G5drYSJlr++jQAAAA==",
+    day: { still: "/banners/blog-day.webp", video: "/banners/blog-day.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, a fisherman aboard, the hotels and palms of the shore behind at sunset",
+      blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoQAAkAAoBCJZgCdAD0SRcseAD+8+hC/PLxbpwmGgngk44ABHvNBap943d9/NhKjl8ymt+VHv8EJLVhJPYohAAA" },
+    night: { still: "/banners/blog-night.webp", video: "/banners/blog-night.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, a fisherman aboard, the hotels and palms of the shore behind at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoQAAkAAoBCJQBOgCHgP3pgAAD++dZdG2uXXZuOYTkYrELrHnrQyka9biMLfAAA" },
   },
   "/conferences": {
-    src: "/banners/conferences.webp",
-    alt: "A 3D aerial of the St. Augustine Beach pier reaching into the Atlantic at sunset",
     focus: "75% 55%",
-    blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkAAoBCJZgCsAEUov5je8AA+p/5vB1drnkz0Y9byO8Dp3u3bCfXCxF+ez7juziTzdqJcg57Kja8ksRSDFD6ddQAAA==",
+    day: { still: "/banners/conferences-day.webp", video: "/banners/conferences-day.mp4", alt: "A 3D model of the St. Augustine Beach pier reaching into the Atlantic at sunset",
+      blur: "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAoBCJZgCsAEUov5jgzgA+p/5vBk125haQUsTwACul/9w/Dr64WKEJ6HqlUSeYNzfsTTo2sd44ecPf+J5UAA=" },
+    night: { still: "/banners/conferences-night.webp", video: "/banners/conferences-night.mp4", alt: "A 3D model of the St. Augustine Beach pier reaching into the Atlantic at night, windows lit",
+      blur: "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAABwAQCdASoQAAkAAoBCJYgCdAF1AAD+9vTyTNqPe/v3yXz6fRBugKWCw443DIUlhftpTlP0svVe+KeAZDPgxd8SO2QAAA==" },
   },
   "/career-and-resume": {
-    src: "/banners/career-and-resume.webp",
-    alt: "A 3D view from a boat toward the St. Augustine Beach shore, hotels and palms above the sand at sunset",
     focus: "68% 50%",
-    blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAAAwAgCdASoQAAkAAoBCJZgCdH8AGLXKmxUpgAD+88jri7IJFpH2k6K48qZziztohVyCU78ZxbySwAGvIuT1fPlcJfTvzAAA",
+    day: { still: "/banners/career-and-resume-day.webp", video: "/banners/career-and-resume-day.mp4", alt: "A 3D model of the St. Augustine Beach shore seen from a boat, hotels and palms above the sand at sunset",
+      blur: "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADQAQCdASoQAAkAAoBCJZgCdH8AGBM/gAD+8i/xErlcVAA8DLMEEFx8mLiVA6qgKD+zTxsKMmk88waM9iYB+AMAAAA=" },
+    night: { still: "/banners/career-and-resume-night.webp", video: "/banners/career-and-resume-night.mp4", alt: "A 3D model of the St. Augustine Beach shore seen from a boat, hotels and palms above the sand at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoQAAkAAoBCJQBOgCHgOYacQAD++cJoteOGOU0yC9EicunIfAoGa2jArx2fXN4OIwAAAA==" },
   },
   "/projects": {
-    src: "/banners/projects.webp",
-    alt: "A 3D aerial of the St. Augustine Beach town, its streets, hotels and pier along the Atlantic",
     focus: "62% 50%",
-    blur: "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAAAQAgCdASoQAAkAAoBCJQBOgCHhsXS4kw8AAP7GB700ITYkW9GRmo8/XZjijhcMPo6IB3Gmd4h09jSfpbJwPyAnLfMxLzFgbtiXesjrMAAAAA==",
+    day: { still: "/banners/projects-day.webp", video: "/banners/projects-day.mp4", alt: "A 3D model of the St. Augustine Beach town from the air, its streets, hotels and pier along the Atlantic in the afternoon",
+      blur: "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoQAAkAAoBCJYwCdAEfNWaBuOwA/vEA/hlUhixySGFPB9BcsmWUgZ3VsABEvszTCjeDioj9FLnQPE05YXumVwMgORNDP3wA" },
+    night: { still: "/banners/projects-night.webp", video: "/banners/projects-night.mp4", alt: "A 3D model of the St. Augustine Beach town from the air, its streets, hotels and pier along the Atlantic at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQAAkAAoBCJYwCdAEPEC/iJxoAAP774I0h3ifbKPOR7KCfoZ50xmcpwMpXMO/6gAA=" },
   },
   "/site-history": {
-    src: "/banners/site-history.webp",
-    alt: "A 3D aerial of St. Augustine Beach at night, windows and streetlights lit beside the dark ocean",
     focus: "72% 50%",
-    blur: "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAAAQAgCdASoQAAkAAoBCJZQCdAEVV2KkceIAAP777kOsT7vb+CHLSfpdMjKFQPGu6WAAAA==",
+    day: { still: "/banners/site-history-day.webp", video: "/banners/site-history-day.mp4", alt: "A 3D model of St. Augustine Beach from the air, its streets running along the ocean in the afternoon",
+      blur: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAQAgCdASoQAAkAAoBCJYwCdAEKRI6V6wRwAP55PxphV4hEzK8fioae42yZX5IL3SYwY3krewc7PJZWB4cNtAs+VAAXpyiafWzwnGh5yYxzAAAA" },
+    night: { still: "/banners/site-history-night.webp", video: "/banners/site-history-night.mp4", alt: "A 3D model of St. Augustine Beach from the air, its streets running along the ocean at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAAAQAgCdASoQAAkAAoBCJZQCdAEUqo4csbswAP776Idb3n6k/iSEwXyEtERQVDQIIpoitKvrZ1ozsAAA" },
   },
   "/site-map": {
-    src: "/banners/site-map.webp",
-    alt: "A 3D top-down map of the St. Augustine Beach streets, beach and ocean",
     focus: "68% 50%",
-    blur: "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACwAQCdASoQAAkAAoBCJQBOgBh2IItwAP4VKtckqvoUY3x19D6w2xf6Uf2FBuUcWCSvyiKJ1o5ZcnQ8AAA=",
+    day: { still: "/banners/site-map-day.webp", video: "/banners/site-map-day.mp4", alt: "A 3D model of a top-down map of the St. Augustine Beach streets, beach and ocean at midday",
+      blur: "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAACwAQCdASoQAAkAAoBCJQBOgBjsndp4AP4VKtckqvoUY3x19aZz29q7UNYCdGTt6Mp1qPO55x+bd6aWAAA=" },
+    night: { still: "/banners/site-map-night.webp", video: "/banners/site-map-night.mp4", alt: "A 3D model of a top-down map of the St. Augustine Beach streets, beach and ocean at night, windows lit",
+      blur: "data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAADQAQCdASoQAAkAAoBCJYwCdAEO+LuSgAD+/EkxQ94RIgoWrAz8diLsuUAAAA==" },
   },
   "/react-maintenance": {
-    src: "/banners/react-maintenance.webp",
-    alt: "A 3D fishing boat on calm water at sunrise, the St. Augustine Beach pier on the horizon",
     focus: "66% 60%",
-    blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAkAAoBCJZACdAERBPtAAAD+8hANbq4pDoHILxk4u1rAjtoNN7q6IOH4WT/s5NkAw4lj4pm6YAAA",
+    day: { still: "/banners/react-maintenance-day.webp", video: "/banners/react-maintenance-day.mp4", alt: "A 3D model of a fishing boat on calm water, the St. Augustine Beach pier on the horizon at sunrise",
+      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAQCdASoQAAkAAoBCJZACdAEOum84AP7x60yo+CiZFdlB6iBsUIQvo1sHzoQ1csEEPWdZYwKv4FuWzd17rgAA" },
+    night: { still: "/banners/react-maintenance-night.webp", video: "/banners/react-maintenance-night.mp4", alt: "A 3D model of a fishing boat on calm water, the St. Augustine Beach pier on the horizon at night, windows lit",
+      blur: "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAABwAQCdASoQAAkAAoBCJYgCdAFAAAD+9ssqDe/dgIQ+Vh+QTM7gQ5HYQ3Ycsjw1aToAAA==" },
   },
   "/wordpress-maintenance": {
-    src: "/banners/wordpress-maintenance.webp",
-    alt: "A 3D street-level view of 9th Street at St. Augustine Beach, palms, signs and the ocean at the end of the road",
     focus: "55% 60%",
-    blur: "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAAAQAgCdASoQAAkAAoBCJZQCdAYvXqovc8bAAP7xIqA1r1SzNvW2ngGx+BGtM8xd6/EsCcO8l6X5dJUREp7vzkqDzVF75+FhMuwKIaNKrvBEEi3ARQdzQN5AAAA=",
+    day: { still: "/banners/wordpress-maintenance-day.webp", video: "/banners/wordpress-maintenance-day.mp4", alt: "A 3D model of 9th Street at St. Augustine Beach, palms, signs and the ocean at the end of the road at sunset",
+      blur: "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAQCdASoQAAkAAoBCJZQCdAEWxtZKYAD+8SKgNesCFgZfGYC49jCHLTx1Gy1M6l36LoEpq5AdCdIc6bIeVf/QTrlYfnzKDlDclX9RXNb7rZ8DCAE/CX1AAAA=" },
+    night: { still: "/banners/wordpress-maintenance-night.webp", video: "/banners/wordpress-maintenance-night.mp4", alt: "A 3D model of 9th Street at St. Augustine Beach, palms, signs and the ocean at the end of the road at night, windows lit",
+      blur: "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADQAQCdASoQAAkAAoBCJYwCdAD2PSfggAD++KqJcAt8SBfZ6ibgf+GYd2iAibH5pbAVPaaKjv3kMa2txwui83kuHEe2oWT2SJ/ZAAAA" },
   },
   "/logo-page": {
-    src: "/banners/logo-page.webp",
-    alt: "A 3D view along St. Augustine Beach at sunset, beachgoers on the sand below the hotels and dunes",
     focus: "60% 55%",
-    blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoQAAkAAoBCJZgCsAEOPB4sAAD+vJ+yfFUNnZ05d6mJjnn+NvR7l2pwwA15Tf+0gHyCT9bN/Km+3EUkGVvsSYAA",
+    day: { still: "/banners/logo-page-day.webp", video: "/banners/logo-page-day.mp4", alt: "A 3D model of the beach at St. Augustine, beachgoers on the sand below the hotels and dunes at sunset",
+      blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQAAkAAoBCJZgCsAEO5MQoroAA/ryfsnxVDZ2dOXepiY55/ts8OeXanDAGVHfOP4GBw8ph6K9y3niV17EmAAAA" },
+    night: { still: "/banners/logo-page-night.webp", video: "/banners/logo-page-night.mp4", alt: "A 3D model of the beach at St. Augustine, beachgoers on the sand below the hotels and dunes at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAkAAoBCJYgCdAEPAx2k0AD++mk+lJuL9fC570GBCqVG9ZDrbvuOSEDk9+fUbm01Yj24AAA=" },
   },
   "/admin-showcase": {
-    src: "/banners/admin-showcase.webp",
-    alt: "A 3D view of the El Castillo resort hotel at night, its windows lit above the dark Atlantic",
     focus: "75% 70%",
-    blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADwAQCdASoQAAkAAoBCJZQCdADp7yVTUAAA/vhkgKhydTo1mNmZ9JbOLXbNSoKLHWg0SSjAhlM/ilGRq6VcuxoA",
+    day: { still: "/banners/admin-showcase-day.webp", video: "/banners/admin-showcase-day.mp4", alt: "A 3D model of the El Castillo resort hotel above the Atlantic at sunset",
+      blur: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAQCdASoQAAkAAoBCJZQCdAEOqPP/AAD+8f5NLSUQavTkY+yVZojz8idUsUXe3gK7JfWKAnR3MLvSXNHU2HWwBpWBVIirriwAHPp9uwNG/AAA" },
+    night: { still: "/banners/admin-showcase-night.webp", video: "/banners/admin-showcase-night.mp4", alt: "A 3D model of the El Castillo resort hotel above the Atlantic at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACwAQCdASoQAAkAAoBCJQBOgCHfPL2oAP75xiiE4v6Rz+K11AZVM9k+7goAPaVAmxwxTu9EWxgAAA==" },
   },
 };
 
-export function SceneBanner({ scene, children }: { scene: Scene; children?: ReactNode }) {
+export function SceneBanner({ scene, children }: { scene: BannerScene; children?: ReactNode }) {
   return (
     <div className={styles.view} style={{ "--scene-focus": scene.focus } as CSSProperties}>
-      <Image src={scene.src} alt={scene.alt} fill quality={75}
-        sizes="(max-width: 1400px) 94vw, 1360px" loading="eager" fetchPriority="high"
-        placeholder="blur" blurDataURL={scene.blur} className={styles.photo} />
+      <SceneLoop scene={scene} sizes="(max-width: 1400px) 94vw, 1360px" className={styles.photo} />
       <div className={styles.shade} aria-hidden="true" />
       <Reveal className={styles.content}>{children}</Reveal>
     </div>

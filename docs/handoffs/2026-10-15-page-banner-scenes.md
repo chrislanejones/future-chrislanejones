@@ -1,21 +1,16 @@
 # Page banner scenes
 
-The home hero and 13 page banners now show stills from the St. Augustine Beach 3D world (`~/repo/3d-world`, captured at `2bb3fc8`). `src/components/coastal/scene-banner.tsx` maps each page path to its image. Any page not listed there keeps the drawn `BeachBanner`.
+The home hero and 13 page banners now show the St. Augustine Beach 3D world (`~/repo/3d-world`, recorded at `2bb3fc8`). Each one is a still followed by a seamless video loop: day in light mode, night (21:00) in dark mode. `src/components/coastal/scene-banner.tsx` maps each page path to its image. Any page not listed there keeps the drawn `BeachBanner`.
 
 ## Home
 
-`src/components/coastal/hero-photo.tsx` shows `public/hero/coast-light.webp` and `coast-dark.webp`. The camera is the hero's own: position [8, 30, 48], target [-1, 0, -3], FOV 37. Each still was shot at FOV 48 and center-cropped to 75% of its height, which is the same field of view.
+`src/components/coastal/hero-photo.tsx` plays `public/hero/coast-day.*` in light mode and `coast-night.*` in dark mode. The camera is the hero's own: position [8, 30, 48], target [-1, 0, -3], FOV 37. It was recorded at FOV 48 and center-cropped to 75% of the height, which gives the same field of view. Day is 15.5 with 8 mph wind. Night uses the shared night settings below.
 
-| Theme | Time | Wind |
-| --- | --- | --- |
-| Light | 15.5 | 8 mph E |
-| Dark | 19.25 (dusk, windows on) | 5 mph E |
-
-The home page no longer loads the site's live 3D copy or the moving-sea layer. That copy is an older town with no boat and older trees, so fading into it would have replaced the new still with an older scene. The files are still in the tree; see PARKING_LOT.
+The site's older live copy of the town (`hero-coast-scene.tsx`, `hero-ocean-lite.tsx` and friends) is no longer loaded. See PARKING_LOT and ADR 009.
 
 ## Pages
 
-| Page | Shot | Position | Target | Time |
+| Page | Shot | Position | Target | Day time |
 | --- | --- | --- | --- | --- |
 | /about | El Castillo, pier, boat | [-16.5, 8, 8.5] | [5.94, 4.6, -15.56] | 17.5 |
 | /browser-tabs | Ethel's Filling Station | [-8.8, 1.3, 29.3] | [0.88, 0.4, 28.28] | 17.5 |
@@ -23,21 +18,37 @@ The home page no longer loads the site's live 3D copy or the moving-sea layer. T
 | /blog | Behind the fishing boat | [45, 2.6, -10] | boat, turned 16° left | 17.5 |
 | /conferences | Pier from above | [44, 16, -62] | [16, 1, -94], turned 12° left | 17.5 |
 | /career-and-resume | From the boat toward shore | [36.4, 1.9, -7.9] | [8, 3.2, -3] | 17.5 |
-| /projects | Town aerial | [-12, 65, 87] | [-23, 0, -30], turned 10° left | 15.5 |
-| /site-history | Town at night | [-12, 40, 50] | [-15, 0, -20], turned 12° left | 20.75 |
+| /projects | Town aerial, tilted down so no world edge shows | [4, 36, 24] | [-8, 0, -20], turned 10° left | 15.5 |
+| /site-history | Town from the air | [-12, 40, 50] | [-15, 0, -20], turned 12° left | 15.5 |
 | /site-map | Top down | [-38, 170, -29.9] | [-38, 0, -30] | 12 |
 | /react-maintenance | Boat at sunrise | [19, 1.7, 6] | boat, turned 16° left | 6.75 |
 | /wordpress-maintenance | 9th Street toward the beach | [-7.1, 0.9, 3.6] | [12, 3, 3.4], turned 5° left | 17.5 |
 | /logo-page | Along the beach | [34, 9, 12] | [18, 0, -8], turned 18° left | 17.5 |
-| /admin-showcase | El Castillo at night | [-16.5, 8, 8.5] | [5.94, 4.6, -15.56] | 20.75 |
+| /admin-showcase | El Castillo | [-16.5, 8, 8.5] | [5.94, 4.6, -15.56] | 17.5 |
 
-All shots use scattered clouds, exposure 1.00 and the Regular lens, with wind from the east at 5-12 mph. Files are 2000 px wide WebP at quality 78.
+Every page also has a night version from the same camera: 21.0, clear sky (full moonlight), exposure 1.35, ocean motion "Some motion" and 14 mph wind, so trees and flags visibly move in the dark. Medium waves were tried first and made the boat look storm-tossed. Days use scattered clouds, exposure 1.00, "Some motion" and 6-12 mph wind. Blog and React maintenance were recorded for 20 s to give the boat's seam more candidates. Files: 720p (1280 px) WebP stills at quality 80 and H.264 loops, 16.3 MB of video and 1.6 MB of stills in total.
 
 The page title and its cream fade cover the left half of every banner, so each camera is turned left until its subject sits right of center. The first three shots started from Chris's own framing, with targets [12, 4.6, -8], [0.9, 0.4, 30.1] and [-33.3, 1.5, 3.8].
 
 ## Loading
 
-The stills load like the old home poster: `loading="eager"`, `fetchPriority="high"` and quality 75. Page banners also get an inline 16×9 blur placeholder. No three.js loads on any of these pages.
+`src/components/coastal/scene-loop.tsx` handles both the home hero and the page banners.
+
+| Stage | What shows | When |
+| --- | --- | --- |
+| 1 | Day or night still (CSS picks by theme), blur placeholder on banners | With the page |
+| 2 | That theme's MP4 loop, faded in over 1.2 s | After the load event and an idle moment |
+
+The still is the loop's first frame, so the fade shows no jump. The loop pauses offscreen and in hidden tabs. Phones under 632 px, Data Saver and reduced motion keep the still.
+
+## How the loops are made
+
+1. In the viewer, freeze `performance.now` and `requestAnimationFrame`, then step 1/30 s per frame through react-three-fiber's `advance()`. Recording is then deterministic even when Chrome throttles a background tab.
+2. Clouds are held still (cloud motion 0); waves, the boat, flags and wind in the trees all move.
+3. Record 13 s (390 frames; 20 s for boat shots) at 1280 px wide as JPEG frames. The most reliable recorder is Chromium in WSLg on the RTX 4060 (`GALLIUM_DRIVER=d3d12`, `--use-angle=gl`), driven by Playwright; the viewer must also be told it is visible, or it stops animating.
+4. `make_loop.py` picks a loop length from 6 to 18 s whose continuation best matches the first second, blends that second in, and encodes H.264 at CRF 27 with faststart. Its first frame is saved as the still.
+
+The seam measures the same as an ordinary keyframe step mid-video, so the wrap shows no jump.
 
 ## Recapturing
 
@@ -45,6 +56,6 @@ The stills load like the old home poster: `loading="eager"`, `fetchPriority="hig
 2. In the console, import `camera-rig-store.ts` and leva's `levaStore` from the Vite module URLs.
 3. `cameraRig.jumpTo({ position, target })`, then set `Scene.time`, `Scene.windSpeed` and `Scene.windFrom` with `levaStore.setValueAtPath`.
 4. Hide everything but the canvas with CSS, wait about 8 seconds for streamed detail to arrive, then call `canvas.toDataURL()` inside `requestAnimationFrame`.
-5. Resize to 2000 px wide and save as WebP. For a page banner, regenerate its 16×9 blur placeholder too. The dev server caches optimized images by URL, so move `.next/dev/cache/images` aside before checking a replaced file locally.
+5. For video, follow "How the loops are made" above. For a single still, resize to 2000 px wide and save as WebP. Either way, regenerate the banner's 16×9 blur placeholders. The dev server caches optimized images by URL, so move `.next/dev/cache/images` aside before checking a replaced file locally.
 
 Street-level cameras can end up inside a building when turned. Check every capture before using it.
