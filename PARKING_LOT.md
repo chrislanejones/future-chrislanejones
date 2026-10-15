@@ -222,3 +222,12 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   capture script would make that one command.
 - **10-14-2026 — Blog soft 404.** `/blog/[slug]` returns 200 for missing slugs because
   `src/app/blog/loading.tsx` streams the response.
+- **10-15-2026 — Home hero 3D files are unused now.** The home hero shows stills of the newer
+  3d-world (docs/handoffs/2026-10-15-page-banner-scenes.md), so nothing imports
+  `hero-coast-scene.tsx`, `hero-ocean-lite.tsx`, `ocean-clock.ts`, `hero-coast-model.ts` or
+  `coast-atmosphere.tsx` any more. Choose between deleting them and porting the newer town into
+  the site so the hero can move again. The README's "How the hero loads" section still describes
+  the old three stages and needs a chris-voice rewrite either way.
+- **10-15-2026 — `street-view-banner.tsx` lives only as uncommitted WIP** in
+  ~/repo/future-chrislanejones-beach, never on main. The scene banners replace it; drop it
+  there once that branch is reconciled.
