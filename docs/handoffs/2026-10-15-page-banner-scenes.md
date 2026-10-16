@@ -50,6 +50,8 @@ The still is the loop's first frame, so the fade shows no jump. The loop pauses 
 
 The seam measures the same as an ordinary keyframe step mid-video, so the wrap shows no jump.
 
+The scripts that do all of this (receiver, recorder, Playwright runner, the 28-job list, the loop builder and the banner writer) live on Chris's machine in `~/ai-repo/banner-capture`, with a README.
+
 ## Recapturing
 
 1. Run the 3d-world viewer from a clean checkout on a spare port. Codex often works live on 3011.
