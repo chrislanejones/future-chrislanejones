@@ -48,10 +48,10 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
   },
   "/career-and-resume": {
     focus: "68% 50%",
-    day: { still: "/banners/career-and-resume-day.webp", video: "/banners/career-and-resume-day.mp4", alt: "A 3D model of the St. Augustine Beach shore seen from a boat, hotels and palms above the sand at sunset",
-      blur: "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADQAQCdASoQAAkAAoBCJZgCdH8AGBM/gAD+8i/xErlcVAA8DLMEEFx8mLiVA6qgKD+zTxsKMmk88waM9iYB+AMAAAA=" },
-    night: { still: "/banners/career-and-resume-night.webp", video: "/banners/career-and-resume-night.mp4", alt: "A 3D model of the St. Augustine Beach shore seen from a boat, hotels and palms above the sand at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoQAAkAAoBCJQBOgCHgOYacQAD++cJoteOGOU0yC9EicunIfAoGa2jArx2fXN4OIwAAAA==" },
+    day: { still: "/banners/career-and-resume-day.webp", video: "/banners/career-and-resume-day.mp4", alt: "A 3D model of a beachfront resort beside the St. Augustine Beach pier, a sailboat offshore and volleyball courts on the sand at sunset",
+      blur: "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADwAQCdASoQAAkAAoBCJZwCdAEO4/d3LAAA/uev7aQ62xpacC6RJqsI5tD+Y6a5Sj6/0zNW5W/jtqyMExHFYp0wM/HdgYDzm0mgxoaAAAA=" },
+    night: { still: "/banners/career-and-resume-night.webp", video: "/banners/career-and-resume-night.mp4", alt: "A 3D model of a beachfront resort beside the St. Augustine Beach pier, a sailboat offshore and volleyball courts on the sand at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAkAAoBCJQBOgCHamMY+wAD++m9nFZ1daKaSoAts0JXxU7/eXScRQVAU5U4Xg7ePiIRbGAA=" },
   },
   "/projects": {
     focus: "62% 50%",
