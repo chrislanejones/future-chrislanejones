@@ -8,13 +8,15 @@ import styles from "./interior.module.css";
 export function BlogPostCard({
   post,
   heading: Heading = "h2",
+  showImage = true,
 }: {
   post: Doc<"blogPosts">;
   heading?: "h2" | "h3";
+  showImage?: boolean;
 }) {
   return (
     <article className={styles.post}>
-      {post.coverImage && (
+      {showImage && post.coverImage && (
         <Link
           href={`/blog/${post.slug}`}
           className={styles.postMedia}
