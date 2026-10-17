@@ -938,7 +938,7 @@
 }
 /* Card-sized placeholders while the latest posts load. */
 .writingSection .postSkeleton {
-  height: 420px;
+  height: 220px;
 }
 .postSkeleton {
   height: 70px;

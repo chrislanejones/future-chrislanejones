@@ -139,7 +139,7 @@ export function CoastalClients() {
 }
 
 type Post = Doc<"blogPosts">;
-// The two newest posts as full cards, the same card as /blog.
+// The two newest posts as text-only cards, the same card as /blog minus the cover.
 function LatestPostsView({ posts }: { posts?: Post[] }) {
   if (posts === undefined)
     return (
@@ -161,7 +161,12 @@ function LatestPostsView({ posts }: { posts?: Post[] }) {
         .sort((a, b) => b.createdAt - a.createdAt)
         .slice(0, 2)
         .map((post) => (
-          <BlogPostCard key={post._id} post={post} heading="h3" />
+          <BlogPostCard
+            key={post._id}
+            post={post}
+            heading="h3"
+            showImage={false}
+          />
         ))}
     </div>
   );
