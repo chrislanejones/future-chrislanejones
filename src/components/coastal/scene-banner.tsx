@@ -55,10 +55,10 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
   },
   "/projects": {
     focus: "62% 50%",
-    day: { still: "/banners/projects-day.webp", video: "/banners/projects-day.mp4", alt: "A 3D model of the St. Augustine Beach town from the air, its streets, hotels and pier along the Atlantic in the afternoon",
-      blur: "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoQAAkAAoBCJYwCdAEfNWaBuOwA/vEA/hlUhixySGFPB9BcsmWUgZ3VsABEvszTCjeDioj9FLnQPE05YXumVwMgORNDP3wA" },
-    night: { still: "/banners/projects-night.webp", video: "/banners/projects-night.mp4", alt: "A 3D model of the St. Augustine Beach town from the air, its streets, hotels and pier along the Atlantic at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQAAkAAoBCJYwCdAEPEC/iJxoAAP774I0h3ifbKPOR7KCfoZ50xmcpwMpXMO/6gAA=" },
+    day: { still: "/banners/projects-day.webp", video: "/banners/projects-day.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, the hotels, beach houses and dunes along the shore behind it at sunset",
+      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADwAQCdASoQAAkAAoBCJZgCdAEOxOlQ4kAA/tUVNIWuKRY9ACEg2b5IsuyfSfbDQ8IqfN1BwdjmEYtWEk9iTAAA" },
+    night: { still: "/banners/projects-night.webp", video: "/banners/projects-night.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, the hotels, beach houses and dunes along the shore behind it at night, windows lit",
+      blur: "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAACwAQCdASoQAAkAAoBCJQBOgCHYnXSIAP74gvluxpStkfeXEuTRA0XSwhaNrYKb8eAAAA==" },
   },
   "/site-history": {
     focus: "72% 50%",
