@@ -20,10 +20,10 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
   },
   "/browser-tabs": {
     focus: "55% 65%",
-    day: { still: "/banners/browser-tabs-day.webp", video: "/banners/browser-tabs-day.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps and an Eat Here sign at sunset",
-      blur: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAQCdASoQAAkAAoBCJYwC7AYp5a5FgOAA/ccRQHCIxfJKAPc5Dsk1ZPaXDXBVLTibHZGbyrA/i9ZNzCLtGdVSS1DmM557zZO7CMwSFT9EAAAA" },
-    night: { still: "/banners/browser-tabs-night.webp", video: "/banners/browser-tabs-night.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps and an Eat Here sign at night, windows lit",
-      blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAQCdASoQAAkAAoBCJYwCdADv3FVkAAD++dqzyuewnSpEf3oF21BVN8j5wlcuHr8vICSOStdeVIdRuCc/guOUjSclx3NnlagAAA==" },
+    day: { still: "/banners/browser-tabs-day.webp", video: "/banners/browser-tabs-day.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps, an Eat Here sign and 7th Lane running down to the ocean at sunset",
+      blur: "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoQAAkAAoBCJZQC7AEQ0Db02wAA/f0+g6TwiYncAfPCCiosbLABB/6H3niZ7m1LJu25ZdB8o61QHxcBMG/FPqxlzCGtrTwA" },
+    night: { still: "/banners/browser-tabs-night.webp", video: "/banners/browser-tabs-night.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps, an Eat Here sign and 7th Lane running down to the ocean at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAABQAQCdASoQAAkAAoBCJQBOgCgAAP73GqSnIJVQCYpbhj37gjo30HQa3V950GDMyFyJNhi0ktAAAA==" },
   },
   "/contact": {
     focus: "68% 55%",
