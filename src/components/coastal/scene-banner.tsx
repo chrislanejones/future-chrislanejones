@@ -27,10 +27,10 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
   },
   "/contact": {
     focus: "68% 55%",
-    day: { still: "/banners/contact-day.webp", video: "/banners/contact-day.mp4", alt: "A 3D model of a quiet St. Augustine Beach street, palms and cottages leading down to the ocean at sunrise",
-      blur: "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoQAAkAAoBCJQBdgMWWyZ2u+wAA/vinx/eVJiq+/j+zCqsj6XvJoIt8hUk4iUvVVPg39SgF7CAlYThEYqbWPg27yOL5JX9I6FAAAA==" },
-    night: { still: "/banners/contact-night.webp", video: "/banners/contact-night.mp4", alt: "A 3D model of a quiet St. Augustine Beach street, palms and cottages leading down to the ocean at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAAAQAgCdASoQAAkAAoBCJYwCdAEQ/drDQEAAAP78sUQJd9TlrQMZNVC/NVQIwZv/RnJKpKwYAAA=" },
+    day: { still: "/banners/contact-day.webp", video: "/banners/contact-day.mp4", alt: "A 3D model of a quiet St. Augustine Beach neighborhood under live oaks, cottages and the 11th Street sign, the hotels by the beach beyond at sunset",
+      blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkAAoBCJZQC7AEO9VbggkAAzfP4/TGeRSq0rlHIvT1lJ54QttqvSqZ/CEcX3EfpnHLivrmu6/WNCKvbO+cDWsQAAA==" },
+    night: { still: "/banners/contact-night.webp", video: "/banners/contact-night.mp4", alt: "A 3D model of a quiet St. Augustine Beach neighborhood under live oaks, cottages and the 11th Street sign, the hotels by the beach beyond at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAkAAoBCJYwCdAEOQT5OgAD++vjY71J8Kp1aaiU5KYmqmnfozg/a/Yfa/n0EuNbghwqgkbOSszQA" },
   },
   "/blog": {
     focus: "68% 70%",
