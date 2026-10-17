@@ -62,7 +62,7 @@ export default function ProjectGrid() {
 
   return (
     <>
-      <PageIntro header={activeTab === "apps" ? appsHeader : websitesHeader} path="/projects" />
+      <PageIntro header={activeTab === "apps" ? appsHeader : websitesHeader} />
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "apps" | "clients")}
