@@ -19,11 +19,11 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
       blur: "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADQAQCdASoQAAkAAoBCJYwCdAEPDfI1MAD++Sv4ATAlyscv5qtGWw+ldbyDULyQFEjPVbTB5JbsfAAA" },
   },
   "/browser-tabs": {
-    focus: "55% 65%",
-    day: { still: "/banners/browser-tabs-day.webp", video: "/banners/browser-tabs-day.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps, an Eat Here sign and 7th Lane running down to the ocean at sunset",
-      blur: "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoQAAkAAoBCJZQC7AEQ0Db02wAA/f0+g6TwiYncAfPCCiosbLABB/6H3niZ7m1LJu25ZdB8o61QHxcBMG/FPqxlzCGtrTwA" },
-    night: { still: "/banners/browser-tabs-night.webp", video: "/banners/browser-tabs-night.mp4", alt: "A 3D model of Ethel's Filling Station, a green-trimmed diner with vintage gas pumps, an Eat Here sign and 7th Lane running down to the ocean at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAABQAQCdASoQAAkAAoBCJQBOgCgAAP73GqSnIJVQCYpbhj37gjo30HQa3V950GDMyFyJNhi0ktAAAA==" },
+    focus: "50% 60%",
+    day: { still: "/banners/browser-tabs-day.webp", video: "/banners/browser-tabs-day.mp4", alt: "A 3D model of a rooftop restaurant deck on A1A, diners at picnic tables under teal umbrellas, teal lounge sofas and people leaning on the cable railing, a beach hotel across the street",
+      blur: "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAABQAgCdASoQAAkAAoBCJZwAD43uL5VmTTbI/AAA/rd5rj4b25zUE5aD1EaQx2sWHBwS/ZvcWp0qyWOxubMrOMBvc0p3f89ALFEc0Dt3JSjI4AljAAA=" },
+    night: { still: "/banners/browser-tabs-night.webp", video: "/banners/browser-tabs-night.mp4", alt: "A 3D model of a rooftop restaurant deck on A1A at night, lanterns on the tables and string lights over diners under teal umbrellas, hotel windows lit across the street",
+      blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkAAoBCJYwCdAERB8IgP4AA/vn8ExBWww507ypB93bLtHZb0xxJJwM41Yn7NsafxjXcHnGay16LJwsVl0xcoYAAAA==" },
   },
   "/contact": {
     focus: "60% 60%",
