@@ -26,11 +26,11 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
       blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAABQAQCdASoQAAkAAoBCJQBOgCgAAP73GqSnIJVQCYpbhj37gjo30HQa3V950GDMyFyJNhi0ktAAAA==" },
   },
   "/contact": {
-    focus: "68% 55%",
-    day: { still: "/banners/contact-day.webp", video: "/banners/contact-day.mp4", alt: "A 3D model of a quiet St. Augustine Beach neighborhood under live oaks, cottages and the 11th Street sign, the hotels by the beach beyond at sunset",
-      blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkAAoBCJZQC7AEO9VbggkAAzfP4/TGeRSq0rlHIvT1lJ54QttqvSqZ/CEcX3EfpnHLivrmu6/WNCKvbO+cDWsQAAA==" },
-    night: { still: "/banners/contact-night.webp", video: "/banners/contact-night.mp4", alt: "A 3D model of a quiet St. Augustine Beach neighborhood under live oaks, cottages and the 11th Street sign, the hotels by the beach beyond at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAkAAoBCJYwCdAEOQT5OgAD++vjY71J8Kp1aaiU5KYmqmnfozg/a/Yfa/n0EuNbghwqgkbOSszQA" },
+    focus: "60% 60%",
+    day: { still: "/banners/contact-day.webp", video: "/banners/contact-day.mp4", alt: "A 3D model of the beach at St. Augustine from above the dunes, a dune walkover, beachgoers on the sand and a fishing boat offshore at sunrise",
+      blur: "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAACwAQCdASoQAAkAAoBCJZQCdAD0LkJsAP7wF34ZbvMXxRn29W+/rH/6bvvieuVfTluiz3xeJb7RONmoUdD9/jo1OzX/p/T/AAA=" },
+    night: { still: "/banners/contact-night.webp", video: "/banners/contact-night.mp4", alt: "A 3D model of the beach at St. Augustine from above the dunes, a dune walkover, beachgoers on the sand and a fishing boat offshore under the moon",
+      blur: "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAACwAQCdASoQAAkAAoBCJQBOgB7HXICAAP76ZXpMcqem1UVgy5vp+rmU51U2GzWYEN4LE6JHuk/mj6Wg7bgAAA==" },
   },
   "/blog": {
     focus: "68% 70%",
