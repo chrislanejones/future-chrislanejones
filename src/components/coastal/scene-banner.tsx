@@ -54,11 +54,11 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
       blur: "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAkAAoBCJQBOgCHamMY+wAD++m9nFZ1daKaSoAts0JXxU7/eXScRQVAU5U4Xg7ePiIRbGAA=" },
   },
   "/projects": {
-    focus: "62% 50%",
-    day: { still: "/banners/projects-day.webp", video: "/banners/projects-day.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, the hotels, beach houses and dunes along the shore behind it at sunset",
-      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADwAQCdASoQAAkAAoBCJZgCdAEOxOlQ4kAA/tUVNIWuKRY9ACEg2b5IsuyfSfbDQ8IqfN1BwdjmEYtWEk9iTAAA" },
-    night: { still: "/banners/projects-night.webp", video: "/banners/projects-night.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, the hotels, beach houses and dunes along the shore behind it at night, windows lit",
-      blur: "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAACwAQCdASoQAAkAAoBCJQBOgCHYnXSIAP74gvluxpStkfeXEuTRA0XSwhaNrYKb8eAAAA==" },
+    focus: "50% 62%",
+    day: { still: "/banners/projects-day.webp", video: "/banners/projects-day.mp4", alt: "A 3D model of the St. Augustine Beach pier from the water, beachgoers on the sand and the beach town and hotels along the shore at sunrise",
+      blur: "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAQCdASoQAAkAAoBCJZgCdAEOO30oAAD+6yWzl9hefHH6s4NMJVMeiVPDipP0SZL1g5flOuXKp2ZQN16vOZz6iS/Kn083TAAAAA==" },
+    night: { still: "/banners/projects-night.webp", video: "/banners/projects-night.mp4", alt: "A 3D model of the St. Augustine Beach pier from the water, beachgoers on the sand and the beach town and hotels along the shore at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoQAAkAAoBCJQBOgCP/5MWHwAD++dgWU1YNC/OF5IUc7P3kFxAviUxxGR1GJwAA" },
   },
   "/site-history": {
     focus: "72% 50%",
