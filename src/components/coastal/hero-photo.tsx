@@ -10,12 +10,12 @@ const HOME: LoopScene = {
   day: {
     still: "/hero/coast-day.webp",
     video: "/hero/coast-day.mp4",
-    alt: "A 3D model of the St. Augustine Beach shoreline at sunrise, pastel houses and dune walkovers along the sand, the pier and a sailboat beyond",
+    alt: "A 3D model of St. Augustine Beach at sunset, pastel beach houses and dune walkovers above the sand, the hotels and the pier beyond",
   },
   night: {
     still: "/hero/coast-night.webp",
     video: "/hero/coast-night.mp4",
-    alt: "A 3D model of the St. Augustine Beach shoreline at night, windows lit in the houses along the dunes beside the dark Atlantic",
+    alt: "A 3D model of St. Augustine Beach at night, windows lit in the beach houses and hotels along the dunes, the pier over the dark Atlantic",
   },
 };
 
