@@ -34,11 +34,12 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
   },
   "/blog": {
     focus: "68% 70%",
-    day: { still: "/banners/blog-day.webp", video: "/banners/blog-day.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, a fisherman aboard, the hotels and palms of the shore behind at sunset",
-      blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADQAQCdASoQAAkAAoBCJZgCdAD0SRcseAD+8+hC/PLxbpwmGgngk44ABHvNBap943d9/NhKjl8ymt+VHv8EJLVhJPYohAAA" },
-    night: { still: "/banners/blog-night.webp", video: "/banners/blog-night.mp4", alt: "A 3D model of a fishing boat off St. Augustine Beach, a fisherman aboard, the hotels and palms of the shore behind at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoQAAkAAoBCJQBOgCHgP3pgAAD++dZdG2uXXZuOYTkYrELrHnrQyka9biMLfAAA" },
+    day: { still: "/banners/blog-day.webp", video: "/banners/blog-day.mp4", alt: "A 3D model of St. Augustine Beach seen from the water at dawn, a fishing boat offshore, beachgoers and dune walkovers below the beach houses and hotels under a lavender sky",
+      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADQAQCdASoQAAkAAoBCJZACdAEPQ3aEAAD+1Nkx89LrzqPor5tQ3mNjknNAaSxlmukPRhzGa2hT6yLCKbyeJAAA" },
+    night: { still: "/banners/blog-night.webp", video: "/banners/blog-night.mp4", alt: "A 3D model of St. Augustine Beach seen from the water at night, a fishing boat offshore, windows lit in the beach houses and hotels under the stars",
+      blur: "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoQAAkAAoBCJQBOgCHh16BgAAD++mD3yVgx1N11rj294EbVm8ZyhcrjDReXgAAA" },
   },
+
   "/conferences": {
     focus: "75% 55%",
     day: { still: "/banners/conferences-day.webp", video: "/banners/conferences-day.mp4", alt: "A 3D model of the St. Augustine Beach pier reaching into the Atlantic at sunset",
