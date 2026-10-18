@@ -10,19 +10,19 @@ const HOME: LoopScene = {
   day: {
     still: "/hero/coast-day.webp",
     video: "/hero/coast-day.mp4",
-    alt: "A 3D model of the St. Augustine Beach coast, with pastel houses, hotels, dunes, beachgoers and a fishing boat on the Atlantic",
+    alt: "A 3D model of the St. Augustine Beach shoreline at sunrise, pastel houses and dune walkovers along the sand, the pier and a sailboat beyond",
   },
   night: {
     still: "/hero/coast-night.webp",
     video: "/hero/coast-night.mp4",
-    alt: "A 3D model of the St. Augustine Beach coast at night, windows lit along the streets beside the dark Atlantic",
+    alt: "A 3D model of the St. Augustine Beach shoreline at night, windows lit in the houses along the dunes beside the dark Atlantic",
   },
 };
 
 export function HeroPhoto() {
   return (
     <div className={styles.heroVisual}>
-      <SceneLoop scene={HOME} sizes="(max-width: 1440px) 100vw, 1400px" className={styles.heroPoster} />
+      <SceneLoop scene={HOME} sizes="(max-width: 1440px) 100vw, 1400px" className={styles.heroPoster} preloadBoth />
     </div>
   );
 }
