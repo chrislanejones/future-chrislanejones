@@ -12,11 +12,11 @@ type BannerScene = LoopScene & { focus: string };
  */
 export const BANNER_SCENES: Record<string, BannerScene> = {
   "/about": {
-    focus: "62% 62%",
-    day: { still: "/banners/about-day.webp", video: "/banners/about-day.mp4", alt: "A 3D model of the El Castillo resort hotel on 9th Street, palms and beach houses leading down to the ocean and a fishing boat offshore at sunrise",
-      blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQAAkAAoBCJZQCdAEOes9QpAAA/I/7ZofJ6MYKVW90hr2mSw3iVb4kF13UIs+PgqocRVAJHnMKoThEuHQiAAAA" },
-    night: { still: "/banners/about-night.webp", video: "/banners/about-night.mp4", alt: "A 3D model of the El Castillo resort hotel on 9th Street, palms and beach houses leading down to the ocean and a fishing boat offshore at night, windows lit",
-      blur: "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAoBCJYwCdADcXadFyoAA/vpvG9Aab/uWKDh+w/9HRk+HgwkYnOogNjCBQS1Qxk9/tmYRQHmLYEPesz0AAAA=" },
+    focus: "70% 58%",
+    day: { still: "/banners/about-day.webp", video: "/banners/about-day.mp4", alt: "A 3D model of the El Castillo resort hotel and the beach-town streets around it, the pier, a sailboat and beachgoers on the sand beyond at sunrise",
+      blur: "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAoBCJZQCdAEPAD3FjRAA/rI/sfRhz49wQZpWSDFo/CqLZKzxNiwOFJl5cYdnG2aHrahtoEF9vFGyB0sAAAA=" },
+    night: { still: "/banners/about-night.webp", video: "/banners/about-night.mp4", alt: "A 3D model of the El Castillo resort hotel and the beach-town streets around it, the pier, a sailboat and beachgoers on the sand beyond at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADQAQCdASoQAAkAAoBCJYwCdAEPDfI1MAD++Sv4ATAlyscv5qtGWw+ldbyDULyQFEjPVbTB5JbsfAAA" },
   },
   "/browser-tabs": {
     focus: "55% 65%",
