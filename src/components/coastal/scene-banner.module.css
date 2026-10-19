@@ -1,0 +1,31 @@
+.view {
+  position: relative;
+  min-height: clamp(480px, 42vw, 600px);
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-media);
+  background: #c7b4c9;
+}
+.photo { object-fit: cover; object-position: var(--scene-focus, 50% 50%); }
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--coast-cream) 97%, transparent),
+    color-mix(in srgb, var(--coast-cream) 88%, transparent) 38%,
+    color-mix(in srgb, var(--coast-cream) 12%, transparent) 67%,
+    transparent 80%);
+  pointer-events: none;
+}
+.content { position: relative; max-width: min(520px, 47%); padding: 52px; }
+.content p { max-width: 360px; }
+:global(.dark) .shade {
+  background: linear-gradient(90deg, rgba(14, 40, 47, .96), rgba(14, 40, 47, .8) 42%, rgba(14, 40, 47, .18) 100%);
+}
+@media (max-width: 600px) {
+  .view { min-height: 540px; }
+  .content { max-width: none; padding: 28px; }
+  .shade { background: linear-gradient(180deg, color-mix(in srgb, var(--coast-cream) 98%, transparent), color-mix(in srgb, var(--coast-cream) 90%, transparent) 48%, transparent 100%); }
+  :global(.dark) .shade { background: linear-gradient(180deg, rgba(14, 40, 47, .98), rgba(14, 40, 47, .88) 48%, rgba(14, 40, 47, .12) 100%); }
+}

@@ -1,9 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import localFont from "next/font/local";
 import { Pause, Play, SkipForward, Volume2 } from "lucide-react";
 import styles from "./coastal.module.css";
+import { Button } from "@/components/ui/button";
 
 const radioScript = localFont({
   src: "../../../public/fonts/Yellowtail-Regular.woff2",
@@ -44,6 +51,11 @@ export function CoastalMusic() {
   const [volume, setVolume] = useState(0.7);
   const [error, setError] = useState("");
   const track = tracks[index];
+  const title = playing ? track.title : started ? "Paused" : "Ready";
+  const titleBox = useRef<HTMLParagraphElement>(null);
+  const titleText = useRef<HTMLSpanElement>(null);
+  // How far a title wider than the LCD has to slide to show its last letter.
+  const [overflow, setOverflow] = useState(0);
   async function play() {
     setError("");
     try {
@@ -69,6 +81,20 @@ export function CoastalMusic() {
       setError("Playback couldn’t start. Try pressing play again.");
     });
   }, [index]);
+
+  useLayoutEffect(() => {
+    const box = titleBox.current;
+    const text = titleText.current;
+    if (!box || !text) return;
+    const measure = () =>
+      setOverflow(Math.max(0, Math.ceil(text.offsetWidth - box.clientWidth)));
+    measure();
+    // Re-measure when the card resizes or the font finishes loading.
+    const observer = new ResizeObserver(measure);
+    observer.observe(box);
+    observer.observe(text);
+    return () => observer.disconnect();
+  }, [title]);
 
   return (
     <div className={styles.music} role="region" aria-label="Music radio">
@@ -101,11 +127,18 @@ export function CoastalMusic() {
           aria-live="polite"
           aria-atomic="true"
         >
-          <span className={styles.radioDisplayStatus}>
-            {playing ? "Now playing" : "Standby"}
-          </span>
-          <p className={styles.radioTitle}>
-            {playing ? track.title : started ? "Paused" : "Ready"}
+          <p
+            ref={titleBox}
+            className={styles.radioTitle}
+            data-scroll={overflow > 0 || undefined}
+            style={
+              {
+                "--lcd-distance": `-${overflow}px`,
+                "--lcd-duration": `${Math.max(5, overflow / 20 + 3)}s`,
+              } as CSSProperties
+            }
+          >
+            <span ref={titleText}>{title}</span>
           </p>
           <p className={styles.radioArtist}>
             {playing ? track.artist : "Press play to listen"}
@@ -149,14 +182,14 @@ export function CoastalMusic() {
               <Play size={19} aria-hidden="true" />
             )}
           </button>
-          <button
-            type="button"
-            className={styles.circleButton}
+          <Button
+            variant="circle"
+            size="lg"
             onClick={next}
             aria-label="Next track"
           >
             <SkipForward size={19} aria-hidden="true" />
-          </button>
+          </Button>
         </div>
         {error && (
           <p role="alert" className={styles.audioError}>

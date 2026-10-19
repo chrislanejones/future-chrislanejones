@@ -1,0 +1,25 @@
+.scene {
+  position: absolute;
+  inset: 0;
+}
+.night,
+:global(.dark) .day {
+  display: none;
+}
+:global(.dark) .night {
+  display: block;
+}
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1200ms ease-in-out;
+}
+.video[data-ready="true"] {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .video { transition: none; }
+}

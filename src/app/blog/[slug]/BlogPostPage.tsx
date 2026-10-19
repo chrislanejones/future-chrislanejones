@@ -4,18 +4,17 @@
 import {
   useState,
   useEffect,
-  useMemo,
   useRef,
   useSyncExternalStore,
 } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { renderPostHtml } from "@/lib/blog-content";
 import { BlogStepper } from "@/components/blog/BlogStepper";
 import { STEPPER_CONFIGS } from "@/components/blog/stepper-configs";
 import { CoastalPageShell } from "@/components/coastal/page-shell";
 import styles from "@/components/coastal/interior.module.css";
 import { Card } from "@/components/page/card";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { useQuery, useMutation } from "convex/react";
 import { ConvexError } from "convex/values";
@@ -31,21 +30,6 @@ import {
   Mail,
 } from "lucide-react";
 import type { Doc } from "../../../../convex/_generated/dataModel";
-
-// Helper function to get badge color variant based on index
-const getBadgeVariant = (index: number) => {
-  const variants = [
-    "blue",
-    "green",
-    "purple",
-    "orange",
-    "pink",
-    "cyan",
-    "yellow",
-    "red",
-  ] as const;
-  return variants[index % variants.length];
-};
 
 // Simple function to generate user identifier (could be improved with actual user system)
 function getUserIdentifier() {
@@ -111,11 +95,10 @@ export default function BlogPostPage({
   const toggleLike = useMutation(api.blogPosts.toggleLike);
   const addComment = useMutation(api.blogPosts.addComment);
 
+  // The sanitized article comes from the server (children); the browser never
+  // re-renders it, so it doesn't ship the sanitizer. A content change only
+  // re-runs the widget mounting below.
   const postContent = post?.content;
-  const renderedContent = useMemo(
-    () => renderPostHtml(postContent),
-    [postContent],
-  );
 
   const articleRef = useRef<HTMLDivElement>(null);
   const stepperRootsRef = useRef<Root[]>([]);
@@ -126,7 +109,7 @@ export default function BlogPostPage({
   // mount; post content can never run its own scripts.
   useEffect(() => {
     const article = articleRef.current;
-    if (!article || !renderedContent) return;
+    if (!article || !postContent) return;
 
     const markers = article.querySelectorAll<HTMLElement>("[data-stepper]");
     markers.forEach((el) => {
@@ -148,7 +131,7 @@ export default function BlogPostPage({
       // Defer so we never unmount synchronously during the parent's commit.
       setTimeout(() => roots.forEach((r) => r.unmount()), 0);
     };
-  }, [renderedContent]);
+  }, [postContent]);
 
   if (post === null) {
     return (
@@ -159,7 +142,7 @@ export default function BlogPostPage({
             <p className="text-muted mb-8">
               The blog post you&apos;re looking for doesn&apos;t exist.
             </p>
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="secondary" size="sm">
               <Link href="/blog">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Blog
@@ -175,9 +158,7 @@ export default function BlogPostPage({
     return (
       <CoastalPageShell>
         <div className={styles.article}>
-          <div className="flex justify-center items-center py-12">
-            <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <Spinner label="Loading article…" />
         </div>
       </CoastalPageShell>
     );
@@ -233,7 +214,7 @@ export default function BlogPostPage({
       <div className={`${styles.content} ${styles.article}`}>
         {/* Back to Blog */}
         <div className="mb-8">
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="secondary" size="sm">
             <Link href="/blog">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Blog
@@ -274,7 +255,7 @@ export default function BlogPostPage({
               </div>
               <div className="flex items-center gap-2">
                 <Heart
-                  className={`w-4 h-4 ${userLikeStatus?.liked ? "fill-current text-red-500" : ""}`}
+                  className={`w-4 h-4 ${userLikeStatus?.liked ? "fill-current text-(--color-accent)" : ""}`}
                 />
                 <span>{post.likesCount || 0} likes</span>
               </div>
@@ -291,8 +272,8 @@ export default function BlogPostPage({
             {post.tags && post.tags.length > 0 && (
               <div className="mb-8 pb-6 border-b border-(--color-border)">
                 <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag, index) => (
-                    <Badge key={tag} variant={getBadgeVariant(index)}>
+                  {post.tags.map((tag) => (
+                    <Badge key={tag}>
                       {tag}
                     </Badge>
                   ))}
@@ -304,7 +285,7 @@ export default function BlogPostPage({
             <div className="mb-8">
               <Button
                 onClick={handleLike}
-                variant={userLikeStatus?.liked ? "base" : "outline"}
+                variant={userLikeStatus?.liked ? "neutral" : "secondary"}
                 size="lg"
                 className="gap-2"
               >
@@ -314,7 +295,7 @@ export default function BlogPostPage({
                 {userLikeStatus?.liked ? "Liked" : "Like this post"}
               </Button>
               {likeError && (
-                <p role="alert" className="mt-2 text-red-500">
+                <p role="alert" className="mt-2 text-(--color-danger)">
                   {likeError}
                 </p>
               )}
@@ -326,7 +307,7 @@ export default function BlogPostPage({
                 <h2 className="text-2xl">Comments ({comments?.length || 0})</h2>
                 <Button
                   onClick={() => setShowCommentForm(!showCommentForm)}
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                 >
                   Add Comment
@@ -408,7 +389,7 @@ export default function BlogPostPage({
                       </Button>
                       <Button
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => setShowCommentForm(false)}
                       >
@@ -416,7 +397,7 @@ export default function BlogPostPage({
                       </Button>
                     </div>
                     {commentError && (
-                      <p role="alert" className="text-red-500">
+                      <p role="alert" className="text-(--color-danger)">
                         {commentError}
                       </p>
                     )}

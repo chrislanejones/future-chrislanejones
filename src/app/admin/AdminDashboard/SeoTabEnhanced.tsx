@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Search,
   Save,
@@ -13,13 +13,14 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import { Id, Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
 import { getPageName } from "../components/page-name";
+import { SITE_URL } from "@/lib/structured-data";
 
 // Derived from the Convex schema (SSOT) instead of hand-rolled shapes.
 type SEOEntry = Doc<"seoMetadata">;
@@ -35,8 +36,11 @@ interface PageEntry {
 }
 
 export const SeoTabEnhanced = () => {
-  const seoEntries = useQuery(api.seo.getAllSEO) ?? [];
-  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders) ?? [];
+  // Raw results (undefined while loading). Defaulting with `?? []` here would
+  // hand useMemo a new array every render, so the re-sync below would re-run
+  // on every pass while one query is still loading.
+  const seoEntries = useQuery(api.seo.getAllSEO);
+  const pageHeaders = useQuery(api.pageHeaders.getAllPageHeaders);
   const stalePaths = useQuery(api.seo.getStaleSEOPaths) ?? [];
   const updateSEO = useMutation(api.seo.updateSEO);
   const updatePageHeader = useMutation(api.pageHeaders.updatePageHeader);
@@ -76,7 +80,7 @@ export const SeoTabEnhanced = () => {
     const pageMap = new Map<string, PageEntry>();
 
     // Add all SEO entries
-    for (const seo of seoEntries) {
+    for (const seo of seoEntries ?? []) {
       pageMap.set(seo.path, {
         path: seo.path,
         title: seo.title,
@@ -85,7 +89,7 @@ export const SeoTabEnhanced = () => {
     }
 
     // Add/merge page headers
-    for (const header of pageHeaders) {
+    for (const header of pageHeaders ?? []) {
       const existing = pageMap.get(header.path);
       if (existing) {
         existing.headerEntry = header as PageHeaderEntry;
@@ -119,12 +123,17 @@ export const SeoTabEnhanced = () => {
     }
   }
 
-  // Reload the editors only when a DIFFERENT page is picked. The old effect
-  // depended on the selectedPage object, so every Convex refresh re-ran it and
-  // could overwrite whatever the admin was mid-way through typing.
-  const [loadedPath, setLoadedPath] = useState<string | null>(null);
-  if (selectedPage && selectedPage.path !== loadedPath) {
-    setLoadedPath(selectedPage.path);
+  // Reload the editors when a DIFFERENT page is picked, or when fresh Convex
+  // data arrives for the same page while the admin is NOT editing. A refresh
+  // mid-edit (another tab, a background update) is held back so it can't wipe
+  // unsaved text; it loads once editing ends (save or cancel).
+  const [loadedPage, setLoadedPage] = useState<PageEntry | null>(null);
+  if (
+    selectedPage &&
+    selectedPage !== loadedPage &&
+    (selectedPage.path !== loadedPage?.path || !isEditing)
+  ) {
+    setLoadedPage(selectedPage);
     // Load SEO data
     if (selectedPage.seoEntry) {
       setFormData({
@@ -281,7 +290,7 @@ export const SeoTabEnhanced = () => {
   const previewUrl = (() => {
     const c = formData.canonicalUrl;
     if (c.startsWith("http")) return c;
-    return `https://www.chrislanejones.com${c || formData.path}`;
+    return `${SITE_URL}${c || formData.path}`;
   })();
 
   const calculateSEOScore = () => {
@@ -301,16 +310,13 @@ export const SeoTabEnhanced = () => {
 
   const seoScore = calculateSEOScore();
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-500";
-    if (score >= 50) return "text-yellow-500";
-    return "text-red-500";
-  };
-
-  const getScoreBgColor = (score: number) => {
-    if (score >= 80) return "bg-green-500";
-    if (score >= 50) return "bg-yellow-500";
-    return "bg-red-500";
+  // Status tint and ring around an ink number: the number carries the
+  // score, so the badge stays readable (design guide: status colors only for
+  // status, with text).
+  const getScoreBadge = (score: number) => {
+    if (score >= 80) return "bg-(--color-success)/15 border-2 border-(--color-success)";
+    if (score >= 50) return "bg-(--color-warn)/15 border-2 border-(--color-warn)";
+    return "bg-(--color-danger)/15 border-2 border-(--color-danger)";
   };
 
   // /fallback is the default banner for unknown paths (src/lib/page-headers.ts).
@@ -318,7 +324,6 @@ export const SeoTabEnhanced = () => {
     !!selectedPage &&
     selectedPage.path !== "/fallback" &&
     !!(selectedPage.seoEntry || selectedPage.headerEntry);
-
 
   return (
     <div className="grid grid-cols-3 gap-6 h-full">
@@ -341,7 +346,7 @@ export const SeoTabEnhanced = () => {
           <Button
             onClick={handleCleanup}
             disabled={isCleaningUp}
-            variant="outline"
+            variant="secondary"
             size="sm"
             className="shrink-0 border-yellow-500/40 text-yellow-500 hover:bg-yellow-500/10"
           >
@@ -459,14 +464,14 @@ export const SeoTabEnhanced = () => {
                 {/* SEO Score */}
                 <div className="flex items-center gap-2">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBgColor(seoScore)}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${getScoreBadge(seoScore)}`}
                   >
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-ink">
                       {seoScore}
                     </span>
                   </div>
                   <span
-                    className={`text-sm font-medium ${getScoreColor(seoScore)}`}
+                    className="text-sm font-medium text-muted"
                   >
                     SEO Score
                   </span>
@@ -476,22 +481,22 @@ export const SeoTabEnhanced = () => {
                 {canDelete &&
                   (confirmDelete ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-red-500">
+                      <span className="text-xs text-(--color-danger)">
                         Delete this entry?
                       </span>
                       <Button
                         onClick={handleDelete}
                         disabled={isDeleting}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
-                        className="gap-1 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                        className="gap-1 text-(--color-danger) border-red-500/40 hover:bg-red-500/10"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         {isDeleting ? "Deleting..." : "Confirm"}
                       </Button>
                       <Button
                         onClick={() => setConfirmDelete(false)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                       >
                         Cancel
@@ -500,9 +505,9 @@ export const SeoTabEnhanced = () => {
                   ) : (
                     <Button
                       onClick={() => setConfirmDelete(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
-                      className="gap-2 text-red-500 border-red-500/40 hover:bg-red-500/10"
+                      className="gap-2 text-(--color-danger) border-red-500/40 hover:bg-red-500/10"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete
@@ -513,7 +518,7 @@ export const SeoTabEnhanced = () => {
                 <Button
                   onClick={handleSave}
                   disabled={!isEditing || isSaving}
-                  variant="outline"
+                  variant="secondary"
                   className="gap-2"
                 >
                   <Save className="w-4 h-4" />
@@ -625,12 +630,15 @@ export const SeoTabEnhanced = () => {
                       height={315}
                       className="w-full h-auto object-cover"
                     />
-                    <button
+                    <Button
+                      variant="destructive"
+                      size="icon-sm"
                       onClick={handleRemoveOgImage}
-                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      className="absolute top-2 right-2"
+                      aria-label="Remove image"
                     >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                      <Trash2 className="w-4 h-4" aria-hidden="true" />
+                    </Button>
                   </div>
                 ) : (
                   <button

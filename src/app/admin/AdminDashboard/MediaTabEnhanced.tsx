@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Search,
   Upload,
@@ -11,14 +11,16 @@ import {
   ChevronRight,
   ImageIcon,
   Home,
+  Pencil,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog, Modal } from "@/components/ui/dialog";
 import Image from "next/image";
 import { MediaDrawer } from "../components/MediaDrawer";
 
@@ -30,9 +32,6 @@ type GalleryItem = Doc<"homeGallery">;
 const MediaTabEnhanced = () => {
   const organizedMedia = useQuery(api.media.getOrganized);
   const deleteMediaMutation = useMutation(api.media.deleteMedia);
-  const createMedia = useMutation(api.media.create);
-  const assignMedia = useMutation(api.media.assign);
-  const unassignMedia = useMutation(api.media.unassign);
   const updateMedia = useMutation(api.media.update);
 
   // Home Gallery
@@ -220,7 +219,7 @@ const MediaTabEnhanced = () => {
   };
 
   if (!organizedMedia) {
-    return <LoadingSpinner message="Loading media..." />;
+    return <Spinner label="Loading media..." />;
   }
 
   const getCurrentImages = (): MediaFile[] => {
@@ -280,7 +279,10 @@ const MediaTabEnhanced = () => {
           {/* View Mode Toggle */}
           <div className="flex items-center gap-1 bg-(--color-muted-accent) rounded-lg p-1">
             <button
+              type="button"
               onClick={() => setViewMode("grid")}
+              aria-label="Grid view"
+              aria-pressed={viewMode === "grid"}
               className={`p-2 rounded transition ${
                 viewMode === "grid"
                   ? "bg-(--color-foreground) text-(--color-base)"
@@ -290,7 +292,10 @@ const MediaTabEnhanced = () => {
               <LayoutGrid className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={() => setViewMode("list")}
+              aria-label="List view"
+              aria-pressed={viewMode === "list"}
               className={`p-2 rounded transition ${
                 viewMode === "list"
                   ? "bg-(--color-foreground) text-(--color-base)"
@@ -316,7 +321,7 @@ const MediaTabEnhanced = () => {
         {/* Upload Button */}
         <div className="col-span-2 flex justify-end">
           <Button
-            variant="accent"
+            variant="primary"
             className="gap-2 w-full md:w-auto"
             onClick={() => {
               setSelectedGallerySlot(null);
@@ -349,9 +354,7 @@ const MediaTabEnhanced = () => {
             >
               All Images
               <span
-                className={`text-xs ml-2 ${
-                  selectedView === "all" ? "opacity-70" : "opacity-70"
-                }`}
+                className="text-xs ml-2"
               >
                 ({totalImages})
               </span>
@@ -368,9 +371,7 @@ const MediaTabEnhanced = () => {
             >
               Unassigned
               <span
-                className={`text-xs ml-2 ${
-                  selectedView === "unassigned" ? "opacity-70" : "opacity-70"
-                }`}
+                className="text-xs ml-2"
               >
                 ({organizedMedia.unassigned.length})
               </span>
@@ -406,7 +407,7 @@ const MediaTabEnhanced = () => {
                         <span
                           className={`text-xs ml-2 ${
                             selectedView === `page-${page.id}`
-                              ? "opacity-70"
+                              ? ""
                               : "text-muted"
                           }`}
                         >
@@ -449,7 +450,7 @@ const MediaTabEnhanced = () => {
                         <span
                           className={`text-xs ml-2 ${
                             selectedView === `post-${post.id}`
-                              ? "opacity-70"
+                              ? ""
                               : "text-muted"
                           }`}
                         >
@@ -490,7 +491,7 @@ const MediaTabEnhanced = () => {
                     <span
                       className={`text-xs ml-auto ${
                         selectedView === "home-gallery"
-                          ? "opacity-70"
+                          ? ""
                           : "text-muted"
                       }`}
                     >
@@ -503,146 +504,251 @@ const MediaTabEnhanced = () => {
           </div>
         </div>
 
-        {/* Main Image Grid/List */}
+        {/* Main panel: the home gallery's six slots, or the selected library view. */}
         <div className="flex-1 min-w-0 overflow-auto">
-          <div className="grid grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((position) => {
-              const item = getGalleryItemByPosition(position);
-              return (
-                <div key={position}>
-                  <p className="text-xs text-muted mb-2">
-                    {position === 1 ? "Featured Image" : `Slot ${position}`}
-                  </p>
-                  <button
-                    onClick={() => handleGallerySlotClick(position)}
-                    className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
-                      item
-                        ? "bg-(--color-muted-accent)"
-                        : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
-                    }`}
-                  >
-                    {item ? (
-                      <>
-                        <Image
-                          src={item.url}
-                          alt={item.alt}
-                          fill
-                          className="object-cover"
-                          sizes="200px"
-                        />
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
-                          <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
-                            Replace
-                          </span>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveGalleryImage(position);
-                            }}
-                            className="p-1.5 bg-red-500 rounded hover:bg-red-600 transition"
-                          >
-                            <Trash2 className="w-3 h-3 text-white" />
-                          </button>
+          {selectedView === "home-gallery" ? (
+            <div className="grid grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((position) => {
+                const item = getGalleryItemByPosition(position);
+                return (
+                  <div key={position}>
+                    <p className="text-xs text-muted mb-2">
+                      {position === 1 ? "Featured Image" : `Slot ${position}`}
+                    </p>
+                    <button
+                      onClick={() => handleGallerySlotClick(position)}
+                      className={`relative w-full aspect-square rounded-xl overflow-hidden transition group ${
+                        item
+                          ? "bg-(--color-muted-accent)"
+                          : "bg-(--color-muted-accent) border-2 border-dashed border-(--color-border) hover:border-accent"
+                      }`}
+                    >
+                      {item ? (
+                        <>
+                          <Image
+                            src={item.url}
+                            alt={item.alt}
+                            fill
+                            className="object-cover"
+                            sizes="200px"
+                          />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
+                            <span className="px-2 py-1 bg-accent text-black rounded text-xs font-medium">
+                              Replace
+                            </span>
+                            <Button
+                              variant="destructive"
+                              size="icon-sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveGalleryImage(position);
+                              }}
+                              className="size-6"
+                              aria-label="Remove image from slot"
+                            >
+                              <Trash2 className="w-3 h-3" aria-hidden="true" />
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center h-full text-muted">
+                          <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
+                          <span className="text-xs">Add image</span>
                         </div>
-                      </>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-full text-muted">
-                        <ImageIcon className="w-8 h-8 mb-1 opacity-50" />
-                        <span className="text-xs">Add image</span>
+                      )}
+                    </button>
+                    {item && (
+                      <div className="mt-2 flex items-start justify-between gap-2">
+                        <p className="text-xs text-muted line-clamp-2" title={item.alt}>
+                          {item.alt || "No alt text"}
+                        </p>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="shrink-0 gap-1"
+                          onClick={() => handleEditGalleryMetadata(position)}
+                          aria-label={`Edit details for ${position === 1 ? "the featured image" : `slot ${position}`}`}
+                        >
+                          <Pencil className="w-3.5 h-3.5" aria-hidden="true" />
+                          Edit details
+                        </Button>
                       </div>
                     )}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : filteredImages.length === 0 ? (
+            <div className="h-full min-h-48 flex flex-col items-center justify-center text-muted">
+              <ImageIcon className="w-8 h-8 mb-2" aria-hidden="true" />
+              <p className="text-sm">
+                {searchQuery ? `No images match "${searchQuery}".` : "No images here yet."}
+              </p>
+            </div>
+          ) : viewMode === "grid" ? (
+            <ul className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" aria-label="Images">
+              {filteredImages.map((img) => (
+                <li key={img._id} className="bg-(--color-panel) border border-(--color-border) rounded-xl overflow-hidden">
+                  <div className="relative aspect-square bg-(--color-muted-accent)">
+                    <Image src={img.url} alt={img.altText || ""} fill className="object-cover" sizes="240px" />
+                  </div>
+                  <div className="p-3 space-y-1">
+                    <p className="text-sm font-medium text-ink truncate" title={img.filename}>{img.filename}</p>
+                    <p className="text-xs text-muted truncate">{img.assignedToTitle || "Unassigned"}</p>
+                    <div className="flex gap-2 pt-1">
+                      <Button variant="secondary" size="sm" className="flex-1" onClick={() => handleEditImage(img)}>
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(img._id)}
+                        aria-label={`Delete ${img.filename}`} className="text-(--color-danger) hover:bg-(--color-danger)/10">
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
+                      </Button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <ul className="divide-y divide-(--color-border) bg-(--color-panel) border border-(--color-border) rounded-xl" aria-label="Images">
+              {filteredImages.map((img) => (
+                <li key={img._id} className="flex items-center gap-3 p-3">
+                  <div className="relative size-12 shrink-0 rounded-lg overflow-hidden bg-(--color-muted-accent)">
+                    <Image src={img.url} alt={img.altText || ""} fill className="object-cover" sizes="48px" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-ink truncate">{img.filename}</p>
+                    <p className="text-xs text-muted truncate">
+                      {img.assignedToTitle || "Unassigned"}
+                      {img.size ? ` · ${Math.round(img.size / 1024)} KB` : ""}
+                    </p>
+                  </div>
+                  <Button variant="secondary" size="sm" onClick={() => handleEditImage(img)}>Edit</Button>
+                  <Button variant="ghost" size="icon-sm" onClick={() => setDeleteConfirm(img._id)}
+                    aria-label={`Delete ${img.filename}`} className="text-(--color-danger) hover:bg-(--color-danger)/10">
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Image?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDeleteImage(deleteConfirm as Id<"media">)}
-                variant="outline"
-                className="flex-1 text-red-500 hover:bg-red-500/10 hover:text-red-400 border-red-500/30"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Image?"
+          onConfirm={() => handleDeleteImage(deleteConfirm as Id<"media">)}
+        />
+      )}
+
+      {/* Edit Gallery Slot Metadata Modal */}
+      <Modal
+        open={editingGallerySlot !== null}
+        onOpenChange={(open) => !open && setEditingGallerySlot(null)}
+        title={editingGallerySlot === 1 ? "Featured Image Details" : `Slot ${editingGallerySlot} Details`}
+        className="max-w-sm"
+      >
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="gallery-alt" className="block text-sm font-medium text-ink mb-2">
+              Alt Text
+            </label>
+            <input
+              id="gallery-alt"
+              type="text"
+              value={galleryAltText}
+              onChange={(e) => setGalleryAltText(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Describe the image for screen readers..."
+            />
+          </div>
+          <div>
+            <label htmlFor="gallery-description" className="block text-sm font-medium text-ink mb-2">
+              Caption
+            </label>
+            <textarea
+              id="gallery-description"
+              value={galleryDescription}
+              onChange={(e) => setGalleryDescription(e.target.value)}
+              rows={3}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none resize-none"
+              placeholder="Shown under the photo in the gallery..."
+            />
           </div>
         </div>
-      )}
+        <div className="flex gap-2 mt-6">
+          <Button onClick={handleSaveGalleryMetadata} variant="primary" className="flex-1" disabled={!galleryAltText.trim()}>
+            Save
+          </Button>
+          <Button onClick={() => setEditingGallerySlot(null)} variant="secondary" className="flex-1">
+            Cancel
+          </Button>
+        </div>
+      </Modal>
 
       {/* Edit Image Metadata Modal */}
-      {isEditDrawerOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">
-              Edit Image Metadata
-            </h3>
+      <Modal
+        open={isEditDrawerOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsEditDrawerOpen(false);
+            setEditingImageId(null);
+          }
+        }}
+        title="Edit Image Metadata"
+        className="max-w-sm"
+      >
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Alt Text
+            </label>
+            <input
+              type="text"
+              value={editImageAlt}
+              onChange={(e) => setEditImageAlt(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Describe the image..."
+            />
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Alt Text
-                </label>
-                <input
-                  type="text"
-                  value={editImageAlt}
-                  onChange={(e) => setEditImageAlt(e.target.value)}
-                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
-                  placeholder="Describe the image..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-ink mb-2">
-                  Filename
-                </label>
-                <input
-                  type="text"
-                  value={editImageFilename}
-                  onChange={(e) => setEditImageFilename(e.target.value)}
-                  className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
-                  placeholder="Image filename..."
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-2 mt-6">
-              <Button
-                onClick={handleSaveImageMetadata}
-                variant="accent"
-                className="flex-1"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsEditDrawerOpen(false);
-                  setEditingImageId(null);
-                }}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-ink mb-2">
+              Filename
+            </label>
+            <input
+              type="text"
+              value={editImageFilename}
+              onChange={(e) => setEditImageFilename(e.target.value)}
+              className="w-full px-4 py-2 bg-(--color-muted-accent) rounded-lg text-ink focus:ring-2 focus:ring-accent focus:outline-none"
+              placeholder="Image filename..."
+            />
           </div>
         </div>
-      )}
+
+        <div className="flex gap-2 mt-6">
+          <Button
+            onClick={handleSaveImageMetadata}
+            variant="primary"
+            className="flex-1"
+          >
+            Save
+          </Button>
+          <Button
+            onClick={() => {
+              setIsEditDrawerOpen(false);
+              setEditingImageId(null);
+            }}
+            variant="secondary"
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+        </div>
+      </Modal>
 
       {/* Media Drawer for Gallery Image Selection */}
       <MediaDrawer

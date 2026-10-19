@@ -6,21 +6,21 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  ArrowUpRight,
-  Code2,
   RefreshCw,
 } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { clients as staticClients } from "@/data/clients";
-import type { GalleryPhoto } from "@/components/page/gallery-drawer";
-import { ConferencePanel } from "./conference-panel";
+import { GalleryPanel, type GalleryPhoto } from "./gallery-panel";
 import { QUOTES } from "@/components/main/quote-content";
-import { Reveal } from "./reveal";
-import { ProjectPreview } from "./project-preview";
+import { ProjectCard, type ProjectCardData } from "./project-card";
 import styles from "./coastal.module.css";
+import interior from "./interior.module.css";
+import { BlogPostCard } from "./blog-post-card";
+import type { Doc } from "../../../convex/_generated/dataModel";
 import { featuredProjects } from "@/data/projects-data";
-import { imageHorseMarketingProject, projectPresentation } from "@/data/project-presentation";
+import { imageHorseMarketingProject } from "@/data/project-presentation";
+import { Button } from "@/components/ui/button";
 
 // Public content remains reactive and admin-managed. Each section can recover
 // independently if its query fails, without blanking the rest of the homepage.
@@ -37,100 +37,22 @@ export class ContentBoundary extends Component<
   }
 }
 
-const plain = (text: string) => text.replace(/[\u2013\u2014]/g, "-");
+const fallbackProjects: ProjectCardData[] = featuredProjects;
 
-type Project = {
-  title: string;
-  description: string;
-  image?: string;
-  githubUrl?: string;
-  codebergUrl?: string;
-  vercelUrl?: string;
-  customUrl?: string;
-  features?: string[];
-};
-const fallbackProjects: Project[] = featuredProjects;
-
-function ProjectView({ projects }: { projects: Project[] }) {
+function ProjectView({ projects }: { projects: ProjectCardData[] }) {
   return (
     <div className={styles.projectGrid}>
-      {projects.slice(0, 3).map((project, index) => {
-        const presentation = projectPresentation(project);
-        const url = presentation.href || "/projects";
-        const external = /^https?:\/\//.test(url);
-        return (
-          <Reveal
-            key={project.title}
-            className={
-              index === 0 ? styles.primaryProject : styles.secondaryProject
-            }
-            delay={index * 0.06}
-          >
-            <article className={styles.project}>
-              <ProjectPreview
-                title={plain(presentation.title)}
-                image={presentation.image}
-                imageFit={presentation.imageFit}
-                imageAspectRatio={presentation.imageAspectRatio}
-                href={url}
-                githubUrl={project.githubUrl}
-                codebergUrl={project.codebergUrl}
-                sizes={
-                  index === 0
-                    ? "(max-width: 767px) 90vw, 60vw"
-                    : "(max-width: 767px) 90vw, 32vw"
-                }
-              />
-              <div className={styles.projectInfo}>
-                <h3>
-                  <a
-                    href={url}
-                    target={external ? "_blank" : undefined}
-                    rel={external ? "noopener noreferrer" : undefined}
-                  >
-                    {plain(presentation.title)}
-                  </a>
-                </h3>
-                <p>{plain(presentation.description)}</p>
-                {project.title === imageHorseMarketingProject.title && project.features?.length ? (
-                  <ul className={styles.projectFeatures}>
-                    {project.features.map((feature) => (
-                      <li key={feature}>
-                        <ArrowRight size={15} aria-hidden="true" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-                {index === 0 && (
-                  <div className={styles.projectLinks}>
-                    <a
-                      href={url}
-                      target={external ? "_blank" : undefined}
-                      rel={external ? "noopener noreferrer" : undefined}
-                      className={styles.textLink}
-                    >
-                      Explore project{" "}
-                      <ArrowUpRight size={17} aria-hidden="true" />
-                    </a>
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.sourceLink}
-                      >
-                        <Code2 size={17} aria-hidden="true" />
-                        Source code
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-            </article>
-          </Reveal>
-        );
-      })}
+      {projects.slice(0, 3).map((project, index) => (
+        <ProjectCard
+          key={project.title}
+          project={project}
+          variant={index === 0 ? "primary" : "secondary"}
+          heading="h3"
+          sizes={index === 0 ? "(max-width: 767px) 90vw, 60vw" : "(max-width: 767px) 90vw, 32vw"}
+          showFeatures={project.title === imageHorseMarketingProject.title}
+          delay={index * 0.06}
+        />
+      ))}
     </div>
   );
 }
@@ -158,22 +80,24 @@ function ClientView({ clients }: { clients: Client[] }) {
       <div className={styles.clientHeading}>
         <h2>Past and present clients</h2>
         <div className={styles.carouselButtons}>
-          <button
-            type="button"
+          <Button
+            variant="circle"
+            size="sm"
             onClick={() => setPage((safePage - 1 + pages) % pages)}
             aria-label="Previous clients"
             disabled={pages < 2}
           >
             <ArrowLeft size={18} aria-hidden="true" />
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="circle"
+            size="sm"
             onClick={() => setPage((safePage + 1) % pages)}
             aria-label="Next clients"
             disabled={pages < 2}
           >
             <ArrowRight size={18} aria-hidden="true" />
-          </button>
+          </Button>
         </div>
       </div>
       <div className={styles.clientLogos}>
@@ -214,64 +138,47 @@ export function CoastalClients() {
   );
 }
 
-function JournalView({
-  posts,
-}: {
-  posts?: { _id: string; title: string; slug: string; createdAt: number }[];
-}) {
-  return (
-    <div className={styles.journal}>
-      <h3>Latest writing</h3>
-      <p>Things I learn, build, and occasionally break.</p>
-      <div className={styles.journalPosts} aria-busy={posts === undefined}>
-        {posts === undefined ? (
-          [0, 1].map((index) => (
-            <div
-              key={index}
-              className={styles.postSkeleton}
-              aria-hidden="true"
-            />
-          ))
-        ) : posts.length ? (
-          [...posts]
-            .sort((a, b) => b.createdAt - a.createdAt)
-            .slice(0, 2)
-            .map((post) => (
-              <Link key={post._id} href={`/blog/${post.slug}`}>
-                <span>
-                  {plain(post.title)}
-                  <time dateTime={new Date(post.createdAt).toISOString()}>
-                    {new Intl.DateTimeFormat("en-US", {
-                      month: "short",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    }).format(post.createdAt)}
-                  </time>
-                </span>
-                <ArrowUpRight size={22} aria-hidden="true" />
-              </Link>
-            ))
-        ) : (
-          <p className={styles.emptyPosts}>
-            More writing is on the way. Browse the blog for articles and
-            tutorials.
-          </p>
-        )}
+type Post = Doc<"blogPosts">;
+// The two newest posts as text-only cards, the same card as /blog minus the cover.
+function LatestPostsView({ posts }: { posts?: Post[] }) {
+  if (posts === undefined)
+    return (
+      <div className={interior.postGrid} aria-busy="true">
+        {[0, 1].map((index) => (
+          <div key={index} className={styles.postSkeleton} aria-hidden="true" />
+        ))}
       </div>
-      <Link href="/blog" className={styles.textLink}>
-        Read the blog <ArrowUpRight size={17} aria-hidden="true" />
-      </Link>
+    );
+  if (!posts.length)
+    return (
+      <p className={styles.emptyPosts}>
+        More writing is on the way. Browse the blog for articles and tutorials.
+      </p>
+    );
+  return (
+    <div className={interior.postGrid}>
+      {[...posts]
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .slice(0, 2)
+        .map((post) => (
+          <BlogPostCard
+            key={post._id}
+            post={post}
+            heading="h3"
+            showImage={false}
+          />
+        ))}
     </div>
   );
 }
-function LiveJournal() {
+function LiveLatestPosts() {
   const posts = useQuery(api.blogPosts.getAllPosts);
-  return <JournalView posts={posts} />;
+  return <LatestPostsView posts={posts} />;
 }
-export function CoastalJournal() {
+export function CoastalLatestPosts() {
   return (
-    <ContentBoundary fallback={<JournalView posts={[]} />}>
-      <LiveJournal />
+    <ContentBoundary fallback={<LatestPostsView posts={[]} />}>
+      <LiveLatestPosts />
     </ContentBoundary>
   );
 }
@@ -316,8 +223,13 @@ function GalleryView({ items }: { items: GalleryPhoto[] }) {
           className={styles.coverImage}
         />
         <div className={styles.galleryFooter}>
-          <h3>Conference fan shots</h3>
-          <ConferencePanel photos={items} />
+          <h3>Conference photos</h3>
+          <GalleryPanel
+            photos={items}
+            title="Conference photos"
+            description="People I’ve met along the way."
+            label="Open conference photo gallery"
+          />
         </div>
       </div>
     </div>
@@ -368,14 +280,14 @@ function RamblingsView({
             <h3 id="ramblings-title">My ramblings</h3>
           </span>
         </Link>
-        <button
-          type="button"
-          className={styles.circleButton}
+        <Button
+          variant="circle"
+          size="sm"
           aria-label="New quote"
           onClick={() => setIndex((index + 1) % QUOTES.length)}
         >
           <RefreshCw size={17} aria-hidden="true" />
-        </button>
+        </Button>
       </div>
     </section>
   );

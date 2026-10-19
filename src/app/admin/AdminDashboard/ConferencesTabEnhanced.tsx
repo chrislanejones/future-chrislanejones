@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Plus,
   Trash2,
@@ -16,6 +16,7 @@ import { api } from "../../../../convex/_generated/api";
 import type { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorDisplay } from "../components/ErrorDisplay";
@@ -234,7 +235,7 @@ const ConferencesTabEnhanced = () => {
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-(--color-ink)">Conferences</h3>
-          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2">
+          <Button onClick={handleCreateNew} variant="primary" size="sm" className="gap-2">
             <Plus className="w-4 h-4" />
             New
           </Button>
@@ -274,7 +275,7 @@ const ConferencesTabEnhanced = () => {
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{conf.name}</p>
-                <p className="text-xs opacity-60 truncate">{formatDateRange(conf)}</p>
+                <p className={`text-xs truncate ${selected?._id === conf._id && !isCreating ? "" : "text-muted"}`}>{formatDateRange(conf)}</p>
               </div>
             </div>
           ))}
@@ -284,7 +285,7 @@ const ConferencesTabEnhanced = () => {
               <p className="text-sm text-muted">No conferences yet.</p>
               <Button
                 onClick={handleSeed}
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 disabled={isSeeding}
               >
@@ -298,7 +299,7 @@ const ConferencesTabEnhanced = () => {
           <div className="mt-3 pt-3 border-t border-(--color-border)">
             <Button
               onClick={handleSeed}
-              variant="outline"
+              variant="secondary"
               size="sm"
               className="w-full text-xs"
               disabled={isSeeding}
@@ -357,12 +358,12 @@ const ConferencesTabEnhanced = () => {
               <div className="flex items-center gap-2 shrink-0">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -375,7 +376,7 @@ const ConferencesTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -385,9 +386,9 @@ const ConferencesTabEnhanced = () => {
                     {selected && (
                       <Button
                         onClick={() => setDeleteConfirm(selected._id)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -412,7 +413,7 @@ const ConferencesTabEnhanced = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-ink">
-                    Conference Name <span className="text-red-500">*</span>
+                    Conference Name <span className="text-(--color-danger)">*</span>
                   </label>
                   <Input
                     value={formData.name}
@@ -604,28 +605,13 @@ const ConferencesTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Conference?</h3>
-            <p className="text-muted mb-6">This cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handleDelete(deleteConfirm as Id<"conferences">)}
-                variant="outline"
-                className="flex-1 text-red-500"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Conference?"
+          description="This cannot be undone."
+          onConfirm={() => handleDelete(deleteConfirm as Id<"conferences">)}
+        />
       )}
 
       <MediaDrawer

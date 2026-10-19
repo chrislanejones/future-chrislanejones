@@ -12,6 +12,18 @@ const eslintConfig = [
     settings: { react: { version: "19.2" } },
   },
   {
+    // `_name` marks a value kept on purpose (a dropped tuple slot, a prop
+    // pulled out of a spread); rest siblings strip props before forwarding.
+    rules: {
+      "@typescript-eslint/no-unused-vars": ["warn", {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        destructuredArrayIgnorePattern: "^_",
+        ignoreRestSiblings: true,
+      }],
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",

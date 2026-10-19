@@ -1,4 +1,4 @@
-import type { GalleryPhoto } from "@/components/page/gallery-drawer";
+import type { GalleryPhoto } from "@/components/coastal/gallery-panel";
 
 // Match the event AND year in the existing photo captions. In particular,
 // the Kevin Powell photo is labelled 2025, so it is not assigned to THAT 2024.

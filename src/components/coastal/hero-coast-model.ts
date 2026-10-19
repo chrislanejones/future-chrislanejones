@@ -9,9 +9,6 @@ import { addBestWesternDetails } from "./best-western-detail";
 import { buildBeachLandmarkHouses } from "./beach-landmark-houses";
 import { addCoastalVisitors, buildCoastFacingHomes } from "./coastal-street-life";
 import { buildTenthStreetBlock } from "./tenth-street-block";
-import { buildNinthStreetDetail } from "./ninth-street-detail";
-import { buildTenthStreetWest } from "./tenth-street-west";
-import { buildEthelFillingStation } from "./ethel-filling-station";
 
 // An original, simplified model guided by Chris's St Augustine Beach photos.
 // Positions and building dimensions are compositional, not surveyed map data.
@@ -193,13 +190,11 @@ export function makeCoastalTown(): CoastalTown {
       box("glass", "#587479", x + side * (w / 2 + .025), .5 + floor * h / stories, z, .035, .4, .32);
     }
   };
-  // Paver apron, raised coping, then water clear above the coping: the layers
-  // sit far enough apart that they don't z-fight from the overview camera.
   const pool = (x: number, z: number, w: number, d: number) => {
     box("ground", "#dfd3bb", x, .025, z, w + .65, .05, d + .65);
-    box("architecture", "#f5eee0", x, .08, z, w + .12, .06, d + .12);
-    box("water", "#75b8bb", x, .135, z, w, .03, d);
-    for (let i = 0; i < 3; i++) box("architecture", "#efede0", x - w / 2 + .2 + i * .5, .19, z + d / 2 + .3, .28, .08, .55);
+    box("architecture", "#f5eee0", x, .075, z, w + .12, .05, d + .12);
+    box("water", "#75b8bb", x, .11, z, w, .025, d);
+    for (let i = 0; i < 3; i++) box("architecture", "#efede0", x - w / 2 + .2 + i * .5, .16, z + d / 2 + .3, .28, .08, .55);
   };
   const house = (x: number, z: number, seed: number, compact = false) => {
     const angle = seed % 3 === 0 ? (rand(seed + 20) - .5) * .16 : 0;
@@ -489,7 +484,6 @@ export function makeCoastalTown(): CoastalTown {
     if (row === 4) apartment(-1.975, z, row + 700);
     [-3.15, -.8, 1.55, 3.9].forEach((x, col) => {
       if ((row === 3 || row === 4) && col < 2) return;
-      if (row === 6 && col < 2) return; // Reserve Ethel's corner beside the 7th Street approach.
       if (row < 4 && col >= 2) return;
       house(x, z, row * 4 + col + 1, true);
     });
@@ -497,16 +491,18 @@ export function makeCoastalTown(): CoastalTown {
   buildCoastFacingHomes({ box, roof, pole, add, palm, bush, parkingRow });
   buildTenthStreetBlock({ box, roof, pole, add, palm, bush, parkingRow });
   buildBeachLandmarkHouses({ box, roof, pole, add, palm, bush, parkingRow });
+  // A narrow local approach continues from the parking drive between the two
+  // beach landmarks, leaving the hotel's pool enclosure to its north clear.
+  box("ground", "#d2c5ad", 3.62, .035, 3.4, 5, .045, .65);
+  box("ground", "#92968d", 3.62, .063, 3.4, 5, .025, .49);
   [-25, -16, -10, 14, 20.5, 30, 36].forEach((z, row) => {
     if (z >= 30) return;
     accessLane(z, true);
-    if (z !== -16 && z !== -10) [-18.2, -14.8, -11.3].forEach((x, col) => house(x, z, 50 + row * 4 + col, false));
-    tree(-19.7, z === -10 ? -7.6 : z - 2.3, row + 970, 1.15);
+    [-18.2, -14.8, -11.3].forEach((x, col) => house(x, z, 50 + row * 4 + col, false));
+    tree(-19.7, z - 2.3, row + 970, 1.15);
     if (row % 2) tree(-15.9, z - 2.5, row + 980, 1.1);
     tree(-20.5, z - .4, row + 30, .85);
   });
-  buildTenthStreetWest({ box, roof, pole, add, palm, bush, parkingRow });
-  buildEthelFillingStation({ box, roof, pole, add, palm, bush, parkingRow });
   [[-26,4],[-26,17],[-26,-25]].forEach(([x,z],i)=>house(x,z,i+90));
 
   // Continue the coast into the distance with a mixture of homes and commerce.
@@ -579,55 +575,7 @@ export function makeCoastalTown(): CoastalTown {
   parkingRow(-15.9, -.5, 7, 170, -1);
   tree(-19.1, 7.6, 180, .7);
   tree(-19.1, -1.5, 181, .7);
-  // Best Eastern pool court (reference aerial and street photos, 10-14-2026):
-  // a paver deck east of the parking and south of the arcade, with the pool
-  // toward the west side, the round spa at its northeast corner, loungers on
-  // the west edge, a pergola on the north edge and two thatch umbrellas. A
-  // cream knee wall with a terracotta cap and white fence panels encloses it;
-  // hedges run along the outside. Each layer sits well above the one below.
-  {
-    const cx = -9.65, cz = 6.7, w = 2.5, d = 2.4;
-    box("ground", "#ddd2bb", cx, .06, cz, w, .06, d);                       // pavers, top .09
-    const px = -9.95, pz = 6.65, pw = 1.1, pd = 1.6;
-    // Coping is a ring, so the water sits inside it a little below the rim.
-    for (const side of [-1, 1]) {
-      box("architecture", "#f5eee0", px, .13, pz + side * (pd / 2 + .035), pw + .14, .06, .07);
-      box("architecture", "#f5eee0", px + side * (pw / 2 + .035), .13, pz, .07, .06, pd);
-    }
-    box("water", "#75b8bb", px, .11, pz, pw, .06, pd);                       // water, top .14; rim .16
-    add("architecture", new CylinderGeometry(.34, .34, .06, 24), "#f5eee0", -8.95, .13, 5.95);
-    add("water", new CylinderGeometry(.24, .24, .03, 24), "#8cc6c8", -8.95, .2, 5.95);
-    for (const z of [6.1, 6.55, 7.0]) box("architecture", "#efede0", -10.62, .145, z, .5, .07, .26); // loungers
-    // Pergola: four posts and a slatted top along the north edge.
-    for (const x of [-10.35, -9.35]) for (const z of [5.72, 6.1]) pole(new Vector3(x, .09, z), new Vector3(x, .62, z), .025, "#6f5137");
-    box("wood", "#7a5a3c", -9.85, .63, 5.91, 1.2, .035, .5);
-    for (let i = 0; i < 7; i++) box("wood", "#8a6a48", -10.35 + i * .167, .665, 5.91, .03, .03, .5);
-    // Thatch umbrellas.
-    for (const [x, z] of [[-9.1, 7.35], [-10.45, 7.5]]) {
-      pole(new Vector3(x, .09, z), new Vector3(x, .5, z), .018, "#6f5137");
-      add("roof", new CylinderGeometry(0, .3, .16, 12), "#b89a63", x, .5, z);
-    }
-    // Enclosure: knee wall (top .27), terracotta cap, white panels between piers, a gate gap on the south.
-    const wall = (x: number, z: number, along: "x" | "z", length: number) => {
-      const sx = along === "x" ? length : .07, sz = along === "x" ? .07 : length;
-      box("architecture", "#f1e7d2", x, .18, z, sx, .18, sz);
-      box("roof", "#c98261", x, .285, z, sx + .03, .03, sz + .03);
-      box("architecture", "#f8f6ef", x, .37, z, along === "x" ? length : .035, .2, along === "x" ? .035 : length);
-    };
-    wall(cx, cz - d / 2, "x", w);                                     // north
-    wall(cx - w / 2, cz, "z", d);                                     // west
-    wall(cx + w / 2, cz, "z", d);                                     // east
-    wall(cx - .75, cz + d / 2, "x", w / 2 - .5);                      // south, west of the gate
-    wall(cx + .75, cz + d / 2, "x", w / 2 - .5);                      // south, east of the gate
-    for (const [x, z] of [[cx - w / 2, cz - d / 2], [cx + w / 2, cz - d / 2], [cx - w / 2, cz + d / 2], [cx + w / 2, cz + d / 2], [cx - .25, cz + d / 2], [cx + .25, cz + d / 2], [cx - w / 2, cz], [cx + w / 2, cz]]) {
-      box("architecture", "#f1e7d2", x, .3, z, .12, .42, .12);
-      box("roof", "#c98261", x, .525, z, .16, .03, .16);
-    }
-    for (let i = 0; i < 5; i++) bush(cx - w / 2 + .25 + i * .5, cz + d / 2 + .16, 9400 + i, .11);
-    for (let i = 0; i < 4; i++) bush(cx + w / 2 + .16, cz - d / 2 + .35 + i * .55, 9410 + i, .11);
-    palm(cx + w / 2 + .35, cz - d / 2 + .2, 9420);
-    palm(cx + w / 2 + .35, cz + d / 2 - .1, 9421);
-  }
+  pool(-10.8,5.7,1.65,2);
   addBestWesternDetails({ box, roof, pole, add, palm, bush, parkingRow });
 
   buildCastilloReal({ box, roof, pole, add, palm, bush, parkingRow });
@@ -817,11 +765,10 @@ export function makeCoastalTown(): CoastalTown {
     add("foliage", geometry, grassColors[i], 0, 0, 0);
   });
   for (const z of [-35, -21.5, -7.1, 11.6, 26.5, 40]) {
-    if (z !== 26.5) tree(-4.25, z, Math.round(z + 100), .65); // Ethel's occupies this former garden parcel.
+    tree(-4.25, z, Math.round(z + 100), .65);
     palm(5.6, z, z + 400);
   }
   addCoastalVisitors({ box, roof, pole, add, palm, bush, parkingRow });
-  buildNinthStreetDetail({ box, roof, pole, add, palm, bush, parkingRow });
   return Object.fromEntries(LAYERS.map(layer=>{
     const geometry=mergeGeometries(parts[layer]);
     parts[layer].forEach(g=>g.dispose());

@@ -1,26 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Search,
   Heart,
   MessageCircle,
   CheckCircle,
-  X,
   Trash2,
   ExternalLink,
-  Filter,
   ThumbsUp,
-  ThumbsDown,
-  Eye,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 
 interface BlogComment {
   _id: Id<"blogComments">;
@@ -47,7 +44,9 @@ interface LikesStats {
 }
 
 const EngagementTabEnhanced = () => {
-  const comments = useQuery(api.blogPosts.getAllCommentsAdmin) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const commentsQuery = useQuery(api.blogPosts.getAllCommentsAdmin);
+  const comments = commentsQuery ?? [];
   const likesData = useQuery(api.blogPosts.getAllLikesAdmin) as
     | LikesStats
     | undefined;
@@ -153,8 +152,8 @@ const EngagementTabEnhanced = () => {
     });
   };
 
-  if (comments === undefined || likesData === undefined) {
-    return <LoadingSpinner message="Loading engagement data..." />;
+  if (commentsQuery === undefined || likesData === undefined) {
+    return <Spinner label="Loading engagement data..." />;
   }
 
   return (
@@ -329,7 +328,7 @@ const EngagementTabEnhanced = () => {
                     {!selectedComment.approved && (
                       <Button
                         onClick={() => handleApprove(selectedComment._id)}
-                        variant="accent"
+                        variant="primary"
                         size="sm"
                         className="gap-2"
                       >
@@ -341,7 +340,7 @@ const EngagementTabEnhanced = () => {
                       onClick={() => setDeleteConfirm(selectedComment._id)}
                       variant="ghost"
                       size="sm"
-                      className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                      className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -464,30 +463,12 @@ const EngagementTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Comment?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  handleDelete(deleteConfirm as Id<"blogComments">)
-                }
-                variant="disabled"
-                className="flex-1"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Comment?"
+          onConfirm={() => handleDelete(deleteConfirm as Id<"blogComments">)}
+        />
       )}
     </div>
   );

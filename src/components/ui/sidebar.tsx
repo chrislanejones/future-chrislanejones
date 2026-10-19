@@ -1,8 +1,7 @@
 // components/ui/sidebar.tsx
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
@@ -205,18 +204,6 @@ export const SidebarHeader = React.forwardRef<
 ))
 SidebarHeader.displayName = "SidebarHeader"
 
-export const SidebarFooter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("mt-auto flex flex-col gap-2 p-4", className)}
-    {...props}
-  />
-))
-SidebarFooter.displayName = "SidebarFooter"
-
 export const SidebarContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -228,56 +215,6 @@ export const SidebarContent = React.forwardRef<
   />
 ))
 SidebarContent.displayName = "SidebarContent"
-
-export const SidebarGroup = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("relative flex w-full min-w-0 flex-col px-2 py-4", className)}
-    {...props}
-  />
-))
-SidebarGroup.displayName = "SidebarGroup"
-
-export const SidebarGroupLabel = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => (
-  <span
-    ref={ref}
-    className={cn(
-      "text-sidebar-foreground/70 px-2 py-1.5 text-xs font-medium truncate",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarGroupLabel.displayName = "SidebarGroupLabel"
-
-export const SidebarGroupAction = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => (
-  <button
-    ref={ref}
-    className={cn(
-      "absolute right-3 top-3 rounded-md p-2 hover:bg-sidebar-accent",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarGroupAction.displayName = "SidebarGroupAction"
-
-export const SidebarGroupContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("w-full", className)} {...props} />
-))
-SidebarGroupContent.displayName = "SidebarGroupContent"
 
 export const SidebarMenu = React.forwardRef<
   HTMLUListElement,
@@ -303,166 +240,19 @@ export const SidebarMenuItem = React.forwardRef<
 ))
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
-const sidebarMenuButtonVariants = cva(
-  cn(
-    "peer/menu-button relative flex w-full items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2",
-    "active:bg-sidebar-primary active:text-sidebar-primary-foreground"
-  ),
-  {
-    variants: {
-      isActive: {
-        true: "bg-sidebar-primary text-sidebar-primary-foreground",
-      },
-      size: {
-        default: "h-8",
-        sm: "h-7 text-xs",
-        lg: "h-12 text-base px-3",
-      },
-    },
-  }
-)
-
-export interface SidebarMenuButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof sidebarMenuButtonVariants> {
-  asChild?: boolean
-}
-
-export const SidebarMenuButton = React.forwardRef<
-  HTMLButtonElement,
-  SidebarMenuButtonProps
->(
-  (
-    { className, isActive, size = "default", asChild = false, ...props },
-    ref
-  ) => {
-    const Comp = asChild ? Slot : "button"
-
-    return (
-      <Comp
-        ref={ref}
-        data-active={isActive}
-        className={cn(
-          sidebarMenuButtonVariants({ isActive, size }),
-          className
-        )}
-        {...props}
-      />
-    )
-  }
-)
-SidebarMenuButton.displayName = "SidebarMenuButton"
-
-export const SidebarMenuAction = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => (
-  <button
-    ref={ref}
-    className={cn(
-      "peer/menu-action absolute right-1.5 top-1/2 flex aspect-square w-5 -translate-y-1/2 items-center justify-center rounded-md p-0 outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 opacity-0 group-hover/menu-item:opacity-100",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarMenuAction.displayName = "SidebarMenuAction"
-
-export const SidebarMenuSub = React.forwardRef<
-  HTMLUListElement,
-  React.HTMLAttributes<HTMLUListElement>
->(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    className={cn(
-      "border-sidebar-border mx-3.5 flex min-w-0 flex-col gap-1 border-l px-2.5 py-0.5",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarMenuSub.displayName = "SidebarMenuSub"
-
-export const SidebarMenuSubItem = React.forwardRef<
-  HTMLLIElement,
-  React.HTMLAttributes<HTMLLIElement>
->(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("group/menu-sub-item relative", className)} {...props} />
-))
-SidebarMenuSubItem.displayName = "SidebarMenuSubItem"
-
-export const SidebarMenuSubButton = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean }
->(({ className, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button"
-
-  return (
-    <Comp
-      ref={ref}
-      className={cn(
-        "peer/menu-sub-button relative flex w-full items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-sm outline-none ring-sidebar-ring transition-all hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
-
-export const SidebarMenuBadge = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => (
-  <span
-    ref={ref}
-    className={cn(
-      "ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-sidebar-primary px-1 text-[10px] font-medium text-sidebar-primary-foreground",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarMenuBadge.displayName = "SidebarMenuBadge"
-
-export const SidebarMenuSkeleton = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { showIcon?: boolean }
->(({ className, showIcon = false, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center gap-2 px-2 py-1.5", className)}
-    {...props}
-  >
-    {showIcon && <div className="h-4 w-4 rounded bg-sidebar-accent" />}
-    <div className="flex-1 h-4 bg-sidebar-accent rounded" />
-  </div>
-))
-SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton"
-
-export const SidebarSeparator = React.forwardRef<
-  HTMLHRElement,
-  React.HTMLAttributes<HTMLHRElement>
->(({ className, ...props }, ref) => (
-  <hr
-    ref={ref}
-    className={cn("bg-sidebar-border -mx-2 my-2 h-px", className)}
-    {...props}
-  />
-))
-SidebarSeparator.displayName = "SidebarSeparator"
-
-export const SidebarTrigger = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => {
+export function SidebarTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar()
 
   return (
-    <button
-      ref={ref}
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label="Toggle sidebar"
       onClick={toggleSidebar}
-      className={cn("rounded-md p-2 hover:bg-accent", className)}
+      className={className}
       {...props}
     >
       <svg
@@ -470,6 +260,7 @@ export const SidebarTrigger = React.forwardRef<
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -478,27 +269,6 @@ export const SidebarTrigger = React.forwardRef<
           d="M4 6h16M4 12h16M4 18h16"
         />
       </svg>
-    </button>
+    </Button>
   )
-})
-SidebarTrigger.displayName = "SidebarTrigger"
-
-export const SidebarRail = React.forwardRef<
-  HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
-
-  return (
-    <button
-      ref={ref}
-      onClick={toggleSidebar}
-      className={cn(
-        "absolute inset-y-0 right-0 w-1 hover:bg-sidebar-accent transition-colors",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarRail.displayName = "SidebarRail"
+}

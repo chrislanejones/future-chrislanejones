@@ -25,7 +25,7 @@ http.route({
 http.route({
   path: "/sitemap-data",
   method: "GET",
-  handler: httpAction(async (ctx, request) => {
+  handler: httpAction(async (ctx) => {
     const [blogPosts, projects] = await Promise.all([
       ctx.runQuery(api.blogPosts.getAllPosts),
       ctx.runQuery(api.projects.getAll),

@@ -7,6 +7,7 @@
   font-size: var(--type-display);
   line-height: 1.15;
   letter-spacing: -0.04em;
+  word-spacing: 0.05em;
   font-weight: var(--weight-regular);
 }
 .content h3 {
@@ -28,11 +29,15 @@
 }
 .content :is(input:not([type="radio"]), textarea, select) {
   background: var(--coast-base);
-  border: 1px solid var(--coast-line);
+  /* Control edge, not the faint divider: 3:1 against the page (design guide). */
+  border: 1px solid var(--coast-control-line);
   border-radius: var(--radius-control);
   color: var(--coast-ink);
   min-height: 48px;
   font-size: var(--type-body);
+}
+.content :is(input, textarea, select)[aria-invalid="true"] {
+  border-color: var(--color-danger);
 }
 .content :is(input, textarea)::placeholder {
   color: var(--coast-muted);
@@ -66,29 +71,6 @@
 }
 .panel p {
   color: var(--coast-muted);
-}
-.action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 48px;
-  padding: 12px 22px;
-  border-radius: var(--radius-pill);
-  background: var(--coast-accent);
-  color: var(--coast-on-accent);
-  font-size: var(--type-body);
-  font-weight: var(--weight-semibold);
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-.action:hover {
-  opacity: 0.85;
-}
-.action svg {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
 }
 .actions {
   display: flex;
@@ -162,11 +144,11 @@
 .postMedia:hover img {
   transform: scale(1.025);
 }
-.post h2 {
+.postTitle {
   font-size: var(--type-heading);
   margin-block: 12px;
 }
-.post h2 a:hover {
+.postTitle a:hover {
   color: var(--coast-accent);
 }
 .post p {
@@ -201,6 +183,7 @@
 .articleTitle {
   font-size: var(--type-intro);
   letter-spacing: -0.05em;
+  word-spacing: 0.06em;
   line-height: 1.07;
   margin-block: 32px 24px;
   overflow-wrap: anywhere;
@@ -315,6 +298,7 @@
 .timeline time {
   font-size: var(--type-heading);
   letter-spacing: -0.035em;
+  word-spacing: 0.04em;
   padding-top: 8px;
 }
 .timelineIcon {
@@ -488,6 +472,7 @@
 .price {
   font-size: var(--type-display);
   letter-spacing: -0.045em;
+  word-spacing: 0.05em;
   margin-bottom: 24px;
 }
 .price small {
@@ -654,7 +639,7 @@
   break-inside: avoid;
   margin-bottom: 20px;
   background: var(--coast-panel);
-  border-radius: 18px;
+  border-radius: var(--radius-media);
   padding: 20px 22px 12px;
 }
 .tabsGroup h2 {
@@ -666,16 +651,21 @@
   padding: 0;
   margin: 0;
 }
+/* Quiet list rows: a surface one step off the panel and the normal text color, so a
+   page of 51 links reads calmly in both themes. The accent only shows on hover/focus. */
 .tabLink {
   display: flex;
   align-items: center;
   gap: 12px;
   margin: 8px 0;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: var(--coast-accent);
-  color: var(--coast-on-accent);
-  transition: background-color 160ms ease, transform 160ms ease;
+  /* The outline keeps each row distinct where the soft surface is close to the panel (light mode). */
+  border: 1px solid var(--coast-line);
+  border-radius: var(--radius-control);
+  background: var(--coast-soft);
+  color: var(--coast-ink);
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease;
 }
 .tabsGroup li:last-child .tabLink {
   margin-bottom: 0;
@@ -688,16 +678,27 @@
 }
 .tabLink small {
   display: block;
-  color: color-mix(in srgb, var(--coast-on-accent) 78%, transparent);
+  color: var(--coast-muted);
   font-size: var(--type-caption);
   margin-top: 2px;
 }
-.tabLink:hover {
-  background: color-mix(in srgb, var(--coast-accent) 85%, white);
-  color: var(--coast-on-accent);
+.tabLink:hover,
+.tabLink:focus-visible {
+  background: color-mix(in srgb, var(--coast-soft) 82%, var(--coast-accent));
+  border-color: var(--coast-accent);
+  color: var(--coast-ink);
 }
 .tabLink > svg {
   flex-shrink: 0;
+  color: var(--coast-muted);
+  transition: color .15s ease;
+}
+.tabLink:hover > svg,
+.tabLink:focus-visible > svg {
+  color: var(--coast-accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tabLink, .tabLink > svg { transition: none; }
 }
 .tabFavicon,
 .tabFallback {
@@ -708,6 +709,11 @@
 }
 .tabFavicon {
   object-fit: contain;
+}
+/* Many favicons are black (GitHub, Vercel); on dark rows they sit on a small light chip. */
+:global(.dark) .tabFavicon {
+  padding: 2px;
+  background: var(--coast-ink);
 }
 .tabLink .tabFallback {
   /* beats `.tabLink span { flex: 1 }`, which would stretch the tile */

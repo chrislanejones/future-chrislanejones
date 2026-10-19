@@ -11,7 +11,7 @@ import {
   Heading2,
   Code,
   LinkIcon,
-  Image,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -79,118 +79,138 @@ export const HtmlEditorEnhanced: React.FC<HtmlEditorProps> = ({
     <div className="border border-border rounded-lg overflow-hidden bg-panel">
       {/* Toolbar */}
       <div className="border-b border-border p-3 flex flex-wrap gap-1 bg-base">
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("bold");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Bold"
           title="Bold"
         >
           <Bold className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("italic");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Italic"
           title="Italic"
         >
           <Italic className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("underline");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Underline"
           title="Underline"
         >
           <Underline className="w-4 h-4" />
-        </button>
+        </Button>
 
         <div className="border-l border-border mx-1" />
 
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("insertUnorderedList");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Bullet List"
           title="Bullet List"
         >
           <List className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("insertOrderedList");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Numbered List"
           title="Numbered List"
         >
           <ListOrdered className="w-4 h-4" />
-        </button>
+        </Button>
 
         <div className="border-l border-border mx-1" />
 
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("formatBlock", "<h2>");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Heading"
           title="Heading"
         >
           <Heading2 className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             execCommand("formatBlock", "<pre>");
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Code Block"
           title="Code Block"
         >
           <Code className="w-4 h-4" />
-        </button>
+        </Button>
 
         <div className="border-l border-border mx-1" />
 
-        <button
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onMouseDown={(e) => {
             e.preventDefault();
             insertLink();
           }}
-          className="p-2 hover:bg-surface-hover rounded transition"
+          aria-label="Insert Link"
           title="Insert Link"
         >
           <LinkIcon className="w-4 h-4" />
-        </button>
+        </Button>
 
         {onImageClick && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onMouseDown={(e) => {
               e.preventDefault();
               onImageClick();
             }}
-            className="p-2 hover:bg-surface-hover rounded transition"
+            aria-label="Insert Image"
             title="Insert Image"
           >
-            <Image className="w-4 h-4" />
-          </button>
+            <ImageIcon className="w-4 h-4" aria-hidden="true" />
+          </Button>
         )}
 
         <div className="border-l border-border mx-1" />
 
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={toggleHTMLView}
-          className="px-3 py-2 hover:bg-surface-hover rounded transition text-xs font-medium"
+          className="px-3 text-xs font-medium"
           title="Toggle HTML View"
         >
           {isHtml ? "Visual" : "HTML"}
-        </button>
+        </Button>
       </div>
 
       {/* Editor Area */}

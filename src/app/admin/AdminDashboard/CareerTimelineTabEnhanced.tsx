@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Plus,
   Edit2,
   Trash2,
   Save,
-  X,
   GripVertical,
   Calendar,
-  MapPin,
   Briefcase,
   GraduationCap,
   Video,
@@ -30,8 +28,10 @@ import { api } from "../../../../convex/_generated/api";
 import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
+import { ResumeFilesPanel } from "../components/ResumeFilesPanel";
 
 // Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
 type CareerEvent = Doc<"careerTimeline">;
@@ -56,7 +56,9 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 const VALID_ICONS = Object.keys(ICON_MAP);
 
 const CareerTimelineTabEnhanced = () => {
-  const events = useQuery(api.careerTimeline.getAllEvents) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const eventsQuery = useQuery(api.careerTimeline.getAllEvents);
+  const events = eventsQuery ?? [];
   const addEvent = useMutation(api.careerTimeline.addEvent);
   const updateEvent = useMutation(api.careerTimeline.updateEvent);
   const deleteEvent = useMutation(api.careerTimeline.deleteEvent);
@@ -222,12 +224,14 @@ const CareerTimelineTabEnhanced = () => {
     return <IconComponent className={className} />;
   };
 
-  if (events === undefined) {
-    return <LoadingSpinner message="Loading timeline..." />;
+  if (eventsQuery === undefined) {
+    return <Spinner label="Loading timeline..." />;
   }
 
   return (
-    <div className="grid grid-cols-3 gap-6 h-full">
+    <div className="flex flex-col gap-6 h-full">
+    <ResumeFilesPanel />
+    <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
       {/* Status Messages */}
       {error && (
         <div className="col-span-3">
@@ -251,7 +255,7 @@ const CareerTimelineTabEnhanced = () => {
 
         {/* Add Event Button */}
         <div className="flex items-center justify-between mb-3">
-          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2 w-full">
+          <Button onClick={handleCreateNew} variant="primary" size="sm" className="gap-2 w-full">
             <Plus className="w-4 h-4" />
             Add Event
           </Button>
@@ -339,12 +343,12 @@ const CareerTimelineTabEnhanced = () => {
               <div className="flex items-center gap-2">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -357,7 +361,7 @@ const CareerTimelineTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -367,9 +371,9 @@ const CareerTimelineTabEnhanced = () => {
                     {selectedEvent && (
                       <Button
                         onClick={() => setDeleteConfirm(selectedEvent._id)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -469,6 +473,8 @@ const CareerTimelineTabEnhanced = () => {
                           : "bg-(--color-muted-accent) text-muted hover:text-ink disabled:opacity-40"
                       }`}
                       title={iconName}
+                      aria-label={iconName}
+                      aria-pressed={formData.iconName === iconName}
                     >
                       {renderIcon(iconName, "w-5 h-5")}
                     </button>
@@ -489,31 +495,14 @@ const CareerTimelineTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Event?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  handleDelete(deleteConfirm as Id<"careerTimeline">)
-                }
-                variant="disabled"
-                className="flex-1"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Event?"
+          onConfirm={() => handleDelete(deleteConfirm as Id<"careerTimeline">)}
+        />
       )}
+    </div>
     </div>
   );
 };

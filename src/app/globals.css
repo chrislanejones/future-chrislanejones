@@ -35,6 +35,12 @@
   --color-on-accent: var(--coast-foam);
 
   --color-border: #e5e7eb; /* gray-200, subtle */
+  /* Control edges (inputs, textareas) need 3:1 against their surface; the
+     faint --color-border is for decorative dividers only. */
+  --color-control-border: #708b90;
+  /* Error text and error borders: 5.5:1 or better on every surface. */
+  --color-danger: #b91c1c;
+  --color-success: #166534;
   --color-focus-ring: #111827; /* near-black — high contrast on light backgrounds */
   --focus-ring: 2px solid var(--color-focus-ring);
 
@@ -133,6 +139,9 @@
   --color-on-accent: #163b45; /* dark text on the light teal */
 
   --color-border: #1f242b;
+  --color-control-border: #779298;
+  --color-danger: #ffb4ab;
+  --color-success: #86efac;
   --color-focus-ring: #ffffff; /* near-white — high contrast on dark backgrounds */
 
   --color-danger: #ffabab;
@@ -161,6 +170,8 @@ body:has([data-coastal-page]) {
   --coast-on-accent: var(--coast-foam);
   --coast-line: #d4ddda;
   --coast-control-line: #708b90;
+  --coast-danger: #b91c1c;
+  --coast-success: #166534;
   --color-base: var(--coast-base);
   --color-panel: var(--coast-panel);
   --color-inner-card: var(--coast-soft);
@@ -170,6 +181,9 @@ body:has([data-coastal-page]) {
   --color-accent: var(--coast-accent);
   --color-on-accent: var(--coast-on-accent);
   --color-border: var(--coast-line);
+  --color-control-border: var(--coast-control-line);
+  --color-danger: var(--coast-danger);
+  --color-success: var(--coast-success);
   --color-surface-hover: var(--coast-soft);
   --color-focus-ring: var(--coast-accent);
 }
@@ -184,6 +198,8 @@ body:has([data-coastal-page]) {
   --coast-on-accent: #163b45;
   --coast-line: #365159;
   --coast-control-line: #779298;
+  --coast-danger: #ffb4ab;
+  --coast-success: #86efac;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

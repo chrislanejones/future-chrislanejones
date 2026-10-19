@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import type { Doc } from "../../../convex/_generated/dataModel";
-import Link from "next/link";
-import { ArrowUpRight, Search } from "lucide-react";
-import Image from "next/image";
+import { Search } from "lucide-react";
+import { BlogPostCard } from "@/components/coastal/blog-post-card";
 import styles from "@/components/coastal/interior.module.css";
+import { Button } from "@/components/ui/button";
 
 // Initial posts and article links stay server-rendered; search enhances the list.
 export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
@@ -37,52 +37,7 @@ export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
       {filtered.length ? (
         <div className={styles.postGrid}>
           {filtered.map((post) => (
-            <article key={post._id} className={styles.post}>
-              {post.coverImage && (
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className={styles.postMedia}
-                  tabIndex={-1}
-                  aria-hidden="true"
-                >
-                  <Image
-                    src={post.coverImage}
-                    alt=""
-                    fill
-                    sizes="(max-width: 767px) 90vw, 50vw"
-                  />
-                </Link>
-              )}
-              <div className={styles.meta}>
-                <time dateTime={new Date(post.createdAt).toISOString()}>
-                  {new Date(post.createdAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    timeZone: "UTC",
-                  })}
-                </time>
-                <span>{post.likesCount ?? 0} likes</span>
-              </div>
-              <h2>
-                <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-              </h2>
-              <p>{post.excerpt}</p>
-              {!!post.tags?.length && (
-                <div className={styles.tags}>
-                  {post.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-              )}
-              <Link
-                className={styles.textLink}
-                href={`/blog/${post.slug}`}
-                aria-label={`Read ${post.title}`}
-              >
-                Read article <ArrowUpRight size={17} aria-hidden="true" />
-              </Link>
-            </article>
+            <BlogPostCard key={post._id} post={post} />
           ))}
         </div>
       ) : (
@@ -94,9 +49,9 @@ export default function BlogPage({ posts }: { posts: Doc<"blogPosts">[] }) {
               : "New writing will appear here."}
           </p>
           {search && (
-            <button className={styles.action} onClick={() => setSearch("")}>
+            <Button variant="pill" onClick={() => setSearch("")}>
               Clear search
-            </button>
+            </Button>
           )}
         </div>
       )}

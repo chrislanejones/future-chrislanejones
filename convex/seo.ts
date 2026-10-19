@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
-import { Doc } from "./_generated/dataModel";
 import schema from "./schema";
 
 const KNOWN_PATHS = new Set([

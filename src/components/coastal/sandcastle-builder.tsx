@@ -3,8 +3,9 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Component, useEffect, useReducer, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { ArrowUpRight, BrickWall, Castle, Droplets, Eraser, Flag, PaintBucket, RotateCw, Shell, Undo2, Waves } from "lucide-react";
-import { castleReducer, initialCastle, type CastleTool } from "./sandcastle-model";
+import { ArrowUpRight, RotateCw, Undo2, Waves } from "lucide-react";
+import { castleReducer, HALF_X, HALF_Z, initialCastle, type CastleTool } from "./sandcastle-model";
+import { ToolArt } from "./sandcastle-tool-art";
 import coastal from "./coastal.module.css";
 import styles from "./sandcastle-builder.module.css";
 
@@ -13,24 +14,60 @@ const Scene = dynamic(loadScene, { ssr: false, loading: () => null });
 /** The bucket always fills to the brim, even when the scene is already cached. */
 const FILL_MS = 2200;
 
-/** Outlined bucket and shovel; the bucket fills from the bottom while the 3D scene downloads. */
+// Bucket and shovel drawn once, used twice: as the colored fill and as the outline.
+const BUCKET_BODY = "M26 42 L34 99 Q35 105 41 105 L79 105 Q85 105 86 99 L94 42 Z";
+const BUCKET_HANDLE = "M89 50 C109 49 113 70 100 79 C95 82 89 81 86 78";
+const SAND = "M27 31 Q31 20 44 21 Q51 12 62 17 Q73 12 82 19 Q93 21 93 31";
+// The shovel is drawn upright around x = 0, then leaned against the bucket.
+const SHOVEL_LEAN = "translate(47 49) rotate(28) scale(.82)";
+const SHOVEL_GRIP = "M-8 3Q-8 0-5 0H5Q8 0 8 3V11Q8 14 5 14H-5Q-8 14-8 11ZM-4 4H4V10H-4Z";
+const SHOVEL_SHAFT = "M-3 14H3V51H-3Z";
+const SHOVEL_BLADE = "M-4 50H4Q13 54 13 66Q13 80 0 84Q-13 80-13 66Q-13 54-4 50Z";
+
+/** Outlined bucket and shovel that fill with color from the bottom while the 3D scene downloads. */
 function BucketLoader({ running }: { running: boolean }) {
   return (
     <div className={styles.loader} role="status" aria-live="polite">
       <svg className={styles.loaderArt} viewBox="0 0 120 120" aria-hidden="true">
         <defs>
-          <clipPath id="bucket-fill-clip"><polygon points="31,42 89,42 82,104 38,104" /></clipPath>
+          {/* The shovel stands in front: hide the bucket's outline behind it. */}
+          <mask id="bucket-behind-shovel" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+            <rect width="120" height="120" fill="white" />
+            <g transform={SHOVEL_LEAN} fill="black" stroke="black" strokeWidth="3.2">
+              <path d={SHOVEL_GRIP} />
+              <path d={SHOVEL_SHAFT} />
+              <path d={SHOVEL_BLADE} />
+            </g>
+          </mask>
+          <clipPath id="bucket-fill-clip">
+            <rect className={`${styles.loaderFill} ${running ? styles.loaderFilling : ""}`} x="0" y="0" width="120" height="120" />
+          </clipPath>
         </defs>
-        <g clipPath="url(#bucket-fill-clip)">
-          <rect className={`${styles.loaderFill} ${running ? styles.loaderFilling : ""}`} x="28" y="40" width="64" height="66" />
+        <g clipPath="url(#bucket-fill-clip)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+          <path className={styles.loaderSand} d={`${SAND}Z`} stroke="currentColor" />
+          <path className={styles.loaderHandle} d={BUCKET_HANDLE} fill="none" strokeWidth="5" />
+          <path className={styles.loaderBucket} d={BUCKET_BODY} />
+          <rect className={styles.loaderRim} x="21" y="30" width="78" height="13" rx="5" />
+          <path className={styles.loaderShine} d="M33 50 L38 92" fill="none" strokeWidth="4" />
+          <g className={styles.loaderShovel} transform={SHOVEL_LEAN} fillRule="evenodd">
+            <path d={SHOVEL_GRIP} />
+            <path d={SHOVEL_SHAFT} />
+            <path d={SHOVEL_BLADE} />
+          </g>
         </g>
         <g fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="31,42 89,42 82,104 38,104" />
-          <rect x="27" y="35" width="66" height="8" rx="3" />
-          <path d="M33 35 Q60 4 87 35" />
-          <path d="M108 16 L98 88" />
-          <path d="M102 12 l12 4" />
-          <path d="M90 90 l16 2 l-1 10 q-6 8 -14 2 z" />
+          <g mask="url(#bucket-behind-shovel)">
+            <path d={BUCKET_BODY} />
+            <rect x="21" y="30" width="78" height="13" rx="5" />
+            <path d={BUCKET_HANDLE} />
+            <circle cx="88" cy="50" r="3" />
+          </g>
+          {/* 3.2 at the shovel's .82 scale draws the same 2.6 line as the bucket. */}
+          <g transform={SHOVEL_LEAN} strokeWidth="3.2">
+            <path d={SHOVEL_GRIP} />
+            <path d="M-3 14V50M3 14V50" />
+            <path d={SHOVEL_BLADE} />
+          </g>
         </g>
       </svg>
       <p>Getting the beach ready…</p>
@@ -38,10 +75,10 @@ function BucketLoader({ running }: { running: boolean }) {
   );
 }
 const tools = [
-  { id: "tower", label: "Tower", icon: Castle }, { id: "bucket", label: "Bucket", icon: PaintBucket },
-  { id: "wall", label: "Wall", icon: BrickWall }, { id: "moat", label: "Moat", icon: Droplets },
-  { id: "flag", label: "Flag", icon: Flag }, { id: "shell", label: "Shell", icon: Shell },
-  { id: "erase", label: "Eraser", icon: Eraser },
+  { id: "tower", label: "Tower" }, { id: "bucket", label: "Bucket" },
+  { id: "wall", label: "Wall" }, { id: "moat", label: "Dig moat" },
+  { id: "pile", label: "Pile sand" }, { id: "flag", label: "Flag" },
+  { id: "shell", label: "Shell" }, { id: "erase", label: "Eraser" },
 ] as const;
 
 function subscribe(callback: () => void) {
@@ -68,13 +105,17 @@ export function SandcastleBuilder() {
   const [cursor, setCursor] = useState({ x: 0, z: 1 });
   const aimedSpot = useRef(cursor);
   const [loaded, setLoaded] = useState(false);
-  const [sceneReady, setSceneReady] = useState(false);
+  // Settled = the scene code finished downloading, or failed to. On failure the
+  // lazy Scene throws and BeachBoundary shows its message, so the bucket must
+  // step aside either way instead of pouring forever.
+  const [sceneSettled, setSceneSettled] = useState(false);
   const [filled, setFilled] = useState(false);
   // Download early, but only start pouring once the game is actually on screen.
   useEffect(() => {
     if (!loaded) return;
     let live = true;
-    loadScene().then(() => { if (live) setSceneReady(true); });
+    const settle = () => { if (live) setSceneSettled(true); };
+    loadScene().then(settle, settle);
     return () => { live = false; };
   }, [loaded]);
   const [visible, setVisible] = useState(false);
@@ -108,7 +149,7 @@ export function SandcastleBuilder() {
       <Link href="/about" className={styles.about}>More about me <ArrowUpRight size={16} aria-hidden="true" /></Link>
       <div className={styles.toolHeading}><h3>Leave a little castle.</h3><p>Pick a piece, then tap the sand.</p></div>
       <div className={styles.tools} role="group" aria-label="Sandcastle tools">
-        {tools.map(({ id, label, icon: Icon }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><Icon size={20} aria-hidden="true" />{label}</button>)}
+        {tools.map(({ id, label }) => <button key={id} type="button" aria-pressed={tool === id} onClick={() => setTool(id)}><ToolArt tool={id} />{label}</button>)}
       </div>
       <div className={styles.options}>
         <button type="button" disabled={tool !== "wall"} onClick={() => { setRotated(value => !value); dispatch({ type: "rotate", ...aimedSpot.current }); }} aria-pressed={rotated} aria-label="Rotate wall"><RotateCw size={16} aria-hidden="true" />Rotate wall</button>
@@ -123,7 +164,7 @@ export function SandcastleBuilder() {
           if (offsets[event.key]) {
             event.preventDefault(); const [dx, dz] = offsets[event.key];
             const point = aimedSpot.current;
-            const next = { x: Math.max(-3, Math.min(3, point.x + dx)), z: Math.max(-2, Math.min(2, point.z + dz)) };
+            const next = { x: Math.max(-HALF_X, Math.min(HALF_X, point.x + dx)), z: Math.max(-HALF_Z, Math.min(HALF_Z, point.z + dz)) };
             aimedSpot.current = next;
             setCursor(next);
           } else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); place(); }
@@ -132,13 +173,13 @@ export function SandcastleBuilder() {
           else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") { event.preventDefault(); dispatch({ type: "undo" }); }
         }}>
         {loaded ? <BeachBoundary><Scene pieces={state.pieces} tool={tool} cursor={cursor} dark={dark === "true"} moving={visible && reduced === "false" && hidden === "false"} onPlace={place} onAim={point => { aimedSpot.current = point; }} /></BeachBoundary> : <p className={styles.loading}>Your patch of beach.</p>}
-        {loaded && !(filled && sceneReady) && <BucketLoader running={pouring} />}
+        {loaded && !(filled && sceneSettled) && <BucketLoader running={pouring} />}
       </div>
       <div className={styles.beachFooter}>
         <span aria-label={`${state.pieces.length} castle pieces`}>{state.pieces.length} {state.pieces.length === 1 ? "piece" : "pieces"} on the beach</span>
         <div><button type="button" disabled={!state.history.length} onClick={() => dispatch({ type: "undo" })}><Undo2 size={16} aria-hidden="true" />Undo</button><button type="button" disabled={!state.pieces.length} onClick={() => dispatch({ type: "clear" })}>Clear beach</button></div>
       </div>
-      <p id="sandcastle-help" className={styles.help}>Tap to build; the ring shows where a piece will go. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Dig moats side by side and they join into lines, corners, and a ring around a castle. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
+      <p id="sandcastle-help" className={styles.help}>Tap to build; the ring shows where a piece will go. Flip a bucket for a molded castle, stack a second bucket on it, and put a tower on top of that. Pile sand to raise a dune (twice for a tall one) and build on top of it. Dig moats side by side and they join into lines, corners, and a ring around a castle; digging a dune lowers it, and piling sand on a moat fills it in. Finish with a flag or a shell on top. Tap a wall again to turn it. With a keyboard: arrow keys move the marker, Enter places a piece, and Delete removes the top piece.</p>
     </div>
   </section>;
 }

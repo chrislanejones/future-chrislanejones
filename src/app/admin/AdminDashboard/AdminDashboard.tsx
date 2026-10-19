@@ -57,7 +57,6 @@ const AdminSidebarContent = ({
   tabs,
   activeTab,
   onTabChange,
-  onSignOut,
   subsectionsByTab,
   activeSubsection,
   onSubsectionChange,
@@ -65,7 +64,6 @@ const AdminSidebarContent = ({
   tabs: { id: string; label: string; icon: LucideIcon }[];
   activeTab: string;
   onTabChange: (tabId: string) => void;
-  onSignOut: () => void;
   subsectionsByTab: Record<string, SubItem[]>;
   activeSubsection: string;
   onSubsectionChange: (id: string) => void;
@@ -91,7 +89,7 @@ const AdminSidebarContent = ({
             <React.Fragment key={tab.id}>
               <SidebarMenuItem>
                 <Button
-                  variant={activeTab === tab.id ? "accent" : "outline"}
+                  variant={activeTab === tab.id ? "primary" : "secondary"}
                   size="sm"
                   aria-label={tab.label}
                   aria-pressed={activeTab === tab.id}
@@ -292,7 +290,6 @@ const AdminDashboard = () => {
           tabs={tabs}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          onSignOut={handleSignOut}
           subsectionsByTab={subsectionsByTab}
           activeSubsection={resolvedSubsection}
           onSubsectionChange={handleSubsectionChange}
@@ -311,7 +308,7 @@ const AdminDashboard = () => {
                   {user.emailAddresses[0]?.emailAddress}
                 </span>
               )}
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <Button variant="secondary" size="sm" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4" />
                 Sign Out
               </Button>

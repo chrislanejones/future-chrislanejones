@@ -3,15 +3,13 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, type RefObject } from "react";
 import { Color, DoubleSide, PerspectiveCamera, ShadowMaterial, UniformsLib, UniformsUtils, Vector3, type ShaderMaterial } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { makeCoastalTown } from "./hero-coast-model";
 import { makeCoastTerrain } from "./coast-terrain";
 import { CoastAtmosphere, getCoastLighting, type CoastWeather } from "./coast-atmosphere";
 import { oceanClock } from "./ocean-clock";
-import { CoastLenses, type CoastLens } from "./coast-lenses";
-import { CameraRig } from "./camera-rig";
-import { ShotCamera } from "./shot-camera";
 
-type Props = { explore?: boolean; streetView?: boolean; lens?: CoastLens; exposure?: number; timeOfDay?: number; weather?: CoastWeather; moving: boolean; dark: boolean; onReady: () => void; onUnavailable: () => void };
+type Props = { explore?: boolean; timeOfDay?: number; weather?: CoastWeather; moving: boolean; dark: boolean; onReady: () => void; onUnavailable: () => void };
 
 // Sand relief is baked into shared geometry; only the sea moves in the shader.
 const displacement = /* glsl */ `
@@ -116,40 +114,37 @@ function CameraComposition() {
   return null;
 }
 
-/** Viewer-only: tone-mapping exposure from the scene controller. */
-function Exposure({ value }: { value: number }) {
+function ExplorerCamera() {
   const getScene = useThree(state => state.get);
   useEffect(() => {
-    const { gl, invalidate } = getScene();
-    gl.toneMappingExposure = value;
-    invalidate();
-  }, [getScene, value]);
-  return null;
-}
-
-function StreetCamera() {
-  const getScene = useThree(state => state.get);
-  const width = useThree(state => state.size.width);
-  useEffect(() => {
-    const { camera, invalidate } = getScene();
-    camera.position.set(-7.1, .66, 3.6);
-    camera.lookAt(12, 3.0, 3.4);
+    const { camera, gl, invalidate } = getScene();
+    camera.position.set(-12, 65, 87);
     if (camera instanceof PerspectiveCamera) {
-      camera.fov = width < 600 ? 74 : 68;
-      camera.near = .025;
+      camera.fov = 48;
       camera.far = 600;
       camera.updateProjectionMatrix();
     }
+    const controls = new OrbitControls(camera, gl.domElement);
+    controls.target.set(-23, 0, -30);
+    controls.minDistance = 5;
+    controls.maxDistance = 230;
+    controls.maxPolarAngle = Math.PI * .47;
+    controls.screenSpacePanning = false;
+    controls.enableDamping = false;
+    const onChange = () => invalidate();
+    controls.addEventListener("change", onChange);
+    controls.update();
     invalidate();
-  }, [getScene, width]);
+    return () => { controls.removeEventListener("change", onChange); controls.dispose(); };
+  }, [getScene]);
   return null;
 }
 
-function Coast({ moving, dark, explore, streetView, timeOfDay = 17.5, weather = "scattered" }: Pick<Props, "moving" | "dark" | "explore" | "streetView" | "timeOfDay" | "weather">) {
+function Coast({ moving, dark, explore, timeOfDay = 17.5, weather = "scattered" }: Pick<Props, "moving" | "dark" | "explore" | "timeOfDay" | "weather">) {
   const material = useRef<ShaderMaterial>(null);
   const elapsed = useRef(oceanClock.elapsed);
   const town = useMemo(() => makeCoastalTown(), []);
-  const lighting = useMemo(() => explore || streetView ? getCoastLighting(timeOfDay, weather) : null, [explore, streetView, timeOfDay, weather]);
+  const lighting = useMemo(() => explore ? getCoastLighting(timeOfDay, weather) : null, [explore, timeOfDay, weather]);
   useEffect(() => () => Object.values(town).forEach(g => g.dispose()), [town]);
   const uniforms = useMemo(() => UniformsUtils.merge([UniformsLib.fog, {
     uTime: { value: 0 },
@@ -238,7 +233,7 @@ export default function HeroCoastScene(props: Props) {
   return <Canvas shadows camera={{ position: [8,30,48], fov:37, near:.1, far:350 }}
     dpr={props.explore ? [1,2] : [1,1.5]} frameloop="demand"
     gl={{ alpha:false, antialias:true, powerPreference:props.explore ? "high-performance" : "low-power" }} fallback={null}>
-    {props.explore || props.streetView ? <CoastAtmosphere timeOfDay={props.timeOfDay ?? 17.5} weather={props.weather ?? "scattered"} /> : <>
+    {props.explore ? <CoastAtmosphere timeOfDay={props.timeOfDay ?? 17.5} weather={props.weather ?? "scattered"} /> : <>
     <color attach="background" args={[sky]} />
     <fog attach="fog" args={[sky,85,180]} />
     <hemisphereLight args={["#dcecf2", "#bba57c", props.dark ? 1 : 1.35]} />
@@ -247,11 +242,8 @@ export default function HeroCoastScene(props: Props) {
       shadow-camera-top={110} shadow-camera-bottom={-75} shadow-camera-far={230} shadow-normalBias={.025}
       shadow-autoUpdate={false} shadow-needsUpdate />
     </>}
-    {props.streetView ? <StreetCamera /> : props.explore ? <CameraRig /> : <CameraComposition />}
-    <Coast moving={props.moving} dark={props.dark} explore={props.explore} streetView={props.streetView} timeOfDay={props.timeOfDay} weather={props.weather} />
+    {props.explore ? <ExplorerCamera /> : <CameraComposition />}
+    <Coast moving={props.moving} dark={props.dark} explore={props.explore} timeOfDay={props.timeOfDay} weather={props.weather} />
     <SceneLifecycle moving={props.moving} onReady={props.onReady} onUnavailable={props.onUnavailable} />
-    {props.explore && <CoastLenses lens={props.lens ?? "regular"} />}
-    {props.exposure !== undefined && <Exposure value={props.exposure} />}
-    {props.explore && <ShotCamera />}
   </Canvas>;
 }

@@ -13,9 +13,10 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
-import type { Id } from "../../../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../../../convex/_generated/dataModel";
 import { MediaDrawer } from "../components/MediaDrawer";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { ErrorDisplay } from "../components/ErrorDisplay";
@@ -50,7 +51,6 @@ const ProjectsTabEnhanced = () => {
   const deleteProjectMutation = useMutation(api.projects.deleteProject);
   const toggleFeatured = useMutation(api.projects.toggleFeatured);
   const swapFeaturedOrder = useMutation(api.projects.swapFeaturedOrder);
-  const createMedia = useMutation(api.media.create);
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -65,7 +65,7 @@ const ProjectsTabEnhanced = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "app" as "app" | "website",
+    category: "app" as Doc<"projects">["category"],
     features: "",  // newline-separated
     image: "",
     githubUrl: "",
@@ -81,7 +81,7 @@ const ProjectsTabEnhanced = () => {
   // the extra render (and the flash of nothing selected) an effect would cost.
   if (projectList.length > 0 && !selectedProject && !isCreating) {
     const p = projectList[0];
-    setSelectedProject({ ...p, category: (p.category as "app" | "website") || "app" });
+    setSelectedProject({ ...p, category: p.category });
   }
 
   // Only reload the form when a DIFFERENT project is selected. Without the id
@@ -162,17 +162,19 @@ const ProjectsTabEnhanced = () => {
         setSaveStatus("success");
         setIsCreating(false);
       } else if (selectedProject) {
+        // Send emptied fields as "" (not undefined, which never reaches the server),
+        // so clearing a link or image in the form actually removes it.
         await updateProject({
           id: selectedProject._id,
           title: formData.title,
           description: formData.description,
           category: formData.category,
           features: featuresArray.length > 0 ? featuresArray : undefined,
-          image: formData.image || undefined,
-          githubUrl: formData.githubUrl || undefined,
-          codebergUrl: formData.codebergUrl || undefined,
-          vercelUrl: formData.vercelUrl || undefined,
-          customUrl: formData.customUrl || undefined,
+          image: formData.image.trim(),
+          githubUrl: formData.githubUrl.trim(),
+          codebergUrl: formData.codebergUrl.trim(),
+          vercelUrl: formData.vercelUrl.trim(),
+          customUrl: formData.customUrl.trim(),
           featured: formData.featured,
           order: formData.order,
         });
@@ -216,7 +218,7 @@ const ProjectsTabEnhanced = () => {
       setIsCreating(false);
       if (projectList.length > 0) {
         const p = projectList[0];
-        setSelectedProject({ ...p, category: (p.category as "app" | "website") || "app" });
+        setSelectedProject({ ...p, category: p.category });
       }
     } else if (selectedProject) {
       setFormData({
@@ -268,7 +270,7 @@ const ProjectsTabEnhanced = () => {
       <div className="bg-(--color-panel) border border-(--color-border) rounded-2xl p-4 flex flex-col">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-(--color-ink)">Projects</h3>
-          <Button onClick={handleCreateNew} variant="accent" size="sm" className="gap-2">
+          <Button onClick={handleCreateNew} variant="primary" size="sm" className="gap-2">
             <Plus className="w-4 h-4" />
             New
           </Button>
@@ -298,7 +300,7 @@ const ProjectsTabEnhanced = () => {
             <button
               key={project._id}
               onClick={() => {
-                setSelectedProject({ ...project, category: (project.category as "app" | "website") || "app" });
+                setSelectedProject({ ...project, category: project.category });
                 setActivePanel("edit");
               }}
               className={`w-full text-left p-3 rounded-lg transition ${
@@ -368,22 +370,26 @@ const ProjectsTabEnhanced = () => {
                       <p className="text-xs text-muted capitalize">{project.category}</p>
                     </div>
                     <div className="flex flex-col gap-1 shrink-0">
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleMoveUp(i)}
                         disabled={i === 0}
-                        className="p-1 rounded hover:bg-(--color-surface-hover) disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        className="size-6"
                         aria-label="Move up"
                       >
                         <ChevronUp className="w-4 h-4 text-muted" />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleMoveDown(i)}
                         disabled={i === featuredList.length - 1}
-                        className="p-1 rounded hover:bg-(--color-surface-hover) disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        className="size-6"
                         aria-label="Move down"
                       >
                         <ChevronDown className="w-4 h-4 text-muted" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -412,12 +418,12 @@ const ProjectsTabEnhanced = () => {
               <div className="flex items-center gap-2">
                 {isEditing ? (
                   <>
-                    <Button onClick={handleCancel} variant="outline" size="sm">
+                    <Button onClick={handleCancel} variant="secondary" size="sm">
                       Cancel
                     </Button>
                     <Button
                       onClick={handleSave}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSaving}
@@ -430,7 +436,7 @@ const ProjectsTabEnhanced = () => {
                   <>
                     <Button
                       onClick={() => setIsEditing(true)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       className="gap-2"
                     >
@@ -440,9 +446,9 @@ const ProjectsTabEnhanced = () => {
                     {selectedProject && (
                       <Button
                         onClick={() => setDeleteConfirm(selectedProject._id)}
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                        className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -473,7 +479,7 @@ const ProjectsTabEnhanced = () => {
               <label className="block mb-2 text-ink font-medium">Category</label>
               <select
                 value={formData.category}
-                onChange={(e) => { setFormData({ ...formData, category: e.target.value as "app" | "website" }); setIsEditing(true); }}
+                onChange={(e) => { setFormData({ ...formData, category: e.target.value as Doc<"projects">["category"] }); setIsEditing(true); }}
                 disabled={!isEditing}
                 className="w-full px-4 py-3 bg-(--color-muted-accent) rounded-xl text-ink focus:ring-2 focus:ring-accent focus:outline-none disabled:opacity-60"
               >
@@ -512,7 +518,7 @@ const ProjectsTabEnhanced = () => {
             <div>
               <label className="block mb-2 text-ink font-medium">Image</label>
               {isEditing ? (
-                <Button onClick={() => setIsMediaDrawerOpen(true)} variant="outline" className="w-full gap-2">
+                <Button onClick={() => setIsMediaDrawerOpen(true)} variant="secondary" className="w-full gap-2">
                   <ImageIcon className="w-4 h-4" />
                   Select Image
                 </Button>
@@ -593,20 +599,12 @@ const ProjectsTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Project?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button onClick={() => handleDelete(deleteConfirm as Id<"projects">)} variant="outline" className="flex-1 text-red-500">
-                Delete
-              </Button>
-              <Button onClick={() => setDeleteConfirm(null)} variant="outline" className="flex-1">
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Project?"
+          onConfirm={() => handleDelete(deleteConfirm as Id<"projects">)}
+        />
       )}
 
       <MediaDrawer

@@ -1,6 +1,9 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
+// Projects are either apps/tools or client websites; the UI and seed use exactly these.
+export const projectCategory = v.union(v.literal("app"), v.literal("website"));
+
 export default defineSchema({
   siteSettings: defineTable({
     name: v.string(),
@@ -8,18 +11,6 @@ export default defineSchema({
     avatar: v.optional(v.string()),
     email: v.optional(v.string()),
     location: v.optional(v.string()),
-    // Deprecated: superseded by the `socialLinks` TABLE below, which supports
-    // any number of platforms plus per-surface ordering. Kept optional so the
-    // existing production document still validates; nothing writes it now.
-    socialLinks: v.optional(
-      v.object({
-        github: v.optional(v.string()),
-        linkedin: v.optional(v.string()),
-        twitter: v.optional(v.string()),
-        codepen: v.optional(v.string()),
-        youtube: v.optional(v.string()),
-      }),
-    ),
     updatedAt: v.number(),
   }),
 
@@ -256,7 +247,7 @@ export default defineSchema({
   projects: defineTable({
     title: v.string(),
     description: v.string(),
-    category: v.string(), // "app" or "website"
+    category: projectCategory,
     features: v.optional(v.array(v.string())),
     image: v.optional(v.string()),
     githubUrl: v.optional(v.string()),

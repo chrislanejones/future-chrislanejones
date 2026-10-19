@@ -5,6 +5,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ArrowUpRight, Search } from "lucide-react";
 import styles from "@/components/coastal/interior.module.css";
+import { Button } from "@/components/ui/button";
 
 export type BrowserLinkItem = {
   href: string;
@@ -126,9 +127,9 @@ export default function BrowserTabs() {
               : "Useful links will appear here."}
           </p>
           {search && (
-            <button className={styles.action} onClick={() => setSearch("")}>
+            <Button variant="pill" onClick={() => setSearch("")}>
               Clear search
-            </button>
+            </Button>
           )}
         </div>
       )}

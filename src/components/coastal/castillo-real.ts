@@ -1,7 +1,6 @@
 import {
   BufferAttribute, BufferGeometry, CylinderGeometry, Shape, ShapeGeometry, Vector3,
 } from "three";
-import { signLettering } from "./sign-lettering";
 
 type Layer = "architecture" | "roof" | "glass" | "ground" | "foliage" | "wood" | "water";
 export type CastilloKit = {
@@ -50,7 +49,6 @@ export function buildCastilloReal(kit: CastilloKit) {
     for (const z of [-2.22, -.99]) windowOnX(-4.135, y, z, .24, .57);
     // End walls carry mostly shallow window rails, rather than deep rear balconies.
     for (const end of [-3.375, .775]) for (const x of [-3.12, -2.25, -1.38]) {
-      if (floor === 3 && end > 0) continue; // The sign occupies this upper street-facing wall.
       box("architecture", "#dacfb9", x, y, end, .54, .65, .035);
       box("glass", glass, x, y, end + (end > 0 ? .025 : -.025), .42, .54, .03);
       if (floor > 0 && end > 0) {
@@ -60,11 +58,7 @@ export function buildCastilloReal(kit: CastilloKit) {
     }
   }
   for (const y of [1.22, 3.3]) roof(-3.96, y, -1.65, .32, 1.02, .075, tile);
-  // Fictional branding requested for the walk past the hotel. Raised script casts
-  // its own shallow shadow; the real hotel's photographed wordmark is not copied.
-  box("architecture", cream, -2.13, 3.92, .84, 1.97, .99, .11);
-  add("architecture", signLettering("El Castillo", 1.73, .022), "#a6515a", -2.13, 4.04, .902);
-  add("architecture", signLettering("RESORT HOTEL", 1.51, .012), "#9c4c52", -2.13, 3.67, .903);
+  for (const x of [-2.48, -2.2, -1.92]) box("architecture", taupe, x, 3.87, .805, .15, .83, .12);
 
   // True balcony recesses: back wall, projecting slabs, uprights and open railings.
   for (const z of [-2.68, -.02]) {
@@ -208,11 +202,11 @@ export function buildCastilloReal(kit: CastilloKit) {
 
   // Some larger palms belong near the parcel corners; low beds keep routes clear.
   palm(2.2, -3.15, 8041, true);
-  palm(2.08, 2.62, 8042, true);
+  palm(2.08, 3.16, 8042, true);
   palm(-3.0, 2.5, 8043, true);
   palm(-.62, 2.75, 8044, true);
   for (let n = 0; n < 6; n++) bush(-3.38 + n * .48, 2.06, 8080 + n, .19 + (n % 2) * .03);
-  for (const [x, z] of [[2.8, -3.05], [.49, -3.53], [-4.53, 1.76], [2.76, 2.62]]) {
+  for (const [x, z] of [[2.8, -3.05], [.49, -3.53], [-4.53, 1.76], [2.76, 3.04]]) {
     box("ground", "#8d9978", x, .08, z, .58, .065, .44);
     bush(x, z, 8061, .23);
   }

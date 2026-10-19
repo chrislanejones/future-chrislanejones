@@ -1,6 +1,5 @@
-import { BufferAttribute, BufferGeometry, CircleGeometry, CylinderGeometry, Vector3 } from "three";
+import { BufferAttribute, BufferGeometry, CylinderGeometry, Vector3 } from "three";
 import type { CastilloKit } from "./castillo-real";
-import { signLettering } from "./sign-lettering";
 
 /** Bounded additions to the existing Best Western parcel, preserving its pool and lots. */
 export function addBestWesternDetails({ box, roof, add, pole, bush }: CastilloKit) {
@@ -85,33 +84,6 @@ export function addBestWesternDetails({ box, roof, add, pole, bush }: CastilloKi
 
   // The boulevard-side area where the canopy previously sat is open lawn.
   box("ground", "#99a781", -9.67, .063, 2.55, 2.0, .025, 3.85);
-
-  // Fictional Best Eastern monument on the boulevard edge of that lawn.
-  // Broad terracotta/cream plinth, white crown, blue name panel and pale footer.
-  // Both faces are actual geometry so the sign reads from either travel direction.
-  const sx = -8.63, sz = 1.88;
-  box("ground", "#b8795e", sx, .16, sz, .38, .24, 1.0);
-  box("architecture", cream, sx, .37, sz, .36, .2, .94);
-  box("architecture", "#bc8166", sx, .51, sz, .42, .08, 1.04);
-  box("architecture", "#c48c70", sx, .585, sz, .34, .075, .88);
-  box("architecture", "#aaa999", sx, 1.215, sz, .115, 1.29, .84);
-  for (const side of [-1, 1]) {
-    const face = sx + side * .063, turn = side > 0 ? Math.PI / 2 : -Math.PI / 2;
-    box("architecture", "#f3f1e3", face, 1.635, sz, .025, .42, .8);
-    box("architecture", "#347492", face, 1.2, sz, .025, .45, .8);
-    box("architecture", "#a3afad", face, .87, sz, .025, .21, .8);
-    add("architecture", new CircleGeometry(.155, 32).rotateY(turn), "#3b8196", face + side * .019, 1.655, sz);
-    add("architecture", signLettering("BE", .2, .006), "#f4f1df", face + side * .024, 1.655, sz, turn);
-    add("architecture", signLettering("Best", .37, .007), "#f4f1df", face + side * .025, 1.307, sz, turn);
-    add("architecture", signLettering("Eastern", .62, .007), "#f4f1df", face + side * .025, 1.115, sz, turn);
-    add("architecture", signLettering("SEASIDE INN", .55, .005), "#f4f1df", face + side * .025, .87, sz, turn);
-  }
-  // Flower clusters and low clipped hedges frame the monument without covering it.
-  for (let n = 0; n < 9; n++) {
-    const z = sz - .62 + n * .15;
-    bush(sx - .17, z, 9390 + n, .09);
-    for (let bloom = 0; bloom < 3; bloom++) add("foliage", new CircleGeometry(.032, 7).rotateX(-Math.PI / 2), n % 3 ? "#b96268" : "#e0c599", sx + .16 + bloom * .045, .09 + bloom * .014, z);
-  }
 
   // Add arch bands to the existing front arcade posts, without closing the gaps.
   for (let bay = 1; bay < 8; bay++) {

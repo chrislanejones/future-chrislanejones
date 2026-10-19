@@ -4,11 +4,13 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, Waves } from "lucide-react";
 import { conferenceDates, conferenceHref, type Conference } from "@/lib/conferences";
 import { conferencePhotos } from "@/data/conference-photos";
-import { ConferencePanel } from "@/components/coastal/conference-panel";
+import { GalleryPanel } from "@/components/coastal/gallery-panel";
 import { ConferenceCard } from "@/components/coastal/conference-card";
 import { jsonLd } from "@/lib/structured-data";
 import coastal from "@/components/coastal/coastal.module.css";
 import styles from "@/components/coastal/conferences.module.css";
+import { Button } from "@/components/ui/button";
+import { SITE_URL } from "@/lib/structured-data";
 
 function descriptionLinks(text: string) {
   return text.split(/(\[[^\]]+\]\(https?:\/\/[^\s)]+\))/g).map((part, index) => {
@@ -32,7 +34,7 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
     "@context": "https://schema.org", "@type": "Event",
     name: `${conf.name} ${conf.year}`, description: conf.description,
     startDate: conf.dateStart, endDate: conf.dateEnd,
-    image: conf.logo ? (conf.logo.startsWith("/") ? `https://www.chrislanejones.com${conf.logo}` : conf.logo) : undefined,
+    image: conf.logo ? (conf.logo.startsWith("/") ? `${SITE_URL}${conf.logo}` : conf.logo) : undefined,
     location: conf.city ? { "@type": "Place", name: conf.venue ?? conf.city, address: conf.city } : undefined,
     url: conf.url,
   };
@@ -64,14 +66,14 @@ export default function ConferenceDetailPage({ conference: conf, conferences }: 
             {conf.venue && <div><dt>Venue</dt><dd>{conf.venue}</dd></div>}
           </dl>
           {conf.tags?.length ? <ul className={styles.topics} aria-label="Conference topics">{conf.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul> : null}
-          {conf.url && <a href={conf.url} target="_blank" rel="noopener noreferrer" className={coastal.primaryButton}>Conference website <ArrowUpRight size={18} aria-hidden="true" /></a>}
+          {conf.url && <Button asChild variant="pill" size="lg"><a href={conf.url} target="_blank" rel="noopener noreferrer">Conference website <ArrowUpRight size={18} aria-hidden="true" /></a></Button>}
         </div>
       </article>
       {photos.length > 0 && (
         <section className={styles.photoSection} aria-labelledby="conference-photos-title">
           <div className={styles.photoHeading}>
             <div><h2 id="conference-photos-title">{photoTitle}</h2><p>{photoDescription}</p></div>
-            <ConferencePanel photos={photos} title={isPersonalPhoto ? photoTitle : undefined} description={isPersonalPhoto ? photoDescription : undefined} />
+            <GalleryPanel photos={photos} title={isPersonalPhoto ? photoTitle : "Conference photos"} description={isPersonalPhoto ? photoDescription : "People I’ve met along the way."} label="Open conference photo gallery" />
           </div>
           <div className={styles.photos} data-single={photos.length === 1}>
             {photos.map((photo) => (

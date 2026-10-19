@@ -25,12 +25,12 @@ export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
           key={toast.id}
           className={`px-4 py-3 rounded-lg shadow-lg border flex items-center gap-3 animate-in slide-in-from-right-5 fade-in duration-200 ${
             toast.type === "success"
-              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+              ? "bg-(--color-success)/10 border-(--color-success)/40 text-(--color-success)"
               : toast.type === "error"
-                ? "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400"
+                ? "bg-red-500/10 border-red-500/30 text-(--color-danger)"
                 : toast.type === "loading"
                   ? "bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400"
-                  : "bg-zinc-500/10 border-zinc-500/30 text-zinc-600 dark:text-zinc-400"
+                  : "bg-(--color-muted)/10 border-(--color-muted)/40 text-ink"
           }`}
         >
           {toast.type === "success" && (

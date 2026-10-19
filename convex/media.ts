@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
 
 import { requireAdmin as requireAuth, isAdmin } from "./authz";
 import { PROFILE_PHOTO_URL } from "./siteSettings";

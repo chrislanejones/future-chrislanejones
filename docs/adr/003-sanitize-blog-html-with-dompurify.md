@@ -1,6 +1,8 @@
 # ADR-003: Sanitize blog HTML with DOMPurify; posts can't run scripts
 Date: 2026-10-13   Status: draft
 
+Superseded in part by ADR-008 (library only; the policy stands).
+
 ## Context
 The 2026-10-13 security review (`SECURITY-HANDOFF-2026-10-13.md`, finding P1)
 showed blog post HTML could execute JavaScript. `src/lib/blog-content.ts`

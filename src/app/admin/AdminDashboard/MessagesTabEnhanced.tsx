@@ -9,24 +9,23 @@ import {
   Phone,
   Calendar,
   ExternalLink,
-  CheckCircle,
-  X,
-  Filter,
-  RefreshCw,
 } from "lucide-react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Id, Doc } from "../../../../convex/_generated/dataModel";
 import { ErrorDisplay } from "../components/ErrorDisplay";
 import { SuccessDisplay } from "../components/SuccessDisplay";
-import { LoadingSpinner } from "../components/LoadingSpinner";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 
 // Derived from the Convex schema (SSOT) instead of a hand-rolled shape.
 type ContactMessage = Doc<"contactMessages">;
 
 const MessagesTabEnhanced = () => {
-  const messages = useQuery(api.contactMessages.getAll) ?? [];
+  // Keep the raw result: undefined means Convex is still loading.
+  const messagesQuery = useQuery(api.contactMessages.getAll);
+  const messages = messagesQuery ?? [];
   const markAsRead = useMutation(api.contactMessages.markAsRead);
   const markAsUnread = useMutation(api.contactMessages.markAsUnread);
   const deleteMessage = useMutation(api.contactMessages.deleteMessage);
@@ -50,15 +49,6 @@ const MessagesTabEnhanced = () => {
     const unreadMessage = messages.find((m) => !m.read);
     setSelectedMessage((unreadMessage || messages[0]) as ContactMessage);
   }
-
-  const handleMarkAsRead = async (id: Id<"contactMessages">) => {
-    try {
-      await markAsRead({ id });
-      setSelectedMessage((prev) => prev?._id === id ? { ...prev, read: true } : prev);
-    } catch (err) {
-      console.error("Failed to mark as read:", err);
-    }
-  };
 
   // Mark as read when selected. The state update waits for the mutation, so
   // nothing is set synchronously inside the effect.
@@ -154,8 +144,8 @@ const MessagesTabEnhanced = () => {
     });
   };
 
-  if (messages === undefined) {
-    return <LoadingSpinner message="Loading messages..." />;
+  if (messagesQuery === undefined) {
+    return <Spinner label="Loading messages..." />;
   }
 
   return (
@@ -308,7 +298,7 @@ const MessagesTabEnhanced = () => {
                   onClick={() => setDeleteConfirm(selectedMessage._id)}
                   variant="ghost"
                   size="sm"
-                  className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                  className="text-(--color-danger) hover:text-(--color-danger) hover:bg-red-500/10"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
@@ -359,14 +349,14 @@ const MessagesTabEnhanced = () => {
 
               {/* Quick Actions */}
               <div className="flex gap-3 flex-wrap">
-                <Button variant="accent" className="gap-2" asChild>
+                <Button variant="primary" className="gap-2" asChild>
                   <a href={`mailto:${selectedMessage.email}`}>
                     <Mail className="w-4 h-4" />
                     Reply
                   </a>
                 </Button>
                 {selectedMessage.phone && (
-                  <Button variant="outline" className="gap-2" asChild>
+                  <Button variant="secondary" className="gap-2" asChild>
                     <a href={`tel:${selectedMessage.phone}`}>
                       <Phone className="w-4 h-4" />
                       Call
@@ -374,7 +364,7 @@ const MessagesTabEnhanced = () => {
                   </Button>
                 )}
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="gap-2"
                   onClick={() => handleMarkAsUnread(selectedMessage._id)}
                 >
@@ -396,30 +386,12 @@ const MessagesTabEnhanced = () => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-            <h3 className="text-lg font-bold text-ink mb-4">Delete Message?</h3>
-            <p className="text-muted mb-6">This action cannot be undone.</p>
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  handleDelete(deleteConfirm as Id<"contactMessages">)
-                }
-                variant="disabled"
-                className="flex-1"
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setDeleteConfirm(null)}
-                variant="outline"
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          open
+          onOpenChange={(open) => !open && setDeleteConfirm(null)}
+          title="Delete Message?"
+          onConfirm={() => handleDelete(deleteConfirm as Id<"contactMessages">)}
+        />
       )}
     </div>
   );

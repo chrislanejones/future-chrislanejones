@@ -15,11 +15,11 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `SeoTabEnhanced.tsx` re-sync effect (~line 126) reads `selectedPage` but deps on
   `[mergedPages]`; a concurrent Convex query re-run while typing calls setSelectedPage →
   overwrites formData + exits edit mode. Doesn't fire in a normal solo edit. Guard: skip
-  overwrite while `isEditing`, include `selectedPage.path` in deps.
+  overwrite while `isEditing`, include `selectedPage.path` in deps. **RESOLVED 10-14-2026** (PR #3) — a refresh mid-edit now waits until save or cancel; fresh data still loads when not editing.
 - **2026-07-08 — Dead loading spinners (cosmetic).** `CareerTimelineTabEnhanced.tsx:~227`
   and `MessagesTabEnhanced.tsx:~156` gate a `<LoadingSpinner>` on `x === undefined`, but the
   query is `useQuery(...) ?? []`, so it's never undefined — the list flashes an empty state
-  during load instead of a spinner. Keep the raw query result un-defaulted for the check.
+  during load instead of a spinner. Keep the raw query result un-defaulted for the check. **RESOLVED 10-14-2026** (PR #3) — also fixed the same pattern in `EngagementTabEnhanced.tsx`.
 - **2026-07-08 — schema decisions (from Felix SSOT audit).** (1) `projects.category` is
   `v.string()` but the client narrows to `"app"|"website"` with casts — make it a union and
   drop the casts. (2) `browserLinks.screenshotUrl`/`screenshotUpdatedAt` are read/rendered
@@ -46,7 +46,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   green text/hover + skip link; mobile menu is `aria-modal` with no focus trap/Escape; theme
   applied in useEffect → FOUC (next-themes is installed but unused); header nav gated behind
   isMounted (CLS); `three` (~600KB) is an unused dependency; `Footer.tsx:12` imports unused
-  `dynamic`. Accent contrast is a design decision — needs sign-off.
+  `dynamic`. Accent contrast is a design decision — needs sign-off. **RESOLVED 10-13/14-2026** — the green accent is retired for coastal teal (design guide, PR #8); the mobile menu is a Radix sheet with focus trap and Escape; `three` is used again (sandcastle, coast floor).
 - **2026-07-08 — Dead admin hooks.** `src/app/admin/hooks/useBlogMutation.ts` (a stub that
   fakes API calls with setTimeout), `useCareerEffect`, `useSeoEffect`, `useLinksEffect`,
   and `useEngagementEffect` are imported nowhere. The stub in particular is misleading —
@@ -54,12 +54,12 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 
 - **2026-07-08 — MediaDrawer uses native `confirm()`** for permanent media deletion while
   every other destructive action uses a custom modal. Inconsistent UX; replace with the
-  shared confirm modal pattern.
+  shared confirm modal pattern. **RESOLVED 10-14-2026** (PR #11) — one `ConfirmDialog` for every destructive admin action.
 - **2026-07-07 — Linting is broken repo-wide.** `pnpm lint` runs `next lint`, which was
   removed in Next 16 ("Invalid project directory provided: .../lint"). Running eslint
   directly fails with `ERR_MODULE_NOT_FOUND: @eslint/eslintrc` from `eslint.config.mjs`
   (dep missing after the security dependency patching). Needs: migrate the lint script to
-  the ESLint CLI and install/repair the flat-config deps.
+  the ESLint CLI and install/repair the flat-config deps. **RESOLVED 2026-09-01** — `pnpm lint` runs `eslint src convex` (see next entry).
 - **2026-09-01 — 146 pre-existing lint problems, now finally visible.** Lint had been
   silently broken (`eslint.config.mjs` imported `@eslint/eslintrc`, which was never
   installed; `pnpm lint` still called `next lint`, removed in Next 16). Both are fixed —
@@ -70,7 +70,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   16e, `@next/next/no-img-element` 3w, plus a handful of `react-hooks/purity`,
   `no-empty-object-type`, `jsx-a11y/alt-text`. None were introduced by the Sept 2026 package
   update — they were always there, just unreported. The 16 `no-unescaped-entities` and 60
-  `no-unused-vars` are mechanical; the 22 `set-state-in-effect` need real thought per site.
+  `no-unused-vars` are mechanical; the 22 `set-state-in-effect` need real thought per site. **MOSTLY RESOLVED 10-14-2026** — 0 errors; 22 warnings left (PR #16 removed 29 unused imports). The rest are half-wired admin pieces (Media gallery-slot metadata editing, unused create/assign/unassign mutations, `onSignOut`, `handleMarkAsRead`) and type-only imports in `convex/`.
 - **2026-09-01 — TypeScript 7 is blocked by typescript-eslint.** TS 7.0.2 typechecks this
   repo clean (only fix needed was react-day-picker v10 renaming `initialFocus` → `autoFocus`),
   but `typescript-eslint` 8.69 hard-refuses TS 7 ("does not support TS 7.0"), which takes
@@ -124,10 +124,10 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `ConferenceDetailPage.tsx:39` doesn't escape `<`; (4) `convex/seo.ts` 97/106/
   117/129 lack `args: {}`; (5) blog inline scripts via `new Function` — keep or
   port to React widgets. Enforce the CSP (rename the header) once the console
-  stays clean.
+  stays clean. **RESOLVED 10-14-2026** — (1) rate limits + validation (PR #1); (2) server-side owner gate on /admin (PR #1); (3) `jsonLd()` escapes `<`; (4) explicit `args` (PR #1); (5) DOMPurify, stored scripts no longer run (469b929); CSP enforced (PR #4).
 - **2026-09-23 — AI/SEO: blog bodies are the biggest remaining gap.** **RESOLVED same day** (f10d3b0): posts now
   serve 250–2,860 words to non-JS crawlers. Leftover: 2 posts (web-worker, Next.js 14) put an
-  `<h1>` inside their body, giving the page two h1s — change it to `##`/`<h2>` in the admin editor.
+  `<h1>` inside their body, giving the page two h1s — change it to `##`/`<h2>` in the admin editor. **RESOLVED 10-14-2026** (PR #18) — the bodies were already h2; the second h1 came from the `loading.tsx` fallback ("One moment."), now a paragraph.
   Crawlers that skip
   JavaScript see ~81 words of a post (title/excerpt only); every other page serves 230–670.
   `/llms-full.txt` now carries full post text as a stopgap, but Google and most AI crawlers
@@ -147,7 +147,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   (github/linkedin/twitter/codepen/youtube) is still on the production `siteSettings` document,
   so the schema keeps it as optional. Nothing reads or writes it. Clean-up is a one-line
   migration that patches the field to `undefined` on the single row, then removes it from
-  `convex/schema.ts` — worth doing on the next Convex migration pass, not on its own.
+  `convex/schema.ts` — worth doing on the next Convex migration pass, not on its own. **RESOLVED 10-14-2026** — the prod row no longer had the field, so it was dropped from the schema with no data migration.
 - **2026-09-27 — Prod social/profile data was imported by CLI, not by the seed buttons.** The
   seed mutations are admin-gated (`requireAdmin`) and `npx convex run` has no Clerk identity,
   so prod was populated with `npx convex import --prod` instead: 16 `socialLinks` rows, the
@@ -173,7 +173,7 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - **2026-10-13 — Admin upload UI for the resume.** Resume now lives in Convex storage
   (ADR-002); updates go through `scripts/upload-resume.sh` from the CLI only. An Admin →
   Career tab uploader would remove the CLI step. The script also uploads PDF then Word in two
-  steps, so a failure halfway leaves a mismatched pair live.
+  steps, so a failure halfway leaves a mismatched pair live. **RESOLVED 10-14-2026** (PR #24) — Admin → Career Timeline has a Resume files panel; each format uploads and publishes independently.
 - **10-13-2026 — Add the VITA major IT projects dashboard as a project.** Chris built
   https://www.vita.virginia.gov/demo/major-it-projects-current-and-forecast-expenditure/
   for VITA. Needs a card in `src/data/projects-data.ts` (or the Convex projects table via
@@ -193,6 +193,10 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   render-blocking CSS chunks (~340 ms); the shared client chunk (`3x023…`, ~800 ms CPU at
   4x slowdown) — audit framer-motion and lucide imports for tree-shaking; project preview
   images could be served at 640w on phones (61 KB).
+  **Re-measured 10-14-2026** (Lighthouse 12, mobile, 3 runs): score **80–88**, TBT ~100 ms, CLS 0,
+  render-blocking ~0 ms, gtag no longer loads during page load. What's left is LCP **3.8–4.6 s**, all
+  of it render delay on the hero photo (it downloads by ~0.7 s). Codex's 3D hero (draft PR #22)
+  replaces that image, so re-measure LCP after it lands instead of tuning the photo now.
 - **10-13-2026 — Clerk is scoped to /admin now.** `ClerkProvider` lives in
   `src/providers/ConvexAdminProvider.tsx`, mounted by `src/app/admin/layout.tsx`; the public
   site uses a plain `ConvexProvider`. Any future public page that needs `useAuth`/`useUser`
@@ -203,3 +207,42 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
 - The light ocean layer (`hero-ocean-lite.tsx`) copies the sea part of the terrain shader and the camera from `hero-coast-scene.tsx`. Move the shared GLSL and camera numbers into one module so the two can't drift.
 - `public/hero/coast-{light,dark}.webp` are screenshots of the live 3D. Recapture them whenever the scene's look or camera changes; a small capture script would make that one command.
 - `/blog/[slug]` returns 200 for missing slugs (soft 404) because `src/app/blog/loading.tsx` streams the response.
+- **10-14-2026 — `braces` advisory has no fix yet (dev only).** High-severity ReDoS in `braces <=3.0.3`
+  via `eslint-config-next > @next/eslint-plugin-next > fast-glob > micromatch`. Lint tooling only,
+  never shipped. `postcss-selector-parser` was patched by override (PR #15). Re-run `pnpm audit`
+  when a fixed `braces`/`micromatch` lands.
+- **10-14-2026 — Codex's hero WIP is behind main.** `~/repo/future-chrislanejones-beach` holds
+  uncommitted 3D coast hero work (`hero-coast-scene.tsx`, `hero-coast-model.ts`, `hero-photo.tsx`,
+  `page.tsx`, `coastal.module.css`) on a base 50+ commits behind `main`. Commit it to a branch and
+  rebase on `main` before shipping; its CSS and `page.tsx` edits overlap today's merges. **RESOLVED 10-14-2026** — hero shipped on `feat/3d-coast-hero`, patched onto `main`.
+- **10-14-2026 — ADRs 003, 004 and 005 are drafts.** DOMPurify blog sanitizing (003), public-write
+  rate limits + shared owner policy (004), enforced CSP without nonces (005). Chris to accept or edit.
+- **10-14-2026 — Media Manager: no UI for home-gallery slot alt text/description.**
+  `handleEditGalleryMetadata`/`handleSaveGalleryMetadata` exist in `MediaTabEnhanced.tsx` but no
+  control opens them; the library view (PR #17) covers per-image alt text and filename. **RESOLVED 10-14-2026** (PR #23) — Edit details under each filled slot.
+- **10-14-2026 — Hero ocean layer duplicates the sea shader.** `hero-ocean-lite.tsx` copies the
+  sea part of the terrain shader and the camera from `hero-coast-scene.tsx`. Move the shared GLSL
+  and camera numbers into one module so the two can't drift.
+- **10-14-2026 — Hero stills go stale with the scene.** `public/hero/coast-{light,dark}.webp` are
+  screenshots of the live 3D. Recapture them whenever the scene's look or camera changes; a small
+  capture script would make that one command.
+- **10-14-2026 — Blog soft 404.** `/blog/[slug]` returns 200 for missing slugs because
+  `src/app/blog/loading.tsx` streams the response.
+- **10-15-2026 — Home hero 3D files are unused now.** The home hero shows stills of the newer
+  3d-world (docs/handoffs/2026-10-15-page-banner-scenes.md), so nothing imports
+  `hero-coast-scene.tsx`, `hero-ocean-lite.tsx`, `ocean-clock.ts`, `hero-coast-model.ts` or
+  `coast-atmosphere.tsx` any more. Choose between deleting them and porting the newer town into
+  the site so the hero can move again. The README's "How the hero loads" section still describes
+  the old three stages and needs a chris-voice rewrite either way.
+- **10-15-2026 — `street-view-banner.tsx` lives only as uncommitted WIP** in
+  ~/repo/future-chrislanejones-beach, never on main. The scene banners replace it; drop it
+  there once that branch is reconciled.
+- **10-15-2026 — Site-history banner shows the edge of the 3D world.** Its aerial
+  camera still catches the flat field and haze where the town ends (top left), which
+  Chris flagged on /projects. Re-shoot it tilted down like projects
+  (docs/handoffs/2026-10-15-page-banner-scenes.md).
+- **10-15-2026 — 3d-world loop mode.** Blending each moving part (waves, tree bend,
+  flags, boat) with itself one period earlier would make recordings repeat exactly,
+  with no pixel crossfade or ghosting at the seam. Started as branch `feat/loop-mode`
+  in ~/ai-repo/3dworld-loop (no commits yet). A "Record loop" button with WebCodecs
+  would replace the scratch recording scripts.

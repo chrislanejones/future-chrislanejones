@@ -18,23 +18,22 @@ import {
   Activity,
   Globe,
   Bot,
-  Image as ImageIcon,
   ArrowRight,
   Plus,
   Edit2,
   Share2,
-  ToggleLeft,
-  ToggleRight,
   type LucideIcon,
 } from "lucide-react";
 import type { Id } from "../../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "../hooks/useToast";
 import { ToastContainer } from "../components/ToastContainer";
-import Image from "next/image";
+import { SITE_URL } from "@/lib/structured-data";
 
 interface DataSource {
   id: string;
@@ -180,7 +179,6 @@ const SettingsTabEnhanced = () => {
     removeToast,
     success,
     error: showError,
-    loading: showLoading,
   } = useToast();
   const logEndRef = useRef<HTMLDivElement>(null);
 
@@ -510,7 +508,7 @@ const SettingsTabEnhanced = () => {
               <Button
                 onClick={handleReseed}
                 disabled={isReseeding || selectedSources.size === 0}
-                variant="outline"
+                variant="secondary"
                 className="w-full gap-2 mt-4"
               >
                 <RefreshCw
@@ -541,9 +539,9 @@ const SettingsTabEnhanced = () => {
                         key={i}
                         className={`${
                           log.type === "success"
-                            ? "text-emerald-500"
+                            ? "text-(--color-success)"
                             : log.type === "error"
-                              ? "text-red-500"
+                              ? "text-(--color-danger)"
                               : "text-muted"
                         }`}
                       >
@@ -578,7 +576,7 @@ const SettingsTabEnhanced = () => {
                   <p className="text-sm text-muted">Dynamic URL redirects handled at runtime via Convex</p>
                 </div>
               </div>
-              <Button onClick={handleOpenAddRedirect} variant="accent" size="sm" className="gap-2">
+              <Button onClick={handleOpenAddRedirect} variant="primary" size="sm" className="gap-2">
                 <Plus className="w-4 h-4" />
                 Add Redirect
               </Button>
@@ -639,22 +637,17 @@ const SettingsTabEnhanced = () => {
                 </div>
                 <div className="flex items-center justify-between pt-2">
                   <label className="flex items-center gap-2 cursor-pointer text-sm text-ink">
-                    <button
-                      onClick={() => setRedirectForm((p) => ({ ...p, isActive: !p.isActive }))}
-                      className="text-accent"
-                    >
-                      {redirectForm.isActive
-                        ? <ToggleRight className="w-6 h-6" />
-                        : <ToggleLeft className="w-6 h-6 text-muted" />
-                      }
-                    </button>
+                    <Switch
+                      checked={redirectForm.isActive}
+                      onCheckedChange={(isActive) => setRedirectForm((p) => ({ ...p, isActive }))}
+                    />
                     Active
                   </label>
                   <div className="flex gap-2">
-                    <Button onClick={handleCancelRedirect} variant="outline" size="sm">Cancel</Button>
+                    <Button onClick={handleCancelRedirect} variant="secondary" size="sm">Cancel</Button>
                     <Button
                       onClick={handleSaveRedirect}
-                      variant="accent"
+                      variant="primary"
                       size="sm"
                       className="gap-2"
                       disabled={isSavingRedirect || !redirectForm.from.trim() || !redirectForm.to.trim()}
@@ -691,33 +684,35 @@ const SettingsTabEnhanced = () => {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-(--color-panel) text-muted font-mono border border-(--color-border)">
                         {r.statusCode}
                       </span>
-                      <button
-                        onClick={() =>
+                      <Switch
+                        checked={r.isActive}
+                        onCheckedChange={() =>
                           toggleRedirectActive({ id: r._id }).catch((err) => {
                             console.error("Failed to toggle redirect:", err);
                             showError("Failed to toggle redirect");
                           })
                         }
                         title={r.isActive ? "Disable redirect" : "Enable redirect"}
-                        className="text-accent hover:opacity-70 transition"
-                      >
-                        {r.isActive
-                          ? <ToggleRight className="w-5 h-5" />
-                          : <ToggleLeft className="w-5 h-5 text-muted" />
-                        }
-                      </button>
-                      <button
+                        aria-label={`Redirect ${r.from} active`}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleEditRedirect(r)}
-                        className="p-1.5 rounded-lg text-muted hover:text-ink hover:bg-(--color-panel) transition"
+                        className="text-muted hover:text-ink"
+                        aria-label="Edit redirect"
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
+                        <Edit2 className="w-3.5 h-3.5" aria-hidden="true" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => setDeleteRedirectConfirm(r._id)}
-                        className="p-1.5 rounded-lg text-muted hover:text-red-500 hover:bg-red-500/10 transition"
+                        className="text-muted hover:text-(--color-danger) hover:bg-(--color-danger)/10"
+                        aria-label="Delete redirect"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -728,33 +723,22 @@ const SettingsTabEnhanced = () => {
 
         {/* Delete Redirect Modal */}
         {deleteRedirectConfirm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-(--color-panel) rounded-2xl p-6 max-w-sm w-full border border-(--color-border)">
-              <h3 className="text-lg font-bold text-ink mb-4">Delete Redirect?</h3>
-              <p className="text-muted mb-6">This cannot be undone.</p>
-              <div className="flex gap-2">
-                <Button
-                  onClick={async () => {
-                    try {
-                      await deleteRedirectMutation({ id: deleteRedirectConfirm });
-                      setDeleteRedirectConfirm(null);
-                      success("Redirect deleted");
-                    } catch (err) {
-                      console.error("Failed to delete redirect:", err);
-                      showError("Failed to delete redirect");
-                    }
-                  }}
-                  variant="outline"
-                  className="flex-1 text-red-500"
-                >
-                  Delete
-                </Button>
-                <Button onClick={() => setDeleteRedirectConfirm(null)} variant="outline" className="flex-1">
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          </div>
+          <ConfirmDialog
+            open
+            onOpenChange={(open) => !open && setDeleteRedirectConfirm(null)}
+            title="Delete Redirect?"
+            description="This cannot be undone."
+            onConfirm={async () => {
+              try {
+                await deleteRedirectMutation({ id: deleteRedirectConfirm });
+                setDeleteRedirectConfirm(null);
+                success("Redirect deleted");
+              } catch (err) {
+                console.error("Failed to delete redirect:", err);
+                showError("Failed to delete redirect");
+              }
+            }}
+          />
         )}
 
         {/* Site Health Section */}
@@ -816,7 +800,7 @@ const SettingsTabEnhanced = () => {
 {`User-agent: *
 Allow: /
 
-Sitemap: https://www.chrislanejones.com/sitemap.xml`}
+Sitemap: ${SITE_URL}/sitemap.xml`}
                 </pre>
                 <a
                   href="/robots.txt"

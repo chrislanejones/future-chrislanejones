@@ -1,12 +1,12 @@
 # Chris Lane Jones — Beach Portfolio
 
-A coastal home for my work, writing, and life beyond the browser. Built with Next.js, React, and Convex, with animated beach scenes in React Three Fiber.
+A coastal home for my work, writing, and life beyond the browser. Built with Next.js, React, and Convex, with 3D beach scenes in React Three Fiber.
 
-After eight years in Virginia, we traded mountains for beaches and returned to Florida in 2026. This redesign brings that move into the site: shoreline photography, seashells, browser windows on sand, and a little radio for the coding soundtrack.
+After eight years in Virginia, we traded mountains for beaches and returned to Florida in 2026. This redesign brings that move into the site: a 3D model of the St. Augustine Beach coast, seashells, browser windows on sand, a sandcastle you can build, and a little radio for the coding soundtrack.
 
 [Portfolio](https://www.chrislanejones.com) · [GitHub](https://github.com/chrislanejones) · [Local setup](#run-locally)
 
-![Beach portfolio homepage in light mode, with aerial coastline photography and client logos.](docs/images/beach-home-light.webp)
+![Beach portfolio homepage in light mode, with a 3D model of the St. Augustine Beach coast and client logos.](docs/images/beach-home-light.webp)
 
 <details>
 <summary>View dark mode</summary>
@@ -15,17 +15,29 @@ After eight years in Virginia, we traded mountains for beaches and returned to F
 
 </details>
 
-This repository contains the beach redesign. The portfolio link above points to the main site; publishing this repository does not deploy the redesign.
+This repository is the live site. Vercel deploys [chrislanejones.com](https://www.chrislanejones.com) from `main`.
 
 ## Around the site
 
-- **Selected work:** browser-style project previews on sand, including the Image Horse editor, its marketing website, and Alembic.
-- **Beyond the browser:** latest writing, rotating ramblings, conference fan shots, and a radio-style music player with a track display.
-- **Beach scenes:** moving shoreline details, small shells, drifting particles, and a sandcastle and bucket near the water.
-- **Sandcastle builder:** place towers, rotate walls, add flags, and erase pieces on an interactive React Three Fiber beach. Supports mouse, touch, keyboard placement, undo, and clearing the sand.
+- **3D coast hero:** a model of St. Augustine Beach with houses, hotels, dunes, a pier, and moving surf. It loads in stages so it never slows the page (see [How the hero loads](#how-the-hero-loads)).
+- **Selected work:** browser-style project previews on sand. Every card links to the project's own page.
+- **Beyond the browser:** a short radio-style music player, rotating ramblings, and conference photos, side by side.
+- **Latest writing:** the two newest posts as cards, the same card the blog uses.
+- **Sandcastle builder:** a 9 by 7 beach you can reshape. Pile sand into dunes, dig moats that carve real trenches and fill with water, then build towers, bucket castles, and walls on top. A shovel does the digging. Supports mouse, touch, keyboard placement, undo, and clearing the sand.
 - **Conference archive:** event and year pages, transparent WebP logos, photo galleries, and notes from the conference trail.
 - **More pages:** career history, downloadable résumé, useful browser tabs, site history, contact, and React and WordPress maintenance services.
 - **Light and dark themes:** responsive layouts, keyboard-accessible controls, and reduced-motion support. Beach animation pauses when its scene or browser tab is hidden.
+- **Lighter on phones:** phones and Data Saver skip three.js on the home page. They get the hero still with a moving sea, and plain sand behind Beyond the browser.
+
+## How the hero loads
+
+| Stage | What shows | When |
+| --- | --- | --- |
+| 1 | A still of the 3D scene, light or dark | With the page |
+| 2 | A small WebGL layer that moves only the sea, no three.js | Right after the page loads |
+| 3 | The full 3D town, faded in over 1.2 seconds | After the load event and an idle moment |
+
+The sea layer and the 3D share one ocean clock, so the waves don't jump when the town fades in. Add `?hero=lite` to the URL to hold the page at stage 2. The stills in [public/hero/](public/hero/) are screenshots of the 3D; recapture them when the scene's look or camera changes.
 
 ## Stack
 
@@ -35,6 +47,8 @@ This repository contains the beach redesign. The portfolio link above points to 
 | Styling | Tailwind CSS 4, CSS Modules, locally hosted fonts |
 | Motion and 3D | Framer Motion, React Three Fiber, Three.js |
 | Content and backend | Convex queries, mutations, storage metadata, and HTTP endpoints |
+| Blog HTML | Marked for Markdown, sanitize-html for every post body ([ADR-008](docs/adr/008-sanitize-blog-html-with-sanitize-html.md)) |
+| Tests | Vitest and convex-test |
 | Authentication | Clerk, with an owner allowlist for admin access |
 | Media uploads | UploadThing |
 | Interface primitives | Radix UI, shadcn/ui, Vaul, Lucide |
@@ -128,6 +142,7 @@ Sign in at `/admin` with an allowed Clerk account. The Settings → Data Managem
 | `pnpm exec convex dev` | Sync and watch the development backend |
 | `pnpm exec tsc --noEmit` | Check TypeScript |
 | `pnpm lint` | Run ESLint on `src/` and `convex/` |
+| `pnpm test` | Run the Vitest suites (backend rules, blog sanitizer, sandcastle model) |
 | `pnpm exec next build --webpack` | Build the production frontend with Webpack |
 | `pnpm start` | Serve an existing production build |
 
@@ -143,8 +158,11 @@ Some homepage sections subscribe to live Convex queries and use local fallbacks.
 | --- | --- |
 | Homepage structure and copy | [src/app/page.tsx](src/app/page.tsx) |
 | Shared coastal colors and layouts | [src/components/coastal/coastal.module.css](src/components/coastal/coastal.module.css) |
+| Hero loading, stills, and sea layer | [hero-photo.tsx](src/components/coastal/hero-photo.tsx), [hero-ocean-lite.tsx](src/components/coastal/hero-ocean-lite.tsx), [public/hero/](public/hero/) |
+| The 3D coast model | [hero-coast-scene.tsx](src/components/coastal/hero-coast-scene.tsx) and the `hero-coast-model.ts` generators |
 | Beach animation and visibility handling | [src/components/coastal/coast-floor.tsx](src/components/coastal/coast-floor.tsx) |
-| Shells, waves, and sandcastle | `src/components/coastal/` scene and geometry files |
+| Sandcastle rules, scene, and tool art | [sandcastle-model.ts](src/components/coastal/sandcastle-model.ts), [sandcastle-scene.tsx](src/components/coastal/sandcastle-scene.tsx), [sandcastle-tool-art.tsx](src/components/coastal/sandcastle-tool-art.tsx) |
+| What blog HTML may contain | [src/lib/blog-content.ts](src/lib/blog-content.ts) |
 | Project presentation and fallback content | [src/data/project-presentation.ts](src/data/project-presentation.ts), [src/data/projects-data.ts](src/data/projects-data.ts) |
 | Conference photos and captions | [src/data/conference-photos.ts](src/data/conference-photos.ts) |
 | Conference slider fallback entries | [src/data/conferences.ts](src/data/conferences.ts) |
@@ -194,11 +212,13 @@ docs/images/           Screenshots used in this README
 
 ## Deployment
 
-Connect this repository's `main` branch to a Vercel project and configure its frontend environment variables. Use matching Clerk and Convex production settings, including the Clerk `convex` JWT template and admin allowlist.
+Vercel builds every pull request as a preview and deploys `main` to production. To run your own copy, connect this repository's `main` branch to a Vercel project and configure its frontend environment variables. Use matching Clerk and Convex production settings, including the Clerk `convex` JWT template and admin allowlist.
 
 Deploy backend changes separately with `pnpm exec convex deploy` after selecting the intended production project. Publishing frontend code alone does not deploy Convex functions or transfer development content to production. Populate the destination deployment through the admin tools or a deliberate data import.
 
-This repository can be deployed independently of the original portfolio. Local session records, source-image drafts, environment files, and temporary browser output are excluded from Git.
+Each deployment carries the whole `public/` folder, about 45 MB, mostly the radio's audio. On the Hobby plan, a short preview retention policy keeps Deployment Storage in check.
+
+Local session records, source-image drafts, environment files, and temporary browser output are excluded from Git.
 
 ## License and author
 

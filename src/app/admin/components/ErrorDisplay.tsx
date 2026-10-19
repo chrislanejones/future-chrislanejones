@@ -51,7 +51,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Settings Error",
       },
       BackupError: {
@@ -72,35 +72,35 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Blog Error",
       },
       MediaError: {
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Media Error",
       },
       LinkError: {
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Link Error",
       },
       SEOError: {
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "SEO Error",
       },
       unknown: {
         icon: AlertCircle,
         bgColor: "bg-red-500/10",
         borderColor: "border-red-500/30",
-        textColor: "text-red-700 dark:text-red-400",
+        textColor: "text-(--color-danger)",
         title: "Error",
       },
     };
@@ -132,7 +132,9 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <p className={`text-sm mt-1 ${config.textColor}`}>{error.message}</p>
       </div>
       <button
+        type="button"
         onClick={onDismiss}
+        aria-label="Dismiss"
         className={`text-lg shrink-0 ${config.textColor} hover:opacity-70`}
       >
         ×
