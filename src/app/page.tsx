@@ -77,11 +77,11 @@ export default function Home() {
         </section>
         <section
           id="beyond-the-browser"
-          className={styles.offlineSection}
+          className={`${styles.container} ${styles.offlineSection}`}
           aria-labelledby="offline-title"
         >
           <CoastFloor />
-          <div className={`${styles.container} ${styles.offlineContent}`}>
+          <div className={styles.offlineContent}>
             <Reveal className={styles.sectionHeading}>
               <h2 id="offline-title">Beyond the browser.</h2>
               <p className={styles.sectionDescription}>

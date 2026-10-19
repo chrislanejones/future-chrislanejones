@@ -3,39 +3,8 @@ import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Briefcase, Download, MapPin } from "lucide-react";
-import GalleryDrawer, {
-  type GalleryPhoto,
-} from "@/components/page/gallery-drawer";
 import { timelineEvents } from "@/data/career-timeline";
 import styles from "@/components/coastal/interior.module.css";
-
-const photos: GalleryPhoto[] = [
-  {
-    src: "/setups/Samsung-49-inch-Odyssey-G9.webp",
-    alt: "Samsung 49-inch Odyssey G9 monitor setup",
-    description: "Samsung 49-inch Odyssey G9 Gaming Monitor Setup",
-  },
-  {
-    src: "/gallery/FCC-2017-Bold-Bean.webp",
-    alt: "Coding at Bold Bean Jacksonville 2017",
-    description: "Coding with Friends in Bold Bean Jax 2017",
-  },
-  {
-    src: "/setups/Post-Pandemic-Dual-Monitor-Setup.webp",
-    alt: "Post-pandemic dual monitor workstation",
-    description: "Post-Pandemic Dual Monitor Setup",
-  },
-  {
-    src: "/setups/Pandemic-Office-Setup-2021.webp",
-    alt: "Home office setup during pandemic",
-    description: "Pandemic Office Setup 2021",
-  },
-  {
-    src: "/setups/Parents-House-Setup.webp",
-    alt: "Temporary setup at parents house",
-    description: "Parents House Setup During Transition",
-  },
-];
 
 export default function CareerPage() {
   const liveEvents = useQuery(api.careerTimeline.getAllEvents);
@@ -48,19 +17,14 @@ export default function CareerPage() {
       >
         <div className={styles.gallery}>
           <Image
-            src="/setups/Samsung-49-inch-Odyssey-G9.webp"
-            alt="My desk with a Samsung Odyssey G9 monitor"
+            src="/gallery/FCC-2017-Bold-Bean.webp"
+            alt="Coding with friends at Bold Bean in Jacksonville, 2017"
             fill
             sizes="(max-width: 767px) 90vw, 50vw"
             priority
           />
           <div className={styles.galleryCaption}>
-            <h2>Behind the screen</h2>
-            <GalleryDrawer
-              photos={photos}
-              title="Setup Photo Gallery"
-              description="Workspaces and coding with friends over the years."
-            />
+            <h2>Coding at Bold Bean</h2>
           </div>
         </div>
         <div className={styles.panel}>
