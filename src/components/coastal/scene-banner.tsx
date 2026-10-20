@@ -76,19 +76,21 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
       blur: "data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAADQAQCdASoQAAkAAoBCJYwCdAEO+LuSgAD+/EkxQ94RIgoWrAz8diLsuUAAAA==" },
   },
   "/react-maintenance": {
-    focus: "66% 60%",
-    day: { still: "/banners/react-maintenance-day.webp", video: "/banners/react-maintenance-day.mp4", alt: "A 3D model of a fishing boat on calm water, the St. Augustine Beach pier on the horizon at sunrise",
-      blur: "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAACwAQCdASoQAAkAAoBCJZACdAEOum84AP7x60yo+CiZFdlB6iBsUIQvo1sHzoQ1csEEPWdZYwKv4FuWzd17rgAA" },
-    night: { still: "/banners/react-maintenance-night.webp", video: "/banners/react-maintenance-night.mp4", alt: "A 3D model of a fishing boat on calm water, the St. Augustine Beach pier on the horizon at night, windows lit",
-      blur: "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAABwAQCdASoQAAkAAoBCJYgCdAFAAAD+9ssqDe/dgIQ+Vh+QTM7gQ5HYQ3Ycsjw1aToAAA==" },
+    focus: "50% 55%",
+    day: { still: "/banners/react-maintenance-day.webp", alt: "A 3D model of St. Augustine Beach through a fisheye lens from high over the town: the hotel, beach houses, the dunes and the beach curving to the pier under a lavender sky",
+      blur: "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAQAgCdASoQAAkAAoBCJZQCdAEegRHzvEBAAP5hb71fRH03j0gC7stLmzzD8cbO3+VK0dI4ScA81KIyWqKlpbwxLyno2DGiNJFDeiEfoAA=" },
+    night: { still: "/banners/react-maintenance-night.webp", alt: "A 3D model of St. Augustine Beach at night through a fisheye lens from high over the town: windows and street lights lit, the dark beach curving to the pier under the stars",
+      blur: "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAQCdASoQAAkAAoBCJQBOgCP7qkvJOGAA/vpnK5ujwLyVDE27Q/lafFaBaz6+iriX1hrYgrd/4AAA" },
   },
+
   "/wordpress-maintenance": {
-    focus: "55% 60%",
-    day: { still: "/banners/wordpress-maintenance-day.webp", video: "/banners/wordpress-maintenance-day.mp4", alt: "A 3D model of 9th Street at St. Augustine Beach, palms, signs and the ocean at the end of the road at sunset",
-      blur: "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAQCdASoQAAkAAoBCJZQCdAEWxtZKYAD+8SKgNesCFgZfGYC49jCHLTx1Gy1M6l36LoEpq5AdCdIc6bIeVf/QTrlYfnzKDlDclX9RXNb7rZ8DCAE/CX1AAAA=" },
-    night: { still: "/banners/wordpress-maintenance-night.webp", video: "/banners/wordpress-maintenance-night.mp4", alt: "A 3D model of 9th Street at St. Augustine Beach, palms, signs and the ocean at the end of the road at night, windows lit",
-      blur: "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADQAQCdASoQAAkAAoBCJYwCdAD2PSfggAD++KqJcAt8SBfZ6ibgf+GYd2iAibH5pbAVPaaKjv3kMa2txwui83kuHEe2oWT2SJ/ZAAAA" },
+    focus: "50% 55%",
+    day: { still: "/banners/wordpress-maintenance-day.webp", alt: "A 3D model of St. Augustine Beach through a fisheye lens from high over the town: the hotel, beach houses, the dunes and the beach curving to the pier under a lavender sky",
+      blur: "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAQAgCdASoQAAkAAoBCJZQCdAEegRHzvEBAAP5hb71fRH03j0gC7stLmzzD8cbO3+VK0dI4ScA81KIyWqKlpbwxLyno2DGiNJFDeiEfoAA=" },
+    night: { still: "/banners/wordpress-maintenance-night.webp", alt: "A 3D model of St. Augustine Beach at night through a fisheye lens from high over the town: windows and street lights lit, the dark beach curving to the pier under the stars",
+      blur: "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADwAQCdASoQAAkAAoBCJQBOgCP7qkvJOGAA/vpnK5ujwLyVDE27Q/lafFaBaz6+iriX1hrYgrd/4AAA" },
   },
+
   "/logo-page": {
     focus: "60% 55%",
     day: { still: "/banners/logo-page-day.webp", video: "/banners/logo-page-day.mp4", alt: "A 3D model of the beach at St. Augustine, beachgoers on the sand below the hotels and dunes at sunset",
