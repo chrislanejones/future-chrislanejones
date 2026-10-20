@@ -201,6 +201,12 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   `src/providers/ConvexAdminProvider.tsx`, mounted by `src/app/admin/layout.tsx`; the public
   site uses a plain `ConvexProvider`. Any future public page that needs `useAuth`/`useUser`
   must mount inside that provider or it will throw.
+
+## 10-14-2026 — hero loading
+
+- The light ocean layer (`hero-ocean-lite.tsx`) copies the sea part of the terrain shader and the camera from `hero-coast-scene.tsx`. Move the shared GLSL and camera numbers into one module so the two can't drift.
+- `public/hero/coast-{light,dark}.webp` are screenshots of the live 3D. Recapture them whenever the scene's look or camera changes; a small capture script would make that one command.
+- `/blog/[slug]` returns 200 for missing slugs (soft 404) because `src/app/blog/loading.tsx` streams the response.
 - **10-14-2026 — `braces` advisory has no fix yet (dev only).** High-severity ReDoS in `braces <=3.0.3`
   via `eslint-config-next > @next/eslint-plugin-next > fast-glob > micromatch`. Lint tooling only,
   never shipped. `postcss-selector-parser` was patched by override (PR #15). Re-run `pnpm audit`

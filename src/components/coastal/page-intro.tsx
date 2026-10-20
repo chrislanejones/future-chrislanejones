@@ -8,12 +8,8 @@ import { api } from "../../../convex/_generated/api";
 import { getPageHeader, type PageHeaderData } from "@/lib/page-headers";
 import styles from "./coastal.module.css";
 
-// Interior pages use the drawn BeachBanner (bde654f). Pages listed here get their
-// 3D-world scene banner back (Chris, 10-18-2026: About, Projects, Career & Resume, Contact).
-const SCENE_PAGES = new Set(["/about", "/projects", "/career-and-resume", "/contact", "/browser-tabs", "/blog", "/react-maintenance", "/wordpress-maintenance"]);
-
 export function PageIntro({ header, path }: { header: PageHeaderData; path?: string }) {
-  const scene = path && SCENE_PAGES.has(path) ? BANNER_SCENES[path] : undefined;
+  const scene = path ? BANNER_SCENES[path] : undefined;
   const copy = <>
     <nav aria-label="Breadcrumb" className={styles.breadcrumb}>
       <Link href="/">Home</Link>

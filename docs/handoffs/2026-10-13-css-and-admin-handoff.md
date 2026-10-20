@@ -603,3 +603,98 @@ Chris subsequently requested a complete redo of the blog covers, keeping the bea
 - `README.md` includes the later integration instructions, including assigned-media precedence. Keep this preview and the PNG masters outside the deployed public/blog bundle.
 
 These are saved review assets. This image task did not replace the repository covers, change Convex media assignments or deploy the set. The preview was checked with all seven images loaded, working comparison modes and no horizontal overflow at 390px. Review the new sandcastle image as a conceptual illustration, not an exact screenshot of the game.
+
+
+## React SSOT follow-up: fewer independent UI implementations
+
+Requested by Chris in the next session: simplify the React component system, especially buttons. This section is an implementation handoff for Claude. The recommendations below have not been implemented by this audit. Recheck the checkout before editing because work is happening in other terminals.
+
+### The actual duplication
+
+The current source has one canonical `src/components/ui/button.tsx`. Do not create another admin button, coastal button, save button, or page-specific button implementation. The problem is callers bypassing that component and independently defining padding, colors, focus, disabled states, and icon sizing.
+
+At this inspection, `src/app/admin` contained 75 literal `<button` occurrences across 18 TSX files; `src/components` contained 24 across 7 files. These are source occurrences, not rendered counts or a count of defects. Some belong to legitimate specialized primitives. Use the inventory to review ownership, not to mechanically replace every native button.
+
+**Desired result:** changing the shared button implementation should update ordinary actions across public pages and admin. Changing shared input or feedback styles should have the same effect. Keep a small component API and fewer independent styling decisions.
+
+### Canonical ownership
+
+| Concern | Owner and migration direction |
+| --- | --- |
+| Ordinary action buttons | Existing `src/components/ui/button.tsx`; one variant recipe, consistent sizes and states. |
+| Navigation styled as an action | Existing `Button asChild` with a link, or the exported `buttonVariants` where a library owns the element. Preserve link semantics. |
+| Text inputs and textareas | Existing `src/components/ui/input.tsx` and `textarea.tsx`; remove equivalent copied styling at call sites. |
+| Labels and field messages | Existing label primitive; add one shared field composition only when repeated label/help/error wiring warrants it. |
+| Status presentation | A small shared feedback presentation used by success/error/validation adapters; keep their different data handling outside the presentation. |
+| Loading indicator | One shared spinner visual. Page and inline wrappers may retain different layout and loading text. |
+| Tabs, menus, sidebar and calendar controls | Their owning specialized components; reuse shared recipes where appropriate while preserving keyboard and selection behavior. |
+| Brand colors, spacing and typography | Canonical CSS tokens, consumed by primitives. Do not duplicate token values in TS objects. |
+| Feature state and mutations | Feature components/hooks. The generic Button must not know about Convex, blog posts, media, or save APIs. |
+
+### Button cleanup, first priority
+
+1. Keep the existing import path `@/components/ui/button`. Inventory current imports and variants before changing its API.
+2. Review `accent` and `solid`: both currently use the accent background and on-accent text, with different hover opacity. If they have no intentional distinct role, migrate callers to one name and remove the duplicate recipe. Likewise, establish whether `neutral` and `base` represent real, documented roles before retaining both.
+3. Disabled is behavior, not a color variant. The current `variant="disabled"` recipe only supplies CSS. Migrate callers to the actual native `disabled` prop and remove that variant after its usages are gone. Disabled links need explicit handling because an anchor does not support native `disabled`.
+4. Keep one `size="icon"` option for ordinary icon actions. Require a meaningful accessible name. Do not create individual EditButton/DeleteButton/CloseButton components that only repeat icon and color choices.
+5. Review the focus-managed `showExternalIcon` code. Prefer a stable icon with CSS focus styling when possible, preserving existing child handlers and avoiding layout movement. Remove state and cloning only after confirming current consumers still work. A visual external-link marker must not silently change navigation behavior.
+6. If pending actions repeat, add one small shared pending convention: visible progress, stable label/width, disabled repeat submission and appropriate busy state. Keep the async operation and error handling in the caller. Do not add parallel `loading`, `saving`, and `submitting` flags to the primitive.
+7. Make button type intentional. Audit form callers before choosing a shared `type="button"` default; retain explicit `type="submit"` on submission actions. Do not break forms during consolidation.
+8. Use `className` for placement and necessary feature layout. Repeated overrides of background, radius, font size or focus styling indicate a missing shared decision that belongs in the primitive or its tokens.
+
+### Concrete migration candidates
+
+- `src/app/admin/components/SuccessDisplay.tsx`: the dismiss action uses a native button with a literal multiplication sign and local colors. Use the canonical icon-size action and give it a clear dismiss label. Preserve the compact mode behavior.
+- `src/app/admin/components/ErrorDisplay.tsx`, `ToastContainer.tsx`, and `src/app/admin/EffectErrorDisplay.tsx`: review retry and dismiss actions for the same shared treatment. Preserve error-specific recovery logic.
+- `src/app/admin/AdminDashboard/ProjectsTabEnhanced.tsx`: already uses Button for New, but implements category filters, selectable project rows, and Featured Order independently. Migrate ordinary actions first; keep selection semantics distinct. Extract filters or selectable rows only when another screen actually shares the behavior.
+- `src/app/admin/AdminDashboard/MediaTabEnhanced.tsx`: audit the repeated native actions alongside media selection controls. Preserve selection state, accessible names and grid/list behavior during migration.
+- `src/app/admin/components/HtmlEditorEnhanced.tsx`: repeated toolbar buttons are a candidate for one local toolbar-item composition backed by the shared button. Preserve editor selection, focus behavior, pressed state and keyboard interactions. This does not justify a second general button system.
+- `src/app/blog/BlogPage.tsx` and `src/app/browser-tabs/BrowserTabs.tsx`: both have native clear-search actions using local `styles.action`. Align ordinary clear actions with the shared button contract.
+- `src/app/conferences/error.tsx`: Try again uses `coastal.primaryButton`; migrate it to the shared action component while preserving `reset`.
+- `src/components/ui/sidebar.tsx`, `calendar.tsx`, and `navigation-menu.tsx`: keep library-owned interaction contracts. Calendar and navigation menu already consume `buttonVariants`; this is useful reuse, not a reason to nest buttons inside their triggers.
+
+### Consolidate the next repeated families
+
+`src/app/admin/components/LoadingSpinner.tsx` draws a Lucide spinner while `src/components/ui/page-spinner.tsx` draws a CSS border spinner. Choose one shared visual and let page/inline containers own their layout. Use readable loading text and avoid duplicate announcements when nesting these components.
+
+`SuccessDisplay.tsx` and `ValidationFeedback.tsx` repeat the same green success treatment; validation also repeats closely related red and yellow message structures. Consolidate their presentation around semantic status tokens and a small status-kind API. Keep error parsing, lists of validation results, retry callbacks and toast lifecycle in their existing owners. Routine success can use polite status announcements; reserve alerts for errors needing immediate attention.
+
+Use the existing Input, Textarea and Label primitives before introducing a new form library or copying more controls. Where field groups repeat, centralize label/control association and help/error IDs. Preserve input types, browser autocomplete, validation messages and focus on failed submission.
+
+### Keep the component system small
+
+- Do not count success by having the fewest TSX files. Count independent implementations of the same visual and behavioral contract.
+- Reuse an existing component before adding a new one. A new reusable abstraction should have concrete repeated consumers or a clear accessibility/behavior responsibility.
+- Avoid a universal UI component with dozens of flags and feature-specific branches. Prefer a small primitive API plus feature composition.
+- Keep feature-specific rows, media tiles, editor tools and game controls local when their interaction differs. Sharing tokens does not require making all of them the same button shape.
+- Do not move every component into one giant file or mark whole page trees `use client` for shared imports. Keep client boundaries as narrow as the interaction requires.
+- Keep state in one appropriate owner and derive display values from it. Do not mirror props or Convex results into extra state unless that state is an intentional editable draft with a defined reset policy.
+- After migrating consumers, remove unused implementations, old variants and orphaned CSS. Check dynamic class usage and third-party integration before deleting styles.
+
+### Suggested sequence and acceptance checks
+
+1. Capture the current callers and choose the surviving button roles. Migrate the simple clear, retry, dismiss and ordinary admin actions first.
+2. Verify the existing button contract, then migrate one admin screen and one public screen before repeating across the app.
+3. Consolidate loading and status presentation. Reuse input primitives and extract repeated field wiring only where proven useful.
+4. Remove dead styling and aliases once imports and callers are migrated. Record any native controls retained intentionally.
+5. Run project lint and TypeScript checks with pnpm. Compare new failures against the current baseline instead of relying on earlier-session results.
+6. Exercise keyboard activation, visible focus, accessible icon labels, form submission, disabled/pending actions, retries and error messages. Check mobile and both themes. For `asChild`, check links remain links and do not produce nested interactive elements.
+7. Add focused behavior tests if the shared component contract changes, especially form types, handler composition or pending submission. Do not add tests that merely duplicate class strings.
+
+Done means common UI changes flow from their canonical owner, callers stop rebuilding the same styling, specialized interactions still work, and the migration removes superseded code. This handoff itself changes documentation only.
+
+
+## Simple color guide
+
+For the concise light/dark palette, checked contrast pairs and everyday design rules, use [Simple coastal design guide](../SIMPLE-DESIGN-GUIDE.md). This is the short reference Chris requested; keep the detailed audit here for implementation work.
+
+
+## Homepage ocean motion update
+
+Replaced the homepage hero’s Three.js water overlay with a small inline SVG using the same optimized photograph. A feathered shoreline mask limits gentle displacement and tidal movement to the water; the beach and buildings stay fixed. Removed the whole-photo arrival zoom, raised image quality from 60 to the already-supported 75, and shifted the mobile crop toward the ocean.
+
+At Chris’s request there is no motion button. SVG animation pauses offscreen and in hidden tabs; `prefers-reduced-motion: reduce` displays the still photo and removes the animation layer, including when the preference changes while the page is open. The SVG crop reads the photo’s CSS object-position so responsive changes stay aligned. No video, new dependency, or generated replacement photograph was added.
+
+Changed `hero-photo.tsx`, `hero-sea.tsx`, and their hero rules in `coastal.module.css`. Focused ESLint and full TypeScript checks passed. Chromium browser checks passed for motion, pause/resume, offscreen pause, reduced-motion fallback, mobile overflow and absence of a hero canvas; light and dark screenshots were inspected. Installed the existing frozen pnpm lockfile to bring missing local dependencies up to date. No deployment was performed.
+
+Motion tuning after preview feedback: settled between the original nearly invisible effect and the stronger revision, using an 8-source-pixel sweep over 10 seconds. The final timing follows Chris's request for a tiny bit slower motion. The water mask starts slightly inland to include the existing foam. Reduced motion displays a static image without a manual override. The button and its unused styles/imports were removed.
