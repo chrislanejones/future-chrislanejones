@@ -23,6 +23,8 @@ export default function CareerPage() {
             fill
             sizes="(max-width: 767px) 90vw, 50vw"
             priority
+            // The card is wider than the 4:3 photo; crop from the top so heads stay in frame.
+            style={{ objectPosition: "50% 0%" }}
           />
           <div className={styles.galleryCaption}>
             <h2>Coding at Bold Bean</h2>

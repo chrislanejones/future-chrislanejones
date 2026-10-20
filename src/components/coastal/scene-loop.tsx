@@ -31,8 +31,10 @@ function environment() {
  * still, so it is right before hydration. The loop's first frame is the still,
  * so the fade-in shows no jump. The video waits for the load event and an idle
  * moment. Phones, Data Saver and reduced motion keep the still.
+ * preloadBoth: once the current theme's loop is playing, fetch the other theme's
+ * loop in the background so switching light/dark plays at once (the home hero).
  */
-export function SceneLoop({ scene, sizes, className = "" }: { scene: LoopScene; sizes: string; className?: string }) {
+export function SceneLoop({ scene, sizes, className = "", preloadBoth = false }: { scene: LoopScene; sizes: string; className?: string; preloadBoth?: boolean }) {
   const host = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [allowed, setAllowed] = useState(false);
@@ -68,6 +70,15 @@ export function SceneLoop({ scene, sizes, className = "" }: { scene: LoopScene; 
   }, []);
 
   const playing = allowed && !reduced && Boolean(current.video);
+  const other = (dark ? scene.day : scene.night).video;
+  useEffect(() => {
+    if (!preloadBoth || !playing || !other || readySrc !== current.video) return;
+    const controller = new AbortController();
+    const wait = setTimeout(() => {
+      fetch(other, { signal: controller.signal, priority: "low" } as RequestInit).then(r => r.blob()).catch(() => undefined);
+    }, 1500);
+    return () => { clearTimeout(wait); controller.abort(); };
+  }, [preloadBoth, playing, other, readySrc, current.video]);
   // Offscreen or a hidden tab pauses the loop; it resumes where it stopped.
   useEffect(() => {
     const element = video.current;
