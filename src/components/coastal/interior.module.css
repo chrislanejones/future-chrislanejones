@@ -636,22 +636,27 @@
   column-gap: 20px;
 }
 .tabsNavigation {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 20px;
+  composes: yearNav from "./conferences.module.css";
   margin-bottom: 28px;
 }
 .tabsNavigation a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding-block: 10px;
+  background: var(--coast-soft);
   color: var(--coast-ink);
-  text-underline-offset: 4px;
+  text-decoration: none;
+}
+.tabsNavigation a:hover,
+.tabsNavigation a:focus-visible {
+  background: var(--coast-accent);
+  color: var(--coast-on-accent);
 }
 .tabsNavigation span {
-  color: var(--coast-muted);
+  color: inherit;
+  opacity: 0.75;
   font-size: var(--type-caption);
+  font-variant-numeric: tabular-nums;
 }
 .tabsGroup {
   scroll-margin-top: 100px;
