@@ -12,11 +12,11 @@ type BannerScene = LoopScene & { focus: string };
  */
 export const BANNER_SCENES: Record<string, BannerScene> = {
   "/about": {
-    focus: "62% 62%",
-    day: { still: "/banners/about-day.webp", video: "/banners/about-day.mp4", alt: "A 3D model of the El Castillo resort hotel on 9th Street, palms and beach houses leading down to the ocean and a fishing boat offshore at sunrise",
-      blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAADwAQCdASoQAAkAAoBCJZQCdAEOes9QpAAA/I/7ZofJ6MYKVW90hr2mSw3iVb4kF13UIs+PgqocRVAJHnMKoThEuHQiAAAA" },
-    night: { still: "/banners/about-night.webp", video: "/banners/about-night.mp4", alt: "A 3D model of the El Castillo resort hotel on 9th Street, palms and beach houses leading down to the ocean and a fishing boat offshore at night, windows lit",
-      blur: "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADwAQCdASoQAAkAAoBCJYwCdADcXadFyoAA/vpvG9Aab/uWKDh+w/9HRk+HgwkYnOogNjCBQS1Qxk9/tmYRQHmLYEPesz0AAAA=" },
+    focus: "75% 50%",
+    day: { still: "/banners/about-day.webp", video: "/banners/about-day.mp4", alt: "A 3D model of St. Augustine Beach from straight above, the pier reaching into the Atlantic past the dune walkovers, beachgoers on the sand and a fishing boat offshore in the early morning",
+      blur: "data:image/webp;base64,UklGRlIAAABXRUJQVlA4IEYAAAAQAgCdASoQAAkAAoBCJaACdGuAAt4Ra1/wAP225iR4la8na1m4TawehnUdXl50cgr2XZf0ydMP6FEJwR+pVfOk4f+VOZAA" },
+    night: { still: "/banners/about-night.webp", video: "/banners/about-night.mp4", alt: "A 3D model of St. Augustine Beach from straight above, the pier reaching into the Atlantic past the dune walkovers, beachgoers on the sand and a fishing boat offshore at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADQAQCdASoQAAkAAoBCJQBOgCKfAeEI8AD++Gx6UG7GuOdZt3Ykkg5Y3SgdHQpPs5WvigISFlAAAA==" },
   },
   "/browser-tabs": {
     focus: "55% 65%",
@@ -61,11 +61,11 @@ export const BANNER_SCENES: Record<string, BannerScene> = {
       blur: "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAACwAQCdASoQAAkAAoBCJQBOgCHYnXSIAP74gvluxpStkfeXEuTRA0XSwhaNrYKb8eAAAA==" },
   },
   "/site-history": {
-    focus: "72% 50%",
-    day: { still: "/banners/site-history-day.webp", video: "/banners/site-history-day.mp4", alt: "A 3D model of St. Augustine Beach from the air, its streets running along the ocean in the afternoon",
-      blur: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAQAgCdASoQAAkAAoBCJYwCdAEKRI6V6wRwAP55PxphV4hEzK8fioae42yZX5IL3SYwY3krewc7PJZWB4cNtAs+VAAXpyiafWzwnGh5yYxzAAAA" },
-    night: { still: "/banners/site-history-night.webp", video: "/banners/site-history-night.mp4", alt: "A 3D model of St. Augustine Beach from the air, its streets running along the ocean at night, windows lit",
-      blur: "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAAAQAgCdASoQAAkAAoBCJZQCdAEUqo4csbswAP776Idb3n6k/iSEwXyEtERQVDQIIpoitKvrZ1ozsAAA" },
+    focus: "65% 50%",
+    day: { still: "/banners/site-history-day.webp", alt: "A 3D model of St. Augustine Beach from the air, the town, its dune walkovers and the pier running along the Atlantic in the early morning",
+      blur: "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoQAAkAAoBCJQBWACHQBH3D4AD+6soOSNhOh5VFppgnLPLyPAEZ/dwtm3FMNUzH8TT1FLGZmro2V8rEkSSROrIWYGQx6RchREAAAA==" },
+    night: { still: "/banners/site-history-night.webp", alt: "A 3D model of St. Augustine Beach from the air, the town, its dune walkovers and the pier running along the Atlantic at night, windows lit",
+      blur: "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADwAQCdASoQAAkAAoBCJQBOgCP7q5RCHwAA/vnJDZP/xGrWd4oTanavWgWc0K+SZuOKcJnzcMUWXqweehAAAA==" },
   },
   "/site-map": {
     focus: "68% 50%",

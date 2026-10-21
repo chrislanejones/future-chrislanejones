@@ -635,7 +635,26 @@
   columns: 3 300px;
   column-gap: 20px;
 }
+.tabsNavigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-bottom: 28px;
+}
+.tabsNavigation a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 10px;
+  color: var(--coast-ink);
+  text-underline-offset: 4px;
+}
+.tabsNavigation span {
+  color: var(--coast-muted);
+  font-size: var(--type-caption);
+}
 .tabsGroup {
+  scroll-margin-top: 100px;
   break-inside: avoid;
   margin-bottom: 20px;
   background: var(--coast-panel);

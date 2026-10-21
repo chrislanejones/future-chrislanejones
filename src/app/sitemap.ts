@@ -29,9 +29,10 @@ const staticPages = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Omit lastModified when no content-update date is tracked. Generating the
+  // sitemap does not mean these pages (or conference-year indexes) changed.
   const staticUrls: MetadataRoute.Sitemap = staticPages.map((path) => ({
     url: path === '/' ? BASE_URL : `${BASE_URL}${path}`,
-    lastModified: new Date(),
     changeFrequency: 'weekly',
     priority: path === '/' ? 1 : 0.8,
   }))
@@ -48,7 +49,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         seen.add(yearKey)
         entries.push({
           url: `${BASE_URL}/conferences/${conf.year}`,
-          lastModified: new Date(),
           changeFrequency: 'monthly' as const,
           priority: 0.6,
         })

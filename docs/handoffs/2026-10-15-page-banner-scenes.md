@@ -12,14 +12,14 @@ The site's older live copy of the town (`hero-coast-scene.tsx`, `hero-ocean-lite
 
 | Page | Shot | Position | Target | Day time |
 | --- | --- | --- | --- | --- |
-| /about | El Castillo, pier, boat | [-16.5, 8, 8.5] | [5.94, 4.6, -15.56] | 17.5 |
+| /about | Pier from straight above, Fisheye (10-20-2026) | [34.5, 44, -62.9] | [33.7, 31.4, -63] | 7.0 |
 | /browser-tabs | Ethel's Filling Station | [-8.8, 1.3, 29.3] | [0.88, 0.4, 28.28] | 17.5 |
 | /contact | 2nd Ave at sunrise | [-35.3, 1.6, 3.7] | [-33.42, 1.5, 3.02] | 6.75 |
 | /blog | Behind the fishing boat | [45, 2.6, -10] | boat, turned 16° left | 17.5 |
 | /conferences | Pier from above | [44, 16, -62] | [16, 1, -94], turned 12° left | 17.5 |
 | /career-and-resume | From the boat toward shore | [36.4, 1.9, -7.9] | [8, 3.2, -3] | 17.5 |
 | /projects | Town aerial, tilted down so no world edge shows | [4, 36, 24] | [-8, 0, -20], turned 10° left | 15.5 |
-| /site-history | Town from the air | [-12, 40, 50] | [-15, 0, -20], turned 12° left | 15.5 |
+| /site-history | Town and pier from the air, Fisheye, **stills only** (10-20-2026) | [23.3, 13.3, -26.4] | [15.1, 10.6, -35.6] | 7.0 |
 | /site-map | Top down | [-38, 170, -29.9] | [-38, 0, -30] | 12 |
 | /react-maintenance | Boat at sunrise | [19, 1.7, 6] | boat, turned 16° left | 6.75 |
 | /wordpress-maintenance | 9th Street toward the beach | [-7.1, 0.9, 3.6] | [12, 3, 3.4], turned 5° left | 17.5 |
@@ -29,6 +29,17 @@ The site's older live copy of the town (`hero-coast-scene.tsx`, `hero-ocean-lite
 Every page also has a night version from the same camera: 21.0, clear sky (full moonlight), exposure 1.35, ocean motion "Some motion" and 14 mph wind, so trees and flags visibly move in the dark. Medium waves were tried first and made the boat look storm-tossed. Days use scattered clouds, exposure 1.00, "Some motion" and 6-12 mph wind. Blog and React maintenance were recorded for 20 s to give the boat's seam more candidates. Files: 720p (1280 px) WebP stills at quality 80 and H.264 loops, 16.3 MB of video and 1.6 MB of stills in total.
 
 The page title and its cream fade cover the left half of every banner, so each camera is turned left until its subject sits right of center. The first three shots started from Chris's own framing, with targets [12, 4.6, -8], [0.9, 0.4, 30.1] and [-33.3, 1.5, 3.8].
+
+### 10-20-2026 re-shoots
+
+Chris framed both shots in the viewer himself. Both use the **Fisheye** lens, clear sky, wind 10 mph from E, and people and cars on. Night uses the shared settings with the same lens. They were shot on 3d-world `f27bb1b` (main), not the `2bb3fc8` checkout the other banners used, so the newer streets show.
+
+| Page | Day | Night | Video |
+| --- | --- | --- | --- |
+| /about | 7.0 | 21.0 | Yes. 20 s recorded, loops of 9.7 s (day) and 9.9 s (night) |
+| /site-history | 7.0 | 21.0 | **No.** Chris wants stills only, so the page keeps the still and plays nothing |
+
+`recorder.js` now sets `Scene.lens` when a job gives `lens`. The /about jobs are `about3-day` and `about3-night` in `jobs.json`. The site-history stills come from `site-history-stills.cjs` in `~/ai-repo/banner-capture`.
 
 ## Loading
 

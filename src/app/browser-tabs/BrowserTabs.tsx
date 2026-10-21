@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "convex/react";
+import { usePreloadedQuery, type Preloaded } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ArrowUpRight, Search } from "lucide-react";
 import styles from "@/components/coastal/interior.module.css";
 import { Button } from "@/components/ui/button";
+import { compareGroups, getLinkGroup } from "./link-groups";
 
 export type BrowserLinkItem = {
   href: string;
@@ -13,6 +14,8 @@ export type BrowserLinkItem = {
   domain: string;
   favicon?: string;
 };
+
+const groupId = (category: string) => `tabs-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
 /**
  * Site icon: the Convex favicon first, then Google's favicon service for the domain,
@@ -48,24 +51,27 @@ function Favicon({ src, domain }: { src?: string; domain: string }) {
   );
 }
 
-export default function BrowserTabs() {
-  const links = useQuery(api.browserLinks.getAll);
+export default function BrowserTabs({
+  preloadedLinks,
+}: {
+  preloadedLinks: Preloaded<typeof api.browserLinks.getAll>;
+}) {
+  const links = usePreloadedQuery(preloadedLinks);
   const [search, setSearch] = useState("");
   const query = search.trim().toLowerCase();
-  const filtered = (links ?? []).filter((link) =>
-    [link.label, link.domain, link.category]
+  const organized = links.map((link) => ({ ...link, group: getLinkGroup(link) }));
+  const filtered = organized.filter((link) =>
+    [link.label, link.domain, link.category, link.group]
       .join(" ")
       .toLowerCase()
       .includes(query),
   );
-  const categories = [...new Set(filtered.map((link) => link.category))].sort();
+  const categories = [...new Set(filtered.map((link) => link.group))].sort(compareGroups);
   return (
     <>
       <div className={styles.toolbar}>
         <p aria-live="polite">
-          {links === undefined
-            ? "Loading saved links…"
-            : `${filtered.length} saved links`}
+          {`${filtered.length} saved links across ${categories.length} categories`}
         </p>
         <label className={styles.search}>
           <Search size={20} aria-hidden="true" />
@@ -78,25 +84,29 @@ export default function BrowserTabs() {
           />
         </label>
       </div>
-      {links === undefined ? (
-        <div
-          className={styles.resourceGrid}
-          aria-busy="true"
-          aria-label="Loading browser tabs"
-        >
-          {[0, 1, 2].map((i) => (
-            <div key={i} className={styles.panel} style={{ minHeight: 220 }} />
+      {categories.length > 0 && (
+        <nav className={styles.tabsNavigation} aria-label="Browse link categories">
+          {categories.map((category) => (
+            <a key={category} href={`#${groupId(category)}`}>
+              {category}
+              <span>{filtered.filter((link) => link.group === category).length}</span>
+            </a>
           ))}
-        </div>
-      ) : categories.length ? (
+        </nav>
+      )}
+      {categories.length ? (
         <div className={styles.tabsGrid}>
           {categories.map((category) => (
-            <section key={category} className={styles.tabsGroup}>
+            <section
+              key={category}
+              id={groupId(category)}
+              className={styles.tabsGroup}
+            >
               <h2>{category}</h2>
               <ul>
                 {filtered
-                  .filter((link) => link.category === category)
-                  .sort((a, b) => a.order - b.order)
+                  .filter((link) => link.group === category)
+                  .sort((a, b) => a.label.localeCompare(b.label) || a.order - b.order)
                   .map((link) => (
                     <li key={link._id}>
                       <a
