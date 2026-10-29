@@ -230,7 +230,7 @@ function SceneLifecycle({ onReady, onUnavailable, moving }: Pick<Props, "onReady
 
 export default function HeroCoastScene(props: Props) {
   const sky = props.dark ? "#415c61" : "#d9e2d6";
-  return <Canvas shadows camera={{ position: [8,30,48], fov:37, near:.1, far:350 }}
+  return <Canvas shadows="percentage" camera={{ position: [8,30,48], fov:37, near:.1, far:350 }}
     dpr={props.explore ? [1,2] : [1,1.5]} frameloop="demand"
     gl={{ alpha:false, antialias:true, powerPreference:props.explore ? "high-performance" : "low-power" }} fallback={null}>
     {props.explore ? <CoastAtmosphere timeOfDay={props.timeOfDay ?? 17.5} weather={props.weather ?? "scattered"} /> : <>

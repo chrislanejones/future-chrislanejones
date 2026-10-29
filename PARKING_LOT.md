@@ -246,3 +246,14 @@ Adjacent problems noticed during sessions — not fixed in the diff they were fo
   with no pixel crossfade or ghosting at the seam. Started as branch `feat/loop-mode`
   in ~/ai-repo/3dworld-loop (no commits yet). A "Record loop" button with WebCodecs
   would replace the scratch recording scripts.
+- **10-21-2026 — `THREE.Clock` deprecation warning.** Every R3F `<Canvas>` logs it once:
+  @react-three/fiber 9.8.2 (latest stable) still builds its store clock with `new THREE.Clock()`.
+  Nothing in our code to change; it goes away when R3F 10 ships stable and we upgrade.
+- **10-21-2026 — Dead link in Browser Tabs.** `azumbrunnen.me` answers 410 Gone, so its favicon
+  and Google's fallback both 404 in the console. Delete the row (Admin → Browser Tabs) and the
+  entry in `src/data/linkSeed.ts`, or point it at a new URL.
+- **10-21-2026 — Prod Convex React Icons favicon.** The seed now uses
+  `https://react-icons.github.io/react-icons/favicon.png`; the prod `browserLinks` row still has
+  `/favicon.ico` (404). Edit it in Admin or run `browserLinks:update --prod`.
+- **10-21-2026 — Missing blog image.** `/blog/rust-vs-gc.webp` 404s on
+  /blog/rust-borrow-checker-vs-garbage-collector (live and local); the file isn't in `public/blog/`.

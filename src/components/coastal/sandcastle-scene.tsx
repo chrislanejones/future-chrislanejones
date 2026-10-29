@@ -413,7 +413,7 @@ function Beach({ pieces, tool, cursor, dark, moving, onPlace, onAim }: Props) {
 }
 
 export default function SandcastleScene(props: Props) {
-  return <Canvas shadows orthographic camera={{ position: [7, 9, 11], zoom: 60, near: .1, far: 60 }}
+  return <Canvas shadows="percentage" orthographic camera={{ position: [7, 9, 11], zoom: 60, near: .1, far: 60 }}
     dpr={[1, 1.5]} frameloop={props.moving ? "always" : "demand"}
     gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
     style={{ touchAction: "pan-y" }} fallback={<p>The 3D beach needs WebGL enabled in your browser.</p>}>

@@ -178,7 +178,7 @@ export const linkSeed: LinkSeedCategory[] = [
         href: "https://react-icons.github.io/react-icons/",
         label: "React Icons",
         domain: "react-icons.github.io",
-        favicon: "https://react-icons.github.io/favicon.ico",
+        favicon: "https://react-icons.github.io/react-icons/favicon.png",
       },
       {
         href: "https://simpleicons.org/",

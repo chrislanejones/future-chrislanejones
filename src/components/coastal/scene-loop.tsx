@@ -89,9 +89,11 @@ export function SceneLoop({ scene, sizes, className = "", preloadBoth = false }:
 
   return (
     <div ref={host} className={styles.scene} data-scene-motion={playing && readySrc === current.video ? "moving" : "still"}>
+      {/* Lazy (the default) so only the visible theme's still downloads: eager made
+          React preload both, and Chrome flagged the hidden one as an unused preload. */}
       {(["day", "night"] as const).map(theme => (
         <Image key={theme} src={scene[theme].still} alt={scene[theme].alt} fill quality={75} sizes={sizes}
-          loading="eager" fetchPriority="high" placeholder={scene[theme].blur ? "blur" : "empty"}
+          fetchPriority="high" placeholder={scene[theme].blur ? "blur" : "empty"}
           blurDataURL={scene[theme].blur} className={`${className} ${styles[theme]}`} />
       ))}
       {playing && (

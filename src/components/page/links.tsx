@@ -231,7 +231,8 @@ export function NavLinkComponent({
     );
   }
   return (
-    <Link href={link.href} className={`nav-link ${className}`} onClick={onClick}>
+    // The 404 Music Lounge is the not-found page: a prefetch of it always returns 404.
+    <Link href={link.href} prefetch={link.href === "/404" ? false : undefined} className={`nav-link ${className}`} onClick={onClick}>
       {link.label}
     </Link>
   );

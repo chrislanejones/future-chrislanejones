@@ -8,7 +8,6 @@ import {
   useSyncExternalStore,
 } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { BlogStepper } from "@/components/blog/BlogStepper";
 import { STEPPER_CONFIGS } from "@/components/blog/stepper-configs";
 import { CoastalPageShell } from "@/components/coastal/page-shell";
 import styles from "@/components/coastal/interior.module.css";
@@ -111,21 +110,30 @@ export default function BlogPostPage({
     const article = articleRef.current;
     if (!article || !postContent) return;
 
-    const markers = article.querySelectorAll<HTMLElement>("[data-stepper]");
-    markers.forEach((el) => {
-      const id = el.dataset.stepper;
-      const config = id ? STEPPER_CONFIGS[id] : undefined;
-      if (!config) return;
-      // Fresh node per mount, so a re-run (Strict Mode, content edit) never
-      // calls createRoot on a container an old root still owns.
-      const fresh = el.cloneNode(false) as HTMLElement;
-      el.replaceWith(fresh);
-      const root = createRoot(fresh);
-      root.render(<BlogStepper config={config} />);
-      stepperRootsRef.current.push(root);
-    });
+    const markers = [...article.querySelectorAll<HTMLElement>("[data-stepper]")].filter(
+      (el) => el.dataset.stepper && STEPPER_CONFIGS[el.dataset.stepper],
+    );
+    // Loaded on demand: a static import put the stepper's CSS in every blog
+    // post's prefetch, and Chrome flagged it as an unused preload on the home page.
+    let canceled = false;
+    if (markers.length) {
+      import("@/components/blog/BlogStepper").then(({ BlogStepper }) => {
+        if (canceled) return;
+        markers.forEach((el) => {
+          const config = STEPPER_CONFIGS[el.dataset.stepper!];
+          // Fresh node per mount, so a re-run (Strict Mode, content edit) never
+          // calls createRoot on a container an old root still owns.
+          const fresh = el.cloneNode(false) as HTMLElement;
+          el.replaceWith(fresh);
+          const root = createRoot(fresh);
+          root.render(<BlogStepper config={config} />);
+          stepperRootsRef.current.push(root);
+        });
+      });
+    }
 
     return () => {
+      canceled = true;
       const roots = stepperRootsRef.current;
       stepperRootsRef.current = [];
       // Defer so we never unmount synchronously during the parent's commit.
